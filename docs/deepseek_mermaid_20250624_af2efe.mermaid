@@ -1,0 +1,12 @@
+erDiagram
+    Project ||--o{ PlannedResources : "1-1"
+    Project ||--o{ ActualResources : "1-1"
+    Project }|--|| Employee : "Ответственный"
+    PlannedResources }|--|{ Resource : "1-∞"
+    ActualResources }|--|{ Resource : "1-∞"
+    Resource }|--|| PPE : "СИЗ"
+    Resource }|--|| Overhead : "АБР"
+    Resource }|--|| Materials : "Материалы"
+    Resource }|--|| Machinery : "Машины"
+    Resource }|--|| Employee : "Кадры"
+    Resource }|--|| Contractors : "Подрядчики"
