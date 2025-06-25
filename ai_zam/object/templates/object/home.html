@@ -1,394 +1,216 @@
+{% extends 'base/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-ZAM - Система управления строительными объектами</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #fff;
-            background: linear-gradient(135deg, #000000 0%, #434343 100%);
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        header {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 2rem;
-            font-weight: bold;
-            color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .logo img {
-            height: 80px;
-            width: auto;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-        
-        .nav-links a:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-bottom: 2px solid #fff;
-        }
-        
-        .hero {
-            text-align: center;
-            color: white;
-            margin-bottom: 3rem;
-        }
-        
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-        
-        .stat-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            border-radius: 15px;
-            text-align: center;
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s, background 0.3s;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .stat-number {
-            font-size: 3rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: #ffffff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        
-        .stat-label {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-        
-        .recent-objects {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .recent-objects h2 {
-            color: white;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-        
-        .object-list {
-            list-style: none;
-        }
-        
-        .object-item {
-            background: rgba(255, 255, 255, 0.05);
-            margin-bottom: 1rem;
-            padding: 1rem;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: background 0.3s;
-        }
-        
-        .object-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .object-name {
-            color: white;
-            font-weight: bold;
-        }
-        
-        .object-status {
-            padding: 0.3rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-        
-        .status-planned {
-            background: #ffd700;
-            color: #333;
-        }
-        
-        .status-active {
-            background: #4CAF50;
-            color: white;
-        }
-        
-        .status-completed {
-            background: #2196F3;
-            color: white;
-        }
-        
-        .cta-section {
-            text-align: center;
-            margin: 3rem 0;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(45deg, #ffffff, #cccccc);
-            color: #000;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            text-decoration: none;
-            display: inline-block;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-        
-        footer {
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            text-align: center;
-            padding: 2rem 0;
-            margin-top: 3rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        /* Секция с устройствами */
-        .devices-section {
-            margin: 4rem 0;
-        }
-        
-        .devices-container {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-        
-        /* iPad стили */
-        .ipad-frame {
-            background: #000;
-            border-radius: 25px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transform: perspective(1000px) rotateY(-5deg);
-        }
-        
-        .ipad-screen {
-            background: #fff;
-            border-radius: 15px;
-            padding: 30px;
-            color: #000;
-            min-height: 400px;
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-        
-        .ipad-screen h3 {
-            color: #000;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-        
-        .ipad-screen p {
-            margin-bottom: 1rem;
-        }
-        
-        /* iPhone стили */
-        .iphone-frame {
-            background: #000;
-            border-radius: 30px;
-            padding: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            max-width: 300px;
-            margin: 0 auto;
-            transform: perspective(1000px) rotateY(5deg);
-        }
-        
-        .iphone-screen {
-            background: #f8f8f8;
-            border-radius: 25px;
-            overflow: hidden;
-            min-height: 500px;
-        }
-        
-        .chat-header {
-            background: #007AFF;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-weight: bold;
-        }
-        
-        .chat-message {
-            padding: 20px;
-            background: #fff;
-            margin: 10px;
-            border-radius: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            color: #000;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-        
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .nav-links {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .devices-container {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-            
-            .ipad-frame, .iphone-frame {
-                transform: none;
-            }
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <a href="/" class="logo">
-                    <img src="{% static 'images/logo-ai.png' %}" alt="AI-Зам">
-                    AI-Зам
-                </a>
-                <nav class="nav-links">
-                    <a href="/">Главная</a>
-                    <a href="/objects/">Объекты</a>
-                    <a href="/admin/object/kadry/">Кадры</a>
-                    <a href="#contact">Контакты</a>
-                </nav>
-            </div>
-        </div>
-    </header>
 
-    <main class="container">
-        <section class="hero">
-            <h1>Система управления строительными объектами</h1>
-            <p>Контролируйте все аспекты строительства в одном месте</p>
-        </section>
-        
-       
+{% block title %}AI-ZAM - Система управления строительными объектами{% endblock %}
+
+{% block extra_styles %}
+.hero {
+    text-align: center;
+    color: white;
+    margin-bottom: 3rem;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s, background 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.stat-label {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* Секция с устройствами */
+.devices-section {
+    margin: 4rem 0;
+}
+
+.devices-container {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 3rem;
+    align-items: center;
+}
+
+/* iPad стили */
+.ipad-frame {
+    background: #000;
+    border-radius: 25px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: perspective(1000px) rotateY(-5deg);
+}
+
+.ipad-screen {
+    background: #fff;
+    border-radius: 15px;
+    padding: 30px;
+    color: #000;
+    min-height: 400px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.ipad-screen h3 {
+    color: #000;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.ipad-screen p {
+    margin-bottom: 1rem;
+}
+
+/* iPhone стили */
+.iphone-frame {
+    background: #000;
+    border-radius: 30px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+    margin: 0 auto;
+    transform: perspective(1000px) rotateY(5deg);
+}
+
+.iphone-screen {
+    background: #f8f8f8;
+    border-radius: 25px;
+    overflow: hidden;
+    min-height: 500px;
+}
+
+.chat-header {
+    background: #007AFF;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.chat-message {
+    padding: 20px;
+    background: #fff;
+    margin: 10px;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    color: #000;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.cta-section {
+    text-align: center;
+    margin: 3rem 0;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #ffffff, #cccccc);
+    color: #000;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2rem;
+    }
     
-        <section class="devices-section">
-            <div class="devices-container">
-                <div class="ipad-section">
-                    <div class="ipad-frame">
-                        <div class="ipad-screen">
-                            <h3>Ваш виртуальный заместитель</h3>
-                            <p>Представьте себе настолько грамотного заместителя, который знает все строительные нормы, знает расценки на работы и материалы, может составить лимитно-заборную и технологическую карты на любые работы, сметы и коммерческие предложения, вычислит работника, который плохо работает и будет формировать служебные приказы, контролировать соблюдение охраны труда, будет анализировать выполнение, учитывать расходы, проводить тендеры и может проанализировать риски в Договорах.</p>
-                            <p><strong>Всё это и даже больше реализовано в программно-аналитическом комплексе GoodZam.</strong></p>
-                            <p>Пройдите регистрацию и загрузите бота в рабочий чат. И вся аналитика у вас на ладони.</p>
-                        </div>
-                    </div>
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .devices-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .ipad-frame, .iphone-frame {
+        transform: none;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Система управления строительными объектами</h1>
+    <p>Контролируйте все аспекты строительства в одном месте</p>
+</section>
+
+<section class="devices-section">
+    <div class="devices-container">
+        <div class="ipad-section">
+            <div class="ipad-frame">
+                <div class="ipad-screen">
+                    <h3>Ваш виртуальный заместитель</h3>
+                    <p>Представьте себе настолько грамотного заместителя, который знает все строительные нормы, знает расценки на работы и материалы, может составить лимитно-заборную и технологическую карты на любые работы, сметы и коммерческие предложения, вычислит работника, который плохо работает и будет формировать служебные приказы, контролировать соблюдение охраны труда, будет анализировать выполнение, учитывать расходы, проводить тендеры и может проанализировать риски в Договорах.</p>
+                    <p><strong>Всё это и даже больше реализовано в программно-аналитическом комплексе GoodZam.</strong></p>
+                    <p>Пройдите регистрацию и загрузите бота в рабочий чат. И вся аналитика у вас на ладони.</p>
                 </div>
-                <div class="iphone-section">
-                    <div class="iphone-frame">
-                        <div class="iphone-screen">
-                            <div class="chat-header">Чат-бот</div>
-                            <div class="chat-message">
-                                <p>Здравствуйте! Я виртуальный инженер-строитель с 30-летним опытом. Задайте мне вопрос или загрузите документ для анализа.</p>
-                            </div>
-                        </div>
+            </div>
+        </div>
+        <div class="iphone-section">
+            <div class="iphone-frame">
+                <div class="iphone-screen">
+                    <div class="chat-header">Чат-бот</div>
+                    <div class="chat-message">
+                        <p>Здравствуйте! Я виртуальный инженер-строитель с 30-летним опытом. Задайте мне вопрос или загрузите документ для анализа.</p>
                     </div>
                 </div>
             </div>
-        </section>
-
-        <section class="cta-section">
-            <a href="/admin/" class="btn-primary">Перейти к управлению</a>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 AI-ZAM. Система управления строительными объектами.</p>
         </div>
-    </footer>
-</body>
-</html>
+    </div>
+</section>
+
+<section class="cta-section">
+    <a href="/admin/" class="btn-primary">Перейти к управлению</a>
+</section>
+{% endblock %}

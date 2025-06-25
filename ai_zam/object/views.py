@@ -54,12 +54,14 @@ def objects_list(request):
     
     return render(request, 'object/objects_list.html', context)
 
+from datetime import datetime, timedelta
+
 def object_detail(request, object_id):
     # Получаем объект или 404
     obj = get_object_or_404(Objekt.objects.select_related('otvetstvennyj'), id=object_id)
     
     # Получаем ресурсы по объекту
-    resources = ResursyPoObjektu.objects.filter(objekt=obj).select_related('resurs')
+    resources = ResursyPoObjektu.objects.filter(objekt=obj).select_related('resurs', 'resurs__kategoriya_resursa')
     
     # Суммарная стоимость ресурсов
     total_cost = sum(r.kolichestvo * r.cena for r in resources)
@@ -71,8 +73,23 @@ def object_detail(request, object_id):
     
     # Расходы по фактическим ресурсам
     raskhody = {}
+    all_dates = set()
+    
     for fr in fakticheskij_resursy:
-        raskhody[fr.id] = RaskhodResursa.objects.filter(fakticheskij_resurs=fr)
+        rashody_list = RaskhodResursa.objects.filter(fakticheskij_resurs=fr).order_by('-data')
+        raskhody[fr.id] = rashody_list
+        
+        # Собираем все даты расходов
+        for rashod in rashody_list:
+            all_dates.add(rashod.data)
+    
+    # Сортируем даты в обратном порядке (новые сначала)
+    days = sorted(list(all_dates), reverse=True)[:6]  # Последние 6 дней
+    
+    # Если нет дат, создаем тестовые даты для примера
+    if not days:
+        today = datetime(2025, 6, 28).date()  # Используем дату из примера
+        days = [today - timedelta(days=i) for i in range(6)]
     
     # Суммарный фактический расход
     total_spent = 0
@@ -88,6 +105,7 @@ def object_detail(request, object_id):
         'fakticheskij_resursy': fakticheskij_resursy,
         'raskhody': raskhody,
         'total_spent': total_spent,
+        'days': days,
     }
     
     return render(request, 'object/object_detail.html', context)

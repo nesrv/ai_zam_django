@@ -1,0 +1,231 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load object_filters %}
+
+{% block title %}{{ object.nazvanie }} - AI-ZAM{% endblock %}
+
+{% block extra_styles %}
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    padding: 0;
+}
+
+.resource-container {
+    max-width: 100%;
+    margin: 0 auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+.resource-header {
+    background: #2c3e50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.resource-header h1 {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.resource-header p {
+    opacity: 0.8;
+}
+
+.table-container {
+    padding: 0;
+}
+
+.resource-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    white-space: nowrap;
+}
+
+.resource-table th {
+    background: #34495e;
+    color: white;
+    padding: 10px 8px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #2c3e50;
+    position: sticky;
+    top: 0;
+}
+
+.resource-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    background: white;
+}
+
+.resource-table .number {
+    text-align: right;
+}
+
+.main-header td {
+    background: #1a2530 !important;
+    color: white !important;
+    font-weight: bold;
+    text-align: left;
+    padding: 10px 8px;
+}
+
+.category-header td {
+    background: #3498db !important;
+    color: white !important;
+    font-weight: bold;
+    text-align: left;
+    padding: 8px;
+}
+
+.category-кадры td { background: #e8f4fd; }
+.category-машины td { background: #fff3cd; }
+.category-материалы td { background: #d4edda; }
+.category-административно td { background: #f8d7da; }
+.category-сиз td { background: #e2e3e5; }
+.category-подрядные td { background: #d1ecf1; }
+
+.total-row td {
+    background: #2c3e50 !important;
+    color: white !important;
+    font-weight: bold;
+}
+
+.back-btn {
+    display: inline-block;
+    margin: 20px;
+    padding: 10px 20px;
+    background: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.back-btn:hover {
+    background: #2980b9;
+}
+
+.bold {
+    font-weight: bold;
+}
+{% endblock %}
+
+{% block content %}
+<div class="resource-container">
+    <div class="resource-header">
+        <h1>{{ object.nazvanie }}</h1>
+        <p>Смета ресурсов по объекту</p>
+    </div>
+    
+    <div class="table-container">
+        <table class="resource-table">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Наименование</th>
+                    <th style="width: 8%;">Ед.<br>изм</th>
+                    <th style="width: 8%;">Зарез.<br>лимитов</th>
+                    <th style="width: 8%;">Заплан.<br>цена</th>
+                    <th style="width: 10%;">Сумма</th>
+                    <th style="width: 8%;">Потрач.<br>лимитов</th>
+                    <th style="width: 8%;">Остал.<br>лимитов</th>
+                    {% for day in days %}
+                    <th style="width: 5%;">{{ day|date:"Y-m-d" }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="main-header">
+                    <td colspan="7">Расходная часть</td>
+                    <td colspan="{{ days|length }}">Расчеты по дням</td>
+                </tr>
+                
+                {% regroup resources by resurs.kategoriya_resursa.nazvanie as category_list %}
+                
+                {% for category in category_list %}
+                <tr class="category-header">
+                    <td colspan="{{ 7|add:days|length }}">{{ category.grouper|title }}</td>
+                </tr>
+                
+                {% for resource in category.list %}
+                <tr class="category-{{ category.grouper|lower }}">
+                    <td>{{ resource.resurs.naimenovanie }}</td>
+                    <td>{{ resource.resurs.edinica_izmereniya }}</td>
+                    <td class="number">{{ resource.kolichestvo|floatformat:0 }}</td>
+                    <td class="number">{{ resource.cena|floatformat:0 }}</td>
+                    <td class="number">{{ resource.kolichestvo|multiply:resource.cena|floatformat:0 }}</td>
+                    
+                    {% with total_spent=0 %}
+                        {% for fr in fakticheskij_resursy %}
+                            {% if fr.resurs_po_objektu.id == resource.id %}
+                                {% with spent_sum=0 %}
+                                    {% for rashod in raskhody|get_item:fr.id %}
+                                        {% with spent_sum=spent_sum|add:rashod.izraskhodovano %}{% endwith %}
+                                    {% endfor %}
+                                    <td class="number">{{ spent_sum|floatformat:0 }}</td>
+                                    <td class="number">{{ resource.kolichestvo|subtract:spent_sum|floatformat:0 }}</td>
+                                {% endwith %}
+                            {% endif %}
+                        {% empty %}
+                            <td class="number">0</td>
+                            <td class="number">{{ resource.kolichestvo|floatformat:0 }}</td>
+                        {% endfor %}
+                    {% endwith %}
+                    
+                    {% for day in days %}
+                        <td class="number">
+                        {% for fr in fakticheskij_resursy %}
+                            {% if fr.resurs_po_objektu.id == resource.id %}
+                                {% for rashod in raskhody|get_item:fr.id %}
+                                    {% if rashod.data|date:"Y-m-d" == day|date:"Y-m-d" %}
+                                        {{ rashod.izraskhodovano|floatformat:0 }}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                        </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                
+                {% with category_sum=0 %}
+                    {% for resource in category.list %}
+                        {% with category_sum=category_sum|add:resource.kolichestvo|multiply:resource.cena %}{% endwith %}
+                    {% endfor %}
+                    <tr class="total-row">
+                        <td colspan="4">ИТОГО:</td>
+                        <td class="number">{{ category_sum|floatformat:0 }}</td>
+                        <td colspan="{{ 2|add:days|length }}"></td>
+                    </tr>
+                {% endwith %}
+                {% endfor %}
+                
+                {% with total_sum=0 %}
+                    {% for resource in resources %}
+                        {% with total_sum=total_sum|add:resource.kolichestvo|multiply:resource.cena %}{% endwith %}
+                    {% endfor %}
+                    <tr class="total-row">
+                        <td colspan="4">Планируемая сумма затрат по объекту</td>
+                        <td class="number">{{ total_sum|floatformat:0 }}</td>
+                        <td colspan="2"></td>
+                        <td colspan="{{ days|length }}" class="bold">Расчеты по дням</td>
+                    </tr>
+                {% endwith %}
+            </tbody>
+        </table>
+    </div>
+    
+    <a href="/objects/" class="back-btn">← Назад к списку объектов</a>
+</div>
+{% endblock %}

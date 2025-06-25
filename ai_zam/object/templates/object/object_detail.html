@@ -14,462 +14,226 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #fff;
-            background: linear-gradient(135deg, #000000 0%, #434343 100%);
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            padding: 20px;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 100%;
             margin: 0 auto;
-            padding: 0 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow-x: auto;
         }
         
-        header {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 2rem;
-            font-weight: bold;
+        .header {
+            background: #2c3e50;
             color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         
-        .logo img {
-            height: 80px;
-            width: auto;
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
         }
         
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-        
-        .nav-links a:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-bottom: 2px solid #fff;
-        }
-        
-        .object-header {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .object-title {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .object-status {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-        
-        .status-planned {
-            background: #ffd700;
-            color: #333;
-        }
-        
-        .status-active {
-            background: #4CAF50;
-            color: white;
-        }
-        
-        .status-completed {
-            background: #2196F3;
-            color: white;
-        }
-        
-        .object-meta {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .meta-item {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 1rem;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .meta-label {
-            font-size: 0.9rem;
+        .header p {
             opacity: 0.8;
-            margin-bottom: 0.3rem;
-        }
-        
-        .meta-value {
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-        
-        .section-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .resources-section, .expenses-section {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .table-container {
-            overflow-x: auto;
-            margin-top: 1rem;
+            padding: 0;
         }
         
-        .data-table {
+        .resource-table {
             width: 100%;
             border-collapse: collapse;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            overflow: hidden;
+            margin-bottom: 20px;
+            white-space: nowrap;
         }
         
-        .data-table th {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            padding: 12px;
-            text-align: left;
+        .resource-table th {
+            background: #34495e;
+            color: white;
+            padding: 10px 8px;
+            text-align: center;
             font-weight: bold;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid #2c3e50;
+            position: sticky;
+            top: 0;
         }
         
-        .data-table td {
-            padding: 10px 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
+        .resource-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            background: white;
         }
         
-        .data-table tr:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-        
-        .data-table .number {
+        .resource-table .number {
             text-align: right;
-            font-family: monospace;
         }
         
-        .data-table .center {
-            text-align: center;
-        }
-        
-        .category-materials { background: rgba(76, 175, 80, 0.2); }
-        .category-labor { background: rgba(33, 150, 243, 0.2); }
-        .category-equipment { background: rgba(255, 193, 7, 0.2); }
-        .category-other { background: rgba(156, 39, 176, 0.2); }
-        
-        .summary-section {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-        
-        .summary-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 1.5rem;
-            border-radius: 10px;
-            text-align: center;
-        }
-        
-        .summary-value {
-            font-size: 1.8rem;
+        .main-header td {
+            background: #1a2530 !important;
+            color: white !important;
             font-weight: bold;
-            margin-bottom: 0.5rem;
+            text-align: left;
+            padding: 10px 8px;
         }
         
-        .summary-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-        
-        .progress-container {
-            margin-top: 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            height: 20px;
-            overflow: hidden;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #4CAF50, #8BC34A);
-            border-radius: 10px;
-        }
-        
-        .back-link {
-            text-align: center;
-            margin: 2rem 0;
-        }
-        
-        .btn-back {
-            background: linear-gradient(45deg, #ffffff, #cccccc);
-            color: #000;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
+        .category-header td {
+            background: #3498db !important;
+            color: white !important;
             font-weight: bold;
-            text-decoration: none;
+            text-align: left;
+            padding: 8px;
+        }
+        
+        .category-кадры td { background: #e8f4fd; }
+        .category-машины td { background: #fff3cd; }
+        .category-материалы td { background: #d4edda; }
+        .category-административно td { background: #f8d7da; }
+        .category-сиз td { background: #e2e3e5; }
+        .category-подрядные td { background: #d1ecf1; }
+        
+        .total-row td {
+            background: #2c3e50 !important;
+            color: white !important;
+            font-weight: bold;
+        }
+        
+        .back-btn {
             display: inline-block;
-            transition: transform 0.3s, box-shadow 0.3s;
+            margin: 20px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.3s;
         }
         
-        .btn-back:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        .back-btn:hover {
+            background: #2980b9;
         }
         
-        @media (max-width: 768px) {
-            .object-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .object-meta {
-                grid-template-columns: 1fr;
-            }
-            
-            .table-container {
-                overflow-x: scroll;
-            }
-            
-            .summary-grid {
-                grid-template-columns: 1fr;
-            }
+        .bold {
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <a href="/" class="logo">
-                    <img src="{% static 'images/logo-ai.png' %}" alt="AI-Зам">
-                    AI-Зам
-                </a>
-                <nav class="nav-links">
-                    <a href="/">Главная</a>
-                    <a href="/objects/">Объекты</a>
-                    <a href="/admin/object/kadry/">Кадры</a>
-                    <a href="#contact">Контакты</a>
-                </nav>
-            </div>
+    <div class="container">
+        <div class="header">
+            <h1>{{ object.nazvanie }}</h1>
+            <p>Смета ресурсов по объекту</p>
         </div>
-    </header>
-
-    <main class="container">
-        <section class="object-header">
-            <div>
-                <h1 class="object-title">{{ object.nazvanie }}</h1>
-                <p>Детальная информация об объекте</p>
-            </div>
-            <div class="object-status 
-                {% if object.status == 'планируется' %}status-planned
-                {% elif object.status == 'в работе' %}status-active
-                {% else %}status-completed{% endif %}">
-                {{ object.status|title }}
-            </div>
-        </section>
-
-        <section class="object-meta">
-            <div class="meta-item">
-                <div class="meta-label">Ответственный</div>
-                <div class="meta-value">{{ object.otvetstvennyj.fio|default:"Не назначен" }}</div>
-            </div>
-            <div class="meta-item">
-                <div class="meta-label">Дата начала</div>
-                <div class="meta-value">{{ object.data_nachala|date:"d.m.Y" }}</div>
-            </div>
-            <div class="meta-item">
-                <div class="meta-label">План завершения</div>
-                <div class="meta-value">{{ object.data_plan_zaversheniya|date:"d.m.Y" }}</div>
-            </div>
-            <div class="meta-item">
-                <div class="meta-label">Факт завершения</div>
-                <div class="meta-value">{{ object.data_fakt_zaversheniya|date:"d.m.Y"|default:"—" }}</div>
-            </div>
-        </section>
-
-        <section class="summary-section">
-            <h2 class="section-title">Сводная информация</h2>
-            <div class="summary-grid">
-                <div class="summary-card">
-                    <div class="summary-value">{{ resources|length }}</div>
-                    <div class="summary-label">Всего ресурсов</div>
-                </div>
-                <div class="summary-card">
-                    <div class="summary-value">{{ total_cost|floatformat:0 }} ₽</div>
-                    <div class="summary-label">Плановая стоимость</div>
-                </div>
-                <div class="summary-card">
-                    <div class="summary-value">{{ total_spent|floatformat:0 }} ₽</div>
-                    <div class="summary-label">Фактические расходы</div>
-                </div>
-                <div class="summary-card">
-                    <div class="summary-value">
-                        {% if total_cost > 0 %}
-                            {{ total_spent|floatformat:0|default:0|divisibleby:total_cost|floatformat:0 }}%
-                        {% else %}
-                            0%
-                        {% endif %}
-                    </div>
-                    <div class="summary-label">Выполнение бюджета</div>
-                    <div class="progress-container">
-                        <div class="progress-bar" style="width: 
-                            {% if total_cost > 0 %}
-                                {{ total_spent|floatformat:0|default:0|divisibleby:total_cost|floatformat:0 }}%
-                            {% else %}
-                                0%
-                            {% endif %}
-                        "></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="resources-section">
-            <h2 class="section-title">Ресурсы объекта</h2>
-            <div class="table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>№</th>
-                            <th>Наименование ресурса</th>
-                            <th>Категория</th>
-                            <th>Ед. изм.</th>
-                            <th class="number">Количество</th>
-                            <th class="number">Цена за ед.</th>
-                            <th class="number">Общая стоимость</th>
-                            <th class="center">Статус</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for resource in resources %}
-                        <tr class="{% if resource.resurs.kategoriya_resursa.nazvanie == 'материалы' %}category-materials{% elif resource.resurs.kategoriya_resursa.nazvanie == 'кадры' %}category-labor{% elif resource.resurs.kategoriya_resursa.nazvanie == 'машины' %}category-equipment{% else %}category-other{% endif %}">
-                            <td class="center">{{ forloop.counter }}</td>
-                            <td>{{ resource.resurs.naimenovanie }}</td>
-                            <td>{{ resource.resurs.kategoriya_resursa.nazvanie|title }}</td>
-                            <td class="center">{{ resource.resurs.edinica_izmereniya }}</td>
-                            <td class="number">{{ resource.kolichestvo|floatformat:2 }}</td>
-                            <td class="number">{{ resource.cena|floatformat:2 }} ₽</td>
-                            <td class="number">{{ resource.kolichestvo|multiply:resource.cena|floatformat:2 }} ₽</td>
-                            <td class="center">Запланировано</td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="8" style="text-align: center; padding: 2rem;">
-                                Для этого объекта не добавлены ресурсы
-                            </td>
-                        </tr>
+        
+        <div class="table-container">
+            <table class="resource-table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">Наименование</th>
+                        <th style="width: 2%;">Ед.<br>изм</th>
+                        <th style="width: 3%;">Зарез.<br>лимитов</th>
+                        <th style="width: 3%;">Заплан.<br>цена</th>
+                        <th style="width: 3%;">Сумма</th>
+                        <th style="width: 2%;">Потрач.<br>лимитов</th>
+                        <th style="width: 2%;">Остал.<br>лимитов</th>
+                        {% for day in days %}
+                        <th style="width: 3%;">{{ day|date:"Y-m-d" }}</th>
                         {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <section class="expenses-section">
-            <h2 class="section-title">Фактические расходы</h2>
-            <div class="table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>№</th>
-                            <th>Наименование ресурса</th>
-                            <th>Дата расхода</th>
-                            <th class="number">Израсходовано</th>
-                            <th>Ед. изм.</th>
-                            <th class="number">Стоимость за ед.</th>
-                            <th class="number">Общая стоимость</th>
-                            <th class="center">Статус</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for fr in fakticheskij_resursy %}
-                            {% for rashod in raskhody|get_item:fr.id %}
-                            <tr>
-                                <td class="center">{{ forloop.parentloop.counter }}.{{ forloop.counter }}</td>
-                                <td>{{ fr.resurs_po_objektu.resurs.naimenovanie }}</td>
-                                <td>{{ rashod.data|date:"d.m.Y" }}</td>
-                                <td class="number">{{ rashod.izraskhodovano|floatformat:2 }}</td>
-                                <td class="center">{{ fr.resurs_po_objektu.resurs.edinica_izmereniya }}</td>
-                                <td class="number">{{ fr.resurs_po_objektu.cena|floatformat:2 }} ₽</td>
-                                <td class="number">{{ rashod.izraskhodovano|multiply:fr.resurs_po_objektu.cena|floatformat:2 }} ₽</td>
-                                <td class="center">Израсходовано</td>
-                            </tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="main-header">
+                        <td colspan="7">Расходная часть</td>
+                        <td colspan="{{ days|length }}">Расчеты по дням</td>
+                    </tr>
+                    
+                    {% regroup resources by resurs.kategoriya_resursa.nazvanie as category_list %}
+                    
+                    {% for category in category_list %}
+                    <tr class="category-header">
+                        <td colspan="{{ 7|add:days|length }}">{{ category.grouper|title }}</td>
+                    </tr>
+                    
+                    {% for resource in category.list %}
+                    <tr class="category-{{ category.grouper|lower }}">
+                        <td>{{ resource.resurs.naimenovanie }}</td>
+                        <td>{{ resource.resurs.edinica_izmereniya }}</td>
+                        <td class="number">{{ resource.kolichestvo|floatformat:0 }}</td>
+                        <td class="number">{{ resource.cena|floatformat:0 }}</td>
+                        <td class="number">{{ resource.kolichestvo|multiply:resource.cena|floatformat:0 }}</td>
+                        
+                        {% with total_spent=0 %}
+                            {% for fr in fakticheskij_resursy %}
+                                {% if fr.resurs_po_objektu.id == resource.id %}
+                                    {% with spent_sum=0 %}
+                                        {% for rashod in raskhody|get_item:fr.id %}
+                                            {% with spent_sum=spent_sum|add:rashod.izraskhodovano %}{% endwith %}
+                                        {% endfor %}
+                                        <td class="number">{{ spent_sum|floatformat:0 }}</td>
+                                        <td class="number">{{ resource.kolichestvo|subtract:spent_sum|floatformat:0 }}</td>
+                                    {% endwith %}
+                                {% endif %}
                             {% empty %}
-                            <tr>
-                                <td class="center">{{ forloop.counter }}</td>
-                                <td>{{ fr.resurs_po_objektu.resurs.naimenovanie }}</td>
-                                <td colspan="6" style="text-align: center;">Нет данных о расходах</td>
-                            </tr>
+                                <td class="number">0</td>
+                                <td class="number">{{ resource.kolichestvo|floatformat:0 }}</td>
                             {% endfor %}
-                        {% empty %}
-                        <tr>
-                            <td colspan="8" style="text-align: center; padding: 2rem;">
-                                Для этого объекта не добавлены фактические расходы
+                        {% endwith %}
+                        
+                        {% for day in days %}
+                            <td class="number">
+                            {% for fr in fakticheskij_resursy %}
+                                {% if fr.resurs_po_objektu.id == resource.id %}
+                                    {% for rashod in raskhody|get_item:fr.id %}
+                                        {% if rashod.data|date:"Y-m-d" == day|date:"Y-m-d" %}
+                                            {{ rashod.izraskhodovano|floatformat:0 }}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
                             </td>
-                        </tr>
                         {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <section class="back-link">
-            <a href="/objects/" class="btn-back">Вернуться к списку объектов</a>
-        </section>
-    </main>
+                    </tr>
+                    {% endfor %}
+                    
+                    {% with category_sum=0 %}
+                        {% for resource in category.list %}
+                            {% with category_sum=category_sum|add:resource.kolichestvo|multiply:resource.cena %}{% endwith %}
+                        {% endfor %}
+                        <tr class="total-row">
+                            <td colspan="4">ИТОГО:</td>
+                            <td class="number">{{ category_sum|floatformat:0 }}</td>
+                            <td colspan="{{ 2|add:days|length }}"></td>
+                        </tr>
+                    {% endwith %}
+                    {% endfor %}
+                    
+                    {% with total_sum=0 %}
+                        {% for resource in resources %}
+                            {% with total_sum=total_sum|add:resource.kolichestvo|multiply:resource.cena %}{% endwith %}
+                        {% endfor %}
+                        <tr class="total-row">
+                            <td colspan="4">Планируемая сумма затрат по объекту</td>
+                            <td class="number">{{ total_sum|floatformat:0 }}</td>
+                            <td colspan="2"></td>
+                            <td colspan="{{ days|length }}" class="bold">Расчеты по дням</td>
+                        </tr>
+                    {% endwith %}
+                </tbody>
+            </table>
+        </div>
+        
+        <a href="/objects/" class="back-btn">← Назад к списку объектов</a>
+    </div>
 </body>
 </html>
