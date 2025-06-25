@@ -1,68 +1,27 @@
 from django.db import models
 
-# Ресурсы
-class SpecodezhaSiz(models.Model):
+# Категория ресурса
+class KategoriyaResursa(models.Model):
     nazvanie = models.CharField(max_length=255, verbose_name="Название")
-    edinica_izmereniya = models.CharField(max_length=50, verbose_name="Единица измерения")
     
     class Meta:
-        verbose_name = "Спецодежда и СИЗ"
-        verbose_name_plural = "Спецодежда и СИЗ"
+        verbose_name = "Категория ресурса"
+        verbose_name_plural = "Категории ресурсов"
+        db_table = 'kategoriya_resursa'
     
     def __str__(self):
         return self.nazvanie
 
-class AdministrativnoBytovyeRashody(models.Model):
-    nazvanie = models.CharField(max_length=255, verbose_name="Название")
-    edinica_izmereniya = models.CharField(max_length=50, verbose_name="Единица измерения")
-    
-    class Meta:
-        verbose_name = "Административно-бытовые расходы"
-        verbose_name_plural = "Административно-бытовые расходы"
-    
-    def __str__(self):
-        return self.nazvanie
-
-class InstrumentMaterialy(models.Model):
-    nazvanie = models.CharField(max_length=255, verbose_name="Название")
-    edinica_izmereniya = models.CharField(max_length=50, verbose_name="Единица измерения")
-    
-    class Meta:
-        verbose_name = "Инструмент и материалы"
-        verbose_name_plural = "Инструмент и материалы"
-    
-    def __str__(self):
-        return self.nazvanie
-
-class MashinyMekhanizmy(models.Model):
-    nazvanie = models.CharField(max_length=255, verbose_name="Название")
-    edinica_izmereniya = models.CharField(max_length=50, verbose_name="Единица измерения")
-    
-    class Meta:
-        verbose_name = "Машины и механизмы"
-        verbose_name_plural = "Машины и механизмы"
-    
-    def __str__(self):
-        return self.nazvanie
-
-class KadrovoeObespechenie(models.Model):
+# Ресурс
+class Resurs(models.Model):
     naimenovanie = models.CharField(max_length=255, verbose_name="Наименование")
     edinica_izmereniya = models.CharField(max_length=50, verbose_name="Единица измерения")
+    kategoriya_resursa = models.ForeignKey(KategoriyaResursa, on_delete=models.CASCADE, verbose_name="Категория ресурса")
     
     class Meta:
-        verbose_name = "Кадровое обеспечение"
-        verbose_name_plural = "Кадровое обеспечение"
-    
-    def __str__(self):
-        return self.naimenovanie
-
-class PodryadnyeOrganizacii(models.Model):
-    naimenovanie = models.CharField(max_length=255, verbose_name="Наименование")
-    edinica_izmereniya = models.CharField(max_length=50, verbose_name="Единица измерения")
-    
-    class Meta:
-        verbose_name = "Подрядные организации"
-        verbose_name_plural = "Подрядные организации"
+        verbose_name = "Ресурс"
+        verbose_name_plural = "Ресурсы"
+        db_table = 'resurs'
     
     def __str__(self):
         return self.naimenovanie
@@ -88,6 +47,45 @@ class Kadry(models.Model):
     class Meta:
         verbose_name = "Кадр"
         verbose_name_plural = "Кадры"
+        db_table = 'kadry'
     
     def __str__(self):
         return self.fio
+
+# Объект
+class Objekt(models.Model):
+    STATUS_CHOICES = [
+        ('планируется', 'Планируется'),
+        ('в работе', 'В работе'),
+        ('завершён', 'Завершён'),
+    ]
+    
+    nazvanie = models.CharField(max_length=255, verbose_name="Название")
+    otvetstvennyj = models.ForeignKey(Kadry, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Ответственный")
+    data_nachala = models.DateField(verbose_name="Дата начала")
+    data_plan_zaversheniya = models.DateField(verbose_name="Дата план завершения")
+    data_fakt_zaversheniya = models.DateField(null=True, blank=True, verbose_name="Дата факт завершения")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='планируется', verbose_name="Статус")
+    
+    class Meta:
+        verbose_name = "Объект"
+        verbose_name_plural = "Объекты"
+        db_table = 'objekt'
+    
+    def __str__(self):
+        return self.nazvanie
+
+# Ресурсы по объекту
+class ResursyPoObjektu(models.Model):
+    objekt = models.ForeignKey(Objekt, on_delete=models.CASCADE, verbose_name="Объект")
+    resurs = models.ForeignKey(Resurs, on_delete=models.CASCADE, verbose_name="Ресурс")
+    kolichestvo = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Количество")
+    cena = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Цена")
+    
+    class Meta:
+        verbose_name = "Ресурсы по объекту"
+        verbose_name_plural = "Ресурсы по объектам"
+        db_table = 'resursy_po_objektu'
+    
+    def __str__(self):
+        return f"{self.objekt.nazvanie} - {self.resurs.naimenovanie}"

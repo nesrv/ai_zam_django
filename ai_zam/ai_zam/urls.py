@@ -15,8 +15,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from object.views import home
+
+# Изменяем заголовки админки
+admin.site.site_header = "Ruslan administration"
+admin.site.site_title = "Ruslan administration"
+admin.site.index_title = "Добро пожаловать в Ruslan administration"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', home, name='home'),
 ]

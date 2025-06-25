@@ -1,0 +1,280 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Ruslan administration{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        <img src="{% static 'images/logo-ai.png' %}" alt="Ruslan administration" style="height: 40px; margin-right: 10px;">
+        Ruslan administration
+    </a>
+</h1>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* Основной фон */
+    body {
+        background: linear-gradient(135deg, #000000 0%, #2a2a2a 50%, #000000 100%) !important;
+        color: #fff !important;
+    }
+    
+    #container {
+        background: transparent !important;
+    }
+    
+    #content {
+        background: rgba(255, 255, 255, 0.02) !important;
+        border-radius: 10px !important;
+        margin: 20px !important;
+        padding: 20px !important;
+    }
+    
+    /* Хедер */
+    #header {
+        background: linear-gradient(90deg, #000000 0%, #1a1a1a 50%, #000000 100%) !important;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
+    }
+    
+    /* Логотип */
+    #site-name a {
+        color: #fff !important;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Навигация */
+    .module h2, .module caption, .inline-group h2 {
+        background: linear-gradient(90deg, #ffffff 0%, #e0e0e0 100%) !important;
+        color: #000 !important;
+        border-bottom: 2px solid #ccc !important;
+        font-weight: bold !important;
+        text-shadow: none !important;
+    }
+    
+    /* Таблицы */
+    .results {
+        background: #fff !important;
+        border: 2px solid #000 !important;
+        border-radius: 5px !important;
+    }
+    
+    .results th {
+        background: linear-gradient(90deg, #000000 0%, #333333 100%) !important;
+        color: #fff !important;
+        border-bottom: 2px solid #000 !important;
+        font-weight: bold !important;
+    }
+    
+    .results td {
+        border-bottom: 1px solid #ccc !important;
+        color: #000 !important;
+        background: #fff !important;
+    }
+    
+    .results tr:nth-child(even) td {
+        background: #f8f8f8 !important;
+    }
+    
+    .results tr:hover td {
+        background: #e0e0e0 !important;
+    }
+    
+    /* Формы */
+    .form-row {
+        background: #fff !important;
+        border: 2px solid #000 !important;
+        margin-bottom: 15px !important;
+        padding: 15px !important;
+        border-radius: 5px !important;
+    }
+    
+    .form-row label {
+        color: #000 !important;
+        font-weight: bold !important;
+    }
+    
+    input, select, textarea {
+        background: #fff !important;
+        color: #000 !important;
+        border: 2px solid #000 !important;
+        border-radius: 3px !important;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+        border-color: #333 !important;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    /* Кнопки */
+    .default, input[type=submit], .submit-row input {
+        background: linear-gradient(45deg, #ffffff, #cccccc) !important;
+        color: #000 !important;
+        border: 2px solid #000 !important;
+        padding: 10px 20px !important;
+        border-radius: 5px !important;
+        font-weight: bold !important;
+    }
+    
+    .default:hover, input[type=submit]:hover {
+        background: linear-gradient(45deg, #cccccc, #999999) !important;
+        color: #000 !important;
+    }
+    
+    /* Боковая панель */
+    #content-main {
+        background: rgba(255, 255, 255, 0.95) !important;
+        border: 2px solid #000 !important;
+        border-radius: 10px !important;
+        padding: 25px !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    /* Ссылки */
+    a {
+        color: #fff !important;
+    }
+    
+    a:hover {
+        color: #ccc !important;
+    }
+    
+    /* Breadcrumbs */
+    .breadcrumbs {
+        background: linear-gradient(90deg, #000000 0%, #333333 100%) !important;
+        color: #fff !important;
+        border: 2px solid #000 !important;
+        border-radius: 5px !important;
+        font-weight: bold !important;
+    }
+    
+    .breadcrumbs a {
+        color: #fff !important;
+        text-decoration: underline !important;
+    }
+    
+    /* Inline формы */
+    .inline-group {
+        background: #fff !important;
+        border: 2px solid #000 !important;
+        border-radius: 10px !important;
+        margin-bottom: 25px !important;
+    }
+    
+    .tabular td, .tabular th {
+        border-bottom: 1px solid #ccc !important;
+        color: #000 !important;
+        background: #fff !important;
+    }
+    
+    .tabular th {
+        background: linear-gradient(90deg, #000000 0%, #333333 100%) !important;
+        color: #fff !important;
+        font-weight: bold !important;
+    }
+    
+    /* Пагинация */
+    .paginator {
+        color: #000 !important;
+        background: #fff !important;
+        padding: 10px !important;
+        border-radius: 5px !important;
+    }
+    
+    .paginator a {
+        background: #000 !important;
+        color: #fff !important;
+        border: 2px solid #000 !important;
+        padding: 5px 10px !important;
+        margin: 0 2px !important;
+        border-radius: 3px !important;
+    }
+    
+    .paginator a:hover {
+        background: #333 !important;
+    }
+    
+    /* Сообщения */
+    .messagelist {
+        background: #fff !important;
+        border: 2px solid #000 !important;
+        color: #000 !important;
+        border-radius: 5px !important;
+    }
+    
+    .messagelist li {
+        background: #f0f0f0 !important;
+        border-bottom: 1px solid #ccc !important;
+        color: #000 !important;
+    }
+    
+    /* Исправление цветов для элементов на белом фоне */
+    .selector-available h2, .selector-chosen h2 {
+        color: #000 !important;
+    }
+    
+    .selector-available, .selector-chosen {
+        background: #fff !important;
+        color: #000 !important;
+    }
+    
+    .selector-available select, .selector-chosen select {
+        background: #fff !important;
+        color: #000 !important;
+    }
+    
+    .help, .help-tooltip {
+        color: #666 !important;
+    }
+    
+    .errorlist {
+        color: #ff0000 !important;
+    }
+    
+    .vTextField, .vTextarea, .vDateField, .vTimeField {
+        background: rgba(255, 255, 255, 0.9) !important;
+        color: #000 !important;
+    }
+    
+    option {
+        background: #fff !important;
+        color: #000 !important;
+    }
+    
+    .calendar, .calendarbox {
+        background: #fff !important;
+        color: #000 !important;
+    }
+    
+    .calendar th, .calendar td {
+        color: #000 !important;
+    }
+    
+    .timelist {
+        background: #fff !important;
+        color: #000 !important;
+    }
+    
+    .timelist a {
+        color: #000 !important;
+    }
+    
+    /* Dropdown меню */
+    .select2-container--admin-autocomplete .select2-selection--single {
+        background: rgba(255, 255, 255, 0.9) !important;
+        color: #000 !important;
+    }
+    
+    .select2-container--admin-autocomplete .select2-dropdown {
+        background: #fff !important;
+        color: #000 !important;
+    }
+    
+    .select2-container--admin-autocomplete .select2-results__option {
+        color: #000 !important;
+    }
+</style>
+{% endblock %}
