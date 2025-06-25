@@ -1,0 +1,60 @@
+{% extends "admin/change_form.html" %}
+
+{% block content %}
+{{ block.super }}
+
+<div style="position: fixed; top: 10px; right: 10px; background: red; color: white; padding: 10px; z-index: 9999;">
+    ТЕСТ ШАБЛОНА
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Скрипт загружен');
+    
+    // Добавляем панель справа
+    var body = document.body;
+    var panel = document.createElement('div');
+    panel.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        width: 300px;
+        background: white;
+        border: 2px solid black;
+        padding: 15px;
+        z-index: 1000;
+        max-height: 400px;
+        overflow-y: auto;
+    `;
+    
+    panel.innerHTML = `
+        <h3 style="margin: 0 0 10px 0; color: black;">Фактические расходы</h3>
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+            <tr style="background: black; color: white;">
+                <th style="padding: 5px; border: 1px solid black;">Ресурс</th>
+                <th style="padding: 5px; border: 1px solid black;">Дата</th>
+                <th style="padding: 5px; border: 1px solid black;">Расход</th>
+            </tr>
+            <tr>
+                <td style="padding: 5px; border: 1px solid #ccc; color: black;">ИТР</td>
+                <td style="padding: 5px; border: 1px solid #ccc; color: black;">25.06.2025</td>
+                <td style="padding: 5px; border: 1px solid #ccc; color: black;">10</td>
+            </tr>
+            <tr>
+                <td style="padding: 5px; border: 1px solid #ccc; color: black;">Каменщик</td>
+                <td style="padding: 5px; border: 1px solid #ccc; color: black;">24.06.2025</td>
+                <td style="padding: 5px; border: 1px solid #ccc; color: black;">15</td>
+            </tr>
+            <tr>
+                <td style="padding: 5px; border: 1px solid #ccc; color: black;">Подсобный рабочий</td>
+                <td style="padding: 5px; border: 1px solid #ccc; color: black;">23.06.2025</td>
+                <td style="padding: 5px; border: 1px solid #ccc; color: black;">20</td>
+            </tr>
+        </table>
+    `;
+    
+    body.appendChild(panel);
+    console.log('Панель добавлена');
+});
+</script>
+{% endblock %}

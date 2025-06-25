@@ -221,6 +221,84 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         
+        /* Секция с устройствами */
+        .devices-section {
+            margin: 4rem 0;
+        }
+        
+        .devices-container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        /* iPad стили */
+        .ipad-frame {
+            background: #000;
+            border-radius: 25px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: perspective(1000px) rotateY(-5deg);
+        }
+        
+        .ipad-screen {
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            color: #000;
+            min-height: 400px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .ipad-screen h3 {
+            color: #000;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .ipad-screen p {
+            margin-bottom: 1rem;
+        }
+        
+        /* iPhone стили */
+        .iphone-frame {
+            background: #000;
+            border-radius: 30px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 300px;
+            margin: 0 auto;
+            transform: perspective(1000px) rotateY(5deg);
+        }
+        
+        .iphone-screen {
+            background: #f8f8f8;
+            border-radius: 25px;
+            overflow: hidden;
+            min-height: 500px;
+        }
+        
+        .chat-header {
+            background: #007AFF;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .chat-message {
+            padding: 20px;
+            background: #fff;
+            margin: 10px;
+            border-radius: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            color: #000;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 2rem;
@@ -239,6 +317,15 @@
                 flex-wrap: wrap;
                 justify-content: center;
             }
+            
+            .devices-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .ipad-frame, .iphone-frame {
+                transform: none;
+            }
         }
     </style>
 </head>
@@ -252,7 +339,7 @@
                 </a>
                 <nav class="nav-links">
                     <a href="/">Главная</a>
-                    <a href="/admin/object/objekt/">Объекты</a>
+                    <a href="/objects/">Объекты</a>
                     <a href="/admin/object/kadry/">Кадры</a>
                     <a href="#contact">Контакты</a>
                 </nav>
@@ -263,42 +350,35 @@
     <main class="container">
         <section class="hero">
             <h1>Система управления строительными объектами</h1>
-            <p>Эффективное планирование ресурсов и контроль строительных проектов</p>
+            <p>Контролируйте все аспекты строительства в одном месте</p>
         </section>
-
-        <section class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number">{{ total_objects }}</div>
-                <div class="stat-label">Всего объектов</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ active_objects }}</div>
-                <div class="stat-label">В работе</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ completed_objects }}</div>
-                <div class="stat-label">Завершено</div>
+        
+       
+    
+        <section class="devices-section">
+            <div class="devices-container">
+                <div class="ipad-section">
+                    <div class="ipad-frame">
+                        <div class="ipad-screen">
+                            <h3>Ваш виртуальный заместитель</h3>
+                            <p>Представьте себе настолько грамотного заместителя, который знает все строительные нормы, знает расценки на работы и материалы, может составить лимитно-заборную и технологическую карты на любые работы, сметы и коммерческие предложения, вычислит работника, который плохо работает и будет формировать служебные приказы, контролировать соблюдение охраны труда, будет анализировать выполнение, учитывать расходы, проводить тендеры и может проанализировать риски в Договорах.</p>
+                            <p><strong>Всё это и даже больше реализовано в программно-аналитическом комплексе GoodZam.</strong></p>
+                            <p>Пройдите регистрацию и загрузите бота в рабочий чат. И вся аналитика у вас на ладони.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="iphone-section">
+                    <div class="iphone-frame">
+                        <div class="iphone-screen">
+                            <div class="chat-header">Чат-бот</div>
+                            <div class="chat-message">
+                                <p>Здравствуйте! Я виртуальный инженер-строитель с 30-летним опытом. Задайте мне вопрос или загрузите документ для анализа.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
-
-        {% if recent_objects %}
-        <section class="recent-objects">
-            <h2>Последние объекты</h2>
-            <ul class="object-list">
-                {% for obj in recent_objects %}
-                <li class="object-item">
-                    <span class="object-name">{{ obj.nazvanie }}</span>
-                    <span class="object-status 
-                        {% if obj.status == 'планируется' %}status-planned
-                        {% elif obj.status == 'в работе' %}status-active
-                        {% else %}status-completed{% endif %}">
-                        {{ obj.status|title }}
-                    </span>
-                </li>
-                {% endfor %}
-            </ul>
-        </section>
-        {% endif %}
 
         <section class="cta-section">
             <a href="/admin/" class="btn-primary">Перейти к управлению</a>

@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import KategoriyaResursa, Resurs, Specialnost, Kadry, Objekt, ResursyPoObjektu
+from django import forms
+from .models import KategoriyaResursa, Resurs, Specialnost, Kadry, Objekt, ResursyPoObjektu, FakticheskijResursPoObjektu, RaskhodResursa
 
 def format_number(value):
     """Форматирует число с пробелами как разделителями разрядов"""
@@ -172,6 +173,8 @@ class PodryadchikiInline(admin.TabularInline):
         return '0'
     summa.short_description = 'Сумма'
 
+
+
 @admin.register(Objekt)
 class ObjektAdmin(admin.ModelAdmin):
     list_display = ('nazvanie', 'otvetstvennyj', 'data_nachala', 'data_plan_zaversheniya', 'status')
@@ -187,9 +190,144 @@ class ObjektAdmin(admin.ModelAdmin):
             'fields': ('data_nachala', 'data_plan_zaversheniya', 'data_fakt_zaversheniya')
         }),
     )
+    
+    def fakticheskiye_raskhody_display(self, obj):
+        if not obj.id:
+            return "Нет данных"
+        
+        fakticheskiye_raskhody = RaskhodResursa.objects.filter(
+            fakticheskij_resurs__resurs_po_objektu__objekt_id=obj.id
+        ).select_related(
+            'fakticheskij_resurs__resurs_po_objektu__resurs'
+        ).order_by('-data')[:10]
+        
+        if not fakticheskiye_raskhody.exists():
+            return "Нет фактических расходов"
+        
+        html = '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">'
+        html += '<tr style="background: #000; color: #fff;">'
+        html += '<th style="padding: 8px; border: 1px solid #000;">Ресурс</th>'
+        html += '<th style="padding: 8px; border: 1px solid #000;">Дата</th>'
+        html += '<th style="padding: 8px; border: 1px solid #000;">Израсходовано</th>'
+        html += '</tr>'
+        
+        for raskhod in fakticheskiye_raskhody:
+            html += '<tr>'
+            html += f'<td style="padding: 8px; border: 1px solid #ccc; color: #000;">{raskhod.fakticheskij_resurs.resurs_po_objektu.resurs.naimenovanie}</td>'
+            html += f'<td style="padding: 8px; border: 1px solid #ccc; color: #000;">{raskhod.data.strftime("%d.%m.%Y")}</td>'
+            html += f'<td style="padding: 8px; border: 1px solid #ccc; color: #000;">{format_number(raskhod.izraskhodovano)}</td>'
+            html += '</tr>'
+        
+        html += '</table>'
+        
+        from django.utils.safestring import mark_safe
+        return mark_safe(html)
+    
+    fakticheskiye_raskhody_display.short_description = 'Последние 10 дней'
+    
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        if object_id:
+            fakticheskiye_raskhody = RaskhodResursa.objects.filter(
+                fakticheskij_resurs__resurs_po_objektu__objekt_id=object_id
+            ).select_related(
+                'fakticheskij_resurs__resurs_po_objektu__resurs'
+            ).order_by('-data')[:10]
+            
+            # Создаем HTML таблицу
+            if fakticheskiye_raskhody.exists():
+                table_html = '<div style="margin: 20px 0; padding: 20px; background: #fff; border: 2px solid #000;">'
+                table_html += '<h2 style="color: #000; margin-bottom: 15px;">Фактические расходы ресурсов (последние 10 дней)</h2>'
+                table_html += '<table style="width: 100%; border-collapse: collapse;">'
+                table_html += '<tr style="background: #000; color: #fff;">'
+                table_html += '<th style="padding: 10px; border: 1px solid #000;">Ресурс</th>'
+                table_html += '<th style="padding: 10px; border: 1px solid #000;">Дата</th>'
+                table_html += '<th style="padding: 10px; border: 1px solid #000;">Израсходовано</th>'
+                table_html += '</tr>'
+                
+                for raskhod in fakticheskiye_raskhody:
+                    table_html += '<tr>'
+                    table_html += f'<td style="padding: 10px; border: 1px solid #ccc; color: #000;">{raskhod.fakticheskij_resurs.resurs_po_objektu.resurs.naimenovanie}</td>'
+                    table_html += f'<td style="padding: 10px; border: 1px solid #ccc; color: #000;">{raskhod.data.strftime("%d.%m.%Y")}</td>'
+                    table_html += f'<td style="padding: 10px; border: 1px solid #ccc; color: #000;">{int(raskhod.izraskhodovano)}</td>'
+                    table_html += '</tr>'
+                
+                table_html += '</table></div>'
+                
+                # Добавляем HTML в контекст
+                from django.utils.safestring import mark_safe
+                extra_context['raskhody_table'] = mark_safe(table_html)
+        
+        return super().change_view(request, object_id, form_url, extra_context)
 
 @admin.register(ResursyPoObjektu)
 class ResursyPoObjektuAdmin(admin.ModelAdmin):
     list_display = ('objekt', 'resurs', 'kolichestvo', 'cena')
     search_fields = ('objekt__nazvanie', 'resurs__naimenovanie')
     list_filter = ('resurs__kategoriya_resursa',)
+
+class RaskhodResursaInline(admin.TabularInline):
+    model = RaskhodResursa
+    extra = 1
+    fields = ('data', 'izraskhodovano')
+
+
+
+class FakticheskijResursForm(forms.ModelForm):
+    objekt = forms.ModelChoiceField(
+        queryset=Objekt.objects.all(),
+        empty_label="Выберите объект",
+        required=False,
+        label="Объект"
+    )
+    
+    class Meta:
+        model = FakticheskijResursPoObjektu
+        fields = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'objekt' in self.data:
+            try:
+                objekt_id = int(self.data.get('objekt'))
+                self.fields['resurs_po_objektu'].queryset = ResursyPoObjektu.objects.filter(objekt_id=objekt_id)
+            except (ValueError, TypeError):
+                pass
+        elif self.instance.pk:
+            self.fields['objekt'].initial = self.instance.resurs_po_objektu.objekt
+            self.fields['resurs_po_objektu'].queryset = ResursyPoObjektu.objects.filter(
+                objekt=self.instance.resurs_po_objektu.objekt
+            )
+        else:
+            self.fields['resurs_po_objektu'].queryset = ResursyPoObjektu.objects.all()
+
+@admin.register(FakticheskijResursPoObjektu)
+class FakticheskijResursPoObjektuAdmin(admin.ModelAdmin):
+    form = FakticheskijResursForm
+    list_display = ('resurs_po_objektu', 'get_objekt', 'get_resurs')
+    search_fields = ('resurs_po_objektu__objekt__nazvanie', 'resurs_po_objektu__resurs__naimenovanie')
+    list_filter = ('resurs_po_objektu__objekt', 'resurs_po_objektu__resurs__kategoriya_resursa')
+    inlines = [RaskhodResursaInline]
+    fieldsets = (
+        (None, {
+            'fields': ('objekt', 'resurs_po_objektu')
+        }),
+    )
+    
+    def get_objekt(self, obj):
+        return obj.resurs_po_objektu.objekt.nazvanie
+    get_objekt.short_description = 'Объект'
+    
+    def get_resurs(self, obj):
+        return obj.resurs_po_objektu.resurs.naimenovanie
+    get_resurs.short_description = 'Ресурс'
+    
+    class Media:
+        js = ('admin/js/fakticheskij_resurs.js',)
+
+@admin.register(RaskhodResursa)
+class RaskhodResursaAdmin(admin.ModelAdmin):
+    list_display = ('fakticheskij_resurs', 'data', 'izraskhodovano')
+    search_fields = ('fakticheskij_resurs__resurs_po_objektu__objekt__nazvanie',)
+    list_filter = ('data',)
+    date_hierarchy = 'data'

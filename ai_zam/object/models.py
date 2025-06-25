@@ -89,3 +89,27 @@ class ResursyPoObjektu(models.Model):
     
     def __str__(self):
         return f"{self.objekt.nazvanie} - {self.resurs.naimenovanie}"
+
+class FakticheskijResursPoObjektu(models.Model):
+    resurs_po_objektu = models.OneToOneField(ResursyPoObjektu, on_delete=models.CASCADE, verbose_name="Ресурс по объекту")
+    
+    class Meta:
+        verbose_name = "Фактический ресурс по объекту"
+        verbose_name_plural = "Фактические ресурсы по объектам"
+        db_table = 'fakticheskij_resurs_po_objektu'
+    
+    def __str__(self):
+        return f"Факт: {self.resurs_po_objektu}"
+
+class RaskhodResursa(models.Model):
+    fakticheskij_resurs = models.ForeignKey(FakticheskijResursPoObjektu, on_delete=models.CASCADE, verbose_name="Фактический ресурс")
+    data = models.DateField(verbose_name="Дата")
+    izraskhodovano = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Израсходовано")
+    
+    class Meta:
+        verbose_name = "Расход ресурса"
+        verbose_name_plural = "Расходы ресурсов"
+        db_table = 'raskhod_resursa'
+    
+    def __str__(self):
+        return f"{self.fakticheskij_resurs} - {self.data} ({self.izraskhodovano})"

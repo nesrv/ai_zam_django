@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from object.views import home
+from object.views import home, objects_list, object_detail
 
 # Изменяем заголовки админки
 admin.site.site_header = "Ruslan administration"
@@ -26,4 +26,6 @@ admin.site.index_title = "Добро пожаловать в Ruslan administrati
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
+    path('objects/', objects_list, name='objects_list'),
+    path('objects/<int:object_id>/', object_detail, name='object_detail'),
 ]
