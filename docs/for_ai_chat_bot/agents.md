@@ -14,3 +14,5 @@ curl "https://api.telegram.org/bot7606767600:AAFGN18TMl0pUQIsQzaKiozmMKe0KBeSjyE
   "result": true,
   "description": "Webhook was set"
 }
+
+  curl -X POST https://programism.ru/telegram/webhook/ -d '{123}'

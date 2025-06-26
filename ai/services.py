@@ -163,12 +163,23 @@ def get_ai_response(message, session_messages=None):
         ]
         
         if session_messages:
-            last_msgs = list(session_messages)[-5:]
-            for msg in last_msgs:
-                messages.append({
-                    "role": msg.message_type,
-                    "content": msg.content
-                })
+            try:
+                # Безопасно обрабатываем session_messages
+                if hasattr(session_messages, '__iter__') and not isinstance(session_messages, (str, bytes)):
+                    last_msgs = list(session_messages)[-5:]
+                    for msg in last_msgs:
+                        # Проверяем, что у объекта есть нужные атрибуты
+                        if hasattr(msg, 'message_type') and hasattr(msg, 'content'):
+                            messages.append({
+                                "role": msg.message_type,
+                                "content": msg.content
+                            })
+                        else:
+                            logger.warning(f"Сообщение не имеет нужных атрибутов: {msg}")
+                else:
+                    logger.warning(f"session_messages не является итерируемым: {type(session_messages)}")
+            except Exception as e:
+                logger.error(f"Ошибка обработки session_messages: {e}")
         
         messages.append({"role": "user", "content": message})
 

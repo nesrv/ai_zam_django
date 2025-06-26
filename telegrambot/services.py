@@ -1,6 +1,7 @@
 import os
 import logging
 import requests
+import json
 from datetime import datetime
 from dotenv import load_dotenv
 from .models import TelegramUser, TelegramMessage
@@ -12,11 +13,19 @@ load_dotenv()
 # Получаем токен бота
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 
+if not TELEGRAM_TOKEN:
+    logger.error("TELEGRAM_TOKEN не найден в переменных окружения!")
+    logger.error("Убедитесь, что файл .env содержит строку: TELEGRAM_TOKEN=ваш_токен")
+
 logger = logging.getLogger(__name__)
 
 def send_telegram_message(chat_id, text, reply_markup=None):
     """Отправка сообщения в Telegram"""
     try:
+        if not TELEGRAM_TOKEN:
+            logger.error("TELEGRAM_TOKEN не установлен")
+            return None
+            
         url = f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage'
         payload = {
             'chat_id': chat_id,
@@ -27,12 +36,23 @@ def send_telegram_message(chat_id, text, reply_markup=None):
         if reply_markup:
             payload['reply_markup'] = reply_markup
         
+        logger.info(f"Отправка сообщения в Telegram: chat_id={chat_id}, text={text[:50]}...")
+        
         response = requests.post(url, data=payload)
         response.raise_for_status()
         
-        return response.json()
+        result = response.json()
+        logger.info(f"Ответ от Telegram API: {result}")
+        
+        return result
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Ошибка HTTP запроса к Telegram API: {e}")
+        return None
+    except json.JSONDecodeError as e:
+        logger.error(f"Ошибка декодирования JSON ответа от Telegram: {e}")
+        return None
     except Exception as e:
-        logger.error(f"Ошибка отправки сообщения в Telegram: {e}")
+        logger.error(f"Неожиданная ошибка отправки сообщения в Telegram: {e}")
         return None
 
 def get_or_create_telegram_user(telegram_data):
@@ -173,50 +193,105 @@ def handle_text_message(user, text):
                 return formatted_menu, None
         else:
             # Общий чат с AI
-            ai_response = get_ai_response(text, recent_messages)
-            return ai_response, None
+            try:
+                # Преобразуем QuerySet в список для безопасной передачи
+                messages_list = list(recent_messages) if recent_messages else []
+                ai_response = get_ai_response(text, messages_list)
+                return ai_response, None
+            except Exception as e:
+                logger.error(f"Ошибка в AI чате: {e}")
+                return f"❌ Ошибка при обработке сообщения: {str(e)}", None
 
 def process_telegram_update(update_data):
     """Основная функция обработки обновлений от Telegram"""
     try:
+        logger.info(f"Начало обработки обновления: {update_data}")
+        
         message = update_data.get('message', {})
         chat_id = message.get('chat', {}).get('id')
         text = message.get('text', '')
         from_user = message.get('from', {})
         
+        logger.info(f"Извлеченные данные: chat_id={chat_id}, text='{text}', from_user={from_user}")
+        
         if not chat_id or not text:
-            return None
+            logger.warning(f"Пропуск обновления: chat_id={chat_id}, text='{text}'")
+            return False
         
         # Получаем или создаем пользователя
-        user = get_or_create_telegram_user(from_user)
+        try:
+            user = get_or_create_telegram_user(from_user)
+            logger.info(f"Пользователь получен/создан: {user}")
+        except Exception as e:
+            logger.error(f"Ошибка получения пользователя: {e}")
+            return False
         
         # Сохраняем сообщение пользователя
-        save_telegram_message(user, text, 'text', True)
+        try:
+            save_telegram_message(user, text, 'text', True)
+            logger.info("Сообщение пользователя сохранено")
+        except Exception as e:
+            logger.error(f"Ошибка сохранения сообщения пользователя: {e}")
+            return False
         
         # Обрабатываем команды
-        if text.startswith('/'):
-            if text == '/start':
-                response_text, keyboard = handle_start_command(user)
-            elif text == '/menu_today':
-                response_text, keyboard = handle_menu_today_command(user)
-            elif text == '/menu_week':
-                response_text, keyboard = handle_menu_week_command(user)
-            elif text == '/help':
-                response_text, keyboard = handle_help_command(user)
+        try:
+            if text.startswith('/'):
+                if text == '/start':
+                    response_text, keyboard = handle_start_command(user)
+                elif text == '/menu_today':
+                    response_text, keyboard = handle_menu_today_command(user)
+                elif text == '/menu_week':
+                    response_text, keyboard = handle_menu_week_command(user)
+                elif text == '/help':
+                    response_text, keyboard = handle_help_command(user)
+                else:
+                    response_text = "❌ Неизвестная команда. Используйте /help для справки."
+                    keyboard = None
             else:
-                response_text = "❌ Неизвестная команда. Используйте /help для справки."
-                keyboard = None
-        else:
-            # Обрабатываем текстовые сообщения
-            response_text, keyboard = handle_text_message(user, text)
+                # Обрабатываем текстовые сообщения
+                response_text, keyboard = handle_text_message(user, text)
+            
+            logger.info(f"Обработка завершена: response_text='{response_text[:50]}...', keyboard={keyboard is not None}")
+        except Exception as e:
+            logger.error(f"Ошибка обработки сообщения: {e}")
+            return False
         
         # Сохраняем ответ бота
         if response_text:
-            save_telegram_message(user, response_text, 'text', False)
+            try:
+                save_telegram_message(user, response_text, 'text', False)
+                logger.info("Ответ бота сохранен")
+            except Exception as e:
+                logger.error(f"Ошибка сохранения ответа бота: {e}")
+                # Не возвращаем False, продолжаем отправку
         
         # Отправляем ответ
-        return send_telegram_message(chat_id, response_text, keyboard)
+        try:
+            logger.info(f"Отправка сообщения: chat_id={chat_id}, text='{response_text[:50]}...'")
+            result = send_telegram_message(chat_id, response_text, keyboard)
+            
+            logger.info(f"Результат отправки: {result}")
+            
+            # Безопасная проверка результата
+            if result is None:
+                logger.error("send_telegram_message вернул None")
+                return False
+            elif isinstance(result, dict):
+                if result.get('ok'):
+                    logger.info("Сообщение успешно отправлено")
+                    return True
+                else:
+                    logger.error(f"Telegram API вернул ошибку: {result}")
+                    return False
+            else:
+                logger.error(f"Неожиданный тип результата: {type(result)} = {result}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Исключение при отправке сообщения: {e}")
+            return False
         
     except Exception as e:
-        logger.error(f"Ошибка обработки Telegram обновления: {e}")
-        return None 
+        logger.error(f"Общая ошибка обработки Telegram обновления: {e}")
+        return False 

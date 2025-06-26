@@ -1,0 +1,26 @@
+# Настройки для Django
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ /index.py/$1 [QSA,L]
+
+# Разрешаем запросы к webhook
+<Location "/telegram/webhook/">
+    Require all granted
+    Allow from all
+</Location>
+
+# Настройки для nginx (если используется)
+<IfModule mod_headers.c>
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization"
+</IfModule>
+
+# Разрешаем POST запросы к webhook
+<LocationMatch "^/telegram/webhook/">
+    Require all granted
+    Allow from all
+    <LimitExcept GET POST OPTIONS>
+        Deny from all
+    </LimitExcept>
+</LocationMatch> 

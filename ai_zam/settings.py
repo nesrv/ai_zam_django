@@ -144,5 +144,4 @@ CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False
 
 # Дополнительные настройки для cPanel
-CSRF_FAILURE_VIEW = None
 CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
