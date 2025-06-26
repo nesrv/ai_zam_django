@@ -1,5 +1,3 @@
-
-
 from django.contrib import admin
 from django.urls import path, include, re_path
 
@@ -21,6 +19,8 @@ urlpatterns = [
     path('objects/', objects_list, name='objects_list'),
     path('objects/<int:object_id>/', object_detail, name='object_detail'),
     path('update-expense/', update_expense, name='update_expense'),
+    path('ai/', include('ai.urls')),
+    path('telegram/', include('telegrambot.urls')),
 ]
 
 if settings.DEBUG:

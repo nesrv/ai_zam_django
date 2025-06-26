@@ -1,0 +1,111 @@
+{% extends 'base/base.html' %}
+
+{% block title %}AI Приложение{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1>🤖 AI Приложение</h1>
+            <p class="lead">Добро пожаловать в приложение искусственного интеллекта!</p>
+            
+            <!-- Статус подключения -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">🔗 Статус подключения</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>DeepSeek API:</strong> {{ api_status }}</p>
+                            <p><strong>API URL:</strong> {{ deepseek_url }}</p>
+                            <p><strong>API Key:</strong> {{ api_key_preview }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            {% if api_status == "✅ Настроен" %}
+                                <div class="alert alert-success">
+                                    <i class="fas fa-check-circle"></i> Подключение активно
+                                </div>
+                            {% else %}
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle"></i> Для работы чат-бота необходимо настроить API ключ
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Функции AI -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">🍽️ Функции AI</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">💬 Общий чат</h5>
+                                    <p class="card-text">Общайтесь с AI ассистентом на любые темы</p>
+                                    <a href="{% url 'ai:chat' %}" class="btn btn-primary">Открыть чат</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">🍳 Меню на день</h5>
+                                    <p class="card-text">Генерация меню на один день с учетом предпочтений</p>
+                                    <a href="{% url 'ai:menu_generator' %}" class="btn btn-success">Создать меню</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">📅 Меню на неделю</h5>
+                                    <p class="card-text">Планирование питания на всю неделю</p>
+                                    <a href="{% url 'ai:menu_generator' %}" class="btn btn-info">Планировать</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">🤖 Telegram-бот</h5>
+                                    <p class="card-text">AI помощник в Telegram с функциями генерации меню</p>
+                                    <a href="{% url 'telegrambot:status' %}" class="btn btn-warning">Управление</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Техническая информация -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">⚙️ Техническая информация</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <strong>Модели AI:</strong> DeepSeek Chat, DeepSeek Coder
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Функции:</strong> Генерация меню, общий чат, анализ данных
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Хранение:</strong> История чатов сохраняется в базе данных
+                        </li>
+                        <li class="list-group-item">
+                            <strong>API:</strong> RESTful API для интеграции с другими системами
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

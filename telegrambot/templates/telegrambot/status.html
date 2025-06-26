@@ -1,0 +1,110 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Статус Telegram-бота{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1>🤖 Статус Telegram-бота</h1>
+            
+            <!-- Статистика -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">👥 Пользователи</h5>
+                            <h2 class="text-primary">{{ total_users }}</h2>
+                            <p class="card-text">Всего зарегистрировано</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">✅ Активные</h5>
+                            <h2 class="text-success">{{ active_users }}</h2>
+                            <p class="card-text">Активных пользователей</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">💬 Сообщения</h5>
+                            <h2 class="text-info">{{ total_messages }}</h2>
+                            <p class="card-text">Всего сообщений</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Последние сообщения -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">📨 Последние сообщения</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_messages %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Пользователь</th>
+                                        <th>Сообщение</th>
+                                        <th>Тип</th>
+                                        <th>Направление</th>
+                                        <th>Дата</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for message in recent_messages %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ message.user.first_name }}</strong>
+                                            {% if message.user.username %}
+                                                <br><small class="text-muted">@{{ message.user.username }}</small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">
+                                                {{ message.content|truncatechars:100 }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ message.get_message_type_display }}</span>
+                                        </td>
+                                        <td>
+                                            {% if message.is_from_user %}
+                                                <span class="text-primary">→</span> От пользователя
+                                            {% else %}
+                                                <span class="text-success">←</span> От бота
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <small>{{ message.created_at|date:"d.m.Y H:i" }}</small>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Сообщений пока нет</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Действия -->
+            <div class="mt-4">
+                <a href="{% url 'telegrambot:management' %}" class="btn btn-primary">
+                    🛠️ Управление ботом
+                </a>
+                <a href="{% url 'ai:index' %}" class="btn btn-outline-secondary">
+                    ← Назад к AI
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

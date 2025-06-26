@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'object',
     'object.templatetags',
+    'ai',
+    'telegrambot',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'telegrambot.middleware.TelegramWebhookMiddleware',
 ]
 
 ROOT_URLCONF = 'ai_zam.urls'
@@ -126,3 +129,13 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Настройки для Telegram webhook
+CSRF_TRUSTED_ORIGINS = [
+    "https://api.telegram.org",
+    "https://core.telegram.org",
+]
+
+# Отключаем проверку Referer для webhook
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_SECURE = False

@@ -1,0 +1,173 @@
+{% extends 'base/base.html' %}
+
+{% block title %}AI Чат{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">💬 AI Чат-бот</h5>
+                    <div>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="clearChat()">Очистить чат</button>
+                        <a href="{% url 'ai:index' %}" class="btn btn-sm btn-outline-primary">Назад</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Область чата -->
+                    <div id="chat-messages" class="chat-container" style="height: 400px; overflow-y: auto; border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; background-color: #f8f9fa;">
+                        <div class="text-center text-muted">
+                            <p>👋 Привет! Я AI ассистент. Задавайте мне любые вопросы!</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Форма отправки сообщения -->
+                    <form id="chat-form" class="d-flex">
+                        <input type="text" id="message-input" class="form-control me-2" placeholder="Введите ваше сообщение..." required>
+                        <button type="submit" class="btn btn-primary">Отправить</button>
+                    </form>
+                    
+                    <!-- Индикатор загрузки -->
+                    <div id="loading" class="text-center mt-2" style="display: none;">
+                        <div class="spinner-border spinner-border-sm" role="status">
+                            <span class="visually-hidden">Загрузка...</span>
+                        </div>
+                        <span class="ms-2">AI думает...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.chat-container {
+    scroll-behavior: smooth;
+}
+
+.message {
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    border-radius: 15px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.user-message {
+    background-color: #007bff;
+    color: white;
+    margin-left: auto;
+    text-align: right;
+}
+
+.ai-message {
+    background-color: #e9ecef;
+    color: #333;
+    margin-right: auto;
+}
+
+.message-time {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    margin-top: 5px;
+}
+</style>
+
+<script>
+let sessionId = null;
+
+// Инициализация при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    const chatForm = document.getElementById('chat-form');
+    const messageInput = document.getElementById('message-input');
+    const chatMessages = document.getElementById('chat-messages');
+    
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        sendMessage();
+    });
+    
+    // Автофокус на поле ввода
+    messageInput.focus();
+});
+
+function sendMessage() {
+    const messageInput = document.getElementById('message-input');
+    const message = messageInput.value.trim();
+    
+    if (!message) return;
+    
+    // Добавляем сообщение пользователя
+    addMessage(message, 'user');
+    messageInput.value = '';
+    
+    // Показываем индикатор загрузки
+    showLoading(true);
+    
+    // Отправляем запрос к API
+    fetch('{% url "ai:chat_api" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            message: message,
+            session_id: sessionId,
+            type: 'general'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        showLoading(false);
+        
+        if (data.error) {
+            addMessage('❌ Ошибка: ' + data.error, 'ai');
+        } else {
+            // Сохраняем session_id
+            if (data.session_id) {
+                sessionId = data.session_id;
+            }
+            
+            // Добавляем ответ AI
+            addMessage(data.response, 'ai');
+        }
+    })
+    .catch(error => {
+        showLoading(false);
+        addMessage('❌ Ошибка соединения: ' + error.message, 'ai');
+    });
+}
+
+function addMessage(content, type) {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${type}-message`;
+    
+    const time = new Date().toLocaleTimeString();
+    
+    messageDiv.innerHTML = `
+        <div>${content}</div>
+        <div class="message-time">${time}</div>
+    `;
+    
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function showLoading(show) {
+    const loading = document.getElementById('loading');
+    loading.style.display = show ? 'block' : 'none';
+}
+
+function clearChat() {
+    const chatMessages = document.getElementById('chat-messages');
+    chatMessages.innerHTML = `
+        <div class="text-center text-muted">
+            <p>👋 Чат очищен. Задавайте новые вопросы!</p>
+        </div>
+    `;
+    sessionId = null;
+}
+</script>
+{% endblock %} 

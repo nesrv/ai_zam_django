@@ -1,0 +1,211 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Генератор меню{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">🍽️ Генератор меню</h5>
+                    <a href="{% url 'ai:index' %}" class="btn btn-sm btn-outline-primary">Назад</a>
+                </div>
+                <div class="card-body">
+                    <!-- Выбор типа меню -->
+                    <div class="mb-4">
+                        <h6>Выберите тип меню:</h6>
+                        <div class="btn-group" role="group">
+                            <input type="radio" class="btn-check" name="menu-type" id="daily-menu" value="daily" checked>
+                            <label class="btn btn-outline-success" for="daily-menu">
+                                🍳 Меню на день
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="menu-type" id="weekly-menu" value="weekly">
+                            <label class="btn btn-outline-info" for="weekly-menu">
+                                📅 Меню на неделю
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Форма ввода предпочтений -->
+                    <form id="menu-form">
+                        <div class="mb-3">
+                            <label for="preferences" class="form-label">Ваши предпочтения в питании:</label>
+                            <textarea class="form-control" id="preferences" rows="3" 
+                                placeholder="Например: без мяса, люблю рыбу, нет ограничений, вегетарианское питание, аллергия на орехи и т.д."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <span id="submit-text">Сгенерировать меню</span>
+                            <span id="loading-text" style="display: none;">
+                                <span class="spinner-border spinner-border-sm" role="status"></span>
+                                Генерирую...
+                            </span>
+                        </button>
+                    </form>
+                    
+                    <!-- Результат -->
+                    <div id="result" class="mt-4" style="display: none;">
+                        <h6>🍽️ Ваше меню:</h6>
+                        <div id="menu-content" class="border rounded p-3 bg-light" style="white-space: pre-wrap; font-family: monospace;"></div>
+                        
+                        <div class="mt-3">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard()">
+                                📋 Копировать
+                            </button>
+                            <button class="btn btn-sm btn-outline-success" onclick="generateNew()">
+                                🔄 Сгенерировать новое
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Примеры предпочтений -->
+                    <div class="mt-4">
+                        <h6>💡 Примеры предпочтений:</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li><small>• Вегетарианское питание</small></li>
+                                    <li><small>• Без глютена</small></li>
+                                    <li><small>• Низкокалорийное</small></li>
+                                    <li><small>• Для детей</small></li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li><small>• Люблю морепродукты</small></li>
+                                    <li><small>• Быстрое приготовление</small></li>
+                                    <li><small>• Экономное меню</small></li>
+                                    <li><small>• Праздничное меню</small></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let sessionId = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const menuForm = document.getElementById('menu-form');
+    
+    menuForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        generateMenu();
+    });
+});
+
+function generateMenu() {
+    const preferences = document.getElementById('preferences').value.trim();
+    const menuType = document.querySelector('input[name="menu-type"]:checked').value;
+    
+    if (!preferences) {
+        alert('Пожалуйста, укажите ваши предпочтения в питании');
+        return;
+    }
+    
+    // Показываем индикатор загрузки
+    showLoading(true);
+    
+    // Определяем тип меню для API
+    const apiType = menuType === 'daily' ? 'daily_menu' : 'weekly_menu';
+    
+    // Отправляем запрос к API
+    fetch('{% url "ai:chat_api" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            message: preferences,
+            session_id: sessionId,
+            type: apiType
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        showLoading(false);
+        
+        if (data.error) {
+            showError('❌ Ошибка: ' + data.error);
+        } else {
+            // Сохраняем session_id
+            if (data.session_id) {
+                sessionId = data.session_id;
+            }
+            
+            // Показываем результат
+            showResult(data.response);
+        }
+    })
+    .catch(error => {
+        showLoading(false);
+        showError('❌ Ошибка соединения: ' + error.message);
+    });
+}
+
+function showLoading(show) {
+    const submitText = document.getElementById('submit-text');
+    const loadingText = document.getElementById('loading-text');
+    
+    if (show) {
+        submitText.style.display = 'none';
+        loadingText.style.display = 'inline';
+    } else {
+        submitText.style.display = 'inline';
+        loadingText.style.display = 'none';
+    }
+}
+
+function showResult(content) {
+    const result = document.getElementById('result');
+    const menuContent = document.getElementById('menu-content');
+    
+    menuContent.textContent = content;
+    result.style.display = 'block';
+    
+    // Прокручиваем к результату
+    result.scrollIntoView({ behavior: 'smooth' });
+}
+
+function showError(message) {
+    const result = document.getElementById('result');
+    const menuContent = document.getElementById('menu-content');
+    
+    menuContent.innerHTML = `<div class="text-danger">${message}</div>`;
+    result.style.display = 'block';
+}
+
+function copyToClipboard() {
+    const menuContent = document.getElementById('menu-content');
+    const text = menuContent.textContent;
+    
+    navigator.clipboard.writeText(text).then(function() {
+        // Показываем уведомление
+        const button = event.target;
+        const originalText = button.textContent;
+        button.textContent = '✅ Скопировано!';
+        button.disabled = true;
+        
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.disabled = false;
+        }, 2000);
+    }).catch(function(err) {
+        console.error('Ошибка копирования: ', err);
+        alert('Ошибка копирования в буфер обмена');
+    });
+}
+
+function generateNew() {
+    document.getElementById('preferences').value = '';
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('preferences').focus();
+}
+</script>
+{% endblock %} 
