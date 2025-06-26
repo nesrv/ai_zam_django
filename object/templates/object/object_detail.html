@@ -216,17 +216,8 @@
                         <td class="number">{{ resource.cena|floatformat:0 }}</td>
                         <td class="number">{{ resource.kolichestvo|multiply:resource.cena|floatformat:0 }}</td>
                         
-                        {% with spent_sum=0 found=0 %}
-                            {% for fr in fakticheskij_resursy %}
-                                {% if fr.resurs_po_objektu.id == resource.id %}
-                                    {% for rashod in raskhody|get_item:fr.id %}
-                                        {% with spent_sum=spent_sum|add:rashod.izraskhodovano found=1 %}{% endwith %}
-                                    {% endfor %}
-                                {% endif %}
-                            {% endfor %}
-                            <td class="number">{{ spent_sum|floatformat:0 }}</td>
-                            <td class="number">{{ resource.kolichestvo|subtract:spent_sum|floatformat:0 }}</td>
-                        {% endwith %}
+                        <td class="number">{{ resource.potracheno|floatformat:0 }}</td>
+                        <td class="number">{{ resource.kolichestvo|subtract:resource.potracheno|floatformat:0 }}</td>
                         
                         {% for day in days %}
                             <td class="number editable-cell" 
@@ -321,6 +312,16 @@
                     date: date,
                     amount: newValue
                 })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Обновляем ячейки Потрачено и Осталось
+                    const row = cell.closest('tr');
+                    const cells = row.querySelectorAll('td');
+                    cells[5].textContent = Math.round(data.potracheno); // Потрачено
+                    cells[6].textContent = Math.round(data.ostatok); // Осталось
+                }
             });
         }
         

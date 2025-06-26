@@ -113,6 +113,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import json
 from datetime import datetime
+from django.db.models import Sum
 
 @csrf_exempt
 @require_POST
@@ -141,7 +142,20 @@ def update_expense(request):
             defaults={'izraskhodovano': amount}
         )
         
-        return JsonResponse({'success': True})
+        # Пересчитываем общую сумму потраченного для ресурса
+        total_spent = RaskhodResursa.objects.filter(
+            fakticheskij_resurs=fakticheskij_resurs
+        ).aggregate(total=Sum('izraskhodovano'))['total'] or 0
+        
+        # Обновляем поле potracheno в resursy_po_objektu
+        resource.potracheno = total_spent
+        resource.save()
+        
+        return JsonResponse({
+            'success': True,
+            'potracheno': float(total_spent),
+            'ostatok': float(resource.kolichestvo - total_spent)
+        })
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
 

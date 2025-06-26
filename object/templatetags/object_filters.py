@@ -31,3 +31,16 @@ def get_category_sum(category_name, resources):
         if resource.resurs.kategoriya_resursa.nazvanie == category_name:
             total += resource.kolichestvo * resource.cena
     return total
+
+@register.filter
+def get_resource_spent(resource_id, context):
+    """Вычисляет общую сумму расходов по ресурсу"""
+    total = 0
+    fakticheskij_resursy = context.get('fakticheskij_resursy', [])
+    raskhody = context.get('raskhody', {})
+    
+    for fr in fakticheskij_resursy:
+        if fr.resurs_po_objektu.id == resource_id:
+            for rashod in raskhody.get(fr.id, []):
+                total += rashod.izraskhodovano
+    return total
