@@ -83,13 +83,9 @@ def object_detail(request, object_id):
         for rashod in rashody_list:
             all_dates.add(rashod.data)
     
-    # Сортируем даты в обратном порядке (новые сначала)
-    days = sorted(list(all_dates), reverse=True)[:6]  # Последние 6 дней
-    
-    # Если нет дат, создаем тестовые даты для примера
-    if not days:
-        today = datetime(2025, 6, 28).date()  # Используем дату из примера
-        days = [today - timedelta(days=i) for i in range(6)]
+    # Всегда создаем 20 дней для отображения
+    today = datetime.now().date()
+    days = [today - timedelta(days=i) for i in range(20)]
     
     # Суммарный фактический расход
     total_spent = 0
@@ -97,6 +93,8 @@ def object_detail(request, object_id):
         fr = FakticheskijResursPoObjektu.objects.get(id=fr_id)
         resource_cost = fr.resurs_po_objektu.cena
         total_spent += sum(rr.izraskhodovano * resource_cost for rr in rr_list)
+    
+
     
     context = {
         'object': obj,
@@ -109,4 +107,41 @@ def object_detail(request, object_id):
     }
     
     return render(request, 'object/object_detail.html', context)
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+import json
+from datetime import datetime
+
+@csrf_exempt
+@require_POST
+def update_expense(request):
+    try:
+        data = json.loads(request.body)
+        resource_id = data.get('resource_id')
+        date_str = data.get('date')
+        amount = float(data.get('amount', 0))
+        
+        # Получаем ресурс по объекту
+        resource = ResursyPoObjektu.objects.get(id=resource_id)
+        
+        # Получаем или создаем фактический ресурс
+        fakticheskij_resurs, created = FakticheskijResursPoObjektu.objects.get_or_create(
+            resurs_po_objektu=resource
+        )
+        
+        # Парсим дату
+        date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
+        
+        # Обновляем или создаем расход
+        rashod, created = RaskhodResursa.objects.update_or_create(
+            fakticheskij_resurs=fakticheskij_resurs,
+            data=date_obj,
+            defaults={'izraskhodovano': amount}
+        )
+        
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
 

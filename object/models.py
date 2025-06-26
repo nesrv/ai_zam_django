@@ -81,6 +81,7 @@ class ResursyPoObjektu(models.Model):
     resurs = models.ForeignKey(Resurs, on_delete=models.CASCADE, verbose_name="Ресурс")
     kolichestvo = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Количество")
     cena = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Цена")
+    potracheno = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Потрачено лимитов")
     
     class Meta:
         verbose_name = "Ресурсы по объекту"
@@ -110,6 +111,7 @@ class RaskhodResursa(models.Model):
         verbose_name = "Расход ресурса"
         verbose_name_plural = "Расходы ресурсов"
         db_table = 'raskhod_resursa'
+        unique_together = ['fakticheskij_resurs', 'data']
     
     def __str__(self):
         return f"{self.fakticheskij_resurs} - {self.data} ({self.izraskhodovano})"

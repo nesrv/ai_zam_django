@@ -22,3 +22,12 @@ def subtract(value, arg):
         return float(value) - float(arg)
     except (ValueError, TypeError):
         return value
+
+@register.filter
+def get_category_sum(category_name, resources):
+    """Вычисляет сумму для категории"""
+    total = 0
+    for resource in resources:
+        if resource.resurs.kategoriya_resursa.nazvanie == category_name:
+            total += resource.kolichestvo * resource.cena
+    return total

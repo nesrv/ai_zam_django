@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from object.views import home, objects_list, object_detail
+from object.views import home, objects_list, object_detail, update_expense
 
 # Изменяем заголовки админки
 admin.site.site_header = "Ruslan administration"
@@ -28,4 +28,5 @@ urlpatterns = [
     path('', home, name='home'),
     path('objects/', objects_list, name='objects_list'),
     path('objects/<int:object_id>/', object_detail, name='object_detail'),
+    path('update-expense/', update_expense, name='update_expense'),
 ]

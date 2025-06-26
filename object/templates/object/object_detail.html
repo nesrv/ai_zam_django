@@ -50,13 +50,19 @@
         
         .table-container {
             padding: 0;
+            overflow-x: auto;
+            overflow-y: visible;
+            max-width: 100vw;
+            -webkit-overflow-scrolling: touch;
         }
         
         .resource-table {
-            width: 100%;
+            width: auto;
+            min-width: 2000px;
             border-collapse: collapse;
             margin-bottom: 20px;
             white-space: nowrap;
+            table-layout: fixed;
         }
         
         .resource-table th {
@@ -84,8 +90,9 @@
             background: #1a2530 !important;
             color: white !important;
             font-weight: bold;
-            text-align: left;
+            text-align: center;
             padding: 10px 8px;
+            font-size: 2em;
         }
         
         .category-header td {
@@ -110,22 +117,58 @@
         }
         
         .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
             display: inline-block;
-            margin: 20px;
             padding: 10px 20px;
             background: #3498db;
             color: white;
             text-decoration: none;
             border-radius: 4px;
             transition: background 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         
         .back-btn:hover {
             background: #2980b9;
         }
         
+        .edit-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: inline-block;
+            padding: 10px 20px;
+            background: #e74c3c;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .edit-btn:hover {
+            background: #c0392b;
+        }
+        
         .bold {
             font-weight: bold;
+        }
+        
+        .editable-cell {
+            cursor: pointer;
+            background-color: #f8f9fa;
+        }
+        
+        .editable-cell:hover {
+            background-color: #e9ecef;
+        }
+        
+        .editing {
+            background-color: #fff3cd !important;
         }
     </style>
 </head>
@@ -148,14 +191,14 @@
                         <th style="width: 2%;">Потрач.<br>лимитов</th>
                         <th style="width: 2%;">Остал.<br>лимитов</th>
                         {% for day in days %}
-                        <th style="width: 3%;">{{ day|date:"Y-m-d" }}</th>
+                        <th style="width: 3%;">{{ day|date:"d.m" }}</th>
                         {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="main-header">
-                        <td colspan="7">Расходная часть</td>
-                        <td colspan="{{ days|length }}">Расчеты по дням</td>
+                        <td colspan="7">Планируемые расходы</td>
+                        <td colspan="{{ days|length }}">Фактические расходы</td>
                     </tr>
                     
                     {% regroup resources by resurs.kategoriya_resursa.nazvanie as category_list %}
@@ -173,49 +216,46 @@
                         <td class="number">{{ resource.cena|floatformat:0 }}</td>
                         <td class="number">{{ resource.kolichestvo|multiply:resource.cena|floatformat:0 }}</td>
                         
-                        {% with total_spent=0 %}
-                            {% for fr in fakticheskij_resursy %}
-                                {% if fr.resurs_po_objektu.id == resource.id %}
-                                    {% with spent_sum=0 %}
-                                        {% for rashod in raskhody|get_item:fr.id %}
-                                            {% with spent_sum=spent_sum|add:rashod.izraskhodovano %}{% endwith %}
-                                        {% endfor %}
-                                        <td class="number">{{ spent_sum|floatformat:0 }}</td>
-                                        <td class="number">{{ resource.kolichestvo|subtract:spent_sum|floatformat:0 }}</td>
-                                    {% endwith %}
-                                {% endif %}
-                            {% empty %}
-                                <td class="number">0</td>
-                                <td class="number">{{ resource.kolichestvo|floatformat:0 }}</td>
-                            {% endfor %}
-                        {% endwith %}
-                        
-                        {% for day in days %}
-                            <td class="number">
+                        {% with spent_sum=0 found=0 %}
                             {% for fr in fakticheskij_resursy %}
                                 {% if fr.resurs_po_objektu.id == resource.id %}
                                     {% for rashod in raskhody|get_item:fr.id %}
-                                        {% if rashod.data|date:"Y-m-d" == day|date:"Y-m-d" %}
-                                            {{ rashod.izraskhodovano|floatformat:0 }}
-                                        {% endif %}
+                                        {% with spent_sum=spent_sum|add:rashod.izraskhodovano found=1 %}{% endwith %}
                                     {% endfor %}
                                 {% endif %}
                             {% endfor %}
+                            <td class="number">{{ spent_sum|floatformat:0 }}</td>
+                            <td class="number">{{ resource.kolichestvo|subtract:spent_sum|floatformat:0 }}</td>
+                        {% endwith %}
+                        
+                        {% for day in days %}
+                            <td class="number editable-cell" 
+                                data-resource-id="{{ resource.id }}" 
+                                data-date="{{ day|date:'Y-m-d' }}" 
+                                onclick="editCell(this)">
+                            {% with day_value=0 %}
+                                {% for fr in fakticheskij_resursy %}
+                                    {% if fr.resurs_po_objektu.id == resource.id %}
+                                        {% for rashod in raskhody|get_item:fr.id %}
+                                            {% if rashod.data|date:"Y-m-d" == day|date:"Y-m-d" %}
+                                                {{ rashod.izraskhodovano|floatformat:0 }}
+                                                {% with day_value=1 %}{% endwith %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                                <!-- {% if day_value == 0 %}0{% endif %} -->
+                            {% endwith %}
                             </td>
                         {% endfor %}
                     </tr>
                     {% endfor %}
                     
-                    {% with category_sum=0 %}
-                        {% for resource in category.list %}
-                            {% with category_sum=category_sum|add:resource.kolichestvo|multiply:resource.cena %}{% endwith %}
-                        {% endfor %}
-                        <tr class="total-row">
-                            <td colspan="4">ИТОГО:</td>
-                            <td class="number">{{ category_sum|floatformat:0 }}</td>
-                            <td colspan="{{ 2|add:days|length }}"></td>
-                        </tr>
-                    {% endwith %}
+                    <tr class="total-row">
+                        <td colspan="4">ИТОГО:</td>
+                        <td class="number">{{ category.grouper|get_category_sum:resources|floatformat:0 }}</td>
+                        <td colspan="{{ 2|add:days|length }}"></td>
+                    </tr>
                     {% endfor %}
                     
                     {% with total_sum=0 %}
@@ -226,14 +266,86 @@
                             <td colspan="4">Планируемая сумма затрат по объекту</td>
                             <td class="number">{{ total_sum|floatformat:0 }}</td>
                             <td colspan="2"></td>
-                            <td colspan="{{ days|length }}" class="bold">Расчеты по дням</td>
+                            <td colspan="{{ days|length }}" class="bold">Фактические расходы</td>
                         </tr>
                     {% endwith %}
                 </tbody>
             </table>
         </div>
         
-        <a href="/objects/" class="back-btn">← Назад к списку объектов</a>
     </div>
+    
+    <a href="/objects/" class="back-btn">← Назад к списку объектов</a>
+    <a href="/admin/object/objekt/{{ object.id }}/change/" class="edit-btn">✎ Редактировать объект</a>
+    
+    <script>
+    function editCell(cell) {
+        if (cell.classList.contains('editing')) return;
+        
+        const currentValue = cell.textContent.trim();
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.value = currentValue;
+        input.style.width = '120px';
+        input.style.height = '30px';
+        input.style.border = '2px solid #007bff';
+        input.style.background = 'white';
+        input.style.textAlign = 'right';
+        input.style.fontSize = '14px';
+        input.style.padding = '5px';
+        input.style.borderRadius = '4px';
+        
+        cell.innerHTML = '';
+        cell.appendChild(input);
+        cell.classList.add('editing');
+        input.focus();
+        input.select();
+        
+        function saveValue() {
+            const newValue = input.value || '0';
+            cell.textContent = newValue;
+            cell.classList.remove('editing');
+            
+            // Отправляем данные на сервер
+            const resourceId = cell.dataset.resourceId;
+            const date = cell.dataset.date;
+            
+            fetch('/update-expense/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    resource_id: resourceId,
+                    date: date,
+                    amount: newValue
+                })
+            });
+        }
+        
+        input.addEventListener('blur', saveValue);
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                saveValue();
+            }
+        });
+    }
+    
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    </script>
 </body>
 </html>
