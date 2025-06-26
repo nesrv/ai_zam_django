@@ -83,6 +83,16 @@
                 </div>
             </div>
             
+            <!-- Действия -->
+            <div class="mt-4">
+                <a href="{% url 'telegrambot:status' %}" class="btn btn-warning me-2">
+                    🤖 Управление Telegram-ботом
+                </a>
+                <a href="{% url 'telegrambot:management' %}" class="btn btn-outline-warning">
+                    📊 Статистика бота
+                </a>
+            </div>
+            
             <!-- Техническая информация -->
             <div class="card">
                 <div class="card-header">

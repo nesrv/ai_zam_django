@@ -1,4 +1,5 @@
 import logging
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -11,9 +12,13 @@ class TelegramWebhookMiddleware:
     def __call__(self, request):
         # Проверяем, является ли это запросом к Telegram webhook
         if request.path == '/telegram/webhook/' and request.method == 'POST':
-            # Отключаем проверку Referer для Telegram webhook
+            # Принудительно устанавливаем Referer для Telegram webhook
             request.META['HTTP_REFERER'] = 'https://api.telegram.org'
-            logger.info("Telegram webhook request detected, bypassing Referer check")
+            
+            # Отключаем CSRF проверку для этого запроса
+            request._dont_enforce_csrf_checks = True
+            
+            logger.info("Telegram webhook request detected, bypassing Referer and CSRF checks")
         
         response = self.get_response(request)
         return response 

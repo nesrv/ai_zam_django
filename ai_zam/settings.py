@@ -47,7 +47,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    'telegrambot.csrf_middleware.CustomCsrfMiddleware',  # Кастомный CSRF middleware
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -134,8 +134,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = [
     "https://api.telegram.org",
     "https://core.telegram.org",
+    "https://programism.ru",  # Замените на ваш домен
+    "https://www.programism.ru",  # Замените на ваш домен с www
 ]
 
 # Отключаем проверку Referer для webhook
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_HTTPONLY = False
+
+# Дополнительные настройки для cPanel
+CSRF_FAILURE_VIEW = None
+CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'

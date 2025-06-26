@@ -159,6 +159,83 @@
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
+/* Секция быстрого доступа */
+.quick-access {
+    margin: 4rem 0;
+}
+
+.quick-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.quick-btn {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+    text-decoration: none;
+    color: white;
+    text-align: center;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.quick-btn:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-icon {
+    font-size: 3rem;
+    display: block;
+}
+
+.btn-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: block;
+}
+
+.btn-desc {
+    font-size: 1rem;
+    opacity: 0.8;
+    display: block;
+}
+
+.ai-btn {
+    border-left: 4px solid #007bff;
+}
+
+.ai-btn:hover {
+    border-left-color: #0056b3;
+}
+
+.telegram-btn {
+    border-left: 4px solid #28a745;
+}
+
+.telegram-btn:hover {
+    border-left-color: #1e7e34;
+}
+
+.objects-btn {
+    border-left: 4px solid #ffc107;
+}
+
+.objects-btn:hover {
+    border-left-color: #e0a800;
+}
+
 @media (max-width: 768px) {
     .hero h1 {
         font-size: 2rem;
@@ -175,6 +252,23 @@
     
     .ipad-frame, .iphone-frame {
         transform: none;
+    }
+    
+    .quick-buttons {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .quick-btn {
+        padding: 1.5rem;
+    }
+    
+    .btn-icon {
+        font-size: 2.5rem;
+    }
+    
+    .btn-text {
+        font-size: 1.3rem;
     }
 }
 {% endblock %}
@@ -206,6 +300,29 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</section>
+
+<section class="quick-access">
+    <div class="container">
+        <h2 style="text-align: center; margin-bottom: 2rem; color: white;">🚀 Быстрый доступ</h2>
+        <div class="quick-buttons">
+            <a href="/ai/" class="quick-btn ai-btn">
+                <span class="btn-icon">🤖</span>
+                <span class="btn-text">AI Приложение</span>
+                <span class="btn-desc">Чат-бот и генератор меню</span>
+            </a>
+            <a href="/telegram/status/" class="quick-btn telegram-btn">
+                <span class="btn-icon">📱</span>
+                <span class="btn-text">Telegram-бот</span>
+                <span class="btn-desc">Управление и статистика</span>
+            </a>
+            <a href="/objects/" class="quick-btn objects-btn">
+                <span class="btn-icon">🏗️</span>
+                <span class="btn-text">Объекты</span>
+                <span class="btn-desc">Управление строительными объектами</span>
+            </a>
         </div>
     </div>
 </section>
