@@ -14,68 +14,82 @@ from .models import TelegramUser, TelegramMessage
 logger = logging.getLogger(__name__)
 
 @csrf_exempt
-@xframe_options_exempt
-@require_POST
+# @require_POST  # временно убираем для теста
 def telegram_webhook(request):
-    """Webhook для получения обновлений от Telegram"""
+    print('=== ВЫЗВАН telegram_webhook ===')
+    import logging
+    logging.getLogger('django').warning('=== ВЫЗВАН telegram_webhook ===')
+    """Webhook для получения сообщений от Telegram"""
+    logger.info("=== WEBHOOK ЗАПРОС ===")
+    
     try:
-        # Проверяем, что запрос действительно от Telegram
+        # Логируем базовую информацию о запросе
+        logger.info(f"Метод: {request.method}")
+        logger.info(f"Content-Type: {request.content_type}")
+        logger.info(f"User-Agent: {request.META.get('HTTP_USER_AGENT', 'Не указан')}")
+        logger.info(f"Remote IP: {request.META.get('REMOTE_ADDR', 'Неизвестно')}")
+        logger.info(f"Размер тела запроса: {len(request.body)} байт")
+        
+        if request.method != 'POST':
+            logger.warning(f"Неверный метод: {request.method}")
+            return JsonResponse({'error': 'Method not allowed'}, status=405)
+        
+        # Проверяем Content-Type
+        content_type = request.content_type or ''
+        if 'application/json' not in content_type:
+            logger.warning(f"Неверный Content-Type: {content_type}")
+            return JsonResponse({'error': 'Content-Type must be application/json'}, status=400)
+        
+        # Проверяем размер тела запроса
+        if len(request.body) == 0:
+            logger.warning("Пустое тело запроса")
+            return JsonResponse({'error': 'Empty request body'}, status=400)
+        
+        # Проверяем User-Agent
         user_agent = request.META.get('HTTP_USER_AGENT', '')
         remote_addr = request.META.get('REMOTE_ADDR', '')
         
-        logger.info(f"Webhook request from {remote_addr} with User-Agent: {user_agent}")
-        
-        # Проверяем IP адреса Telegram (основные диапазоны)
-        telegram_ips = [
-            '149.154.160.0/20',
-            '91.108.4.0/22',
-            '91.108.8.0/22',
-            '91.108.12.0/22',
-            '91.108.16.0/22',
-            '91.108.56.0/22',
-            '149.154.164.0/22',
-            '149.154.168.0/22',
-            '149.154.172.0/22',
-            '149.154.176.0/20',
-            '149.154.192.0/20',
-            '149.154.196.0/22',
-            '149.154.200.0/22',
-            '149.154.204.0/22',
-            '149.154.208.0/20',
-            '149.154.224.0/20',
-            '149.154.228.0/22',
-            '149.154.232.0/22',
-            '149.154.236.0/22',
-            '149.154.240.0/20',
-            '149.154.244.0/22',
-            '149.154.248.0/22',
-            '149.154.252.0/22',
-        ]
-        
         # Простая проверка IP (можно улучшить с помощью ipaddress модуля)
-        if not any('TelegramBot' in user_agent or 'python-telegram-bot' in user_agent):
+        if 'TelegramBot' not in user_agent and 'python-telegram-bot' not in user_agent:
             logger.warning(f"Подозрительный запрос к webhook от: {remote_addr} - {user_agent}")
             # Не блокируем, но логируем для безопасности
         
-        data = json.loads(request.body)
-        logger.info(f"Получено обновление от Telegram: {data}")
+        # Декодируем JSON
+        try:
+            update_data = json.loads(request.body.decode('utf-8'))
+            logger.info(f"Успешно декодирован JSON: {update_data}")
+        except json.JSONDecodeError as e:
+            logger.error(f"Ошибка декодирования JSON: {e}")
+            logger.error(f"Тело запроса: {request.body}")
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            logger.error(f"Неожиданная ошибка при декодировании JSON: {e}")
+            return JsonResponse({'error': 'JSON processing error'}, status=400)
         
-        # Обрабатываем обновление
-        result = process_telegram_update(data)
+        # Проверяем структуру update
+        if not isinstance(update_data, dict):
+            logger.error(f"Update не является словарем: {type(update_data)}")
+            return JsonResponse({'error': 'Invalid update format'}, status=400)
         
-        if result:
-            logger.info("Webhook обработан успешно")
-            return JsonResponse({'ok': True})
-        else:
-            logger.error("Ошибка обработки webhook")
-            return JsonResponse({'ok': False, 'error': 'Failed to process update'}, status=500)
+        if 'update_id' not in update_data:
+            logger.error("Отсутствует update_id в update")
+            return JsonResponse({'error': 'Missing update_id'}, status=400)
+        
+        # Обрабатываем update
+        try:
+            result = process_telegram_update(update_data)
+            logger.info(f"Update обработан успешно: {result}")
+            return JsonResponse({'status': 'ok'})
+        except Exception as e:
+            logger.error(f"Ошибка при обработке update: {e}")
+            return JsonResponse({'error': 'Update processing error'}, status=500)
             
-    except json.JSONDecodeError as e:
-        logger.error(f"Ошибка декодирования JSON: {e}")
-        return JsonResponse({'error': 'Invalid JSON'}, status=400)
     except Exception as e:
-        logger.error(f"Ошибка обработки webhook: {e}")
-        return JsonResponse({'error': str(e)}, status=500)
+        logger.error(f"Критическая ошибка в webhook: {e}")
+        logger.error(f"Тип ошибки: {type(e)}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        return JsonResponse({'error': 'Internal server error'}, status=500)
 
 def bot_status(request):
     """Страница статуса бота с чатом"""
@@ -378,6 +392,7 @@ def generate_document(request):
         
     except json.JSONDecodeError as e:
         logger.error(f"Ошибка декодирования JSON: {e}")
+        logger.error(f"Тело запроса: {request.body}")
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
     except Exception as e:
         logger.error(f"Ошибка генерации документа: {e}")

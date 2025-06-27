@@ -339,6 +339,36 @@ def validate_config():
     
     return True
 
+def setup_webhook(application: Application, webhook_url: str):
+    """Настраивает webhook для бота"""
+    try:
+        # Устанавливаем webhook
+        application.bot.set_webhook(url=webhook_url)
+        logger.info(f"✅ Webhook установлен: {webhook_url}")
+        return True
+    except Exception as e:
+        logger.error(f"❌ Ошибка установки webhook: {e}")
+        return False
+
+def start_bots():
+    """Функция для запуска ботов (используется в runserver)"""
+    if not validate_config():
+        logger.error("❌ Ошибка конфигурации ботов")
+        return
+
+    logger.info("🤖 Запускаю Telegram боты...")
+    
+    # Создаем и настраиваем приложение
+    application = Application.builder().token(TELEGRAM_TOKEN).build()
+    setup_handlers(application)
+    
+    # Настраиваем webhook для получения сообщений
+    webhook_url = "https://programism.ru/telegram/webhook/"
+    if setup_webhook(application, webhook_url):
+        logger.info("✅ Боты запущены с webhook")
+    else:
+        logger.warning("⚠️ Webhook не настроен, боты работают только для отправки")
+
 def main() -> None:
     """Основная функция запуска бота"""
     if not validate_config():
@@ -354,8 +384,8 @@ def main() -> None:
     application = Application.builder().token(TELEGRAM_TOKEN).build()
     setup_handlers(application)
 
-    # Запускаем бота
-    logger.info("Бот запускается...")
+    # Запускаем бота в режиме polling (для локальной разработки)
+    logger.info("Бот запускается в режиме polling...")
     try:
         application.run_polling(
             drop_pending_updates=True,

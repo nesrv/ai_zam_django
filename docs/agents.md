@@ -1,8 +1,9 @@
 
-для меню "Генерация документов" для отправки запросов и получения ответов 
-нужно подключить deepseek 
-DEEPSEEK_API_KEY=sk-662acba6fe0143b798d4a41e071b3ec7
-DEEPSEEK_BASE_URL=https://api.deepseek.com
+просто по команде python manage.py runserver запускай python manage.py runserver_with_bots
+
+ сделай чтобы python manage.py runserver запускался как python manage.py runserver_with_bots
+
+для меню "Генерация дпростоepseek.com
 полученные от DEEPSEEK данные отправляются в чат телеграм бота
 
 не вижу полученный ответ  DEEPSEEK в чате  телеграм бота
