@@ -1,12 +1,20 @@
 {% extends 'base/base.html' %}
 {% load static %}
+{% load object_filters %}
 
 {% block title %}Объекты - AI-ZAM{% endblock %}
 
 {% block extra_styles %}
+/* Переопределяем максимальную ширину контейнера для этой страницы */
+.container {
+    max-width: none !important;
+    width: 100% !important;
+    padding: 0 10px !important;
+}
+
 .page-title {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
 }
 
 .page-title h1 {
@@ -15,93 +23,106 @@
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
-.objects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
-    margin-bottom: 3rem;
-}
-
-.object-card {
+.objects-table-container {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
-    padding: 2rem;
     border-radius: 15px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.3s, background 0.3s;
+    overflow-x: auto;
+    margin-bottom: 2rem;
+    width: 100%;
+    max-width: none;
 }
 
-.object-card:hover {
-    transform: translateY(-5px);
-    background: rgba(255, 255, 255, 0.1);
+.objects-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 2000px;
+    table-layout: fixed;
 }
 
-.object-title {
-    font-size: 1.5rem;
+.objects-table th,
+.objects-table td {
+    min-width: 120px;
+    max-width: none;
+}
+
+.objects-table th:nth-child(1),
+.objects-table td:nth-child(1) {
+    width: 60px;
+    min-width: 60px;
+}
+
+.objects-table th:nth-child(2),
+.objects-table td:nth-child(2) {
+    width: 200px;
+    min-width: 200px;
+}
+
+.objects-table th:nth-child(3),
+.objects-table td:nth-child(3),
+.objects-table th:nth-child(4),
+.objects-table td:nth-child(4),
+.objects-table th:nth-child(5),
+.objects-table td:nth-child(5) {
+    width: 150px;
+    min-width: 150px;
+}
+
+.objects-table th:nth-child(n+6),
+.objects-table td:nth-child(n+6) {
+    width: 80px;
+    min-width: 80px;
+}
+
+.objects-table th {
+    background: rgba(52, 73, 94, 0.9);
+    color: white;
+    padding: 15px 10px;
+    text-align: center;
     font-weight: bold;
-    margin-bottom: 1rem;
-    color: #fff;
-}
-
-.object-info {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.info-item {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 0.8rem;
-    border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
-.info-label {
-    font-size: 0.9rem;
-    opacity: 0.8;
-    margin-bottom: 0.3rem;
+.objects-table td {
+    padding: 12px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    background: rgba(255, 255, 255, 0.02);
 }
 
-.info-value {
-    font-size: 1.1rem;
+.objects-table tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.object-link {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.object-link:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+.number-cell {
+    text-align: right;
+    font-family: 'Courier New', monospace;
+}
+
+.total-row {
+    background: rgba(44, 62, 80, 0.8) !important;
+    color: white !important;
     font-weight: bold;
 }
 
-.object-status {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: bold;
-    margin-top: 1rem;
-}
-
-.status-planned {
-    background: #ffd700;
-    color: #333;
-}
-
-.status-active {
-    background: #4CAF50;
-    color: white;
-}
-
-.status-completed {
-    background: #2196F3;
-    color: white;
-}
-
-.object-summary {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.summary-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
+.total-row td {
+    background: rgba(44, 62, 80, 0.8) !important;
 }
 
 .back-link {
@@ -128,71 +149,147 @@
 }
 
 @media (max-width: 768px) {
-    .objects-grid {
-        grid-template-columns: 1fr;
+    .objects-table-container {
+        font-size: 0.9rem;
     }
     
-    .object-info {
-        grid-template-columns: 1fr;
+    .objects-table th,
+    .objects-table td {
+        padding: 8px 5px;
     }
+}
+
+.charts-section {
+    margin: 3rem 0;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.charts-container {
+    text-align: center;
+}
+
+.charts-container h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.chart-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem 0;
+}
+
+.profit-chart {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 {% endblock %}
 
 {% block content %}
 <section class="page-title">
     <h1>Строительные объекты</h1>
-    <p>Полный список объектов с кратким описанием</p>
+    <p>Сводная таблица по объектам</p>
 </section>
 
-<section class="objects-grid">
-    {% for item in objects_with_info %}
-    <div class="object-card">
-        <div class="object-title"><a href="/objects/{{ item.object.id }}/" style="color: #fff; text-decoration: none;">{{ item.object.nazvanie }}</a></div>
-        
-        <div class="object-info">
-            <div class="info-item">
-                <div class="info-label">Ответственный</div>
-                <div class="info-value">{{ item.object.otvetstvennyj.fio|default:"Не назначен" }}</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">Дата начала</div>
-                <div class="info-value">{{ item.object.data_nachala|date:"d.m.Y" }}</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">План завершения</div>
-                <div class="info-value">{{ item.object.data_plan_zaversheniya|date:"d.m.Y" }}</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">Факт завершения</div>
-                <div class="info-value">{{ item.object.data_fakt_zaversheniya|date:"d.m.Y"|default:"—" }}</div>
-            </div>
-        </div>
-        
-        <div class="object-summary">
-            <div class="summary-item">
-                <span>Ресурсов:</span>
-                <strong>{{ item.total_resources }}</strong>
-            </div>
-            <div class="summary-item">
-                <span>Общая стоимость:</span>
-                <strong>{{ item.total_cost|floatformat:0 }} руб.</strong>
-            </div>
-        </div>
-        
-        <div class="object-status 
-            {% if item.object.status == 'планируется' %}status-planned
-            {% elif item.object.status == 'в работе' %}status-active
-            {% else %}status-completed{% endif %}">
-            {{ item.object.status|title }}
-        </div>
-    </div>
-    {% empty %}
-    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
-        <h3>Объекты не найдены</h3>
-        <p>В базе данных пока нет объектов.</p>
-    </div>
-    {% endfor %}
+<section class="objects-table-container">
+    <table class="objects-table">
+        <thead>
+            <tr>
+                <th>№ п/п</th>
+                <th>Название объекта</th>
+                <th>Общая стоимость (₽)</th>
+                <th>Выполнено на сумму (₽)</th>
+                <th>Бюджет доходов и расходов (₽)</th>
+                {% for day in days %}
+                <th>{{ day|date:"d.m" }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in objects_with_info %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    <a href="/objects/{{ item.object.id }}/" class="object-link">
+                        {{ item.object.nazvanie }}
+                    </a>
+                </td>
+                <td class="number-cell">{{ item.total_cost|floatformat:0 }}</td>
+                <td class="number-cell">{{ item.completed_cost|floatformat:0 }}</td>
+                <td class="number-cell">{{ item.budget_balance|floatformat:0 }}</td>
+                {% for day in days %}
+                <td class="number-cell">
+                    {% with day_key=day|date:"Y-m-d" %}
+                        {% if day_key in item.daily_expenses %}
+                            {{ item.daily_expenses|get_item:day_key|floatformat:0 }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    {% endwith %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="{{ days|length|add:5 }}" style="text-align: center; padding: 2rem;">
+                    <h3>Объекты не найдены</h3>
+                    <p>В базе данных пока нет объектов.</p>
+                </td>
+            </tr>
+            {% endfor %}
+            
+            {% if objects_with_info %}
+            <tr class="total-row">
+                <td colspan="2"><strong>Итого:</strong></td>
+                <td class="number-cell"><strong>{{ total_budget|floatformat:0 }}</strong></td>
+                <td class="number-cell"><strong>{{ total_completed|floatformat:0 }}</strong></td>
+                <td class="number-cell"><strong>{{ total_balance|floatformat:0 }}</strong></td>
+                {% for day in days %}
+                <td class="number-cell">
+                    <strong>
+                        {% with day_key=day|date:"Y-m-d" %}
+                            {% if day_key in total_daily_expenses %}
+                                {{ total_daily_expenses|get_item:day_key|floatformat:0 }}
+                            {% else %}
+                                0
+                            {% endif %}
+                        {% endwith %}
+                    </strong>
+                </td>
+                {% endfor %}
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
 </section>
+
+{% if chart_path %}
+<section class="charts-section">
+    <div class="charts-container">
+        <h2>Расходы по объектам по дням</h2>
+        <div class="chart-wrapper">
+            <img src="{% static chart_path %}" alt="График расходов по объектам" class="profit-chart">
+        </div>
+    </div>
+</section>
+{% else %}
+<section class="charts-section">
+    <div class="charts-container">
+        <h2>Расходы по объектам по дням</h2>
+        <p style="color: #e74c3c; font-size: 1.1rem;">Графики временно недоступны</p>
+    </div>
+</section>
+{% endif %}
 
 <section class="back-link">
     <a href="/" class="btn-back">Вернуться на главную</a>

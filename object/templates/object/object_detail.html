@@ -48,6 +48,26 @@
             opacity: 0.8;
         }
         
+        .header-info {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .info-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .info-item strong {
+            color: #ecf0f1;
+        }
+        
         .table-container {
             padding: 0;
             overflow-x: auto;
@@ -177,6 +197,22 @@
         <div class="header">
             <h1>{{ object.nazvanie }}</h1>
             <p>Смета ресурсов по объекту</p>
+            <div class="header-info">
+                <div class="info-item">
+                    <strong>Ответственный:</strong> 
+                    {% if object.otvetstvennyj %}
+                        {{ object.otvetstvennyj.fio }}
+                    {% else %}
+                        Не назначен
+                    {% endif %}
+                </div>
+                <div class="info-item">
+                    <strong>Дата начала:</strong> {{ object.data_nachala|date:"d.m.Y" }}
+                </div>
+                <div class="info-item">
+                    <strong>Общая стоимость ресурсов:</strong> {{ total_cost|floatformat:2 }} ₽
+                </div>
+            </div>
         </div>
         
         <div class="table-container">
@@ -257,17 +293,12 @@
                     </tr>
                     {% endfor %}
                     
-                    {% with total_sum=0 %}
-                        {% for resource in resources %}
-                            {% with total_sum=total_sum|add:resource.kolichestvo|multiply:resource.cena %}{% endwith %}
-                        {% endfor %}
-                        <tr class="total-row">
-                            <td colspan="4">Планируемая сумма затрат по объекту</td>
-                            <td class="number">{{ total_sum|floatformat:0 }}</td>
-                            <td colspan="2"></td>
-                            <td colspan="{{ days|length }}" class="bold">Фактические расходы</td>
-                        </tr>
-                    {% endwith %}
+                    <tr class="total-row">
+                        <td colspan="4">Планируемая сумма затрат по объекту</td>
+                        <td class="number">{{ total_cost|floatformat:0 }}</td>
+                        <td colspan="2"></td>
+                        <td colspan="{{ days|length }}" class="bold">Фактические расходы</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
