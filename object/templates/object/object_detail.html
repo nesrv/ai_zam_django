@@ -212,12 +212,20 @@
                     <tr class="category-{{ category.grouper|lower }}">
                         <td>{{ resource.resurs.naimenovanie }}</td>
                         <td>{{ resource.resurs.edinica_izmereniya }}</td>
-                        <td class="number">{{ resource.kolichestvo|floatformat:0 }}</td>
-                        <td class="number">{{ resource.cena|floatformat:0 }}</td>
-                        <td class="number">{{ resource.kolichestvo|multiply:resource.cena|floatformat:0 }}</td>
+                        <td class="number editable-cell" 
+                            data-resource-id="{{ resource.id }}" 
+                            data-field-type="kolichestvo"
+                            onclick="editResourceCell(this)">{{ resource.kolichestvo|floatformat:0 }}</td>
+                        <td class="number editable-cell" 
+                            data-resource-id="{{ resource.id }}" 
+                            data-field-type="cena"
+                            onclick="editResourceCell(this)">{{ resource.cena|floatformat:0 }}</td>
+                        <td class="number sum-cell" 
+                            data-resource-id="{{ resource.id }}">{{ resource.kolichestvo|multiply:resource.cena|floatformat:0 }}</td>
                         
                         <td class="number">{{ resource.potracheno|floatformat:0 }}</td>
-                        <td class="number">{{ resource.kolichestvo|subtract:resource.potracheno|floatformat:0 }}</td>
+                        <td class="number ostatok-cell" 
+                            data-resource-id="{{ resource.id }}">{{ resource.kolichestvo|subtract:resource.potracheno|floatformat:0 }}</td>
                         
                         {% for day in days %}
                             <td class="number editable-cell" 
@@ -346,6 +354,155 @@
             }
         }
         return cookieValue;
+    }
+    
+    function editResourceCell(cell) {
+        if (cell.classList.contains('editing')) return;
+        
+        const currentValue = cell.textContent.trim();
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.value = currentValue;
+        input.style.width = '120px';
+        input.style.height = '30px';
+        input.style.border = '2px solid #28a745';
+        input.style.background = 'white';
+        input.style.textAlign = 'right';
+        input.style.fontSize = '14px';
+        input.style.padding = '5px';
+        input.style.borderRadius = '4px';
+        
+        cell.innerHTML = '';
+        cell.appendChild(input);
+        cell.classList.add('editing');
+        input.focus();
+        input.select();
+        
+        function saveResourceValue() {
+            const newValue = input.value || '0';
+            cell.textContent = newValue;
+            cell.classList.remove('editing');
+            
+            // Получаем текущие значения из строки
+            const row = cell.closest('tr');
+            const cells = row.querySelectorAll('td');
+            
+            // Получаем значения количества и цены
+            let kolichestvo = parseFloat(cells[2].textContent.trim()) || 0;
+            let cena = parseFloat(cells[3].textContent.trim()) || 0;
+            
+            // Если редактируем количество или цену, обновляем соответствующее значение
+            const fieldType = cell.dataset.fieldType;
+            if (fieldType === 'kolichestvo') {
+                kolichestvo = parseFloat(newValue) || 0;
+            } else if (fieldType === 'cena') {
+                cena = parseFloat(newValue) || 0;
+            }
+            
+            // Пересчитываем сумму в реальном времени
+            const newSum = kolichestvo * cena;
+            
+            // Обновляем ячейку суммы по идентификатору
+            const sumCell = row.querySelector('.sum-cell');
+            if (sumCell) {
+                sumCell.textContent = Math.round(newSum);
+            }
+            
+            // Пересчитываем остаток
+            const potracheno = parseFloat(cells[5].textContent.trim()) || 0;
+            const ostatok = kolichestvo - potracheno;
+            
+            // Обновляем ячейку остатка по идентификатору
+            const ostatokCell = row.querySelector('.ostatok-cell');
+            if (ostatokCell) {
+                ostatokCell.textContent = Math.round(ostatok);
+            }
+            
+            // Отправляем данные на сервер
+            const resourceId = cell.dataset.resourceId;
+            
+            fetch('/update-resource-data/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    resource_id: resourceId,
+                    field_type: fieldType,
+                    value: newValue
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Обновляем итоговые суммы
+                    updateCategoryTotals();
+                    updateTotalSum();
+                }
+            });
+        }
+        
+        input.addEventListener('blur', saveResourceValue);
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                saveResourceValue();
+            }
+        });
+    }
+    
+    function updateCategoryTotals() {
+        // Находим все категории и пересчитываем их итоги
+        const categoryRows = document.querySelectorAll('.category-header');
+        categoryRows.forEach(categoryRow => {
+            let categorySum = 0;
+            let currentRow = categoryRow.nextElementSibling;
+            
+            // Проходим по всем строкам ресурсов в этой категории
+            while (currentRow && !currentRow.classList.contains('total-row') && !currentRow.classList.contains('category-header')) {
+                if (currentRow.classList.contains('category-кадры') || 
+                    currentRow.classList.contains('category-машины') || 
+                    currentRow.classList.contains('category-материалы') || 
+                    currentRow.classList.contains('category-административно') || 
+                    currentRow.classList.contains('category-сиз') || 
+                    currentRow.classList.contains('category-подрядные')) {
+                    
+                    const sumCell = currentRow.querySelector('.sum-cell');
+                    if (sumCell) {
+                        categorySum += parseFloat(sumCell.textContent.trim()) || 0;
+                    }
+                }
+                currentRow = currentRow.nextElementSibling;
+            }
+            
+            // Обновляем итоговую строку категории
+            if (currentRow && currentRow.classList.contains('total-row')) {
+                const totalCell = currentRow.querySelector('td:nth-child(5)');
+                if (totalCell) {
+                    totalCell.textContent = Math.round(categorySum);
+                }
+            }
+        });
+    }
+    
+    function updateTotalSum() {
+        // Пересчитываем общую сумму по объекту
+        let totalSum = 0;
+        const sumCells = document.querySelectorAll('.sum-cell');
+        
+        sumCells.forEach(cell => {
+            totalSum += parseFloat(cell.textContent.trim()) || 0;
+        });
+        
+        // Обновляем общую сумму в последней строке
+        const totalRows = document.querySelectorAll('.total-row');
+        const lastTotalRow = totalRows[totalRows.length - 1];
+        if (lastTotalRow) {
+            const totalCell = lastTotalRow.querySelector('td:nth-child(5)');
+            if (totalCell) {
+                totalCell.textContent = Math.round(totalSum);
+            }
+        }
     }
     </script>
 </body>

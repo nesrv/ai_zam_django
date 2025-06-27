@@ -1,0 +1,387 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Telegram Bot Dashboard - AI-ZAM{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    .stat-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+    
+    .content-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .main-content {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .sidebar {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 10px;
+    }
+    
+    .message-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        transition: background-color 0.3s ease;
+    }
+    
+    .message-item:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .message-item:last-child {
+        border-bottom: none;
+    }
+    
+    .message-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        margin-right: 15px;
+    }
+    
+    .message-content {
+        flex: 1;
+    }
+    
+    .message-user {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+    
+    .message-text {
+        color: #666;
+        font-size: 0.9rem;
+    }
+    
+    .message-time {
+        color: #999;
+        font-size: 0.8rem;
+    }
+    
+    .message-direction {
+        font-size: 1.2rem;
+        margin: 0 10px;
+        color: #667eea;
+    }
+    
+    .user-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .user-item:last-child {
+        border-bottom: none;
+    }
+    
+    .user-avatar {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        margin-right: 10px;
+        font-size: 0.8rem;
+    }
+    
+    .user-info {
+        flex: 1;
+    }
+    
+    .user-name {
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .user-username {
+        color: #666;
+        font-size: 0.8rem;
+    }
+    
+    .user-stats {
+        text-align: right;
+        color: #667eea;
+        font-weight: bold;
+    }
+    
+    .activity-chart {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+    
+    .chart-bars {
+        display: flex;
+        align-items: end;
+        height: 100px;
+        gap: 2px;
+    }
+    
+    .chart-bar {
+        flex: 1;
+        background: linear-gradient(to top, #667eea, #764ba2);
+        border-radius: 2px 2px 0 0;
+        min-height: 2px;
+        position: relative;
+    }
+    
+    .chart-labels {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        font-size: 0.8rem;
+        color: #666;
+    }
+    
+    .status-indicator {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+    
+    .status-active {
+        background-color: #28a745;
+    }
+    
+    .status-inactive {
+        background-color: #dc3545;
+    }
+    
+    .bot-status {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    @media (max-width: 768px) {
+        .content-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h1 style="text-align: center; margin-bottom: 30px; color: #333;">
+        🤖 Telegram Bot Dashboard
+    </h1>
+    
+    <!-- Навигация -->
+    <div style="text-align: center; margin-bottom: 20px;">
+        <a href="{% url 'telegrambot:status' %}" class="btn btn-outline-primary" style="margin-right: 10px;">
+            📈 Простой статус
+        </a>
+        <a href="{% url 'telegrambot:management' %}" class="btn btn-outline-secondary">
+            🛠️ Управление
+        </a>
+    </div>
+    
+    <!-- Статус бота -->
+    <div class="bot-status">
+        <span class="status-indicator status-active"></span>
+        <strong>Бот активен</strong> - Последнее обновление: {{ recent_messages.0.created_at|date:"H:i" }}
+    </div>
+    
+    <!-- Статистика -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_users }}</div>
+            <div class="stat-label">Всего пользователей</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ active_users }}</div>
+            <div class="stat-label">Активных пользователей</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_messages }}</div>
+            <div class="stat-label">Всего сообщений</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ new_users_day }}</div>
+            <div class="stat-label">Новых за 24 часа</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ messages_day }}</div>
+            <div class="stat-label">Сообщений за 24 часа</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ new_users_week }}</div>
+            <div class="stat-label">Новых за неделю</div>
+        </div>
+    </div>
+    
+    <!-- Основной контент -->
+    <div class="content-grid">
+        <div class="main-content">
+            <h2 class="section-title">📨 Последние сообщения</h2>
+            {% if recent_messages %}
+                {% for message in recent_messages %}
+                <div class="message-item">
+                    <div class="message-avatar">
+                        {{ message.user.first_name|first|upper }}
+                    </div>
+                    <div class="message-content">
+                        <div class="message-user">
+                            {{ message.user.first_name }} {{ message.user.last_name|default:"" }}
+                            {% if message.user.username %}
+                                <span style="color: #667eea;">@{{ message.user.username }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="message-text">
+                            {% if message.is_from_user %}
+                                <span class="message-direction">→</span>
+                            {% else %}
+                                <span class="message-direction">←</span>
+                            {% endif %}
+                            {{ message.content|truncatechars:100 }}
+                        </div>
+                    </div>
+                    <div class="message-time">
+                        {{ message.created_at|date:"H:i" }}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="text-align: center; color: #666; padding: 20px;">
+                    Пока нет сообщений
+                </p>
+            {% endif %}
+        </div>
+        
+        <div class="sidebar">
+            <h2 class="section-title">👥 Топ пользователей</h2>
+            {% if top_users %}
+                {% for user in top_users %}
+                <div class="user-item">
+                    <div class="user-avatar">
+                        {{ user.first_name|first|upper }}
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">{{ user.first_name }}</div>
+                        {% if user.username %}
+                            <div class="user-username">@{{ user.username }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="user-stats">
+                        {{ user.message_count }}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="text-align: center; color: #666; padding: 20px;">
+                    Нет данных
+                </p>
+            {% endif %}
+            
+            <h2 class="section-title" style="margin-top: 30px;">📊 Активность по часам</h2>
+            <div class="activity-chart">
+                <div class="chart-bars">
+                    {% for hour in hourly_activity %}
+                    <div class="chart-bar" style="height: {% if hour.count > 0 %}{{ hour.count|add:1|mul:5 }}{% else %}2{% endif %}px;" title="{{ hour.hour }}:00 - {{ hour.count }} сообщений"></div>
+                    {% endfor %}
+                </div>
+                <div class="chart-labels">
+                    <span>00:00</span>
+                    <span>06:00</span>
+                    <span>12:00</span>
+                    <span>18:00</span>
+                    <span>23:00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Дополнительная статистика -->
+    <div class="main-content">
+        <h2 class="section-title">📈 Статистика по типам сообщений</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            {% for type in message_types %}
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; text-align: center;">
+                <div style="font-size: 1.5rem; font-weight: bold; color: #667eea;">{{ type.count }}</div>
+                <div style="color: #666;">{{ type.message_type|title }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

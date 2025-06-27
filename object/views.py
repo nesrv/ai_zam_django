@@ -159,3 +159,36 @@ def update_expense(request):
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
 
+@csrf_exempt
+@require_POST
+def update_resource_data(request):
+    try:
+        data = json.loads(request.body)
+        resource_id = data.get('resource_id')
+        field_type = data.get('field_type')  # 'kolichestvo' или 'cena'
+        new_value = float(data.get('value', 0))
+        
+        # Получаем ресурс по объекту
+        resource = ResursyPoObjektu.objects.get(id=resource_id)
+        
+        # Обновляем соответствующее поле
+        if field_type == 'kolichestvo':
+            resource.kolichestvo = new_value
+        elif field_type == 'cena':
+            resource.cena = new_value
+        else:
+            return JsonResponse({'success': False, 'error': 'Неверный тип поля'})
+        
+        resource.save()
+        
+        # Пересчитываем сумму
+        new_sum = resource.kolichestvo * resource.cena
+        
+        return JsonResponse({
+            'success': True,
+            'new_sum': float(new_sum),
+            'ostatok': float(resource.kolichestvo - resource.potracheno)
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+

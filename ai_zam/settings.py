@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-scy!f9+jk#j61#hw16ube_z6!ss#wlnno+&-fh4&(v^%&ipuk&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["https://programism.ru/", "programism.ru", "www.programism.ru", "127.0.0.1"]
+ALLOWED_HOSTS = ["http://ai-zam.ru/","ai-zam.ru","www.ai-zam.ru", "https://programism.ru/", "programism.ru", "www.programism.ru", "127.0.0.1"]
 
 
 # Application definition

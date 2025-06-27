@@ -6,6 +6,21 @@ from datetime import datetime
 from dotenv import load_dotenv
 from .models import TelegramUser, TelegramMessage
 from ai.services import generate_weekly_menu, generate_daily_menu, format_menu_text, get_ai_response
+import asyncio
+import threading
+from django.conf import settings
+from telegram import Update
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+from telegram import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    ReplyKeyboardRemove,
+)
+from telegram.ext import (
+    CallbackQueryHandler,
+    ConversationHandler,
+)
+from asgiref.sync import sync_to_async
 
 # Загружаем переменные окружения
 load_dotenv()
@@ -19,49 +34,19 @@ if not TELEGRAM_TOKEN:
 
 logger = logging.getLogger(__name__)
 
-def send_telegram_message(chat_id, text, reply_markup=None):
-    """Отправка сообщения в Telegram"""
-    try:
-        if not TELEGRAM_TOKEN:
-            logger.error("TELEGRAM_TOKEN не установлен")
-            return None
-            
-        url = f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage'
-        payload = {
-            'chat_id': chat_id,
-            'text': text,
-            'parse_mode': 'HTML'
-        }
-        
-        if reply_markup:
-            payload['reply_markup'] = reply_markup
-        
-        logger.info(f"Отправка сообщения в Telegram: chat_id={chat_id}, text={text[:50]}...")
-        
-        response = requests.post(url, data=payload)
-        response.raise_for_status()
-        
-        result = response.json()
-        logger.info(f"Ответ от Telegram API: {result}")
-        
-        return result
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Ошибка HTTP запроса к Telegram API: {e}")
-        return None
-    except json.JSONDecodeError as e:
-        logger.error(f"Ошибка декодирования JSON ответа от Telegram: {e}")
-        return None
-    except Exception as e:
-        logger.error(f"Неожиданная ошибка отправки сообщения в Telegram: {e}")
-        return None
+# Константы состояний для ConversationHandler
+MENU, SUBMENU = range(2)
 
-def get_or_create_telegram_user(telegram_data):
-    """Получение или создание пользователя Telegram"""
-    telegram_id = telegram_data['id']
-    username = telegram_data.get('username')
-    first_name = telegram_data.get('first_name')
-    last_name = telegram_data.get('last_name')
-    
+# Токен бота
+BOT_TOKEN = "7836693206:AAE_wRnOiWm0xhRlP7cr8Q0AvaPEgZCgTFw"
+
+# Глобальные переменные для хранения экземпляров ботов
+ne_srv_bot_app = None
+
+# Асинхронные версии функций для работы с базой данных
+@sync_to_async
+def get_or_create_telegram_user_async(telegram_id, username, first_name, last_name):
+    """Асинхронная версия получения или создания пользователя"""
     user, created = TelegramUser.objects.get_or_create(
         telegram_id=telegram_id,
         defaults={
@@ -76,18 +61,114 @@ def get_or_create_telegram_user(telegram_data):
         user.username = username
         user.first_name = first_name
         user.last_name = last_name
+        user.is_active = True
         user.save()
     
     return user
 
-def save_telegram_message(user, content, message_type='text', is_from_user=True):
-    """Сохранение сообщения в базу данных"""
+@sync_to_async
+def save_telegram_message_async(user, content, message_type='text', is_from_user=True):
+    """Асинхронная версия сохранения сообщения"""
     return TelegramMessage.objects.create(
         user=user,
         content=content,
         message_type=message_type,
         is_from_user=is_from_user
     )
+
+def check_bot_token(token):
+    """Проверка токена бота"""
+    try:
+        url = f'https://api.telegram.org/bot{token}/getMe'
+        response = requests.get(url)
+        response.raise_for_status()
+        
+        result = response.json()
+        if result.get('ok'):
+            bot_info = result.get('result', {})
+            logger.info(f"Бот проверен: {bot_info.get('first_name')} (@{bot_info.get('username')})")
+            return True, bot_info
+        else:
+            logger.error(f"Ошибка проверки токена: {result}")
+            return False, result
+    except Exception as e:
+        logger.error(f"Ошибка проверки токена бота: {e}")
+        return False, str(e)
+
+def send_telegram_message(chat_id, text, reply_markup=None):
+    """Отправка сообщения в Telegram"""
+    try:
+        # Используем BOT_TOKEN вместо TELEGRAM_TOKEN
+        token = BOT_TOKEN or TELEGRAM_TOKEN
+        if not token:
+            logger.error("Токен бота не установлен")
+            return None
+        
+        # Проверяем токен при первой отправке
+        if not hasattr(send_telegram_message, '_token_checked'):
+            is_valid, bot_info = check_bot_token(token)
+            if not is_valid:
+                logger.error(f"Недействительный токен бота: {bot_info}")
+                return None
+            send_telegram_message._token_checked = True
+            
+        url = f'https://api.telegram.org/bot{token}/sendMessage'
+        payload = {
+            'chat_id': chat_id,
+            'text': text,
+            'parse_mode': 'HTML'
+        }
+        
+        if reply_markup:
+            payload['reply_markup'] = reply_markup
+        
+        logger.info(f"Отправка сообщения в Telegram: chat_id={chat_id}, text={text[:50]}...")
+        
+        response = requests.post(url, data=payload)
+        
+        # Получаем ответ для анализа ошибки
+        response_text = response.text
+        logger.info(f"Ответ от Telegram API (статус {response.status_code}): {response_text}")
+        
+        if response.status_code == 400:
+            # Пытаемся получить подробную информацию об ошибке
+            try:
+                error_data = response.json()
+                error_code = error_data.get('error_code', 'unknown')
+                description = error_data.get('description', 'No description')
+                logger.error(f"Ошибка 400: код={error_code}, описание={description}")
+                
+                # Обрабатываем специфические ошибки
+                if error_code == 400:
+                    if "chat not found" in description.lower():
+                        logger.error(f"Чат {chat_id} не найден - возможно, пользователь заблокировал бота")
+                    elif "user not found" in description.lower():
+                        logger.error(f"Пользователь {chat_id} не найден")
+                    elif "bot was blocked" in description.lower():
+                        logger.error(f"Бот заблокирован пользователем {chat_id}")
+                    else:
+                        logger.error(f"Неизвестная ошибка 400: {description}")
+                
+                return {'ok': False, 'error_code': error_code, 'description': description}
+            except:
+                logger.error(f"Не удалось разобрать ответ об ошибке: {response_text}")
+                return {'ok': False, 'error': 'Failed to parse error response'}
+        
+        response.raise_for_status()
+        
+        result = response.json()
+        logger.info(f"Успешный ответ от Telegram API: {result}")
+        
+        return result
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Ошибка HTTP запроса к Telegram API: {e}")
+        return None
+    except json.JSONDecodeError as e:
+        logger.error(f"Ошибка декодирования JSON ответа от Telegram: {e}")
+        return None
+    except Exception as e:
+        logger.error(f"Неожиданная ошибка отправки сообщения в Telegram: {e}")
+        return None
 
 def handle_start_command(user):
     """Обработка команды /start"""
@@ -203,7 +284,7 @@ def handle_text_message(user, text):
                 return f"❌ Ошибка при обработке сообщения: {str(e)}", None
 
 def process_telegram_update(update_data):
-    """Основная функция обработки обновлений от Telegram"""
+    """Обработка обновления от Telegram webhook"""
     try:
         logger.info(f"Начало обработки обновления: {update_data}")
         
@@ -294,4 +375,147 @@ def process_telegram_update(update_data):
         
     except Exception as e:
         logger.error(f"Общая ошибка обработки Telegram обновления: {e}")
-        return False 
+        return False
+
+# ==================== NE_SRV_BOT ====================
+
+# Обработчик команды /start для первого бота
+async def ne_srv_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    chat_id = update.effective_chat.id
+    
+    # Сохраняем пользователя
+    telegram_user = await get_or_create_telegram_user_async(user.id, user.username, user.first_name, user.last_name)
+    
+    # Сохраняем сообщение
+    await save_telegram_message_async(telegram_user, '/start', 'command', True)
+    
+    response = "Привет! Я тестовый бот. Напиши что-нибудь!"
+    
+    # Сохраняем ответ бота
+    await save_telegram_message_async(telegram_user, response, 'text', False)
+    
+    await update.message.reply_text(response)
+
+# Обработчик команды /help для первого бота
+async def ne_srv_help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    
+    # Получаем или создаем пользователя
+    telegram_user = await get_or_create_telegram_user_async(user.id, user.username, user.first_name, user.last_name)
+    
+    # Сохраняем сообщение
+    await save_telegram_message_async(telegram_user, '/help', 'command', True)
+    
+    response = """
+    Доступные команды:
+    /start - начать общение
+    /help - помощь
+    """
+    
+    # Сохраняем ответ бота
+    await save_telegram_message_async(telegram_user, response, 'text', False)
+    
+    await update.message.reply_text(response)
+
+# Обработчик обычных текстовых сообщений для первого бота
+async def ne_srv_handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    user_message = update.message.text.lower()
+    
+    # Получаем или создаем пользователя
+    telegram_user = await get_or_create_telegram_user_async(user.id, user.username, user.first_name, user.last_name)
+    
+    # Сохраняем сообщение пользователя
+    await save_telegram_message_async(telegram_user, update.message.text, 'text', True)
+    
+    if "привет" in user_message:
+        response = "Привет! Как дела?"
+    elif "пока" in user_message:
+        response = "До свидания! Возвращайся :)"
+    else:
+        response = "Я не понял сообщение. Попробуй /help"
+    
+    # Сохраняем ответ бота
+    await save_telegram_message_async(telegram_user, response, 'text', False)
+    
+    await update.message.reply_text(response)
+
+# Обработчик ошибок для первого бота
+async def ne_srv_error(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    logger.error(f"NE_SRV_BOT Update {update} caused error {context.error}")
+
+# ==================== ФУНКЦИИ ЗАПУСКА БОТА ====================
+
+def start_ne_srv_bot_in_thread():
+    """Запускает бота в отдельном потоке"""
+    def run_bot():
+        try:
+            # Создаем новый event loop для потока
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            
+            # Запускаем бота
+            app = Application.builder().token(BOT_TOKEN).build()
+
+            # Регистрация обработчиков команд
+            app.add_handler(CommandHandler("start", ne_srv_start_command))
+            app.add_handler(CommandHandler("help", ne_srv_help_command))
+
+            # Регистрация обработчика текстовых сообщений
+            app.add_handler(MessageHandler(filters.TEXT, ne_srv_handle_message))
+
+            # Регистрация обработчика ошибок
+            app.add_error_handler(ne_srv_error)
+
+            logger.info("NE_SRV_BOT запущен и работает...")
+            
+            # Запускаем бота в бесконечном цикле
+            loop.run_until_complete(app.run_polling(poll_interval=3))
+            
+        except Exception as e:
+            logger.error(f'Ошибка в потоке NE_SRV_BOT: {e}')
+    
+    thread = threading.Thread(target=run_bot, daemon=True)
+    thread.start()
+    return thread
+
+def start_all_bots():
+    """Запускает ne_srv_bot в отдельном потоке"""
+    logger.info("Запуск ne_srv_bot...")
+    bot_thread = start_ne_srv_bot_in_thread()
+    return bot_thread
+
+def get_or_create_telegram_user(telegram_data):
+    """Получение или создание пользователя Telegram (синхронная версия)"""
+    telegram_id = telegram_data['id']
+    username = telegram_data.get('username')
+    first_name = telegram_data.get('first_name')
+    last_name = telegram_data.get('last_name')
+    
+    user, created = TelegramUser.objects.get_or_create(
+        telegram_id=telegram_id,
+        defaults={
+            'username': username,
+            'first_name': first_name,
+            'last_name': last_name,
+        }
+    )
+    
+    # Обновляем данные пользователя
+    if not created:
+        user.username = username
+        user.first_name = first_name
+        user.last_name = last_name
+        user.save()
+    
+    return user
+
+def save_telegram_message(user, content, message_type='text', is_from_user=True):
+    """Сохранение сообщения в базу данных (синхронная версия)"""
+    return TelegramMessage.objects.create(
+        user=user,
+        content=content,
+        message_type=message_type,
+        is_from_user=is_from_user
+    ) 
