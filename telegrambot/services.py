@@ -22,6 +22,8 @@ from telegram.ext import (
 )
 from asgiref.sync import sync_to_async
 
+logger = logging.getLogger(__name__)
+
 # Загружаем переменные окружения
 load_dotenv()
 
@@ -31,8 +33,6 @@ TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 if not TELEGRAM_TOKEN:
     logger.error("TELEGRAM_TOKEN не найден в переменных окружения!")
     logger.error("Убедитесь, что файл .env содержит строку: TELEGRAM_TOKEN=ваш_токен")
-
-logger = logging.getLogger(__name__)
 
 # Константы состояний для ConversationHandler
 MENU, SUBMENU = range(2)
@@ -518,4 +518,90 @@ def save_telegram_message(user, content, message_type='text', is_from_user=True)
         content=content,
         message_type=message_type,
         is_from_user=is_from_user
-    ) 
+    )
+
+def generate_document_with_deepseek(prompt):
+    """
+    Генерирует документ с помощью DeepSeek API
+    """
+    try:
+        logger.info(f"Отправляю запрос к DeepSeek API с промптом: {prompt[:100]}...")
+        
+        # Для тестирования интерфейса используем заглушку
+        if "test_mode" in prompt.lower():
+            fake_response = f"""
+📋 ДОКУМЕНТ (ТЕСТОВЫЙ РЕЖИМ)
+
+Запрос: {prompt}
+
+Это тестовый ответ от DeepSeek API. В реальном режиме здесь будет сгенерированный документ.
+
+Пример структуры документа:
+1. Заголовок
+2. Основная часть
+3. Заключение
+
+Документ будет отправлен всем пользователям Telegram бота.
+            """
+            logger.info("Используется тестовый режим")
+            return fake_response.strip()
+        
+        headers = {
+            'Authorization': f'Bearer {settings.DEEPSEEK_API_KEY}',
+            'Content-Type': 'application/json'
+        }
+        
+        data = {
+            'model': 'deepseek-chat',
+            'messages': [
+                {
+                    'role': 'system',
+                    'content': 'Ты опытный инженер-строитель и технический писатель. Твоя задача - создавать качественные строительные документы на русском языке.'
+                },
+                {
+                    'role': 'user',
+                    'content': prompt
+                }
+            ],
+            'max_tokens': 2000,
+            'temperature': 0.7
+        }
+        
+        logger.info(f"Отправляю POST запрос к {settings.DEEPSEEK_BASE_URL}/v1/chat/completions")
+        
+        try:
+            response = requests.post(
+                f'{settings.DEEPSEEK_BASE_URL}/v1/chat/completions',
+                headers=headers,
+                json=data,
+                timeout=60  # Увеличиваем таймаут до 60 секунд
+            )
+        except requests.exceptions.Timeout:
+            error_msg = "Таймаут подключения к DeepSeek API. Попробуйте позже."
+            logger.error(error_msg)
+            return error_msg
+        except requests.exceptions.ConnectionError:
+            error_msg = "Ошибка подключения к DeepSeek API. Проверьте интернет-соединение."
+            logger.error(error_msg)
+            return error_msg
+        except requests.exceptions.RequestException as e:
+            error_msg = f"Ошибка сетевого запроса к DeepSeek API: {str(e)}"
+            logger.error(error_msg)
+            return error_msg
+        
+        logger.info(f"Получен ответ от DeepSeek API: статус {response.status_code}")
+        
+        if response.status_code == 200:
+            result = response.json()
+            generated_content = result['choices'][0]['message']['content']
+            logger.info(f"Успешно сгенерирован документ длиной {len(generated_content)} символов")
+            return generated_content
+        else:
+            error_msg = f"Ошибка API: {response.status_code} - {response.text}"
+            logger.error(error_msg)
+            return error_msg
+            
+    except Exception as e:
+        error_msg = f"Ошибка при генерации документа: {str(e)}"
+        logger.error(error_msg)
+        return error_msg 

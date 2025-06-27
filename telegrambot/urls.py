@@ -10,4 +10,5 @@ urlpatterns = [
     path('webhook/status/', views.webhook_status, name='webhook_status'),
     path('management/', views.bot_management, name='management'),
     path('broadcast/', views.send_broadcast, name='broadcast'),
+    path('generate-document/', views.generate_document, name='generate_document'),
 ] 

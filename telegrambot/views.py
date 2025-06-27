@@ -295,3 +295,90 @@ def bot_dashboard(request):
     except Exception as e:
         logger.error(f"Ошибка получения данных dashboard: {e}")
         return JsonResponse({'error': str(e)}, status=500)
+
+@csrf_exempt
+@require_POST
+def generate_document(request):
+    """Генерация документа с помощью DeepSeek API"""
+    try:
+        data = json.loads(request.body)
+        prompt = data.get('prompt', '').strip()
+        
+        logger.info(f"Получен запрос на генерацию документа: {prompt}")
+        
+        if not prompt:
+            logger.error("Пустой запрос на генерацию документа")
+            return JsonResponse({'error': 'Запрос не может быть пустым'}, status=400)
+        
+        # Импортируем функцию генерации документа
+        from .services import generate_document_with_deepseek
+        
+        # Генерируем документ с помощью DeepSeek
+        logger.info("Отправляю запрос к DeepSeek API...")
+        generated_content = generate_document_with_deepseek(prompt)
+        logger.info(f"Получен ответ от DeepSeek: {generated_content[:200]}...")
+        
+        if generated_content.startswith('Ошибка'):
+            logger.error(f"Ошибка DeepSeek API: {generated_content}")
+            return JsonResponse({
+                'ok': False,
+                'error': generated_content
+            })
+        
+        # Получаем всех активных пользователей для отправки
+        users = TelegramUser.objects.filter(is_active=True)
+        total_users = users.count()
+        logger.info(f"Найдено активных пользователей: {total_users}")
+        
+        if total_users == 0:
+            logger.warning("Нет активных пользователей для отправки документа")
+            return JsonResponse({
+                'ok': False,
+                'error': 'Нет активных пользователей для отправки документа',
+                'generated_content': generated_content
+            })
+        
+        # Отправляем сгенерированный документ всем пользователям
+        sent_count = 0
+        failed_count = 0
+        
+        for user in users:
+            try:
+                logger.info(f"Отправляю документ пользователю {user.telegram_id} ({user.first_name})")
+                result = send_telegram_message(user.telegram_id, generated_content)
+                
+                if result and result.get('ok'):
+                    sent_count += 1
+                    logger.info(f"✅ Документ успешно отправлен пользователю {user.telegram_id}")
+                else:
+                    failed_count += 1
+                    logger.error(f"Ошибка отправки документа пользователю {user.telegram_id}: {result}")
+                    
+                    # Если пользователь заблокировал бота, помечаем его как неактивного
+                    if result and result.get('error_code') == 400:
+                        description = result.get('description', '').lower()
+                        if 'bot was blocked' in description or 'chat not found' in description:
+                            user.is_active = False
+                            user.save()
+                            logger.info(f"Пользователь {user.telegram_id} помечен как неактивный")
+                    
+            except Exception as e:
+                failed_count += 1
+                logger.error(f"Исключение при отправке документа пользователю {user.telegram_id}: {str(e)}")
+        
+        logger.info(f"Документ сгенерирован и отправлен: {sent_count}/{total_users} пользователей")
+        
+        return JsonResponse({
+            'ok': True,
+            'generated_content': generated_content,
+            'sent_count': sent_count,
+            'failed_count': failed_count,
+            'total_users': total_users
+        })
+        
+    except json.JSONDecodeError as e:
+        logger.error(f"Ошибка декодирования JSON: {e}")
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    except Exception as e:
+        logger.error(f"Ошибка генерации документа: {e}")
+        return JsonResponse({'error': str(e)}, status=500)

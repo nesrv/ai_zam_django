@@ -145,3 +145,7 @@ CSRF_COOKIE_HTTPONLY = False
 
 # Дополнительные настройки для cPanel
 CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
+
+# DeepSeek API настройки
+DEEPSEEK_API_KEY = 'sk-662acba6fe0143b798d4a41e071b3ec7'
+DEEPSEEK_BASE_URL = 'https://api.deepseek.com'
