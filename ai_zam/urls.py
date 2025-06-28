@@ -9,9 +9,9 @@ from django.views.static import serve as mediaserve
 from object.views import home, objects_list, object_detail, update_expense, update_resource_data
 
 # Изменяем заголовки админки
-admin.site.site_header = "Ruslan administration"
-admin.site.site_title = "Ruslan administration"
-admin.site.index_title = "Добро пожаловать в Ruslan administration"
+# admin.site.site_header = "Ruslan administration"
+# admin.site.site_title = "Ruslan administration"
+# admin.site.index_title = "Добро пожаловать в Ruslan administration"
 
 urlpatterns = [
     path('admin/', admin.site.urls),

@@ -397,3 +397,30 @@ def generate_document(request):
     except Exception as e:
         logger.error(f"Ошибка генерации документа: {e}")
         return JsonResponse({'error': str(e)}, status=500)
+
+@csrf_exempt
+def clear_cache_view(request):
+    """Временный view для очистки кэша (удалить после использования)"""
+    if request.method == 'POST':
+        try:
+            from django.core.cache import cache
+            cache.clear()
+            
+            # Пересобираем статические файлы
+            from django.core.management import call_command
+            call_command('collectstatic', '--noinput', '--clear')
+            
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Кэш очищен и статические файлы пересобраны'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': f'Ошибка: {str(e)}'
+            }, status=500)
+    
+    return JsonResponse({
+        'status': 'info',
+        'message': 'Отправьте POST запрос для очистки кэша'
+    })

@@ -204,18 +204,18 @@ class ObjektAdmin(admin.ModelAdmin):
         if not fakticheskiye_raskhody.exists():
             return "Нет фактических расходов"
         
-        html = '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">'
-        html += '<tr style="background: #000; color: #fff;">'
-        html += '<th style="padding: 8px; border: 1px solid #000;">Ресурс</th>'
-        html += '<th style="padding: 8px; border: 1px solid #000;">Дата</th>'
-        html += '<th style="padding: 8px; border: 1px solid #000;">Израсходовано</th>'
+        html = '<table>'
+        html += '<tr>'
+        html += '<th>Ресурс</th>'
+        html += '<th>Дата</th>'
+        html += '<th>Израсходовано</th>'
         html += '</tr>'
         
         for raskhod in fakticheskiye_raskhody:
             html += '<tr>'
-            html += f'<td style="padding: 8px; border: 1px solid #ccc; color: #000;">{raskhod.fakticheskij_resurs.resurs_po_objektu.resurs.naimenovanie}</td>'
-            html += f'<td style="padding: 8px; border: 1px solid #ccc; color: #000;">{raskhod.data.strftime("%d.%m.%Y")}</td>'
-            html += f'<td style="padding: 8px; border: 1px solid #ccc; color: #000;">{format_number(raskhod.izraskhodovano)}</td>'
+            html += f'<td>{raskhod.fakticheskij_resurs.resurs_po_objektu.resurs.naimenovanie}</td>'
+            html += f'<td>{raskhod.data.strftime("%d.%m.%Y")}</td>'
+            html += f'<td>{format_number(raskhod.izraskhodovano)}</td>'
             html += '</tr>'
         
         html += '</table>'
@@ -236,20 +236,20 @@ class ObjektAdmin(admin.ModelAdmin):
             
             # Создаем HTML таблицу
             if fakticheskiye_raskhody.exists():
-                table_html = '<div style="margin: 20px 0; padding: 20px; background: #fff; border: 2px solid #000;">'
-                table_html += '<h2 style="color: #000; margin-bottom: 15px;">Фактические расходы ресурсов (последние 10 дней)</h2>'
-                table_html += '<table style="width: 100%; border-collapse: collapse;">'
-                table_html += '<tr style="background: #000; color: #fff;">'
-                table_html += '<th style="padding: 10px; border: 1px solid #000;">Ресурс</th>'
-                table_html += '<th style="padding: 10px; border: 1px solid #000;">Дата</th>'
-                table_html += '<th style="padding: 10px; border: 1px solid #000;">Израсходовано</th>'
+                table_html = '<div>'
+                table_html += '<h2>Фактические расходы ресурсов (последние 10 дней)</h2>'
+                table_html += '<table>'
+                table_html += '<tr>'
+                table_html += '<th>Ресурс</th>'
+                table_html += '<th>Дата</th>'
+                table_html += '<th>Израсходовано</th>'
                 table_html += '</tr>'
                 
                 for raskhod in fakticheskiye_raskhody:
                     table_html += '<tr>'
-                    table_html += f'<td style="padding: 10px; border: 1px solid #ccc; color: #000;">{raskhod.fakticheskij_resurs.resurs_po_objektu.resurs.naimenovanie}</td>'
-                    table_html += f'<td style="padding: 10px; border: 1px solid #ccc; color: #000;">{raskhod.data.strftime("%d.%m.%Y")}</td>'
-                    table_html += f'<td style="padding: 10px; border: 1px solid #ccc; color: #000;">{int(raskhod.izraskhodovano)}</td>'
+                    table_html += f'<td>{raskhod.fakticheskij_resurs.resurs_po_objektu.resurs.naimenovanie}</td>'
+                    table_html += f'<td>{raskhod.data.strftime("%d.%m.%Y")}</td>'
+                    table_html += f'<td>{int(raskhod.izraskhodovano)}</td>'
                     table_html += '</tr>'
                 
                 table_html += '</table></div>'

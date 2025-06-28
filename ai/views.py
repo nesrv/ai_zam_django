@@ -11,6 +11,9 @@ from .services import (
     format_menu_text,
     get_ai_response
 )
+import os
+from datetime import datetime
+import markdown
 
 # Create your views here.
 
@@ -20,7 +23,6 @@ from .services import (
 def index(request):
     """Главная страница AI приложения с информацией о подключении"""
     # Проверяем наличие API ключа
-    import os
     from dotenv import load_dotenv
     load_dotenv()
     
@@ -96,6 +98,58 @@ def chat_api(request):
         return JsonResponse({'error': f'Ошибка сервера: {str(e)}'}, status=500)
 
 @csrf_exempt
+@require_http_methods(["POST"])
+def home_chat_api(request):
+    """API для чат-бота на главной странице"""
+    try:
+        data = json.loads(request.body)
+        message = data.get('message', '').strip()
+        
+        if not message:
+            return JsonResponse({'error': 'Сообщение не может быть пустым'}, status=400)
+        
+        # Создаем временную сессию для главной страницы
+        session = ChatSession.objects.create(session_id=str(uuid.uuid4())[:8])
+        
+        # Сохраняем сообщение пользователя
+        ChatMessage.objects.create(
+            session=session,
+            message_type='user',
+            content=message
+        )
+        
+        # Получаем ответ от DeepSeek
+        try:
+            response_text = get_ai_response(message, [])
+        except Exception as e:
+            # Если API недоступен, используем запасные ответы
+            fallback_responses = [
+                "Спасибо за ваш вопрос! Я проанализирую его и дам подробный ответ.",
+                "Отличный вопрос! Позвольте мне составить для вас детальный план.",
+                "Понимаю вашу задачу. Сейчас подготовлю необходимую документацию.",
+                "Интересная задача! Давайте разберем её по пунктам.",
+                "Спасибо! Я изучу ваш запрос и предоставлю профессиональную консультацию."
+            ]
+            response_text = fallback_responses[hash(message) % len(fallback_responses)]
+        
+        # Сохраняем ответ AI
+        ChatMessage.objects.create(
+            session=session,
+            message_type='assistant',
+            content=response_text
+        )
+        
+        return JsonResponse({
+            'response': response_text,
+            'session_id': session.session_id
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Неверный формат JSON'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': f'Ошибка сервера: {str(e)}'}, status=500)
+
+@csrf_exempt
 @require_http_methods(["GET"])
 def chat_history(request):
     """Получение истории чата"""
@@ -130,3 +184,227 @@ def chat_interface(request):
 def menu_generator(request):
     """Генератор меню"""
     return render(request, 'ai/menu_generator.html')
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def generate_document(request):
+    """Генерация документа на основе ответа чат-бота"""
+    try:
+        data = json.loads(request.body)
+        content = data.get('content', '').strip()
+        doc_type = data.get('type', 'txt')  # txt, pdf, docx, md
+        filename = data.get('filename', 'document')
+        
+        if not content:
+            return JsonResponse({'error': 'Содержимое документа не может быть пустым'}, status=400)
+        
+        # Очищаем имя файла от недопустимых символов
+        filename = "".join(c for c in filename if c.isalnum() or c in (' ', '-', '_')).rstrip()
+        if not filename:
+            filename = 'document'
+        
+        # Добавляем временную метку
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        
+        if doc_type == 'txt':
+            # Генерируем текстовый файл
+            response = HttpResponse(content, content_type='text/plain; charset=utf-8')
+            response['Content-Disposition'] = f'attachment; filename="{filename}_{timestamp}.txt"'
+            return response
+            
+        elif doc_type == 'md':
+            # Генерируем Markdown файл
+            response = HttpResponse(content, content_type='text/markdown; charset=utf-8')
+            response['Content-Disposition'] = f'attachment; filename="{filename}_{timestamp}.md"'
+            return response
+            
+        elif doc_type == 'pdf':
+            # Конвертируем Markdown в HTML для PDF
+            html_content = markdown.markdown(content, extensions=['tables', 'fenced_code', 'codehilite'])
+            
+            full_html = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <title>{filename}</title>
+                <style>
+                    body {{
+                        font-family: Arial, sans-serif;
+                        margin: 40px;
+                        line-height: 1.6;
+                        color: #333;
+                    }}
+                    .header {{
+                        border-bottom: 2px solid #007AFF;
+                        padding-bottom: 10px;
+                        margin-bottom: 20px;
+                    }}
+                    .content {{
+                        font-size: 14px;
+                    }}
+                    .footer {{
+                        margin-top: 30px;
+                        padding-top: 10px;
+                        border-top: 1px solid #ddd;
+                        font-size: 12px;
+                        color: #666;
+                    }}
+                    /* Стили для Markdown */
+                    h1, h2, h3, h4, h5, h6 {{
+                        color: #007AFF;
+                        margin-top: 20px;
+                        margin-bottom: 10px;
+                    }}
+                    code {{
+                        background: #f4f4f4;
+                        padding: 2px 4px;
+                        border-radius: 3px;
+                        font-family: 'Courier New', monospace;
+                    }}
+                    pre {{
+                        background: #f8f8f8;
+                        padding: 15px;
+                        border-radius: 5px;
+                        overflow-x: auto;
+                        border-left: 4px solid #007AFF;
+                    }}
+                    blockquote {{
+                        border-left: 4px solid #007AFF;
+                        margin: 0;
+                        padding-left: 15px;
+                        color: #666;
+                        font-style: italic;
+                    }}
+                    table {{
+                        border-collapse: collapse;
+                        width: 100%;
+                        margin: 15px 0;
+                    }}
+                    th, td {{
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                        text-align: left;
+                    }}
+                    th {{
+                        background-color: #f2f2f2;
+                        font-weight: bold;
+                    }}
+                    ul, ol {{
+                        padding-left: 20px;
+                    }}
+                    li {{
+                        margin: 5px 0;
+                    }}
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>{filename}</h1>
+                    <p>Сгенерировано: {datetime.now().strftime("%d.%m.%Y %H:%M")}</p>
+                </div>
+                <div class="content">{html_content}</div>
+                <div class="footer">
+                    <p>Документ создан с помощью AI-Зам</p>
+                </div>
+            </body>
+            </html>
+            """
+            
+            response = HttpResponse(full_html, content_type='text/html; charset=utf-8')
+            response['Content-Disposition'] = f'attachment; filename="{filename}_{timestamp}.html"'
+            return response
+            
+        elif doc_type == 'docx':
+            # Конвертируем Markdown в HTML для DOCX
+            html_content = markdown.markdown(content, extensions=['tables', 'fenced_code', 'codehilite'])
+            
+            full_html = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <title>{filename}</title>
+                <style>
+                    body {{
+                        font-family: 'Times New Roman', serif;
+                        margin: 40px;
+                        line-height: 1.5;
+                        color: #000;
+                    }}
+                    .header {{
+                        text-align: center;
+                        margin-bottom: 30px;
+                    }}
+                    .content {{
+                        font-size: 14px;
+                        text-align: justify;
+                    }}
+                    /* Стили для Markdown */
+                    h1, h2, h3, h4, h5, h6 {{
+                        color: #000;
+                        margin-top: 20px;
+                        margin-bottom: 10px;
+                    }}
+                    code {{
+                        background: #f4f4f4;
+                        padding: 2px 4px;
+                        border-radius: 3px;
+                        font-family: 'Courier New', monospace;
+                    }}
+                    pre {{
+                        background: #f8f8f8;
+                        padding: 15px;
+                        border-radius: 5px;
+                        overflow-x: auto;
+                        border-left: 4px solid #000;
+                    }}
+                    blockquote {{
+                        border-left: 4px solid #000;
+                        margin: 0;
+                        padding-left: 15px;
+                        color: #333;
+                        font-style: italic;
+                    }}
+                    table {{
+                        border-collapse: collapse;
+                        width: 100%;
+                        margin: 15px 0;
+                    }}
+                    th, td {{
+                        border: 1px solid #000;
+                        padding: 8px;
+                        text-align: left;
+                    }}
+                    th {{
+                        background-color: #f2f2f2;
+                        font-weight: bold;
+                    }}
+                    ul, ol {{
+                        padding-left: 20px;
+                    }}
+                    li {{
+                        margin: 5px 0;
+                    }}
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>{filename}</h1>
+                </div>
+                <div class="content">{html_content}</div>
+            </body>
+            </html>
+            """
+            
+            response = HttpResponse(full_html, content_type='text/html; charset=utf-8')
+            response['Content-Disposition'] = f'attachment; filename="{filename}_{timestamp}.html"'
+            return response
+            
+        else:
+            return JsonResponse({'error': 'Неподдерживаемый тип документа'}, status=400)
+            
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Неверный формат JSON'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': f'Ошибка сервера: {str(e)}'}, status=500)

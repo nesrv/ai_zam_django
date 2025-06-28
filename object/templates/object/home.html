@@ -136,6 +136,164 @@
     line-height: 1.5;
 }
 
+/* Стили для чат-бота */
+.chat-messages {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.bot-message {
+    background: #f0f0f0;
+    margin-bottom: 10px;
+}
+
+.user-message {
+    background: #007AFF;
+    color: white;
+    margin-left: 20px;
+    margin-right: 10px;
+    text-align: right;
+}
+
+.chat-input-container {
+    display: flex;
+    padding: 10px;
+    background: #f8f8f8;
+    border-top: 1px solid #e0e0e0;
+}
+
+.chat-input {
+    flex: 1;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    outline: none;
+    background: white;
+}
+
+.chat-input:focus {
+    box-shadow: 0 0 0 2px #007AFF;
+}
+
+.send-button {
+    background: #007AFF;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin-left: 10px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.send-button:hover {
+    background: #0056b3;
+}
+
+.send-button:active {
+    transform: scale(0.95);
+}
+
+/* Стили для сообщений */
+.message-time {
+    font-size: 0.7rem;
+    opacity: 0.7;
+    margin-top: 5px;
+}
+
+/* Индикатор загрузки */
+.loading-indicator {
+    padding: 15px;
+    text-align: center;
+    background: #f8f8f8;
+    border-top: 1px solid #e0e0e0;
+}
+
+.loading-dots {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 8px;
+}
+
+.loading-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #007AFF;
+    animation: loading-dots 1.4s infinite ease-in-out;
+}
+
+.loading-dots span:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes loading-dots {
+    0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.loading-text {
+    font-size: 0.8rem;
+    color: #666;
+    font-style: italic;
+}
+
+/* Кнопки скачивания */
+.download-buttons {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.download-btn {
+    background: #007AFF;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 5px 10px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    font-weight: 500;
+}
+
+.download-btn:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+}
+
+.download-btn:active {
+    transform: translateY(0);
+}
+
+/* Адаптивность для кнопок скачивания */
+@media (max-width: 768px) {
+    .download-buttons {
+        gap: 3px;
+    }
+    
+    .download-btn {
+        padding: 4px 8px;
+        font-size: 0.6rem;
+    }
+}
+
 .cta-section {
     text-align: center;
     margin: 3rem 0;
@@ -212,6 +370,25 @@
     display: block;
 }
 
+/* Эффект печатающей машинки */
+.typewriter-cursor {
+    color: #007AFF;
+    font-weight: bold;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+#typewriter-text {
+    color: #000;
+    white-space: pre-wrap;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+}
+
 .ai-btn {
     border-left: 4px solid #007bff;
 }
@@ -270,6 +447,105 @@
     .btn-text {
         font-size: 1.3rem;
     }
+    
+    /* Адаптивность для чат-бота */
+    .chat-messages {
+        max-height: 250px;
+    }
+    
+    .chat-input {
+        font-size: 0.8rem;
+        padding: 8px 12px;
+    }
+    
+    .send-button {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+    
+    .chat-message {
+        font-size: 0.8rem;
+        padding: 15px;
+    }
+}
+
+/* Стили для Markdown контента */
+.markdown-content {
+    line-height: 1.6;
+}
+
+.markdown-content h1 {
+    font-size: 1.4rem;
+    color: #007AFF;
+    margin: 10px 0 8px 0;
+    font-weight: bold;
+}
+
+.markdown-content h2 {
+    font-size: 1.2rem;
+    color: #007AFF;
+    margin: 8px 0 6px 0;
+    font-weight: bold;
+}
+
+.markdown-content h3 {
+    font-size: 1.1rem;
+    color: #007AFF;
+    margin: 6px 0 4px 0;
+    font-weight: bold;
+}
+
+.markdown-content strong {
+    font-weight: bold;
+    color: #333;
+}
+
+.markdown-content em {
+    font-style: italic;
+    color: #666;
+}
+
+.markdown-content code {
+    background: #f4f4f4;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    color: #e74c3c;
+}
+
+.markdown-content a {
+    color: #007AFF;
+    text-decoration: underline;
+}
+
+.markdown-content a:hover {
+    color: #0056b3;
+}
+
+.markdown-content li {
+    margin: 2px 0;
+    padding-left: 5px;
+}
+
+/* Адаптивность для Markdown */
+@media (max-width: 768px) {
+    .markdown-content h1 {
+        font-size: 1.2rem;
+    }
+    
+    .markdown-content h2 {
+        font-size: 1.1rem;
+    }
+    
+    .markdown-content h3 {
+        font-size: 1rem;
+    }
+    
+    .markdown-content code {
+        font-size: 0.8em;
+    }
 }
 {% endblock %}
 
@@ -295,8 +571,25 @@
             <div class="iphone-frame">
                 <div class="iphone-screen">
                     <div class="chat-header">Чат-бот</div>
-                    <div class="chat-message">
-                        <p>Здравствуйте! Я виртуальный инженер-строитель с 30-летним опытом. Задайте мне вопрос или загрузите документ для анализа.</p>
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="chat-message bot-message">
+                            <div id="typewriter-container">
+                                <div id="typewriter-text"></div>
+                                <span id="typewriter-cursor" class="typewriter-cursor">|</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <input type="text" id="message-input" class="chat-input" placeholder="Введите сообщение..." maxlength="100">
+                        <button id="send-button" class="send-button">📤</button>
+                    </div>
+                    <div id="loading-indicator" class="loading-indicator" style="display: none;">
+                        <div class="loading-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <div class="loading-text">AI думает...</div>
                     </div>
                 </div>
             </div>
@@ -330,4 +623,288 @@
 <section class="cta-section">
     <a href="/admin/" class="btn-primary">Перейти к управлению</a>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const typewriterText = document.getElementById('typewriter-text');
+    const typewriterCursor = document.getElementById('typewriter-cursor');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const chatMessages = document.getElementById('chat-messages');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    
+    if (!typewriterText || !typewriterCursor || !messageInput || !sendButton || !chatMessages || !loadingIndicator) {
+        console.error('Элементы чат-бота не найдены');
+        return;
+    }
+    
+    // Приветственное сообщение
+    const welcomeMessage = "Здравствуйте! Я виртуальный инженер-строитель с 30-летним опытом. Задайте мне вопрос или загрузите документ для анализа.";
+    
+    let isTyping = true;
+    let isWaitingForResponse = false;
+    
+    function typeWriter(text, targetElement, onComplete) {
+        let currentIndex = 0;
+        
+        function typeNext() {
+            if (currentIndex < text.length) {
+                targetElement.textContent += text.charAt(currentIndex);
+                currentIndex++;
+                setTimeout(typeNext, 50);
+            } else {
+                if (onComplete) onComplete();
+            }
+        }
+        
+        typeNext();
+    }
+    
+    function addMessage(content, isUser = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message ${isUser ? 'user-message' : 'bot-message'}`;
+        
+        const time = new Date().toLocaleTimeString();
+        
+        if (isUser) {
+            messageDiv.innerHTML = `
+                <div>${content}</div>
+                <div class="message-time">${time}</div>
+            `;
+        } else {
+            // Создаем уникальный ID для сообщения
+            const messageId = 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
+            // Сохраняем контент в data-атрибуте
+            messageDiv.setAttribute('data-content', content);
+            messageDiv.setAttribute('data-message-id', messageId);
+            
+            // Простое преобразование Markdown в HTML для отображения
+            const formattedContent = formatMarkdown(content);
+            
+            // Добавляем кнопки скачивания для сообщений бота
+            const downloadButtons = `
+                <div class="download-buttons">
+                    <button class="download-btn" onclick="downloadDocumentById('${messageId}', 'txt', 'Ответ_бота')" title="Скачать как TXT">
+                        📄 TXT
+                    </button>
+                    <button class="download-btn" onclick="downloadDocumentById('${messageId}', 'md', 'Ответ_бота')" title="Скачать как Markdown">
+                        📝 MD
+                    </button>
+                    <button class="download-btn" onclick="downloadDocumentById('${messageId}', 'pdf', 'Ответ_бота')" title="Скачать как HTML">
+                        🌐 HTML
+                    </button>
+                    <button class="download-btn" onclick="downloadDocumentById('${messageId}', 'docx', 'Ответ_бота')" title="Скачать как DOCX">
+                        📋 DOCX
+                    </button>
+                </div>
+            `;
+            
+            messageDiv.innerHTML = `
+                <div class="markdown-content">${formattedContent}</div>
+                <div class="message-time">${time}</div>
+                ${downloadButtons}
+            `;
+        }
+        
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    // Функция для простого форматирования Markdown
+    function formatMarkdown(text) {
+        return text
+            // Заголовки
+            .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+            .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+            .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+            // Жирный текст
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            // Курсив
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            // Код
+            .replace(/`(.*?)`/g, '<code>$1</code>')
+            // Списки
+            .replace(/^\* (.*$)/gim, '<li>$1</li>')
+            .replace(/^- (.*$)/gim, '<li>$1</li>')
+            // Ссылки
+            .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+            // Переносы строк
+            .replace(/\n/g, '<br>');
+    }
+    
+    function showLoading(show) {
+        loadingIndicator.style.display = show ? 'block' : 'none';
+    }
+    
+    function sendMessage() {
+        const message = messageInput.value.trim();
+        
+        if (!message || isWaitingForResponse) return;
+        
+        // Добавляем сообщение пользователя
+        addMessage(message, true);
+        messageInput.value = '';
+        
+        isWaitingForResponse = true;
+        sendButton.disabled = true;
+        sendButton.style.opacity = '0.5';
+        showLoading(true);
+        
+        // Отправляем запрос к DeepSeek API
+        fetch('/ai/api/home-chat/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                message: message
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            showLoading(false);
+            if (data.error) {
+                // Если ошибка API, используем запасной ответ
+                const fallbackResponses = [
+                    "Спасибо за ваш вопрос! Я проанализирую его и дам подробный ответ.",
+                    "Отличный вопрос! Позвольте мне составить для вас детальный план.",
+                    "Понимаю вашу задачу. Сейчас подготовлю необходимую документацию.",
+                    "Интересная задача! Давайте разберем её по пунктам.",
+                    "Спасибо! Я изучу ваш запрос и предоставлю профессиональную консультацию."
+                ];
+                const randomResponse = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+                showBotResponse(randomResponse);
+            } else {
+                // Показываем ответ от DeepSeek
+                showBotResponse(data.response);
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка API:', error);
+            showLoading(false);
+            // Запасной ответ при ошибке сети
+            const fallbackResponses = [
+                "Спасибо за ваш вопрос! Я проанализирую его и дам подробный ответ.",
+                "Отличный вопрос! Позвольте мне составить для вас детальный план.",
+                "Понимаю вашу задачу. Сейчас подготовлю необходимую документацию.",
+                "Интересная задача! Давайте разберем её по пунктам.",
+                "Спасибо! Я изучу ваш запрос и предоставлю профессиональную консультацию."
+            ];
+            const randomResponse = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+            showBotResponse(randomResponse);
+        });
+    }
+    
+    function showBotResponse(responseText) {
+        // Создаем новый элемент для ответа бота
+        const botMessageDiv = document.createElement('div');
+        botMessageDiv.className = 'chat-message bot-message';
+        chatMessages.appendChild(botMessageDiv);
+        
+        // Печатаем ответ с эффектом печатающей машинки
+        typeWriter(responseText, botMessageDiv, function() {
+            isWaitingForResponse = false;
+            sendButton.disabled = false;
+            sendButton.style.opacity = '1';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+    }
+    
+    // Функция для получения CSRF токена
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    // Функция для скачивания документов
+    function downloadDocument(content, docType, filename) {
+        // Очищаем контент от HTML тегов
+        const cleanContent = content.replace(/<[^>]*>/g, '');
+        
+        // Создаем форму для отправки данных
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/ai/api/generate-document/';
+        form.target = '_blank';
+        
+        // Добавляем CSRF токен
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = getCookie('csrftoken');
+        form.appendChild(csrfInput);
+        
+        // Добавляем данные документа
+        const contentInput = document.createElement('input');
+        contentInput.type = 'hidden';
+        contentInput.name = 'content';
+        contentInput.value = cleanContent;
+        form.appendChild(contentInput);
+        
+        const typeInput = document.createElement('input');
+        typeInput.type = 'hidden';
+        typeInput.name = 'type';
+        typeInput.value = docType;
+        form.appendChild(typeInput);
+        
+        const filenameInput = document.createElement('input');
+        filenameInput.type = 'hidden';
+        filenameInput.name = 'filename';
+        filenameInput.value = filename;
+        form.appendChild(filenameInput);
+        
+        // Добавляем форму на страницу и отправляем
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
+    
+    // Функция для скачивания документа по ID сообщения
+    function downloadDocumentById(messageId, docType, filename) {
+        const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+        if (messageElement) {
+            const content = messageElement.getAttribute('data-content');
+            if (content) {
+                downloadDocument(content, docType, filename);
+            }
+        }
+    }
+    
+    // Глобальные функции для вызова из HTML
+    window.downloadDocument = downloadDocument;
+    window.downloadDocumentById = downloadDocumentById;
+    
+    // Обработчики событий
+    sendButton.addEventListener('click', sendMessage);
+    
+    messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+    
+    // Начинаем печатать приветственное сообщение
+    typeWriter(welcomeMessage, typewriterText, function() {
+        // Завершение анимации
+        isTyping = false;
+        
+        // Скрываем курсор через 2 секунды после завершения
+        setTimeout(() => {
+            typewriterCursor.style.display = 'none';
+        }, 2000);
+    });
+});
+</script>
 {% endblock %}
