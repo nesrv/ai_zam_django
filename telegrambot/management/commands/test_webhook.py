@@ -46,7 +46,7 @@ class Command(BaseCommand):
 
     def set_webhook(self):
         """Устанавливает webhook"""
-        webhook_url = "https://programism.ru/telegram/webhook/"
+        webhook_url = "https://ai-zam.ru/telegram/webhook/"
         
         try:
             response = requests.post(

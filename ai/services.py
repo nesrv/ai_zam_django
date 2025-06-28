@@ -170,8 +170,15 @@ def get_ai_response(message, session_messages=None):
                     for msg in last_msgs:
                         # Проверяем, что у объекта есть нужные атрибуты
                         if hasattr(msg, 'message_type') and hasattr(msg, 'content'):
+                            # Преобразуем message_type в допустимый role для DeepSeek API
+                            role = msg.message_type
+                            if role == "text":
+                                role = "user" if hasattr(msg, 'is_from_user') and msg.is_from_user else "assistant"
+                            elif role not in ["system", "user", "assistant", "tool"]:
+                                role = "user"  # По умолчанию user
+                            
                             messages.append({
-                                "role": msg.message_type,
+                                "role": role,
                                 "content": msg.content
                             })
                         else:

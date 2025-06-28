@@ -363,7 +363,7 @@ def start_bots():
     setup_handlers(application)
     
     # Настраиваем webhook для получения сообщений
-    webhook_url = "https://programism.ru/telegram/webhook/"
+    webhook_url = "https://ai-zam.ru/telegram/webhook/"
     if setup_webhook(application, webhook_url):
         logger.info("✅ Боты запущены с webhook")
     else:
