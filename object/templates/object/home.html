@@ -801,10 +801,53 @@ document.addEventListener('DOMContentLoaded', function() {
         // Создаем новый элемент для ответа бота
         const botMessageDiv = document.createElement('div');
         botMessageDiv.className = 'chat-message bot-message';
+        
+        // Создаем уникальный ID для сообщения
+        const messageId = 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        
+        // Сохраняем контент в data-атрибуте
+        botMessageDiv.setAttribute('data-content', responseText);
+        botMessageDiv.setAttribute('data-message-id', messageId);
+        
+        // Простое преобразование Markdown в HTML для отображения
+        const formattedContent = formatMarkdown(responseText);
+        
+        const time = new Date().toLocaleTimeString();
+        
+        // Добавляем кнопки скачивания для сообщений бота
+        const downloadButtons = `
+            <div class="download-buttons">
+                <button class="download-btn" onclick="downloadDocumentById('${messageId}', 'txt', 'Ответ_бота')" title="Скачать как TXT">
+                    📄 TXT
+                </button>
+                <button class="download-btn" onclick="downloadDocumentById('${messageId}', 'md', 'Ответ_бота')" title="Скачать как Markdown">
+                    📝 MD
+                </button>
+                <button class="download-btn" onclick="downloadDocumentById('${messageId}', 'pdf', 'Ответ_бота')" title="Скачать как HTML">
+                    🌐 HTML
+                </button>
+                <button class="download-btn" onclick="downloadDocumentById('${messageId}', 'docx', 'Ответ_бота')" title="Скачать как DOCX">
+                    📋 DOCX
+                </button>
+            </div>
+        `;
+        
+        botMessageDiv.innerHTML = `
+            <div class="markdown-content">${formattedContent}</div>
+            <div class="message-time">${time}</div>
+            ${downloadButtons}
+        `;
+        
         chatMessages.appendChild(botMessageDiv);
         
         // Печатаем ответ с эффектом печатающей машинки
-        typeWriter(responseText, botMessageDiv, function() {
+        const contentDiv = botMessageDiv.querySelector('.markdown-content');
+        const originalContent = contentDiv.innerHTML;
+        contentDiv.innerHTML = '';
+        
+        typeWriter(responseText, contentDiv, function() {
+            // После завершения печати применяем форматирование
+            contentDiv.innerHTML = originalContent;
             isWaitingForResponse = false;
             sendButton.disabled = false;
             sendButton.style.opacity = '1';

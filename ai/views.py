@@ -190,18 +190,35 @@ def menu_generator(request):
 def generate_document(request):
     """Генерация документа на основе ответа чат-бота"""
     try:
-        data = json.loads(request.body)
-        content = data.get('content', '').strip()
-        doc_type = data.get('type', 'txt')  # txt, pdf, docx, md
-        filename = data.get('filename', 'document')
+        print(f"DEBUG: Content-Type: {request.content_type}")
+        print(f"DEBUG: Request body length: {len(request.body) if request.body else 0}")
+        print(f"DEBUG: POST data: {request.POST}")
+        
+        # Пытаемся получить данные из JSON
+        try:
+            data = json.loads(request.body)
+            content = data.get('content', '').strip()
+            doc_type = data.get('type', 'txt')
+            filename = data.get('filename', 'document')
+            print(f"DEBUG: JSON data - content length: {len(content)}, type: {doc_type}, filename: {filename}")
+        except (json.JSONDecodeError, AttributeError) as e:
+            print(f"DEBUG: JSON decode error: {e}")
+            # Если JSON не работает, берем из form data
+            content = request.POST.get('content', '').strip()
+            doc_type = request.POST.get('type', 'txt')
+            filename = request.POST.get('filename', 'document')
+            print(f"DEBUG: Form data - content length: {len(content)}, type: {doc_type}, filename: {filename}")
         
         if not content:
+            print("DEBUG: Empty content")
             return JsonResponse({'error': 'Содержимое документа не может быть пустым'}, status=400)
         
         # Очищаем имя файла от недопустимых символов
         filename = "".join(c for c in filename if c.isalnum() or c in (' ', '-', '_')).rstrip()
         if not filename:
             filename = 'document'
+        
+        print(f"DEBUG: Processing document - type: {doc_type}, filename: {filename}")
         
         # Добавляем временную метку
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -210,12 +227,14 @@ def generate_document(request):
             # Генерируем текстовый файл
             response = HttpResponse(content, content_type='text/plain; charset=utf-8')
             response['Content-Disposition'] = f'attachment; filename="{filename}_{timestamp}.txt"'
+            print(f"DEBUG: Generated TXT file: {filename}_{timestamp}.txt")
             return response
             
         elif doc_type == 'md':
             # Генерируем Markdown файл
             response = HttpResponse(content, content_type='text/markdown; charset=utf-8')
             response['Content-Disposition'] = f'attachment; filename="{filename}_{timestamp}.md"'
+            print(f"DEBUG: Generated MD file: {filename}_{timestamp}.md")
             return response
             
         elif doc_type == 'pdf':
@@ -313,6 +332,7 @@ def generate_document(request):
             
             response = HttpResponse(full_html, content_type='text/html; charset=utf-8')
             response['Content-Disposition'] = f'attachment; filename="{filename}_{timestamp}.html"'
+            print(f"DEBUG: Generated HTML file: {filename}_{timestamp}.html")
             return response
             
         elif doc_type == 'docx':
@@ -399,12 +419,13 @@ def generate_document(request):
             
             response = HttpResponse(full_html, content_type='text/html; charset=utf-8')
             response['Content-Disposition'] = f'attachment; filename="{filename}_{timestamp}.html"'
+            print(f"DEBUG: Generated DOCX file: {filename}_{timestamp}.html")
             return response
             
         else:
+            print(f"DEBUG: Unsupported document type: {doc_type}")
             return JsonResponse({'error': 'Неподдерживаемый тип документа'}, status=400)
             
-    except json.JSONDecodeError:
-        return JsonResponse({'error': 'Неверный формат JSON'}, status=400)
     except Exception as e:
+        print(f"DEBUG: Exception in generate_document: {e}")
         return JsonResponse({'error': f'Ошибка сервера: {str(e)}'}, status=500)
