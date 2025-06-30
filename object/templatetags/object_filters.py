@@ -50,3 +50,33 @@ def get_daily_total(daily_totals, day):
     """Получает сумму для конкретной даты из словаря daily_totals"""
     day_key = day.strftime('%Y-%m-%d')
     return daily_totals.get(day_key, 0)
+
+@register.filter
+def calculate_daily_total(category, context):
+    """Вычисляет сумму фактических расходов по дню для категории"""
+    day = context.get('day')
+    resources = context.get('resources')
+    fakticheskij_resursy = context.get('fakticheskij_resursy')
+    raskhody = context.get('raskhody')
+    
+    if not day or not resources or not fakticheskij_resursy or not raskhody:
+        return 0
+    
+    total = 0
+    day_key = day.strftime('%Y-%m-%d')
+    
+    # Фильтруем ресурсы по категории
+    category_resources = [r for r in resources if r.resurs.kategoriya_resursa.nazvanie == category]
+    
+    for resource in category_resources:
+        # Ищем фактические ресурсы для этого ресурса
+        for fr in fakticheskij_resursy:
+            if fr.resurs_po_objektu.id == resource.id:
+                # Ищем расходы по дням
+                for rashod in raskhody.get(fr.id, []):
+                    if rashod.data.strftime('%Y-%m-%d') == day_key:
+                        # Вычисляем: Заплан.цена * Дневной расход
+                        total += float(resource.cena) * float(rashod.izraskhodovano)
+                break
+    
+    return total

@@ -216,13 +216,22 @@
             color: #fff;
             box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
+        
+        .main-btn.active {
+            background: #27ae60;
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+        
+        .main-btn.active:hover {
+            background: #229954;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>{{ object.nazvanie }}</h1>
-            <p>Смета ресурсов по объекту</p>
+            <h1>{{ object.nazvanie }} (смета ресурсов по объекту) </h1>
+          
             <div class="header-info">
                 <div class="info-item">
                     <strong>Ответственный:</strong> 
@@ -241,7 +250,7 @@
             </div>
             <!-- Две кнопки после header-info -->
             <div class="main-action-btns">
-                <a href="/objects/{{ object.id }}/" class="main-btn">Расходная часть</a>
+                <a href="/objects/{{ object.id }}/" class="main-btn active">Расходная часть</a>
                 <a href="/objects/{{ object.id }}/income/" class="main-btn">Доходная часть</a>
             </div>
         </div>
@@ -271,6 +280,7 @@
                     {% regroup resources by resurs.kategoriya_resursa.nazvanie as category_list %}
                     
                     {% for category in category_list %}
+                    {% if category.grouper|lower != 'подрядные организации' %}
                     <tr class="category-header">
                         <td colspan="{{ 7|add:days|length }}">{{ category.grouper|title }}</td>
                     </tr>
@@ -320,15 +330,44 @@
                     <tr class="total-row">
                         <td colspan="4">ИТОГО:</td>
                         <td class="number">{{ category.grouper|get_category_sum:resources|floatformat:0 }}</td>
-                        <td colspan="{{ 2|add:days|length }}"></td>
+                        <td colspan="2"></td>
+                        {% for day in days %}
+                        <td class="number">
+                        {% with category_totals=category_daily_totals|get_item:category.grouper %}
+                            {% with day_key=day|date:'Y-m-d' %}
+                                {{ category_totals|get_item:day_key|floatformat:0 }}
+                            {% endwith %}
+                        {% endwith %}
+                        </td>
+                        {% endfor %}
                     </tr>
+                    {% endif %}
                     {% endfor %}
                     
                     <tr class="total-row">
-                        <td colspan="4">Планируемая сумма затрат по объекту</td>
-                        <td class="number">{{ total_cost|floatformat:0 }}</td>
-                        <td colspan="2"></td>
-                        <td colspan="{{ days|length }}" class="bold">Фактические расходы</td>
+                        <td colspan="7">Итого фактических расходов по дням</td>
+                        {% for day in days %}
+                        <td class="number">
+                        {% with day_total=0 %}
+                            {% for category in category_list %}
+                                {% if category.grouper|lower != 'подрядные организации' %}
+                                    {% for resource in category.list %}
+                                        {% for fr in fakticheskij_resursy %}
+                                            {% if fr.resurs_po_objektu.id == resource.id %}
+                                                {% for rashod in raskhody|get_item:fr.id %}
+                                                    {% if rashod.data|date:"Y-m-d" == day|date:"Y-m-d" %}
+                                                        {% with day_total=day_total|add:resource.cena|multiply:rashod.izraskhodovano %}{% endwith %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ day_total|floatformat:0 }}
+                        {% endwith %}
+                        </td>
+                        {% endfor %}
                     </tr>
                 </tbody>
             </table>

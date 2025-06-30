@@ -255,6 +255,28 @@ def object_detail(request, object_id):
         resource_cost = float(fr.resurs_po_objektu.cena)
         total_spent += sum(float(rr.izraskhodovano) * resource_cost for rr in rr_list)
     
+    # Вычисляем суммы по дням для каждой категории
+    category_daily_totals = {}
+    for category in set(r.resurs.kategoriya_resursa.nazvanie for r in resources):
+        if category != 'Подрядные организации':
+            category_daily_totals[category] = {}
+            for day in days:
+                day_key = day.strftime('%Y-%m-%d')
+                daily_total = 0.0
+                # Фильтруем ресурсы по категории
+                category_resources = [r for r in resources if r.resurs.kategoriya_resursa.nazvanie == category]
+                for resource in category_resources:
+                    # Ищем фактические ресурсы для этого ресурса
+                    for fr in fakticheskij_resursy:
+                        if fr.resurs_po_objektu.id == resource.id:
+                            # Ищем расходы по дням
+                            for rashod in raskhody.get(fr.id, []):
+                                if rashod.data.strftime('%Y-%m-%d') == day_key:
+                                    # Вычисляем: Заплан.цена * Дневной расход
+                                    daily_total += float(resource.cena) * float(rashod.izraskhodovano)
+                            break
+                category_daily_totals[category][day_key] = daily_total
+    
     context = {
         'object': obj,
         'resources': resources,
@@ -263,6 +285,7 @@ def object_detail(request, object_id):
         'raskhody': raskhody,
         'total_spent': total_spent,
         'days': days,
+        'category_daily_totals': category_daily_totals,
     }
     
     return render(request, 'object/object_detail.html', context)

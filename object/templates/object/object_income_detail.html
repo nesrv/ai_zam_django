@@ -94,6 +94,15 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
         
+        .main-btn.active {
+            background: #27ae60;
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+        
+        .main-btn.active:hover {
+            background: #229954;
+        }
+        
         .table-container {
             padding: 0;
             overflow-x: auto;
@@ -239,10 +248,8 @@
     <div class="container">
         <div class="header">
             <div class="header-title-row">
-                <h1>{{ object.nazvanie }}</h1>
-                <p>Смета ресурсов по объекту</p>
-            </div>
-            <p>Доходная часть - Подрядные организации</p>
+                <h1>{{ object.nazvanie }} (смета ресурсов по объекту) </h1>         
+            </div>           
             <div class="header-info">
                 <div class="info-item">
                     <strong>Ответственный:</strong> 
@@ -262,7 +269,7 @@
             <!-- Две кнопки после header-info -->
             <div class="main-action-btns">
                 <a href="/objects/{{ object.id }}/" class="main-btn">Расходная часть</a>
-                <a href="/objects/{{ object.id }}/income/" class="main-btn">Доходная часть</a>
+                <a href="/objects/{{ object.id }}/income/" class="main-btn active">Доходная часть</a>
             </div>
         </div>
         
