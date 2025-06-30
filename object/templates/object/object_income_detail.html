@@ -363,8 +363,15 @@
     }
     
     function updateTotalsRow() {
+        console.log('updateTotalsRow() called');
         // Получаем все строки ресурсов подрядных организаций
         const resourceRows = document.querySelectorAll('tr[class*="category-подрядные"]');
+        console.log('Found resource rows:', resourceRows.length);
+        
+        // Также попробуем найти строки по другому селектору
+        const alternativeRows = document.querySelectorAll('tr.category-подрядные');
+        console.log('Alternative selector found rows:', alternativeRows.length);
+        
         let totalCost = 0;
         let totalCompleted = 0;
         let totalRemaining = 0;
@@ -372,18 +379,24 @@
         
         // Инициализируем dailyTotals для всех дней
         const dayCells = document.querySelectorAll('th[style*="width: 3%"]');
+        console.log('Found day headers:', dayCells.length);
         dayCells.forEach((_, index) => {
             dailyTotals[index] = 0;
         });
         
         // Суммируем данные по всем строкам ресурсов
-        resourceRows.forEach(row => {
+        resourceRows.forEach((row, rowIndex) => {
+            console.log(`Processing row ${rowIndex + 1}:`, row);
             const cells = row.querySelectorAll('td');
+            console.log(`Row ${rowIndex + 1} has ${cells.length} cells`);
+            
             if (cells.length > 0) {
                 // Сумма (колонка 5)
                 const sumCell = cells[4];
                 if (sumCell && sumCell.textContent.trim()) {
-                    totalCost += parseFloat(sumCell.textContent.replace(/[^\d.-]/g, '')) || 0;
+                    const sumValue = parseFloat(sumCell.textContent.replace(/[^\d.-]/g, '')) || 0;
+                    totalCost += sumValue;
+                    console.log(`Row ${rowIndex + 1} sum: ${sumValue}, totalCost now: ${totalCost}`);
                 }
                 
                 // Выполнено (колонка 6) - используем новую формулу: Расценка × Σ Дневной расход
@@ -391,21 +404,28 @@
                 let resourceCompleted = 0;
                 if (cenaCell && cenaCell.textContent.trim()) {
                     const cena = parseFloat(cenaCell.textContent.replace(/[^\d.-]/g, '')) || 0;
+                    console.log(`Row ${rowIndex + 1} cena: ${cena}`);
+                    
                     // Суммируем все дневные расходы для этого ресурса
                     for (let i = 7; i < cells.length; i++) {
                         const dayCell = cells[i];
                         if (dayCell && dayCell.textContent.trim()) {
                             const dayValue = parseFloat(dayCell.textContent.replace(/[^\d.-]/g, '')) || 0;
                             resourceCompleted += dayValue;
+                            console.log(`Row ${rowIndex + 1} day ${i-6}: ${dayValue}, resourceCompleted now: ${resourceCompleted}`);
                         }
                     }
-                    totalCompleted += cena * resourceCompleted;
+                    const rowCompleted = cena * resourceCompleted;
+                    totalCompleted += rowCompleted;
+                    console.log(`Row ${rowIndex + 1} completed: ${rowCompleted}, totalCompleted now: ${totalCompleted}`);
                 }
                 
                 // Осталось (колонка 7)
                 const remainingCell = cells[6];
                 if (remainingCell && remainingCell.textContent.trim()) {
-                    totalRemaining += parseFloat(remainingCell.textContent.replace(/[^\d.-]/g, '')) || 0;
+                    const remainingValue = parseFloat(remainingCell.textContent.replace(/[^\d.-]/g, '')) || 0;
+                    totalRemaining += remainingValue;
+                    console.log(`Row ${rowIndex + 1} remaining: ${remainingValue}, totalRemaining now: ${totalRemaining}`);
                 }
                 
                 // Суммы по дням (начиная с колонки 8) - Расценка × Дневной расход
@@ -415,7 +435,9 @@
                     if (dayCell && dayCell.textContent.trim()) {
                         const dayIndex = i - 7;
                         const dayValue = parseFloat(dayCell.textContent.replace(/[^\d.-]/g, '')) || 0;
-                        dailyTotals[dayIndex] += cena * dayValue;
+                        const dayTotal = cena * dayValue;
+                        dailyTotals[dayIndex] += dayTotal;
+                        console.log(`Row ${rowIndex + 1} day ${dayIndex + 1}: ${dayValue} × ${cena} = ${dayTotal}, dailyTotals[${dayIndex}] now: ${dailyTotals[dayIndex]}`);
                     }
                 }
             }
@@ -423,30 +445,44 @@
         
         // Обновляем итоговую строку
         const totalRow = document.querySelector('tr.total-row');
+        console.log('Found total row:', totalRow);
         if (totalRow) {
             const totalCells = totalRow.querySelectorAll('td');
+            console.log('Total row has', totalCells.length, 'cells');
             if (totalCells.length > 0) {
                 // Обновляем общую сумму
                 if (totalCells[4]) {
+                    console.log('Updating totalCost cell[4] to:', totalCost);
                     totalCells[4].textContent = formatNumber(Math.round(totalCost));
                 }
                 // Обновляем общую сумму выполнено
                 if (totalCells[5]) {
+                    console.log('Updating totalCompleted cell[5] to:', totalCompleted);
                     totalCells[5].textContent = formatNumber(Math.round(totalCompleted));
                 }
                 // Обновляем общую сумму осталось
                 if (totalCells[6]) {
+                    console.log('Updating totalRemaining cell[6] to:', totalRemaining);
                     totalCells[6].textContent = formatNumber(Math.round(totalRemaining));
                 }
                 // Обновляем суммы по дням
                 for (let i = 7; i < totalCells.length; i++) {
                     const dayIndex = i - 7;
                     if (totalCells[i] && dailyTotals[dayIndex] !== undefined) {
+                        console.log(`Updating day ${dayIndex + 1} cell[${i}] to:`, dailyTotals[dayIndex]);
                         totalCells[i].textContent = formatNumber(Math.round(dailyTotals[dayIndex]));
                     }
                 }
             }
+        } else {
+            console.error('Total row not found!');
         }
+        console.log('updateTotalsRow() completed. Totals:', {
+            totalCost: totalCost,
+            totalCompleted: totalCompleted,
+            totalRemaining: totalRemaining,
+            dailyTotals: dailyTotals
+        });
     }
     
     function editCell(cell) {
@@ -494,16 +530,26 @@
             })
             .then(response => response.json())
             .then(data => {
+                console.log('Server response:', data);
                 if (data.success) {
                     // Обновляем ячейки Потрачено и Осталось
                     const row = cell.closest('tr');
                     const cells = row.querySelectorAll('td');
+                    console.log('Updating cells[5] (Потрачено) to:', data.potracheno);
+                    console.log('Updating cells[6] (Осталось) to:', data.ostatok);
                     cells[5].textContent = formatNumber(Math.round(data.potracheno)); // Потрачено
                     cells[6].textContent = formatNumber(Math.round(data.ostatok)); // Осталось
                     
                     // Обновляем итоговую строку
+                    console.log('Calling updateTotalsRow()');
                     updateTotalsRow();
+                    console.log('updateTotalsRow() completed');
+                } else {
+                    console.error('Server error:', data.error);
                 }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
             });
         }
         
@@ -575,23 +621,33 @@
             })
             .then(response => response.json())
             .then(data => {
+                console.log('editResourceCell server response:', data);
                 if (data.success) {
                     // Обновляем ячейку суммы
                     const row = cell.closest('tr');
                     const sumCell = row.querySelector('.sum-cell');
                     if (sumCell) {
+                        console.log('Updating sum cell to:', data.new_sum);
                         sumCell.textContent = formatNumber(Math.round(data.new_sum));
                     }
                     
                     // Обновляем ячейку остатка
                     const ostatokCell = row.querySelector('.ostatok-cell');
                     if (ostatokCell) {
+                        console.log('Updating ostatok cell to:', data.ostatok);
                         ostatokCell.textContent = formatNumber(Math.round(data.ostatok));
                     }
                     
                     // Обновляем итоговую строку
+                    console.log('Calling updateTotalsRow() from editResourceCell');
                     updateTotalsRow();
+                    console.log('updateTotalsRow() completed from editResourceCell');
+                } else {
+                    console.error('editResourceCell server error:', data.error);
                 }
+            })
+            .catch(error => {
+                console.error('editResourceCell fetch error:', error);
             });
         }
         

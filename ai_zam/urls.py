@@ -36,6 +36,10 @@ else:
     urlpatterns += [
         re_path(f'^{settings.MEDIA_URL.lstrip("/")}(?P<path>.*)$',
             mediaserve, {'document_root': settings.MEDIA_ROOT}),
-        re_path(f'^{settings.STATIC_URL.lstrip("/")}(?P<path>.*)$',
-            mediaserve, {'document_root': settings.STATIC_ROOT}),
     ]
+    # Обрабатываем статические файлы из STATICFILES_DIRS для продакшена
+    for static_dir in settings.STATICFILES_DIRS:
+        urlpatterns += [
+            re_path(f'^{settings.STATIC_URL.lstrip("/")}(?P<path>.*)$',
+                mediaserve, {'document_root': static_dir}),
+        ]

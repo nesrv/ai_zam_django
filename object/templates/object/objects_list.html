@@ -187,11 +187,13 @@
 }
 
 .profit-chart {
-    max-width: 100%;
+    width: 100%;
+    max-width: 1200px;
     height: auto;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    margin: 20px auto;
+    display: block;
 }
 {% endblock %}
 
@@ -211,7 +213,7 @@
                 <th>Выполнено на сумму (₽)</th>
                 <th>Бюджет доходов и расходов (₽)</th>
                 {% for day in days %}
-                <th>{{ day|date:"d.m" }}</th>
+                <th>Баланс {{ day|date:"d.m" }}</th>
                 {% endfor %}
             </tr>
         </thead>
@@ -230,8 +232,8 @@
                 {% for day in days %}
                 <td class="number-cell">
                     {% with day_key=day|date:"Y-m-d" %}
-                        {% if day_key in item.daily_expenses %}
-                            {{ item.daily_expenses|get_item:day_key|floatformat:0 }}
+                        {% if day_key in item.daily_balance %}
+                            {{ item.daily_balance|get_item:day_key|floatformat:0 }}
                         {% else %}
                             0
                         {% endif %}
@@ -258,8 +260,8 @@
                 <td class="number-cell">
                     <strong>
                         {% with day_key=day|date:"Y-m-d" %}
-                            {% if day_key in total_daily_expenses %}
-                                {{ total_daily_expenses|get_item:day_key|floatformat:0 }}
+                            {% if day_key in total_daily_balance %}
+                                {{ total_daily_balance|get_item:day_key|floatformat:0 }}
                             {% else %}
                                 0
                             {% endif %}
@@ -276,16 +278,16 @@
 {% if chart_path %}
 <section class="charts-section">
     <div class="charts-container">
-        <h2>Расходы по объектам по дням</h2>
+        <h2>Баланс прибыли по объектам</h2>
         <div class="chart-wrapper">
-            <img src="{% static chart_path %}" alt="График расходов по объектам" class="profit-chart">
+            <img src="{% static chart_path %}" alt="График баланса прибыли по объектам" class="profit-chart">
         </div>
     </div>
 </section>
 {% else %}
 <section class="charts-section">
     <div class="charts-container">
-        <h2>Расходы по объектам по дням</h2>
+        <h2>Баланс прибыли по объектам</h2>
         <p style="color: #e74c3c; font-size: 1.1rem;">Графики временно недоступны</p>
     </div>
 </section>

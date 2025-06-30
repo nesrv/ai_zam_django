@@ -56,8 +56,12 @@ def objects_list(request):
     total_budget = 0.0
     total_completed = 0.0
     
-    # Словарь для итоговых сумм по дням
-    total_daily_expenses = {}
+    # Словарь для итоговых сумм по дням (баланс)
+    total_daily_balance = {}
+    
+    # Словари для данных доходов и расходов по дням
+    daily_income_data = {}
+    daily_expense_data = {}
     
     for obj in objects:
         # Планируемые ресурсы - используем точно такой же метод, как в object_detail
@@ -90,13 +94,46 @@ def objects_list(request):
                     daily_expenses[date_key] = 0.0
                 daily_expenses[date_key] += expense_amount
                 
-                # Добавляем в общие итоги по дням
-                if date_key not in total_daily_expenses:
-                    total_daily_expenses[date_key] = 0.0
-                total_daily_expenses[date_key] += expense_amount
+
+        
+        # Получаем данные доходов (подрядные организации)
+        income_resources = ResursyPoObjektu.objects.filter(
+            objekt=obj,
+            resurs__kategoriya_resursa__nazvanie='Подрядные организации'
+        ).select_related('resurs', 'resurs__kategoriya_resursa')
+        
+        income_fakticheskij_resursy = FakticheskijResursPoObjektu.objects.filter(
+            resurs_po_objektu__objekt=obj,
+            resurs_po_objektu__resurs__kategoriya_resursa__nazvanie='Подрядные организации'
+        )
+        
+        daily_income = {}  # Словарь для хранения доходов по дням
+        
+        for fr in income_fakticheskij_resursy:
+            rashody = RaskhodResursa.objects.filter(fakticheskij_resurs=fr)
+            resource_cost = float(fr.resurs_po_objektu.cena)
+            
+            for rr in rashody:
+                # Умножаем фактический расход на запланированную цену
+                izraskhodovano = float(rr.izraskhodovano)
+                income_amount = izraskhodovano * resource_cost
+                
+                # Сохраняем доход по дням
+                date_key = rr.data.strftime('%Y-%m-%d')
+                if date_key not in daily_income:
+                    daily_income[date_key] = 0.0
+                daily_income[date_key] += income_amount
         
         # Бюджет доходов и расходов (разность между планируемыми и фактическими)
         budget_balance = total_cost - completed_cost
+        
+        # Вычисляем баланс по дням (доходы - расходы)
+        daily_balance = {}
+        for day in days:
+            day_key = day.strftime('%Y-%m-%d')
+            income = daily_income.get(day_key, 0.0)
+            expense = daily_expenses.get(day_key, 0.0)
+            daily_balance[day_key] = income - expense
         
         objects_with_info.append({
             'object': obj,
@@ -104,13 +141,34 @@ def objects_list(request):
             'completed_cost': completed_cost,
             'budget_balance': budget_balance,
             'daily_expenses': daily_expenses,
+            'daily_income': daily_income,
+            'daily_balance': daily_balance,
         })
         
         total_budget += total_cost
         total_completed += completed_cost
+        
+        # Сохраняем данные по дням для графика и итогов
+        for day in days:
+            day_key = day.strftime('%Y-%m-%d')
+            
+            # Расходы
+            if day_key not in daily_expense_data:
+                daily_expense_data[day_key] = 0.0
+            daily_expense_data[day_key] += daily_expenses.get(day_key, 0.0)
+            
+            # Доходы
+            if day_key not in daily_income_data:
+                daily_income_data[day_key] = 0.0
+            daily_income_data[day_key] += daily_income.get(day_key, 0.0)
+            
+            # Баланс (доходы - расходы)
+            if day_key not in total_daily_balance:
+                total_daily_balance[day_key] = 0.0
+            total_daily_balance[day_key] += daily_balance.get(day_key, 0.0)
     
     # Создаем графики
-    chart_path = create_profit_balance_charts(objects_with_info, days)
+    chart_path = create_profit_balance_charts(objects_with_info, days, daily_income_data, daily_expense_data)
     
     context = {
         'objects_with_info': objects_with_info,
@@ -118,14 +176,14 @@ def objects_list(request):
         'total_budget': total_budget,
         'total_completed': total_completed,
         'total_balance': total_budget - total_completed,
-        'total_daily_expenses': total_daily_expenses,
+        'total_daily_balance': total_daily_balance,
         'chart_path': chart_path if chart_path else None,
     }
     
     return render(request, 'object/objects_list.html', context)
 
-def create_profit_balance_charts(objects_with_info, days):
-    """Создает график баланса прибыли по объектам по дням"""
+def create_profit_balance_charts(objects_with_info, days, daily_income_data, daily_expense_data):
+    """Создает график баланса прибыли по объектам по дням по формуле доход-расход"""
     try:
         # Проверяем, есть ли данные для графиков
         if not objects_with_info:
@@ -143,66 +201,131 @@ def create_profit_balance_charts(objects_with_info, days):
         day_labels = [day.strftime('%d.%m') for day in days]
         x = range(len(day_labels))
         
-        # Создаем линии для каждого объекта
-        colors = ['#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c', '#e67e22', '#34495e']
+        # Создаем данные для графика по формуле доход-расход
+        income_values = []
+        expense_values = []
+        balance_values = []
         
-        # Собираем данные для итоговой линии
-        total_by_day = [0] * len(days)
-        
-        for i, item in enumerate(objects_with_info):
-            object_name = item['object'].nazvanie
-            daily_expenses = item['daily_expenses']
+        for day in days:
+            day_key = day.strftime('%Y-%m-%d')
             
-            # Создаем данные по дням для этого объекта
-            y_values = []
-            for j, day in enumerate(days):
-                day_key = day.strftime('%Y-%m-%d')
-                expense = float(daily_expenses.get(day_key, 0))
-                y_values.append(expense)
-                total_by_day[j] += expense
+            # Доходы (из ячеек "Итого фактических расходов по дням" со страницы доходов)
+            income = daily_income_data.get(day_key, 0.0)
+            income_values.append(income / 1000)  # Конвертируем в тысячи рублей
             
-            # Рисуем линию для объекта
-            color = colors[i % len(colors)]
-            line = ax.plot(x, y_values, 'o-', linewidth=2, markersize=6, label=object_name, color=color, alpha=0.8)
+            # Расходы (из ячеек "Итого фактических расходов по дням" со страницы расходов)
+            expense = daily_expense_data.get(day_key, 0.0)
+            expense_values.append(expense / 1000)  # Конвертируем в тысячи рублей
             
-            # Добавляем подписи к линиям (последняя точка)
-            if y_values:
-                last_value = y_values[-1]
-                ax.annotate(f'{object_name}: {int(last_value):,}₽', 
-                           xy=(x[-1], last_value), 
-                           xytext=(x[-1] + 0.5, last_value),
-                           fontsize=9, color=color, weight='bold',
-                           bbox=dict(boxstyle='round,pad=0.3', facecolor='black', alpha=0.7),
-                           arrowprops=dict(arrowstyle='->', color=color, alpha=0.7))
+            # Баланс по формуле доход-расход
+            balance = (income - expense) / 1000  # Конвертируем в тысячи рублей
+            balance_values.append(balance)
         
-        # Рисуем итоговую линию
-        ax.plot(x, total_by_day, 's-', linewidth=4, markersize=10, label='ИТОГО', color='#ffffff', alpha=1.0)
+
         
-        # Подпись для итоговой линии
-        if total_by_day:
-            last_total = total_by_day[-1]
-            ax.annotate(f'ИТОГО: {int(last_total):,}₽', 
-                       xy=(x[-1], last_total), 
-                       xytext=(x[-1] + 0.5, last_total + max(total_by_day) * 0.1),
-                       fontsize=12, color='#ffffff', weight='bold',
+        # Рисуем линии
+        ax.plot(x, income_values, 'o-', linewidth=3, markersize=8, label='Доходы', color='#2ecc71', alpha=0.9)
+        ax.plot(x, expense_values, 's-', linewidth=3, markersize=8, label='Расходы', color='#e74c3c', alpha=0.9)
+        ax.plot(x, balance_values, '^-', linewidth=4, markersize=10, label='Баланс (доход-расход)', color='#3498db', alpha=1.0)
+        
+        # Добавляем подписи значений к точкам
+        for i, (income, expense, balance) in enumerate(zip(income_values, expense_values, balance_values)):
+            # Подписи для доходов (каждая 3-я точка, чтобы не перегружать график)
+            if i % 3 == 0 and income > 0:
+                ax.annotate(f'{income:.1f} тыс.₽', 
+                           xy=(i, income), 
+                           xytext=(i, income + max(income_values + expense_values) * 0.02),
+                           fontsize=8, color='#2ecc71', weight='bold',
+                           ha='center', va='bottom',
+                           bbox=dict(boxstyle='round,pad=0.2', facecolor='black', alpha=0.6))
+            
+            # Подписи для расходов (каждая 3-я точка)
+            if i % 3 == 0 and expense > 0:
+                ax.annotate(f'{expense:.1f} тыс.₽', 
+                           xy=(i, expense), 
+                           xytext=(i, expense - max(income_values + expense_values) * 0.02),
+                           fontsize=8, color='#e74c3c', weight='bold',
+                           ha='center', va='top',
+                           bbox=dict(boxstyle='round,pad=0.2', facecolor='black', alpha=0.6))
+            
+            # Подписи для баланса (каждая 2-я точка)
+            if i % 2 == 0 and abs(balance) > max(income_values + expense_values) * 0.01:  # Только если баланс значимый
+                ax.annotate(f'{balance:.1f} тыс.₽', 
+                           xy=(i, balance), 
+                           xytext=(i, balance + (10 if balance >= 0 else -10)),
+                           fontsize=9, color='#3498db', weight='bold',
+                           ha='center', va='bottom' if balance >= 0 else 'top',
+                           bbox=dict(boxstyle='round,pad=0.3', facecolor='#2c3e50', alpha=0.8))
+        
+        # Добавляем подписи к линиям (последние точки)
+        if income_values:
+            last_income = income_values[-1]
+            ax.annotate(f'Доходы: {last_income:.1f} тыс.₽', 
+                       xy=(x[-1], last_income), 
+                       xytext=(x[-1] + 0.5, last_income),
+                       fontsize=10, color='#2ecc71', weight='bold',
+                       bbox=dict(boxstyle='round,pad=0.3', facecolor='black', alpha=0.7),
+                       arrowprops=dict(arrowstyle='->', color='#2ecc71', alpha=0.7))
+        
+        if expense_values:
+            last_expense = expense_values[-1]
+            ax.annotate(f'Расходы: {last_expense:.1f} тыс.₽', 
+                       xy=(x[-1], last_expense), 
+                       xytext=(x[-1] + 0.5, last_expense - max(income_values + expense_values) * 0.1),
+                       fontsize=10, color='#e74c3c', weight='bold',
+                       bbox=dict(boxstyle='round,pad=0.3', facecolor='black', alpha=0.7),
+                       arrowprops=dict(arrowstyle='->', color='#e74c3c', alpha=0.7))
+        
+        if balance_values:
+            last_balance = balance_values[-1]
+            ax.annotate(f'Баланс: {last_balance:.1f} тыс.₽', 
+                       xy=(x[-1], last_balance), 
+                       xytext=(x[-1] + 0.5, last_balance + max(income_values + expense_values) * 0.1),
+                       fontsize=12, color='#3498db', weight='bold',
                        bbox=dict(boxstyle='round,pad=0.5', facecolor='#2c3e50', alpha=0.9),
-                       arrowprops=dict(arrowstyle='->', color='#ffffff', alpha=0.9))
+                       arrowprops=dict(arrowstyle='->', color='#3498db', alpha=0.9))
+        
+        # Добавляем горизонтальную линию для нулевого баланса
+        ax.axhline(y=0, color='#ffffff', linestyle='--', alpha=0.5, linewidth=1)
+        ax.annotate('Нулевой баланс', xy=(len(x)-1, 0), xytext=(len(x)-2, max(income_values + expense_values) * 0.05),
+                   fontsize=10, color='#ffffff', alpha=0.7,
+                   bbox=dict(boxstyle='round,pad=0.2', facecolor='black', alpha=0.5),
+                   arrowprops=dict(arrowstyle='->', color='#ffffff', alpha=0.5))
         
         ax.set_xlabel('Дни', fontsize=12, color='white')
-        ax.set_ylabel('Расходы (₽)', fontsize=12, color='white')
-        ax.set_title('Расходы по объектам по дням', fontsize=14, color='white', pad=20)
+        ax.set_ylabel('Сумма (тыс. ₽)', fontsize=12, color='white')
+        ax.set_title('Баланс доходов и расходов по дням (доход-расход)', fontsize=14, color='white', pad=20)
         ax.set_xticks(x)
         ax.set_xticklabels(day_labels, rotation=45, ha='right', fontsize=10)
+        
+        # Форматирование оси Y в тысячах рублей
+        from matplotlib.ticker import FuncFormatter
+        def thousands_formatter(x, pos):
+            return f'{x:.0f}'
+        ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+        
         ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
         ax.grid(True, alpha=0.3)
         
         # Настройка внешнего вида
         plt.tight_layout()
         
-        # Сохраняем график
+        # Сохраняем график с временной меткой для избежания кэширования
         charts_dir = os.path.join(settings.BASE_DIR, 'static', 'charts')
         os.makedirs(charts_dir, exist_ok=True)
-        chart_path = os.path.join(charts_dir, 'profit_balance_chart.png')
+        
+        # Удаляем старые файлы графиков (оставляем только последние 5)
+        old_charts = [f for f in os.listdir(charts_dir) if f.startswith('profit_balance_chart_')]
+        old_charts.sort(reverse=True)
+        for old_chart in old_charts[5:]:  # Удаляем все кроме последних 5
+            try:
+                os.remove(os.path.join(charts_dir, old_chart))
+            except:
+                pass
+        
+        timestamp = int(time.time())
+        chart_filename = f'profit_balance_chart_{timestamp}.png'
+        chart_path = os.path.join(charts_dir, chart_filename)
         
         plt.savefig(chart_path, dpi=300, bbox_inches='tight', facecolor='#1a1a1a')
         plt.close()
@@ -213,7 +336,7 @@ def create_profit_balance_charts(objects_with_info, days):
         else:
             print(f"Ошибка: файл не создан: {chart_path}")
         
-        return 'charts/profit_balance_chart.png'
+        return f'charts/{chart_filename}'
     except Exception as e:
         print(f"Ошибка при создании графиков: {e}")
         return None
