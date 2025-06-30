@@ -44,3 +44,9 @@ def get_resource_spent(resource_id, context):
             for rashod in raskhody.get(fr.id, []):
                 total += rashod.izraskhodovano
     return total
+
+@register.filter
+def get_daily_total(daily_totals, day):
+    """Получает сумму для конкретной даты из словаря daily_totals"""
+    day_key = day.strftime('%Y-%m-%d')
+    return daily_totals.get(day_key, 0)

@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ object.nazvanie }} - AI-ZAM</title>
+    <title>{{ object.nazvanie }} - Доходная часть - AI-ZAM</title>
     <style>
         * {
             margin: 0;
@@ -66,6 +66,32 @@
         
         .info-item strong {
             color: #ecf0f1;
+        }
+        
+        .main-action-btns {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0 20px 0;
+        }
+        .main-btn {
+            display: inline-block;
+            padding: 12px 32px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 6px;
+            border: none;
+            background: #3498db;
+            color: #fff;
+            text-decoration: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .main-btn:hover {
+            background: #217dbb;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
         
         .table-container {
@@ -191,38 +217,32 @@
             background-color: #fff3cd !important;
         }
         
-        .main-action-btns {
+        .header-title-row {
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             gap: 20px;
-            margin: 20px 0 20px 0;
+            margin-bottom: 10px;
         }
-        .main-btn {
-            display: inline-block;
-            padding: 12px 32px;
-            font-size: 1.1em;
-            font-weight: bold;
-            border-radius: 6px;
-            border: none;
-            background: #3498db;
-            color: #fff;
-            text-decoration: none;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-            transition: background 0.2s, box-shadow 0.2s;
+        
+        .header-title-row h1 {
+            margin: 0;
         }
-        .main-btn:hover {
-            background: #217dbb;
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        
+        .header-title-row p {
+            margin: 0;
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>{{ object.nazvanie }}</h1>
-            <p>Смета ресурсов по объекту</p>
+            <div class="header-title-row">
+                <h1>{{ object.nazvanie }}</h1>
+                <p>Смета ресурсов по объекту</p>
+            </div>
+            <p>Доходная часть - Подрядные организации</p>
             <div class="header-info">
                 <div class="info-item">
                     <strong>Ответственный:</strong> 
@@ -252,29 +272,23 @@
                     <tr>
                         <th style="width: 5%;">Наименование</th>
                         <th style="width: 2%;">Ед.<br>изм</th>
-                        <th style="width: 3%;">Зарез.<br>лимитов</th>
-                        <th style="width: 3%;">Заплан.<br>цена</th>
+                        <th style="width: 3%;">Объем</th>
+                        <th style="width: 3%;">Расценка</th>
                         <th style="width: 3%;">Сумма</th>
-                        <th style="width: 2%;">Потрач.<br>лимитов</th>
-                        <th style="width: 2%;">Остал.<br>лимитов</th>
+                        <th style="width: 2%;">Вып-но</th>
+                        <th style="width: 2%;">Остал.<br>вып-ть</th>
                         {% for day in days %}
                         <th style="width: 3%;">{{ day|date:"d.m" }}</th>
                         {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="main-header">
-                        <td colspan="7">Планируемые расходы</td>
-                        <td colspan="{{ days|length }}">Фактические расходы</td>
-                    </tr>
-                    
                     {% regroup resources by resurs.kategoriya_resursa.nazvanie as category_list %}
-                    
                     {% for category in category_list %}
+                    {% if category.grouper|lower == 'подрядные организации' %}
                     <tr class="category-header">
                         <td colspan="{{ 7|add:days|length }}">{{ category.grouper|title }}</td>
                     </tr>
-                    
                     {% for resource in category.list %}
                     <tr class="category-{{ category.grouper|lower }}">
                         <td>{{ resource.resurs.naimenovanie }}</td>
@@ -289,11 +303,9 @@
                             onclick="editResourceCell(this)">{{ resource.cena|floatformat:0 }}</td>
                         <td class="number sum-cell" 
                             data-resource-id="{{ resource.id }}">{{ resource.kolichestvo|multiply:resource.cena|floatformat:0 }}</td>
-                        
                         <td class="number">{{ resource.potracheno|floatformat:0 }}</td>
                         <td class="number ostatok-cell" 
                             data-resource-id="{{ resource.id }}">{{ resource.kolichestvo|subtract:resource.potracheno|floatformat:0 }}</td>
-                        
                         {% for day in days %}
                             <td class="number editable-cell" 
                                 data-resource-id="{{ resource.id }}" 
@@ -316,19 +328,17 @@
                         {% endfor %}
                     </tr>
                     {% endfor %}
-                    
-                    <tr class="total-row">
-                        <td colspan="4">ИТОГО:</td>
-                        <td class="number">{{ category.grouper|get_category_sum:resources|floatformat:0 }}</td>
-                        <td colspan="{{ 2|add:days|length }}"></td>
-                    </tr>
+                    {% endif %}
                     {% endfor %}
                     
                     <tr class="total-row">
-                        <td colspan="4">Планируемая сумма затрат по объекту</td>
+                        <td colspan="4">Итого</td>
                         <td class="number">{{ total_cost|floatformat:0 }}</td>
-                        <td colspan="2"></td>
-                        <td colspan="{{ days|length }}" class="bold">Фактические расходы</td>
+                        <td class="number">{{ total_completed|floatformat:0 }}</td>
+                        <td class="number">{{ total_remaining|floatformat:0 }}</td>
+                        {% for day in days %}
+                        <td class="number">{{ daily_totals|get_daily_total:day|floatformat:0 }}</td>
+                        {% endfor %}
                     </tr>
                 </tbody>
             </table>
@@ -340,6 +350,81 @@
     <a href="/admin/object/objekt/{{ object.id }}/change/" class="edit-btn">✎ Редактировать объект</a>
     
     <script>
+    function updateTotalsRow() {
+        // Получаем все строки ресурсов (исключая заголовки и итоговую строку)
+        const resourceRows = document.querySelectorAll('tr[class*="category-подрядные"]');
+        let totalCost = 0;
+        let totalCompleted = 0;
+        let totalRemaining = 0;
+        const dailyTotals = {};
+        
+        // Инициализируем dailyTotals для всех дней
+        const dayCells = document.querySelectorAll('th[style*="width: 3%"]');
+        dayCells.forEach((_, index) => {
+            dailyTotals[index] = 0;
+        });
+        
+        // Суммируем данные по всем строкам ресурсов
+        resourceRows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length > 0) {
+                // Сумма (колонка 5)
+                const sumCell = cells[4];
+                if (sumCell && sumCell.textContent.trim()) {
+                    totalCost += parseFloat(sumCell.textContent.replace(/[^\d.-]/g, '')) || 0;
+                }
+                
+                // Выполнено (колонка 6)
+                const completedCell = cells[5];
+                if (completedCell && completedCell.textContent.trim()) {
+                    totalCompleted += parseFloat(completedCell.textContent.replace(/[^\d.-]/g, '')) || 0;
+                }
+                
+                // Осталось (колонка 7)
+                const remainingCell = cells[6];
+                if (remainingCell && remainingCell.textContent.trim()) {
+                    totalRemaining += parseFloat(remainingCell.textContent.replace(/[^\d.-]/g, '')) || 0;
+                }
+                
+                // Суммы по дням (начиная с колонки 8)
+                for (let i = 7; i < cells.length; i++) {
+                    const dayCell = cells[i];
+                    if (dayCell && dayCell.textContent.trim()) {
+                        const dayIndex = i - 7;
+                        dailyTotals[dayIndex] += parseFloat(dayCell.textContent.replace(/[^\d.-]/g, '')) || 0;
+                    }
+                }
+            }
+        });
+        
+        // Обновляем итоговую строку
+        const totalRow = document.querySelector('tr.total-row');
+        if (totalRow) {
+            const totalCells = totalRow.querySelectorAll('td');
+            if (totalCells.length > 0) {
+                // Обновляем общую сумму
+                if (totalCells[4]) {
+                    totalCells[4].textContent = Math.round(totalCost);
+                }
+                // Обновляем общую сумму выполнено
+                if (totalCells[5]) {
+                    totalCells[5].textContent = Math.round(totalCompleted);
+                }
+                // Обновляем общую сумму осталось
+                if (totalCells[6]) {
+                    totalCells[6].textContent = Math.round(totalRemaining);
+                }
+                // Обновляем суммы по дням
+                for (let i = 7; i < totalCells.length; i++) {
+                    const dayIndex = i - 7;
+                    if (totalCells[i] && dailyTotals[dayIndex] !== undefined) {
+                        totalCells[i].textContent = Math.round(dailyTotals[dayIndex]);
+                    }
+                }
+            }
+        }
+    }
+    
     function editCell(cell) {
         if (cell.classList.contains('editing')) return;
         
@@ -391,6 +476,9 @@
                     const cells = row.querySelectorAll('td');
                     cells[5].textContent = Math.round(data.potracheno); // Потрачено
                     cells[6].textContent = Math.round(data.ostatok); // Осталось
+                    
+                    // Обновляем итоговую строку
+                    updateTotalsRow();
                 }
             });
         }
@@ -440,48 +528,14 @@
         input.focus();
         input.select();
         
-        function saveResourceValue() {
+        function saveValue() {
             const newValue = input.value || '0';
             cell.textContent = newValue;
             cell.classList.remove('editing');
             
-            // Получаем текущие значения из строки
-            const row = cell.closest('tr');
-            const cells = row.querySelectorAll('td');
-            
-            // Получаем значения количества и цены
-            let kolichestvo = parseFloat(cells[2].textContent.trim()) || 0;
-            let cena = parseFloat(cells[3].textContent.trim()) || 0;
-            
-            // Если редактируем количество или цену, обновляем соответствующее значение
-            const fieldType = cell.dataset.fieldType;
-            if (fieldType === 'kolichestvo') {
-                kolichestvo = parseFloat(newValue) || 0;
-            } else if (fieldType === 'cena') {
-                cena = parseFloat(newValue) || 0;
-            }
-            
-            // Пересчитываем сумму в реальном времени
-            const newSum = kolichestvo * cena;
-            
-            // Обновляем ячейку суммы по идентификатору
-            const sumCell = row.querySelector('.sum-cell');
-            if (sumCell) {
-                sumCell.textContent = Math.round(newSum);
-            }
-            
-            // Пересчитываем остаток
-            const potracheno = parseFloat(cells[5].textContent.trim()) || 0;
-            const ostatok = kolichestvo - potracheno;
-            
-            // Обновляем ячейку остатка по идентификатору
-            const ostatokCell = row.querySelector('.ostatok-cell');
-            if (ostatokCell) {
-                ostatokCell.textContent = Math.round(ostatok);
-            }
-            
             // Отправляем данные на сервер
             const resourceId = cell.dataset.resourceId;
+            const fieldType = cell.dataset.fieldType;
             
             fetch('/update-resource-data/', {
                 method: 'POST',
@@ -498,74 +552,32 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Обновляем итоговые суммы
-                    updateCategoryTotals();
-                    updateTotalSum();
+                    // Обновляем ячейку суммы
+                    const row = cell.closest('tr');
+                    const sumCell = row.querySelector('.sum-cell');
+                    if (sumCell) {
+                        sumCell.textContent = Math.round(data.new_sum);
+                    }
+                    
+                    // Обновляем ячейку остатка
+                    const ostatokCell = row.querySelector('.ostatok-cell');
+                    if (ostatokCell) {
+                        ostatokCell.textContent = Math.round(data.ostatok);
+                    }
+                    
+                    // Обновляем итоговую строку
+                    updateTotalsRow();
                 }
             });
         }
         
-        input.addEventListener('blur', saveResourceValue);
+        input.addEventListener('blur', saveValue);
         input.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                saveResourceValue();
+                saveValue();
             }
         });
-    }
-    
-    function updateCategoryTotals() {
-        // Находим все категории и пересчитываем их итоги
-        const categoryRows = document.querySelectorAll('.category-header');
-        categoryRows.forEach(categoryRow => {
-            let categorySum = 0;
-            let currentRow = categoryRow.nextElementSibling;
-            
-            // Проходим по всем строкам ресурсов в этой категории
-            while (currentRow && !currentRow.classList.contains('total-row') && !currentRow.classList.contains('category-header')) {
-                if (currentRow.classList.contains('category-кадры') || 
-                    currentRow.classList.contains('category-машины') || 
-                    currentRow.classList.contains('category-материалы') || 
-                    currentRow.classList.contains('category-административно') || 
-                    currentRow.classList.contains('category-сиз') || 
-                    currentRow.classList.contains('category-подрядные')) {
-                    
-                    const sumCell = currentRow.querySelector('.sum-cell');
-                    if (sumCell) {
-                        categorySum += parseFloat(sumCell.textContent.trim()) || 0;
-                    }
-                }
-                currentRow = currentRow.nextElementSibling;
-            }
-            
-            // Обновляем итоговую строку категории
-            if (currentRow && currentRow.classList.contains('total-row')) {
-                const totalCell = currentRow.querySelector('td:nth-child(5)');
-                if (totalCell) {
-                    totalCell.textContent = Math.round(categorySum);
-                }
-            }
-        });
-    }
-    
-    function updateTotalSum() {
-        // Пересчитываем общую сумму по объекту
-        let totalSum = 0;
-        const sumCells = document.querySelectorAll('.sum-cell');
-        
-        sumCells.forEach(cell => {
-            totalSum += parseFloat(cell.textContent.trim()) || 0;
-        });
-        
-        // Обновляем общую сумму в последней строке
-        const totalRows = document.querySelectorAll('.total-row');
-        const lastTotalRow = totalRows[totalRows.length - 1];
-        if (lastTotalRow) {
-            const totalCell = lastTotalRow.querySelector('td:nth-child(5)');
-            if (totalCell) {
-                totalCell.textContent = Math.round(totalSum);
-            }
-        }
     }
     </script>
 </body>
-</html>
+</html> 

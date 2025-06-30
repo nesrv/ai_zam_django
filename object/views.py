@@ -267,6 +267,79 @@ def object_detail(request, object_id):
     
     return render(request, 'object/object_detail.html', context)
 
+def object_income_detail(request, object_id):
+    # Получаем объект или 404
+    obj = get_object_or_404(Objekt.objects.select_related('otvetstvennyj'), id=object_id)
+    
+    # Получаем только ресурсы категории "Подрядные организации"
+    resources = ResursyPoObjektu.objects.filter(
+        objekt=obj,
+        resurs__kategoriya_resursa__nazvanie='Подрядные организации'
+    ).select_related('resurs', 'resurs__kategoriya_resursa')
+    
+    # Суммарная стоимость ресурсов
+    total_cost = sum(float(r.kolichestvo * r.cena) for r in resources)
+    
+    # Фактические расходы ресурсов
+    fakticheskij_resursy = FakticheskijResursPoObjektu.objects.filter(
+        resurs_po_objektu__objekt=obj,
+        resurs_po_objektu__resurs__kategoriya_resursa__nazvanie='Подрядные организации'
+    ).select_related('resurs_po_objektu', 'resurs_po_objektu__resurs')
+    
+    # Расходы по фактическим ресурсам
+    raskhody = {}
+    all_dates = set()
+    
+    for fr in fakticheskij_resursy:
+        rashody_list = RaskhodResursa.objects.filter(fakticheskij_resurs=fr).order_by('-data')
+        raskhody[fr.id] = rashody_list
+        
+        # Собираем все даты расходов
+        for rashod in rashody_list:
+            all_dates.add(rashod.data)
+    
+    # Всегда создаем 20 дней для отображения
+    today = datetime.now().date()
+    days = [today - timedelta(days=i) for i in range(20)]
+    
+    # Суммарный фактический расход
+    total_spent = 0.0
+    for fr_id, rr_list in raskhody.items():
+        fr = FakticheskijResursPoObjektu.objects.get(id=fr_id)
+        resource_cost = float(fr.resurs_po_objektu.cena)
+        total_spent += sum(float(rr.izraskhodovano) * resource_cost for rr in rr_list)
+    
+    # Вычисляем суммы для строки "Итого"
+    total_completed = sum(float(r.potracheno) for r in resources)  # Сумма выполнено
+    total_remaining = sum(float(r.kolichestvo - r.potracheno) for r in resources)  # Сумма осталось
+    
+    # Суммы по дням для фактических доходов
+    daily_totals = {}
+    for day in days:
+        day_key = day.strftime('%Y-%m-%d')
+        daily_total = 0.0
+        for fr in fakticheskij_resursy:
+            for rashod in raskhody.get(fr.id, []):
+                if rashod.data.strftime('%Y-%m-%d') == day_key:
+                    daily_total += float(rashod.izraskhodovano)
+        daily_totals[day_key] = daily_total
+    
+    context = {
+        'object': obj,
+        'resources': resources,
+        'total_cost': total_cost,
+        'fakticheskij_resursy': fakticheskij_resursy,
+        'raskhody': raskhody,
+        'total_spent': total_spent,
+        'days': days,
+        'is_income_page': True,  # Флаг для шаблона
+        'total_completed': total_completed,  # Сумма выполнено
+        'total_remaining': total_remaining,  # Сумма осталось
+        'daily_totals': daily_totals,  # Суммы по дням
+    }
+    
+    return render(request, 'object/object_income_detail.html', context)
+
 @csrf_exempt
 @require_POST
 def update_expense(request):

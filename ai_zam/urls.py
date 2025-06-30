@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 
 from django.views.static import serve as mediaserve
 
-from object.views import home, objects_list, object_detail, update_expense, update_resource_data
+from object.views import home, objects_list, object_detail, object_income_detail, update_expense, update_resource_data
 
 # Изменяем заголовки админки
 # admin.site.site_header = "Ruslan administration"
@@ -18,6 +18,7 @@ urlpatterns = [
     path('', home, name='home'),
     path('objects/', objects_list, name='objects_list'),
     path('objects/<int:object_id>/', object_detail, name='object_detail'),
+    path('objects/<int:object_id>/income/', object_income_detail, name='object_income_detail'),
     path('update-expense/', update_expense, name='update_expense'),
     path('update-resource-data/', update_resource_data, name='update_resource_data'),
     path('ai/', include('ai.urls')),
