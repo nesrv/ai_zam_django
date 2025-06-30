@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ object.nazvanie }} - AI-ZAM</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <style>
         * {
             margin: 0;
@@ -17,14 +18,14 @@
             font-family: Arial, sans-serif;
             background: #f5f5f5;
             color: #333;
-            padding: 20px;
+            padding: 12px;
         }
         
         .container {
             max-width: 100%;
             margin: 0 auto;
             background: white;
-            border-radius: 8px;
+            border-radius: 6px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             overflow-x: auto;
         }
@@ -32,7 +33,7 @@
         .header {
             background: #2c3e50;
             color: white;
-            padding: 20px;
+            padding: 12px;
             text-align: center;
             position: sticky;
             top: 0;
@@ -40,28 +41,31 @@
         }
         
         .header h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
+            font-size: 20px;
+            margin-bottom: 3px;
         }
         
         .header p {
             opacity: 0.8;
+            font-size: 13px;
+            margin-bottom: 8px;
         }
         
         .header-info {
-            margin-top: 15px;
+            margin-top: 8px;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 12px;
         }
         
         .info-item {
             background: rgba(255, 255, 255, 0.1);
-            padding: 8px 15px;
-            border-radius: 5px;
+            padding: 5px 10px;
+            border-radius: 4px;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 12px;
         }
         
         .info-item strong {
@@ -80,7 +84,7 @@
             width: auto;
             min-width: 2000px;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             white-space: nowrap;
             table-layout: fixed;
         }
@@ -88,18 +92,20 @@
         .resource-table th {
             background: #34495e;
             color: white;
-            padding: 10px 8px;
+            padding: 8px 6px;
             text-align: center;
             font-weight: bold;
             border: 1px solid #2c3e50;
             position: sticky;
             top: 0;
+            font-size: 12px;
         }
         
         .resource-table td {
-            padding: 8px;
+            padding: 6px;
             border: 1px solid #ddd;
             background: white;
+            font-size: 12px;
         }
         
         .resource-table .number {
@@ -111,8 +117,8 @@
             color: white !important;
             font-weight: bold;
             text-align: center;
-            padding: 10px 8px;
-            font-size: 2em;
+            padding: 8px 6px;
+            font-size: 1.7em;
         }
         
         .category-header td {
@@ -120,7 +126,8 @@
             color: white !important;
             font-weight: bold;
             text-align: left;
-            padding: 8px;
+            padding: 6px;
+            font-size: 13px;
         }
         
         .category-кадры td { background: #e8f4fd; }
@@ -134,21 +141,23 @@
             background: #2c3e50 !important;
             color: white !important;
             font-weight: bold;
+            font-size: 12px;
         }
         
         .back-btn {
             position: fixed;
-            top: 20px;
-            left: 20px;
+            top: 12px;
+            left: 12px;
             z-index: 1000;
             display: inline-block;
-            padding: 10px 20px;
+            padding: 6px 12px;
             background: #3498db;
             color: white;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 3px;
             transition: background 0.3s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            font-size: 12px;
         }
         
         .back-btn:hover {
@@ -157,17 +166,18 @@
         
         .edit-btn {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 12px;
+            right: 12px;
             z-index: 1000;
             display: inline-block;
-            padding: 10px 20px;
+            padding: 6px 12px;
             background: #e74c3c;
             color: white;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 3px;
             transition: background 0.3s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            font-size: 12px;
         }
         
         .edit-btn:hover {
@@ -245,7 +255,7 @@
                     <strong>Дата начала:</strong> {{ object.data_nachala|date:"d.m.Y" }}
                 </div>
                 <div class="info-item">
-                    <strong>Общая стоимость ресурсов:</strong> {{ total_cost|floatformat:2 }} ₽
+                    <strong>Общая стоимость ресурсов:</strong> {{ total_cost|floatformat:0 }} ₽
                 </div>
             </div>
             <!-- Две кнопки после header-info -->
@@ -329,10 +339,10 @@
                     
                     <tr class="total-row">
                         <td colspan="4">ИТОГО:</td>
-                        <td class="number">{{ category.grouper|get_category_sum:resources|floatformat:0 }}</td>
+                        <td class="number category-total">{{ category.grouper|get_category_sum:resources|floatformat:0 }}</td>
                         <td colspan="2"></td>
                         {% for day in days %}
-                        <td class="number">
+                        <td class="number category-daily-total">
                         {% with category_totals=category_daily_totals|get_item:category.grouper %}
                             {% with day_key=day|date:'Y-m-d' %}
                                 {{ category_totals|get_item:day_key|floatformat:0 }}
@@ -345,26 +355,11 @@
                     {% endfor %}
                     
                     <tr class="total-row">
-                        <td colspan="7">Итого фактических расходов по дням</td>
+                        <td colspan="7">Итого фактических расходов по дням:</td>
                         {% for day in days %}
-                        <td class="number">
-                        {% with day_total=0 %}
-                            {% for category in category_list %}
-                                {% if category.grouper|lower != 'подрядные организации' %}
-                                    {% for resource in category.list %}
-                                        {% for fr in fakticheskij_resursy %}
-                                            {% if fr.resurs_po_objektu.id == resource.id %}
-                                                {% for rashod in raskhody|get_item:fr.id %}
-                                                    {% if rashod.data|date:"Y-m-d" == day|date:"Y-m-d" %}
-                                                        {% with day_total=day_total|add:resource.cena|multiply:rashod.izraskhodovano %}{% endwith %}
-                                                    {% endif %}
-                                                {% endfor %}
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endfor %}
-                                {% endif %}
-                            {% endfor %}
-                            {{ day_total|floatformat:0 }}
+                        <td class="number total-daily-total">
+                        {% with day_key=day|date:'Y-m-d' %}
+                            {{ total_daily_expenses|get_item:day_key|floatformat:0 }}
                         {% endwith %}
                         </td>
                         {% endfor %}
@@ -379,67 +374,198 @@
     <a href="/admin/object/objekt/{{ object.id }}/change/" class="edit-btn">✎ Редактировать объект</a>
     
     <script>
-    function editCell(cell) {
-        if (cell.classList.contains('editing')) return;
+    function formatNumber(num) {
+        if (num === null || num === undefined || isNaN(num)) {
+            return '0';
+        }
+        // Используем надежный способ форматирования
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+    
+    function updateTotalDailyExpenses() {
+        console.log('updateTotalDailyExpenses called');
+        // Получаем все итоговые строки категорий
+        const categoryTotalRows = document.querySelectorAll('.total-row');
+        const daysCount = document.querySelectorAll('th[style*="width: 3%"]').length;
+        console.log('Days count:', daysCount);
         
-        const currentValue = cell.textContent.trim();
-        const input = document.createElement('input');
-        input.type = 'number';
-        input.value = currentValue;
-        input.style.width = '120px';
-        input.style.height = '30px';
-        input.style.border = '2px solid #007bff';
-        input.style.background = 'white';
-        input.style.textAlign = 'right';
-        input.style.fontSize = '14px';
-        input.style.padding = '5px';
-        input.style.borderRadius = '4px';
+        // Инициализируем массив для итоговых расходов по дням
+        const totalDailyExpenses = new Array(daysCount).fill(0);
         
-        cell.innerHTML = '';
-        cell.appendChild(input);
-        cell.classList.add('editing');
-        input.focus();
-        input.select();
-        
-        function saveValue() {
-            const newValue = input.value || '0';
-            cell.textContent = newValue;
-            cell.classList.remove('editing');
+        // Проходим по всем итоговым строкам категорий (кроме последней)
+        for (let i = 0; i < categoryTotalRows.length - 1; i++) {
+            const row = categoryTotalRows[i];
+            const dailyCells = row.querySelectorAll('.category-daily-total');
             
-            // Отправляем данные на сервер
-            const resourceId = cell.dataset.resourceId;
-            const date = cell.dataset.date;
-            
-            fetch('/update-expense/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({
-                    resource_id: resourceId,
-                    date: date,
-                    amount: newValue
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Обновляем ячейки Потрачено и Осталось
-                    const row = cell.closest('tr');
-                    const cells = row.querySelectorAll('td');
-                    cells[5].textContent = Math.round(data.potracheno); // Потрачено
-                    cells[6].textContent = Math.round(data.ostatok); // Осталось
-                }
+            // Суммируем дневные расходы по категориям
+            dailyCells.forEach((cell, dayIndex) => {
+                const cellValue = parseFloat(cell.textContent.trim().replace(/\s/g, '')) || 0;
+                totalDailyExpenses[dayIndex] += cellValue;
+                console.log(`Day ${dayIndex + 1}: added ${cellValue}, total now: ${totalDailyExpenses[dayIndex]}`);
             });
         }
         
-        input.addEventListener('blur', saveValue);
-        input.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                saveValue();
+        // Обновляем последнюю итоговую строку
+        const lastTotalRow = categoryTotalRows[categoryTotalRows.length - 1];
+        if (lastTotalRow) {
+            const totalDailyCells = lastTotalRow.querySelectorAll('.total-daily-total');
+            totalDailyCells.forEach((cell, dayIndex) => {
+                const formattedValue = formatNumber(Math.round(totalDailyExpenses[dayIndex]));
+                console.log(`Setting day ${dayIndex + 1} total to:`, formattedValue);
+                cell.textContent = formattedValue;
+            });
+        }
+        console.log('updateTotalDailyExpenses completed');
+    }
+    
+    function editCell(cell) {
+        if (cell.classList.contains('editing')) return;
+        
+        try {
+            let currentValue = cell.textContent.trim().replace(/\s/g, '');
+            console.log('Current value:', currentValue);
+            
+            // Если ячейка пустая или содержит только пробелы, устанавливаем 0
+            if (!currentValue || currentValue === '') {
+                currentValue = '0';
             }
-        });
+            
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.value = currentValue;
+            input.style.width = '100px';
+            input.style.height = '25px';
+            input.style.border = '2px solid #007bff';
+            input.style.background = 'white';
+            input.style.textAlign = 'right';
+            input.style.fontSize = '12px';
+            input.style.padding = '4px';
+            input.style.borderRadius = '4px';
+            
+            cell.innerHTML = '';
+            cell.appendChild(input);
+            cell.classList.add('editing');
+            input.focus();
+            input.select();
+            
+            function saveValue() {
+                try {
+                    const newValue = input.value || '0';
+                    console.log('New value:', newValue);
+                    
+                    cell.textContent = formatNumber(parseFloat(newValue));
+                    cell.classList.remove('editing');
+                    
+                    // Обновляем итоговые данные в реальном времени
+                    updateAllTotals();
+                    
+                    // Отправляем данные на сервер
+                    const resourceId = cell.dataset.resourceId;
+                    const date = cell.dataset.date;
+                    
+                    console.log('Sending data:', { resource_id: resourceId, date: date, amount: newValue });
+                    
+                    fetch('/update-expense/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify({
+                            resource_id: resourceId,
+                            date: date,
+                            amount: newValue
+                        })
+                    })
+                    .then(response => {
+                        console.log('Response status:', response.status);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Response data:', data);
+                        if (data.success) {
+                            // Обновляем ячейки Потрачено и Осталось
+                            const row = cell.closest('tr');
+                            console.log('Found row:', row);
+                            
+                            const cells = row.querySelectorAll('td');
+                            console.log('Cells count:', cells.length);
+                            console.log('Cells[5] (Потрачено):', cells[5]);
+                            console.log('Cells[6] (Осталось):', cells[6]);
+                            
+                            if (cells[5]) {
+                                const potrachenoFormatted = formatNumber(Math.round(data.potracheno));
+                                console.log('Setting Потрачено to:', potrachenoFormatted);
+                                cells[5].textContent = potrachenoFormatted;
+                            }
+                            
+                            if (cells[6]) {
+                                const ostatokFormatted = formatNumber(Math.round(data.ostatok));
+                                console.log('Setting Осталось to:', ostatokFormatted);
+                                cells[6].textContent = ostatokFormatted;
+                            }
+                            
+                            console.log('Updating totals...');
+                            // Обновляем итоговые суммы
+                            updateAllTotals();
+                            console.log('Totals updated successfully');
+                        } else {
+                            console.error('Server returned error:', data.error);
+                            let errorMessage = 'Ошибка при сохранении';
+                            if (data.error && data.error.includes('database is locked')) {
+                                errorMessage = 'База данных временно заблокирована. Попробуйте еще раз через несколько секунд.';
+                            } else if (data.error) {
+                                errorMessage += ': ' + data.error;
+                            }
+                            alert(errorMessage);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Fetch error:', error);
+                        let errorMessage = 'Ошибка при отправке данных';
+                        if (error.message.includes('Failed to fetch')) {
+                            errorMessage = 'Ошибка соединения с сервером. Проверьте подключение к интернету.';
+                        } else {
+                            errorMessage += ': ' + error.message;
+                        }
+                        alert(errorMessage);
+                    });
+                } catch (error) {
+                    console.error('Save value error:', error);
+                    alert('Ошибка при сохранении: ' + error.message);
+                }
+            }
+            
+            input.addEventListener('blur', saveValue);
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    saveValue();
+                }
+            });
+            
+            // Добавляем обновление в реальном времени при вводе
+            input.addEventListener('input', function() {
+                const newValue = input.value || '0';
+                const row = cell.closest('tr');
+                const cells = row.querySelectorAll('td');
+                
+                // Обновляем только ячейку Осталось в реальном времени
+                // Ячейка Потрачено будет обновлена сервером
+                const kolichestvo = parseFloat(cells[2].textContent.trim().replace(/\s/g, '')) || 0;
+                const currentPotracheno = parseFloat(cells[5].textContent.trim().replace(/\s/g, '')) || 0;
+                const ostatok = kolichestvo - currentPotracheno;
+                
+                if (cells[6]) {
+                    cells[6].textContent = formatNumber(Math.round(ostatok));
+                }
+                
+                // Обновляем итоговые данные в реальном времени
+                updateAllTotals();
+            });
+        } catch (error) {
+            console.error('Edit cell error:', error);
+            alert('Ошибка при редактировании ячейки: ' + error.message);
+        }
     }
     
     function getCookie(name) {
@@ -460,17 +586,17 @@
     function editResourceCell(cell) {
         if (cell.classList.contains('editing')) return;
         
-        const currentValue = cell.textContent.trim();
+        const currentValue = cell.textContent.trim().replace(/\s/g, '');
         const input = document.createElement('input');
         input.type = 'number';
         input.value = currentValue;
-        input.style.width = '120px';
-        input.style.height = '30px';
+        input.style.width = '100px';
+        input.style.height = '25px';
         input.style.border = '2px solid #28a745';
         input.style.background = 'white';
         input.style.textAlign = 'right';
-        input.style.fontSize = '14px';
-        input.style.padding = '5px';
+        input.style.fontSize = '12px';
+        input.style.padding = '4px';
         input.style.borderRadius = '4px';
         
         cell.innerHTML = '';
@@ -481,7 +607,7 @@
         
         function saveResourceValue() {
             const newValue = input.value || '0';
-            cell.textContent = newValue;
+            cell.textContent = formatNumber(parseFloat(newValue));
             cell.classList.remove('editing');
             
             // Получаем текущие значения из строки
@@ -489,8 +615,8 @@
             const cells = row.querySelectorAll('td');
             
             // Получаем значения количества и цены
-            let kolichestvo = parseFloat(cells[2].textContent.trim()) || 0;
-            let cena = parseFloat(cells[3].textContent.trim()) || 0;
+            let kolichestvo = parseFloat(cells[2].textContent.trim().replace(/\s/g, '')) || 0;
+            let cena = parseFloat(cells[3].textContent.trim().replace(/\s/g, '')) || 0;
             
             // Если редактируем количество или цену, обновляем соответствующее значение
             const fieldType = cell.dataset.fieldType;
@@ -506,18 +632,21 @@
             // Обновляем ячейку суммы по идентификатору
             const sumCell = row.querySelector('.sum-cell');
             if (sumCell) {
-                sumCell.textContent = Math.round(newSum);
+                sumCell.textContent = formatNumber(Math.round(newSum));
             }
             
             // Пересчитываем остаток
-            const potracheno = parseFloat(cells[5].textContent.trim()) || 0;
+            const potracheno = parseFloat(cells[5].textContent.trim().replace(/\s/g, '')) || 0;
             const ostatok = kolichestvo - potracheno;
             
             // Обновляем ячейку остатка по идентификатору
             const ostatokCell = row.querySelector('.ostatok-cell');
             if (ostatokCell) {
-                ostatokCell.textContent = Math.round(ostatok);
+                ostatokCell.textContent = formatNumber(Math.round(ostatok));
             }
+            
+            // Обновляем итоговые данные в реальном времени
+            updateAllTotals();
             
             // Отправляем данные на сервер
             const resourceId = cell.dataset.resourceId;
@@ -538,9 +667,27 @@
             .then(data => {
                 if (data.success) {
                     // Обновляем итоговые суммы
-                    updateCategoryTotals();
-                    updateTotalSum();
+                    updateAllTotals();
+                } else {
+                    console.error('Server returned error:', data.error);
+                    let errorMessage = 'Ошибка при сохранении';
+                    if (data.error && data.error.includes('database is locked')) {
+                        errorMessage = 'База данных временно заблокирована. Попробуйте еще раз через несколько секунд.';
+                    } else if (data.error) {
+                        errorMessage += ': ' + data.error;
+                    }
+                    alert(errorMessage);
                 }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                let errorMessage = 'Ошибка при отправке данных';
+                if (error.message.includes('Failed to fetch')) {
+                    errorMessage = 'Ошибка соединения с сервером. Проверьте подключение к интернету.';
+                } else {
+                    errorMessage += ': ' + error.message;
+                }
+                alert(errorMessage);
             });
         }
         
@@ -550,61 +697,223 @@
                 saveResourceValue();
             }
         });
+        
+        // Добавляем обновление в реальном времени при вводе
+        input.addEventListener('input', function() {
+            const newValue = input.value || '0';
+            const row = cell.closest('tr');
+            const cells = row.querySelectorAll('td');
+            
+            // Получаем значения количества и цены
+            let kolichestvo = parseFloat(cells[2].textContent.trim().replace(/\s/g, '')) || 0;
+            let cena = parseFloat(cells[3].textContent.trim().replace(/\s/g, '')) || 0;
+            
+            // Если редактируем количество или цену, обновляем соответствующее значение
+            const fieldType = cell.dataset.fieldType;
+            if (fieldType === 'kolichestvo') {
+                kolichestvo = parseFloat(newValue) || 0;
+            } else if (fieldType === 'cena') {
+                cena = parseFloat(newValue) || 0;
+            }
+            
+            // Пересчитываем сумму в реальном времени
+            const newSum = kolichestvo * cena;
+            
+            // Обновляем ячейку суммы по идентификатору
+            const sumCell = row.querySelector('.sum-cell');
+            if (sumCell) {
+                sumCell.textContent = formatNumber(Math.round(newSum));
+            }
+            
+            // Пересчитываем остаток
+            const potracheno = parseFloat(cells[5].textContent.trim().replace(/\s/g, '')) || 0;
+            const ostatok = kolichestvo - potracheno;
+            
+            // Обновляем ячейку остатка по идентификатору
+            const ostatokCell = row.querySelector('.ostatok-cell');
+            if (ostatokCell) {
+                ostatokCell.textContent = formatNumber(Math.round(ostatok));
+            }
+            
+            // Обновляем итоговые данные в реальном времени
+            updateAllTotals();
+        });
+    }
+    
+    function updateHeaderTotal() {
+        // Пересчитываем общую стоимость ресурсов в заголовке
+        let totalCost = 0;
+        const sumCells = document.querySelectorAll('.sum-cell');
+        
+        sumCells.forEach(cell => {
+            totalCost += parseFloat(cell.textContent.trim().replace(/\s/g, '')) || 0;
+        });
+        
+        // Находим элемент с общей стоимостью в заголовке
+        const headerInfo = document.querySelector('.header-info');
+        if (headerInfo) {
+            const totalCostElement = headerInfo.querySelector('.info-item:last-child');
+            if (totalCostElement) {
+                const strongElement = totalCostElement.querySelector('strong');
+                if (strongElement) {
+                    totalCostElement.innerHTML = `<strong>Общая стоимость ресурсов:</strong> ${formatNumber(Math.round(totalCost))} ₽`;
+                }
+            }
+        }
     }
     
     function updateCategoryTotals() {
-        // Находим все категории и пересчитываем их итоги
-        const categoryRows = document.querySelectorAll('.category-header');
-        categoryRows.forEach(categoryRow => {
+        console.log('updateCategoryTotals called');
+        
+        // Находим все итоговые строки категорий
+        const categoryTotalRows = document.querySelectorAll('.total-row');
+        console.log('Found total rows:', categoryTotalRows.length);
+        
+        // Проходим по каждой итоговой строке категории (кроме последней общей)
+        for (let i = 0; i < categoryTotalRows.length - 1; i++) {
+            const totalRow = categoryTotalRows[i];
+            console.log(`Processing total row ${i + 1}`);
+            
+            // Находим предыдущую строку заголовка категории
+            let categoryHeader = totalRow.previousElementSibling;
+            while (categoryHeader && !categoryHeader.classList.contains('category-header')) {
+                categoryHeader = categoryHeader.previousElementSibling;
+            }
+            
+            if (!categoryHeader) {
+                console.log('Category header not found for total row', i + 1);
+                continue;
+            }
+            
+            console.log('Found category header:', categoryHeader);
+            
+            // Получаем название категории
+            const categoryName = categoryHeader.querySelector('td')?.textContent || 'Unknown';
+            console.log('Category name:', categoryName);
+            
+            // Находим все строки ресурсов этой категории
             let categorySum = 0;
-            let currentRow = categoryRow.nextElementSibling;
+            let currentRow = categoryHeader.nextElementSibling;
+            const categoryDailyTotals = new Array(20).fill(0); // 20 дней
+            let resourceCount = 0;
             
             // Проходим по всем строкам ресурсов в этой категории
             while (currentRow && !currentRow.classList.contains('total-row') && !currentRow.classList.contains('category-header')) {
-                if (currentRow.classList.contains('category-кадры') || 
-                    currentRow.classList.contains('category-машины') || 
-                    currentRow.classList.contains('category-материалы') || 
-                    currentRow.classList.contains('category-административно') || 
-                    currentRow.classList.contains('category-сиз') || 
-                    currentRow.classList.contains('category-подрядные')) {
+                // Проверяем, что это строка ресурса (имеет класс, начинающийся с 'category-')
+                const classList = Array.from(currentRow.classList);
+                const isResourceRow = classList.some(cls => cls.startsWith('category-'));
+                
+                console.log('Checking row with classes:', classList, 'isResourceRow:', isResourceRow);
+                
+                if (isResourceRow) {
+                    resourceCount++;
+                    console.log(`Processing resource ${resourceCount} in category ${categoryName}, classes:`, classList);
                     
+                    // Суммируем общую стоимость ресурса
                     const sumCell = currentRow.querySelector('.sum-cell');
                     if (sumCell) {
-                        categorySum += parseFloat(sumCell.textContent.trim()) || 0;
+                        const cellValue = parseFloat(sumCell.textContent.trim().replace(/\s/g, '')) || 0;
+                        categorySum += cellValue;
+                        console.log('Added to category sum:', cellValue, 'from cell text:', sumCell.textContent);
+                    } else {
+                        console.log('Sum cell not found for resource');
+                    }
+                    
+                    // Суммируем дневные расходы
+                    const cells = currentRow.querySelectorAll('td');
+                    const cena = parseFloat(cells[3].textContent.trim().replace(/\s/g, '')) || 0;
+                    
+                    for (let j = 7; j < cells.length; j++) {
+                        const dayIndex = j - 7;
+                        const dayValue = parseFloat(cells[j].textContent.trim().replace(/\s/g, '')) || 0;
+                        categoryDailyTotals[dayIndex] += cena * dayValue;
                     }
                 }
                 currentRow = currentRow.nextElementSibling;
             }
             
-            // Обновляем итоговую строку категории
-            if (currentRow && currentRow.classList.contains('total-row')) {
-                const totalCell = currentRow.querySelector('td:nth-child(5)');
-                if (totalCell) {
-                    totalCell.textContent = Math.round(categorySum);
-                }
+            console.log(`Category ${categoryName}: found ${resourceCount} resources, total sum: ${categorySum}`);
+            
+            // Обновляем общую сумму категории
+            const totalCell = totalRow.querySelector('.category-total');
+            if (totalCell) {
+                const formattedSum = formatNumber(Math.round(categorySum));
+                console.log(`Setting category total to:`, formattedSum);
+                totalCell.textContent = formattedSum;
             }
-        });
+            
+            // Обновляем дневные итоги категории
+            const dailyTotalCells = totalRow.querySelectorAll('.category-daily-total');
+            dailyTotalCells.forEach((cell, dayIndex) => {
+                if (categoryDailyTotals[dayIndex] !== undefined) {
+                    const formattedValue = formatNumber(Math.round(categoryDailyTotals[dayIndex]));
+                    console.log(`Setting day ${dayIndex + 1} category total to:`, formattedValue);
+                    cell.textContent = formattedValue;
+                }
+            });
+        }
+        
+        console.log('updateCategoryTotals completed');
     }
     
     function updateTotalSum() {
+        console.log('updateTotalSum called');
         // Пересчитываем общую сумму по объекту
         let totalSum = 0;
         const sumCells = document.querySelectorAll('.sum-cell');
+        console.log('Found sum cells:', sumCells.length);
         
         sumCells.forEach(cell => {
-            totalSum += parseFloat(cell.textContent.trim()) || 0;
+            const cellValue = parseFloat(cell.textContent.trim().replace(/\s/g, '')) || 0;
+            totalSum += cellValue;
+            console.log('Added to total sum:', cellValue);
         });
+        
+        console.log('Total sum:', totalSum);
         
         // Обновляем общую сумму в последней строке
         const totalRows = document.querySelectorAll('.total-row');
+        console.log('Found total rows:', totalRows.length);
         const lastTotalRow = totalRows[totalRows.length - 1];
         if (lastTotalRow) {
-            const totalCell = lastTotalRow.querySelector('td:nth-child(5)');
-            if (totalCell) {
-                totalCell.textContent = Math.round(totalSum);
-            }
+            // НЕ обновляем заголовок последней строки, оставляем оригинальный текст
+            // const headerCell = lastTotalRow.querySelector('td:first-child');
+            // if (headerCell) {
+            //     headerCell.textContent = `ИТОГО: ${formatNumber(Math.round(totalSum))} ₽`;
+            // }
         }
+        console.log('updateTotalSum completed');
     }
+    
+    function updateAllTotals() {
+        console.log('updateAllTotals called');
+        // Обновляем все итоговые данные
+        updateCategoryTotals();
+        updateTotalSum();
+        updateTotalDailyExpenses();
+        updateHeaderTotal();
+        console.log('updateAllTotals completed');
+    }
+    
+    // Форматируем все числовые значения при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        const numberCells = document.querySelectorAll('.number');
+        
+        numberCells.forEach((cell, index) => {
+            const text = cell.textContent.trim();
+            
+            // Форматируем все числовые значения
+            if (text && !isNaN(parseFloat(text))) {
+                const num = parseFloat(text);
+                const formatted = formatNumber(num);
+                cell.textContent = formatted;
+            }
+        });
+        
+        // Обновляем все итоговые данные при загрузке страницы
+        updateAllTotals();
+    });
     </script>
 </body>
 </html>
+

@@ -24,6 +24,15 @@ def subtract(value, arg):
         return value
 
 @register.filter
+def format_number(value):
+    """Форматирует число с разделителями тысяч"""
+    try:
+        num = float(value)
+        return "{:,.0f}".format(num).replace(",", " ")
+    except (ValueError, TypeError):
+        return value
+
+@register.filter
 def get_category_sum(category_name, resources):
     """Вычисляет сумму для категории"""
     total = 0

@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ object.nazvanie }} - Доходная часть - AI-ZAM</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <style>
         * {
             margin: 0;
@@ -263,7 +264,7 @@
                     <strong>Дата начала:</strong> {{ object.data_nachala|date:"d.m.Y" }}
                 </div>
                 <div class="info-item">
-                    <strong>Общая стоимость ресурсов:</strong> {{ total_cost|floatformat:2 }} ₽
+                    <strong>Общая стоимость ресурсов:</strong> {{ total_cost|format_number }} ₽
                 </div>
             </div>
             <!-- Две кнопки после header-info -->
@@ -339,7 +340,7 @@
                     {% endfor %}
                     
                     <tr class="total-row">
-                        <td colspan="4">Итого</td>
+                        <td colspan="4">Итого фактических доходов по дням:</td>
                         <td class="number">{{ total_cost|floatformat:0 }}</td>
                         <td class="number">{{ total_completed|floatformat:0 }}</td>
                         <td class="number">{{ total_remaining|floatformat:0 }}</td>
@@ -357,8 +358,12 @@
     <a href="/admin/object/objekt/{{ object.id }}/change/" class="edit-btn">✎ Редактировать объект</a>
     
     <script>
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+    
     function updateTotalsRow() {
-        // Получаем все строки ресурсов (исключая заголовки и итоговую строку)
+        // Получаем все строки ресурсов подрядных организаций
         const resourceRows = document.querySelectorAll('tr[class*="category-подрядные"]');
         let totalCost = 0;
         let totalCompleted = 0;
@@ -381,10 +386,20 @@
                     totalCost += parseFloat(sumCell.textContent.replace(/[^\d.-]/g, '')) || 0;
                 }
                 
-                // Выполнено (колонка 6)
-                const completedCell = cells[5];
-                if (completedCell && completedCell.textContent.trim()) {
-                    totalCompleted += parseFloat(completedCell.textContent.replace(/[^\d.-]/g, '')) || 0;
+                // Выполнено (колонка 6) - используем новую формулу: Расценка × Σ Дневной расход
+                const cenaCell = cells[3]; // Расценка
+                let resourceCompleted = 0;
+                if (cenaCell && cenaCell.textContent.trim()) {
+                    const cena = parseFloat(cenaCell.textContent.replace(/[^\d.-]/g, '')) || 0;
+                    // Суммируем все дневные расходы для этого ресурса
+                    for (let i = 7; i < cells.length; i++) {
+                        const dayCell = cells[i];
+                        if (dayCell && dayCell.textContent.trim()) {
+                            const dayValue = parseFloat(dayCell.textContent.replace(/[^\d.-]/g, '')) || 0;
+                            resourceCompleted += dayValue;
+                        }
+                    }
+                    totalCompleted += cena * resourceCompleted;
                 }
                 
                 // Осталось (колонка 7)
@@ -393,12 +408,14 @@
                     totalRemaining += parseFloat(remainingCell.textContent.replace(/[^\d.-]/g, '')) || 0;
                 }
                 
-                // Суммы по дням (начиная с колонки 8)
+                // Суммы по дням (начиная с колонки 8) - Расценка × Дневной расход
+                const cena = parseFloat(cells[3].textContent.replace(/[^\d.-]/g, '')) || 0;
                 for (let i = 7; i < cells.length; i++) {
                     const dayCell = cells[i];
                     if (dayCell && dayCell.textContent.trim()) {
                         const dayIndex = i - 7;
-                        dailyTotals[dayIndex] += parseFloat(dayCell.textContent.replace(/[^\d.-]/g, '')) || 0;
+                        const dayValue = parseFloat(dayCell.textContent.replace(/[^\d.-]/g, '')) || 0;
+                        dailyTotals[dayIndex] += cena * dayValue;
                     }
                 }
             }
@@ -411,21 +428,21 @@
             if (totalCells.length > 0) {
                 // Обновляем общую сумму
                 if (totalCells[4]) {
-                    totalCells[4].textContent = Math.round(totalCost);
+                    totalCells[4].textContent = formatNumber(Math.round(totalCost));
                 }
                 // Обновляем общую сумму выполнено
                 if (totalCells[5]) {
-                    totalCells[5].textContent = Math.round(totalCompleted);
+                    totalCells[5].textContent = formatNumber(Math.round(totalCompleted));
                 }
                 // Обновляем общую сумму осталось
                 if (totalCells[6]) {
-                    totalCells[6].textContent = Math.round(totalRemaining);
+                    totalCells[6].textContent = formatNumber(Math.round(totalRemaining));
                 }
                 // Обновляем суммы по дням
                 for (let i = 7; i < totalCells.length; i++) {
                     const dayIndex = i - 7;
                     if (totalCells[i] && dailyTotals[dayIndex] !== undefined) {
-                        totalCells[i].textContent = Math.round(dailyTotals[dayIndex]);
+                        totalCells[i].textContent = formatNumber(Math.round(dailyTotals[dayIndex]));
                     }
                 }
             }
@@ -456,7 +473,7 @@
         
         function saveValue() {
             const newValue = input.value || '0';
-            cell.textContent = newValue;
+            cell.textContent = formatNumber(parseFloat(newValue));
             cell.classList.remove('editing');
             
             // Отправляем данные на сервер
@@ -481,8 +498,8 @@
                     // Обновляем ячейки Потрачено и Осталось
                     const row = cell.closest('tr');
                     const cells = row.querySelectorAll('td');
-                    cells[5].textContent = Math.round(data.potracheno); // Потрачено
-                    cells[6].textContent = Math.round(data.ostatok); // Осталось
+                    cells[5].textContent = formatNumber(Math.round(data.potracheno)); // Потрачено
+                    cells[6].textContent = formatNumber(Math.round(data.ostatok)); // Осталось
                     
                     // Обновляем итоговую строку
                     updateTotalsRow();
@@ -537,7 +554,7 @@
         
         function saveValue() {
             const newValue = input.value || '0';
-            cell.textContent = newValue;
+            cell.textContent = formatNumber(parseFloat(newValue));
             cell.classList.remove('editing');
             
             // Отправляем данные на сервер
@@ -563,13 +580,13 @@
                     const row = cell.closest('tr');
                     const sumCell = row.querySelector('.sum-cell');
                     if (sumCell) {
-                        sumCell.textContent = Math.round(data.new_sum);
+                        sumCell.textContent = formatNumber(Math.round(data.new_sum));
                     }
                     
                     // Обновляем ячейку остатка
                     const ostatokCell = row.querySelector('.ostatok-cell');
                     if (ostatokCell) {
-                        ostatokCell.textContent = Math.round(data.ostatok);
+                        ostatokCell.textContent = formatNumber(Math.round(data.ostatok));
                     }
                     
                     // Обновляем итоговую строку
@@ -585,6 +602,17 @@
             }
         });
     }
+    
+    // Форматируем все числовые значения при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        const numberCells = document.querySelectorAll('.number');
+        numberCells.forEach(cell => {
+            const text = cell.textContent.trim();
+            if (text && !isNaN(parseFloat(text))) {
+                cell.textContent = formatNumber(parseFloat(text));
+            }
+        });
+    });
     </script>
 </body>
 </html> 

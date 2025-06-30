@@ -11,6 +11,7 @@ matplotlib.use('Agg')  # Используем backend без GUI
 import matplotlib.pyplot as plt
 import os
 from django.conf import settings
+import time
 
 def home(request):
     # Получаем статистику для главной страницы
@@ -277,6 +278,15 @@ def object_detail(request, object_id):
                             break
                 category_daily_totals[category][day_key] = daily_total
     
+    # Вычисляем итоговые фактические расходы по дням, суммируя значения из итоговых строк категорий
+    total_daily_expenses = {}
+    for day in days:
+        day_key = day.strftime('%Y-%m-%d')
+        total_daily_expenses[day_key] = sum(
+            category_daily_totals.get(category, {}).get(day_key, 0.0)
+            for category in category_daily_totals
+        )
+    
     context = {
         'object': obj,
         'resources': resources,
@@ -286,6 +296,7 @@ def object_detail(request, object_id):
         'total_spent': total_spent,
         'days': days,
         'category_daily_totals': category_daily_totals,
+        'total_daily_expenses': total_daily_expenses,
     }
     
     return render(request, 'object/object_detail.html', context)
@@ -333,18 +344,35 @@ def object_income_detail(request, object_id):
         total_spent += sum(float(rr.izraskhodovano) * resource_cost for rr in rr_list)
     
     # Вычисляем суммы для строки "Итого"
-    total_completed = sum(float(r.potracheno) for r in resources)  # Сумма выполнено
+    # Сумма выполнено по формуле: Σ (Расценка × Σ Дневной расход)
+    total_completed = 0.0
+    for resource in resources:
+        # Ищем фактические ресурсы для этого ресурса
+        for fr in fakticheskij_resursy:
+            if fr.resurs_po_objektu.id == resource.id:
+                # Суммируем все дневные расходы для этого ресурса
+                total_daily_spent = sum(float(rashod.izraskhodovano) for rashod in raskhody.get(fr.id, []))
+                # Вычисляем: Расценка × Σ Дневной расход
+                total_completed += float(resource.cena) * total_daily_spent
+                break
+    
     total_remaining = sum(float(r.kolichestvo - r.potracheno) for r in resources)  # Сумма осталось
     
-    # Суммы по дням для фактических доходов
+    # Вычисляем суммы по дням для подрядных организаций
     daily_totals = {}
     for day in days:
         day_key = day.strftime('%Y-%m-%d')
         daily_total = 0.0
-        for fr in fakticheskij_resursy:
-            for rashod in raskhody.get(fr.id, []):
-                if rashod.data.strftime('%Y-%m-%d') == day_key:
-                    daily_total += float(rashod.izraskhodovano)
+        for resource in resources:
+            # Ищем фактические ресурсы для этого ресурса
+            for fr in fakticheskij_resursy:
+                if fr.resurs_po_objektu.id == resource.id:
+                    # Ищем расходы по дням
+                    for rashod in raskhody.get(fr.id, []):
+                        if rashod.data.strftime('%Y-%m-%d') == day_key:
+                            # Вычисляем: Расценка * Дневной расход
+                            daily_total += float(resource.cena) * float(rashod.izraskhodovano)
+                    break
         daily_totals[day_key] = daily_total
     
     context = {
@@ -358,7 +386,7 @@ def object_income_detail(request, object_id):
         'is_income_page': True,  # Флаг для шаблона
         'total_completed': total_completed,  # Сумма выполнено
         'total_remaining': total_remaining,  # Сумма осталось
-        'daily_totals': daily_totals,  # Суммы по дням
+        'daily_totals': daily_totals,
     }
     
     return render(request, 'object/object_income_detail.html', context)
@@ -366,77 +394,109 @@ def object_income_detail(request, object_id):
 @csrf_exempt
 @require_POST
 def update_expense(request):
-    try:
-        data = json.loads(request.body)
-        resource_id = data.get('resource_id')
-        date_str = data.get('date')
-        amount = float(data.get('amount', 0))
-        
-        # Получаем ресурс по объекту
-        resource = ResursyPoObjektu.objects.get(id=resource_id)
-        
-        # Получаем или создаем фактический ресурс
-        fakticheskij_resurs, created = FakticheskijResursPoObjektu.objects.get_or_create(
-            resurs_po_objektu=resource
-        )
-        
-        # Парсим дату
-        date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
-        
-        # Обновляем или создаем расход
-        rashod, created = RaskhodResursa.objects.update_or_create(
-            fakticheskij_resurs=fakticheskij_resurs,
-            data=date_obj,
-            defaults={'izraskhodovano': amount}
-        )
-        
-        # Пересчитываем общую сумму потраченного для ресурса
-        total_spent = RaskhodResursa.objects.filter(
-            fakticheskij_resurs=fakticheskij_resurs
-        ).aggregate(total=Sum('izraskhodovano'))['total'] or 0
-        
-        # Обновляем поле potracheno в resursy_po_objektu
-        resource.potracheno = total_spent
-        resource.save()
-        
-        return JsonResponse({
-            'success': True,
-            'potracheno': float(total_spent),
-            'ostatok': float(resource.kolichestvo - total_spent)
-        })
-    except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
+    max_retries = 3
+    retry_delay = 0.1  # 100ms
+    
+    for attempt in range(max_retries):
+        try:
+            data = json.loads(request.body)
+            resource_id = data.get('resource_id')
+            date_str = data.get('date')
+            amount = float(data.get('amount', 0))
+            
+            # Получаем ресурс по объекту
+            resource = ResursyPoObjektu.objects.get(id=resource_id)
+            
+            # Получаем или создаем фактический ресурс
+            fakticheskij_resurs, created = FakticheskijResursPoObjektu.objects.get_or_create(
+                resurs_po_objektu=resource
+            )
+            
+            # Парсим дату
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
+            
+            # Обновляем или создаем расход
+            rashod, created = RaskhodResursa.objects.update_or_create(
+                fakticheskij_resurs=fakticheskij_resurs,
+                data=date_obj,
+                defaults={'izraskhodovano': amount}
+            )
+            
+            # Пересчитываем общую сумму потраченного для ресурса
+            total_spent = RaskhodResursa.objects.filter(
+                fakticheskij_resurs=fakticheskij_resurs
+            ).aggregate(total=Sum('izraskhodovano'))['total'] or 0
+            
+            # Обновляем поле potracheno в resursy_po_objektu
+            resource.potracheno = total_spent
+            resource.save()
+            
+            return JsonResponse({
+                'success': True,
+                'potracheno': float(total_spent),
+                'ostatok': float(resource.kolichestvo - total_spent)
+            })
+            
+        except Exception as e:
+            error_msg = str(e)
+            if 'database is locked' in error_msg.lower() and attempt < max_retries - 1:
+                # Если база заблокирована и это не последняя попытка, ждем и повторяем
+                time.sleep(retry_delay)
+                retry_delay *= 2  # Увеличиваем задержку с каждой попыткой
+                continue
+            else:
+                # Если это последняя попытка или другая ошибка, возвращаем ошибку
+                return JsonResponse({'success': False, 'error': error_msg})
+    
+    # Если все попытки исчерпаны
+    return JsonResponse({'success': False, 'error': 'Database is locked after multiple attempts'})
 
 @csrf_exempt
 @require_POST
 def update_resource_data(request):
-    try:
-        data = json.loads(request.body)
-        resource_id = data.get('resource_id')
-        field_type = data.get('field_type')  # 'kolichestvo' или 'cena'
-        new_value = float(data.get('value', 0))
-        
-        # Получаем ресурс по объекту
-        resource = ResursyPoObjektu.objects.get(id=resource_id)
-        
-        # Обновляем соответствующее поле
-        if field_type == 'kolichestvo':
-            resource.kolichestvo = new_value
-        elif field_type == 'cena':
-            resource.cena = new_value
-        else:
-            return JsonResponse({'success': False, 'error': 'Неверный тип поля'})
-        
-        resource.save()
-        
-        # Пересчитываем сумму
-        new_sum = resource.kolichestvo * resource.cena
-        
-        return JsonResponse({
-            'success': True,
-            'new_sum': float(new_sum),
-            'ostatok': float(resource.kolichestvo - resource.potracheno)
-        })
-    except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
+    max_retries = 3
+    retry_delay = 0.1  # 100ms
+    
+    for attempt in range(max_retries):
+        try:
+            data = json.loads(request.body)
+            resource_id = data.get('resource_id')
+            field_type = data.get('field_type')  # 'kolichestvo' или 'cena'
+            new_value = float(data.get('value', 0))
+            
+            # Получаем ресурс по объекту
+            resource = ResursyPoObjektu.objects.get(id=resource_id)
+            
+            # Обновляем соответствующее поле
+            if field_type == 'kolichestvo':
+                resource.kolichestvo = new_value
+            elif field_type == 'cena':
+                resource.cena = new_value
+            else:
+                return JsonResponse({'success': False, 'error': 'Неверный тип поля'})
+            
+            resource.save()
+            
+            # Пересчитываем сумму
+            new_sum = resource.kolichestvo * resource.cena
+            
+            return JsonResponse({
+                'success': True,
+                'new_sum': float(new_sum),
+                'ostatok': float(resource.kolichestvo - resource.potracheno)
+            })
+            
+        except Exception as e:
+            error_msg = str(e)
+            if 'database is locked' in error_msg.lower() and attempt < max_retries - 1:
+                # Если база заблокирована и это не последняя попытка, ждем и повторяем
+                time.sleep(retry_delay)
+                retry_delay *= 2  # Увеличиваем задержку с каждой попыткой
+                continue
+            else:
+                # Если это последняя попытка или другая ошибка, возвращаем ошибку
+                return JsonResponse({'success': False, 'error': error_msg})
+    
+    # Если все попытки исчерпаны
+    return JsonResponse({'success': False, 'error': 'Database is locked after multiple attempts'})
 
