@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django import forms
-from .models import KategoriyaResursa, Resurs, Specialnost, Kadry, Objekt, ResursyPoObjektu, FakticheskijResursPoObjektu, RaskhodResursa, DokhodResursa
+from .models import KategoriyaResursa, Resurs, Specialnost, Kadry, Objekt, ResursyPoObjektu, FakticheskijResursPoObjektu, RaskhodResursa, DokhodResursa, SvodnayaRaskhodDokhodPoDnyam
 
 def format_number(value):
     """Форматирует число с пробелами как разделителями разрядов"""
@@ -338,3 +338,16 @@ class DokhodResursaAdmin(admin.ModelAdmin):
     search_fields = ('fakticheskij_resurs__resurs_po_objektu__objekt__nazvanie',)
     list_filter = ('data',)
     date_hierarchy = 'data'
+
+@admin.register(SvodnayaRaskhodDokhodPoDnyam)
+class SvodnayaRaskhodDokhodPoDnyamAdmin(admin.ModelAdmin):
+    list_display = ('objekt', 'data', 'raskhod', 'dokhod', 'balans')
+    search_fields = ('objekt__nazvanie',)
+    list_filter = ('objekt', 'data')
+    date_hierarchy = 'data'
+    readonly_fields = ('balans',)
+    
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['title'] = 'Выберите объект для просмотра сводной информации'
+        return super().changelist_view(request, extra_context)
