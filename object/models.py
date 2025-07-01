@@ -115,3 +115,33 @@ class RaskhodResursa(models.Model):
     
     def __str__(self):
         return f"{self.fakticheskij_resurs} - {self.data} ({self.izraskhodovano})"
+
+class DokhodResursa(models.Model):
+    fakticheskij_resurs = models.ForeignKey(FakticheskijResursPoObjektu, on_delete=models.CASCADE, verbose_name="Фактический ресурс")
+    data = models.DateField(verbose_name="Дата")
+    vypolneno = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Выполнено")
+
+    class Meta:
+        verbose_name = "Доход ресурса"
+        verbose_name_plural = "Доходы ресурсов"
+        db_table = 'dokhod_resursa'
+        unique_together = ['fakticheskij_resurs', 'data']
+
+    def __str__(self):
+        return f"{self.fakticheskij_resurs} - {self.data} (Выполнено: {self.vypolneno})"
+
+class SvodnayaRaskhodDokhodPoDnyam(models.Model):
+    objekt = models.ForeignKey(Objekt, on_delete=models.CASCADE, verbose_name="Объект")
+    data = models.DateField(verbose_name="Дата")
+    raskhod = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Расход")
+    dokhod = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Доход")
+    balans = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Баланс")
+    
+    class Meta:
+        verbose_name = "Сводная по дням"
+        verbose_name_plural = "Сводная по дням"
+        db_table = 'svodnaya_raskhod_dokhod_po_dnyam'
+        unique_together = ['objekt', 'data']
+    
+    def __str__(self):
+        return f"{self.objekt.nazvanie} - {self.data} (Баланс: {self.balans})"

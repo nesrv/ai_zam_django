@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Sum, Count, F
-from .models import Objekt, ResursyPoObjektu, RaskhodResursa, Resurs, Kadry, FakticheskijResursPoObjektu
+from .models import Objekt, ResursyPoObjektu, RaskhodResursa, Resurs, Kadry, FakticheskijResursPoObjektu, DokhodResursa
 from datetime import datetime, timedelta
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -437,51 +437,51 @@ def object_income_detail(request, object_id):
     # Суммарная стоимость ресурсов
     total_cost = sum(float(r.kolichestvo * r.cena) for r in resources)
     
-    # Фактические расходы ресурсов
+    # Фактические ресурсы
     fakticheskij_resursy = FakticheskijResursPoObjektu.objects.filter(
         resurs_po_objektu__objekt=obj,
         resurs_po_objektu__resurs__kategoriya_resursa__nazvanie='Подрядные организации'
     ).select_related('resurs_po_objektu', 'resurs_po_objektu__resurs')
     
-    # Расходы по фактическим ресурсам
-    raskhody = {}
+    # Доходы по фактическим ресурсам (из таблицы dokhod_resursa)
+    dokhody = {}
     all_dates = set()
     
     for fr in fakticheskij_resursy:
-        rashody_list = RaskhodResursa.objects.filter(fakticheskij_resurs=fr).order_by('-data')
-        raskhody[fr.id] = rashody_list
+        dokhody_list = DokhodResursa.objects.filter(fakticheskij_resurs=fr).order_by('-data')
+        dokhody[fr.id] = dokhody_list
         
-        # Собираем все даты расходов
-        for rashod in rashody_list:
-            all_dates.add(rashod.data)
+        # Собираем все даты доходов
+        for dokhod in dokhody_list:
+            all_dates.add(dokhod.data)
     
     # Всегда создаем 20 дней для отображения
     today = datetime.now().date()
     days = [today - timedelta(days=i) for i in range(20)]
     
-    # Суммарный фактический расход
+    # Суммарный фактический доход
     total_spent = 0.0
-    for fr_id, rr_list in raskhody.items():
+    for fr_id, dd_list in dokhody.items():
         fr = FakticheskijResursPoObjektu.objects.get(id=fr_id)
         resource_cost = float(fr.resurs_po_objektu.cena)
-        total_spent += sum(float(rr.izraskhodovano) * resource_cost for rr in rr_list)
+        total_spent += sum(float(dd.vypolneno) * resource_cost for dd in dd_list)
     
     # Вычисляем суммы для строки "Итого"
-    # Сумма выполнено по формуле: Σ (Расценка × Σ Дневной расход)
+    # Сумма выполнено по формуле: Σ (Расценка × Σ Дневной доход)
     total_completed = 0.0
     for resource in resources:
         # Ищем фактические ресурсы для этого ресурса
         for fr in fakticheskij_resursy:
             if fr.resurs_po_objektu.id == resource.id:
-                # Суммируем все дневные расходы для этого ресурса
-                total_daily_spent = sum(float(rashod.izraskhodovano) for rashod in raskhody.get(fr.id, []))
-                # Вычисляем: Расценка × Σ Дневной расход
-                total_completed += float(resource.cena) * total_daily_spent
+                # Суммируем все дневные доходы для этого ресурса
+                total_daily_income = sum(float(dokhod.vypolneno) for dokhod in dokhody.get(fr.id, []))
+                # Вычисляем: Расценка × Σ Дневной доход
+                total_completed += float(resource.cena) * total_daily_income
                 break
     
     total_remaining = sum(float(r.kolichestvo - r.potracheno) for r in resources)  # Сумма осталось
     
-    # Вычисляем суммы по дням для подрядных организаций
+    # Вычисляем суммы по дням для подрядных организаций (из таблицы dokhod_resursa)
     daily_totals = {}
     for day in days:
         day_key = day.strftime('%Y-%m-%d')
@@ -490,11 +490,11 @@ def object_income_detail(request, object_id):
             # Ищем фактические ресурсы для этого ресурса
             for fr in fakticheskij_resursy:
                 if fr.resurs_po_objektu.id == resource.id:
-                    # Ищем расходы по дням
-                    for rashod in raskhody.get(fr.id, []):
-                        if rashod.data.strftime('%Y-%m-%d') == day_key:
-                            # Вычисляем: Расценка * Дневной расход
-                            daily_total += float(resource.cena) * float(rashod.izraskhodovano)
+                    # Ищем доходы по дням
+                    for dokhod in dokhody.get(fr.id, []):
+                        if dokhod.data.strftime('%Y-%m-%d') == day_key:
+                            # Вычисляем: Расценка * Дневной доход
+                            daily_total += float(resource.cena) * float(dokhod.vypolneno)
                     break
         daily_totals[day_key] = daily_total
     
@@ -503,7 +503,7 @@ def object_income_detail(request, object_id):
         'resources': resources,
         'total_cost': total_cost,
         'fakticheskij_resursy': fakticheskij_resursy,
-        'raskhody': raskhody,
+        'dokhody': dokhody,
         'total_spent': total_spent,
         'days': days,
         'is_income_page': True,  # Флаг для шаблона
