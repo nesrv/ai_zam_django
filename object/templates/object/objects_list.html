@@ -213,7 +213,7 @@
                 <th>Выполнено на сумму (₽)</th>
                 <th>Бюджет доходов и расходов (₽)</th>
                 {% for day in days %}
-                <th>Баланс {{ day|date:"d.m" }}</th>
+                <th style="background: rgba(46, 204, 113, 0.8);">{{ day|date:"d.m" }}</th>
                 {% endfor %}
             </tr>
         </thead>

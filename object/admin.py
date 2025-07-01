@@ -346,6 +346,7 @@ class SvodnayaRaskhodDokhodPoDnyamAdmin(admin.ModelAdmin):
     list_filter = ('objekt', 'data')
     date_hierarchy = 'data'
     readonly_fields = ('balans',)
+    ordering = ('-data',)
     
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
