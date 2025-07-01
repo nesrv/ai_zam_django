@@ -5,35 +5,81 @@
 {% block content %}
 <div class="container-fluid mt-4">
     <div class="row">
-        <div class="col-md-8 mx-auto">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">💬 AI Чат-бот</h5>
-                    <div>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="clearChat()">Очистить чат</button>
-                        <a href="{% url 'ai:index' %}" class="btn btn-sm btn-outline-primary">Назад</a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <!-- Область чата -->
-                    <div id="chat-messages" class="chat-container" style="height: 400px; overflow-y: auto; border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; background-color: #f8f9fa;">
-                        <div class="text-center text-muted">
-                            <p>👋 Привет! Я AI ассистент. Задавайте мне любые вопросы!</p>
+        <div class="col-md-10 mx-auto">
+            <div class="ipad-container">
+                <div class="ipad-frame">
+                    <div class="ipad-screen">
+                        <!-- Выпадающее меню в левом верхнем углу экрана iPad -->
+                        <div class="dropdown-menu">
+                            <button class="dropdown-toggle" onclick="toggleDropdown()">
+                                📋 Генерация документов
+                                <span class="dropdown-arrow">▼</span>
+                            </button>
+                            <div class="dropdown-content" id="dropdownContent">
+                                <button class="menu-btn" onclick="generateDocument('lzk')">
+                                    <span class="btn-icon">📄</span>
+                                    <span class="btn-text">Составь лимитно-заборную карту (ЛЗК)</span>
+                                    <span class="btn-desc">на [название материала/оборудования]</span>
+                                </button>
+                                <button class="menu-btn" onclick="generateDocument('vor')">
+                                    <span class="btn-icon">📊</span>
+                                    <span class="btn-text">Сформируй ведомость объемов работ (ВОР)</span>
+                                    <span class="btn-desc">для [тип объекта/этап строительства]</span>
+                                </button>
+                                <button class="menu-btn" onclick="generateDocument('tz')">
+                                    <span class="btn-icon">📋</span>
+                                    <span class="btn-text">Напиши техническое задание (ТЗ)</span>
+                                    <span class="btn-desc">на проектирование [объекта/системы]</span>
+                                </button>
+                                <button class="menu-btn" onclick="generateDocument('questionnaire')">
+                                    <span class="btn-icon">❓</span>
+                                    <span class="btn-text">Подготовь опросный лист для подрядчика</span>
+                                    <span class="btn-desc">по [виду работ]</span>
+                                </button>
+                                <button class="menu-btn" onclick="generateDocument('hidden_works')">
+                                    <span class="btn-icon">🔍</span>
+                                    <span class="btn-text">Создай шаблон акта скрытых работ</span>
+                                    <span class="btn-desc">на [вид работ]</span>
+                                </button>
+                                <button class="menu-btn" onclick="generateDocument('explanatory')">
+                                    <span class="btn-icon">📝</span>
+                                    <span class="btn-text">Напиши пояснительную записку к проекту</span>
+                                    <span class="btn-desc">Подробное описание проекта</span>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <!-- Форма отправки сообщения -->
-                    <form id="chat-form" class="d-flex">
-                        <input type="text" id="message-input" class="form-control me-2" placeholder="Введите ваше сообщение..." required>
-                        <button type="submit" class="btn btn-primary">Отправить</button>
-                    </form>
-                    
-                    <!-- Индикатор загрузки -->
-                    <div id="loading" class="text-center mt-2" style="display: none;">
-                        <div class="spinner-border spinner-border-sm" role="status">
-                            <span class="visually-hidden">Загрузка...</span>
+                        
+                        <!-- Заголовок чата -->
+                        <div class="chat-header">
+                            <h2>💬 AI Чат-бот</h2>
+                            <div class="chat-controls">
+                                <button class="btn btn-sm btn-outline-light" onclick="clearChat()">Очистить чат</button>
+                                <a href="{% url 'ai:index' %}" class="btn btn-sm btn-outline-light">Назад</a>
+                            </div>
                         </div>
-                        <span class="ms-2">AI думает...</span>
+                        
+                        <!-- Область чата -->
+                        <div id="chat-messages" class="chat-messages">
+                            <div class="text-center text-muted">
+                                <p>👋 Привет! Я AI ассистент. Задавайте мне любые вопросы!</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Форма отправки сообщения -->
+                        <div class="chat-input">
+                            <form id="chat-form" class="d-flex">
+                                <input type="text" id="message-input" class="form-control me-2" placeholder="Введите ваше сообщение..." required>
+                                <button type="submit" class="btn btn-primary">Отправить</button>
+                            </form>
+                            
+                            <!-- Индикатор загрузки -->
+                            <div id="loading" class="text-center mt-2" style="display: none;">
+                                <div class="spinner-border spinner-border-sm" role="status">
+                                    <span class="visually-hidden">Загрузка...</span>
+                                </div>
+                                <span class="ms-2">AI думает...</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -42,8 +88,194 @@
 </div>
 
 <style>
-.chat-container {
+.ipad-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    position: relative;
+}
+
+.ipad-frame {
+    background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+    border-radius: 30px;
+    padding: 20px;
+    box-shadow: 
+        0 20px 40px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    position: relative;
+    overflow: visible;
+}
+
+.ipad-frame::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 2px;
+}
+
+.ipad-screen {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 20px;
+    overflow: visible;
+    min-height: 800px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Стили для выпадающего меню внутри экрана iPad */
+.ipad-screen .dropdown-menu {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    z-index: 9999;
+}
+
+.dropdown-toggle {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 15px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    min-width: 200px;
+    justify-content: space-between;
+}
+
+.dropdown-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.dropdown-arrow {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.dropdown-toggle.active .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 15px;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    min-width: 300px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    z-index: 10000;
+}
+
+.dropdown-content.show {
+    max-height: 600px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.menu-btn {
+    background: rgba(102, 126, 234, 0.1);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    border-radius: 10px;
+    padding: 12px;
+    color: #333;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 70px;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.menu-btn:hover {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+}
+
+.menu-btn:active {
+    transform: translateY(0);
+}
+
+.menu-btn .btn-icon {
+    font-size: 1.3rem;
+    display: block;
+}
+
+.menu-btn .btn-text {
+    font-weight: bold;
+    font-size: 0.9rem;
+    line-height: 1.2;
+}
+
+.menu-btn .btn-desc {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    font-style: italic;
+}
+
+.chat-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 80px;
+}
+
+.chat-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.chat-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #f8f9fa;
+    max-height: 500px;
     scroll-behavior: smooth;
+}
+
+.chat-input {
+    padding: 20px;
+    background: #fff;
+    border-top: 1px solid #dee2e6;
 }
 
 .message {
@@ -168,6 +400,17 @@ function clearChat() {
         </div>
     `;
     sessionId = null;
+}
+
+function toggleDropdown() {
+    const content = document.getElementById('dropdownContent');
+    const toggle = document.querySelector('.dropdown-toggle');
+    content.classList.toggle('show');
+    toggle.classList.toggle('active');
+}
+
+function generateDocument(type) {
+    alert('Генерация документа: ' + type + ' (фейковые параметры)');
 }
 </script>
 {% endblock %} 

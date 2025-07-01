@@ -310,7 +310,7 @@ def create_profit_balance_charts(objects_with_info, days, daily_income_data, dai
         plt.tight_layout()
         
         # Сохраняем график с временной меткой для избежания кэширования
-        charts_dir = os.path.join(settings.BASE_DIR, 'static', 'charts')
+        charts_dir = os.path.join(settings.STATIC_ROOT, 'charts')
         os.makedirs(charts_dir, exist_ok=True)
         
         # Удаляем старые файлы графиков (оставляем только последние 5)

@@ -9,14 +9,15 @@
         margin: 0 auto;
         padding: 20px;
         min-height: 100vh;
+        position: relative;
     }
     
-    /* Стили для выпадающего меню слева */
-    .dropdown-menu {
-        position: fixed;
+    /* Стили для выпадающего меню внутри экрана iPad */
+    .ipad-screen .dropdown-menu {
+        position: absolute;
         top: 20px;
         left: 20px;
-        z-index: 1000;
+        z-index: 1001;
     }
     
     .dropdown-toggle {
@@ -139,7 +140,7 @@
             0 20px 40px rgba(0,0,0,0.3),
             inset 0 1px 0 rgba(255,255,255,0.1);
         position: relative;
-        overflow: hidden;
+        overflow: visible;
     }
     
     .ipad-frame::before {
@@ -157,10 +158,11 @@
     .ipad-screen {
         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         border-radius: 20px;
-        overflow: hidden;
+        overflow: visible;
         min-height: 1200px;
         display: flex;
         flex-direction: column;
+        position: relative;
     }
     
     .chat-header {
@@ -190,6 +192,7 @@
         background: #f8f9fa;
         max-height: 800px;
         scroll-behavior: smooth;
+        overscroll-behavior: contain;
     }
     
     .message {
@@ -554,59 +557,66 @@
         from { opacity: 1; }
         to { opacity: 0; }
     }
+
+    body, html {
+        overscroll-behavior: none;
+    }
+
+    .ipad-container {
+        overscroll-behavior: none;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Выпадающее меню справа -->
-<div class="dropdown-menu">
-    <button class="dropdown-toggle" onclick="toggleDropdown()">
-        📋 Генерация документов
-        <span class="dropdown-arrow">▼</span>
-    </button>
-    <div class="dropdown-content" id="dropdownContent">
-        <button class="menu-btn" onclick="generateDocument('lzk')">
-            <span class="btn-icon">📄</span>
-            <span class="btn-text">Составь лимитно-заборную карту (ЛЗК)</span>
-            <span class="btn-desc">на [название материала/оборудования]</span>
-        </button>
-        
-        <button class="menu-btn" onclick="generateDocument('vor')">
-            <span class="btn-icon">📊</span>
-            <span class="btn-text">Сформируй ведомость объемов работ (ВОР)</span>
-            <span class="btn-desc">для [тип объекта/этап строительства]</span>
-        </button>
-        
-        <button class="menu-btn" onclick="generateDocument('tz')">
-            <span class="btn-icon">📋</span>
-            <span class="btn-text">Напиши техническое задание (ТЗ)</span>
-            <span class="btn-desc">на проектирование [объекта/системы]</span>
-        </button>
-        
-        <button class="menu-btn" onclick="generateDocument('questionnaire')">
-            <span class="btn-icon">❓</span>
-            <span class="btn-text">Подготовь опросный лист для подрядчика</span>
-            <span class="btn-desc">по [виду работ]</span>
-        </button>
-        
-        <button class="menu-btn" onclick="generateDocument('hidden_works')">
-            <span class="btn-icon">🔍</span>
-            <span class="btn-text">Создай шаблон акта скрытых работ</span>
-            <span class="btn-desc">на [вид работ]</span>
-        </button>
-        
-        <button class="menu-btn" onclick="generateDocument('explanatory')">
-            <span class="btn-icon">📝</span>
-            <span class="btn-text">Напиши пояснительную записку к проекту</span>
-            <span class="btn-desc">Подробное описание проекта</span>
-        </button>
-    </div>
-</div>
-
 <!-- Основной контент с iPad -->
 <div class="ipad-container">
     <div class="ipad-frame">
         <div class="ipad-screen">
+            <!-- Выпадающее меню в левом верхнем углу экрана iPad -->
+            <div class="dropdown-menu">
+                <button class="dropdown-toggle" onclick="toggleDropdown()">
+                    📋 Генерация документов
+                    <span class="dropdown-arrow">▼</span>
+                </button>
+                <div class="dropdown-content" id="dropdownContent">
+                    <button class="menu-btn" onclick="generateDocument('lzk')">
+                        <span class="btn-icon">📄</span>
+                        <span class="btn-text">Составь лимитно-заборную карту (ЛЗК)</span>
+                        <span class="btn-desc">на [название материала/оборудования]</span>
+                    </button>
+                    
+                    <button class="menu-btn" onclick="generateDocument('vor')">
+                        <span class="btn-icon">📊</span>
+                        <span class="btn-text">Сформируй ведомость объемов работ (ВОР)</span>
+                        <span class="btn-desc">для [тип объекта/этап строительства]</span>
+                    </button>
+                    
+                    <button class="menu-btn" onclick="generateDocument('tz')">
+                        <span class="btn-icon">📋</span>
+                        <span class="btn-text">Напиши техническое задание (ТЗ)</span>
+                        <span class="btn-desc">на проектирование [объекта/системы]</span>
+                    </button>
+                    
+                    <button class="menu-btn" onclick="generateDocument('questionnaire')">
+                        <span class="btn-icon">❓</span>
+                        <span class="btn-text">Подготовь опросный лист для подрядчика</span>
+                        <span class="btn-desc">по [виду работ]</span>
+                    </button>
+                    
+                    <button class="menu-btn" onclick="generateDocument('hidden_works')">
+                        <span class="btn-icon">🔍</span>
+                        <span class="btn-text">Создай шаблон акта скрытых работ</span>
+                        <span class="btn-desc">на [вид работ]</span>
+                    </button>
+                    
+                    <button class="menu-btn" onclick="generateDocument('explanatory')">
+                        <span class="btn-icon">📝</span>
+                        <span class="btn-text">Напиши пояснительную записку к проекту</span>
+                        <span class="btn-desc">Подробное описание проекта</span>
+                    </button>
+                </div>
+            </div>
             <!-- Заголовок чата -->
             <div class="chat-header">
                 <h2>🤖 AI-ZAM Telegram Bot</h2>
