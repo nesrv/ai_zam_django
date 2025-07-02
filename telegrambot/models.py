@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from uuid import uuid4
 
 class TelegramUser(models.Model):
     """Модель для хранения информации о пользователях Telegram"""
@@ -40,3 +41,18 @@ class TelegramMessage(models.Model):
     def __str__(self):
         direction = "→" if self.is_from_user else "←"
         return f"{direction} {self.user.first_name}: {self.content[:50]}..."
+
+class TemporaryDocument(models.Model):
+    """Временное хранилище сгенерированных документов для скачивания"""
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    user = models.ForeignKey(TelegramUser, on_delete=models.CASCADE, related_name='temp_documents', verbose_name="Пользователь")
+    content = models.TextField(verbose_name="Содержание документа")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    class Meta:
+        verbose_name = "Временный документ"
+        verbose_name_plural = "Временные документы"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Документ {self.id} для {self.user}";

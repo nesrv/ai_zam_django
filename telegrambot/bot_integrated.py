@@ -4,9 +4,11 @@ import uuid
 import django
 from datetime import datetime
 from dotenv import load_dotenv
-from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
+from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from telegram.error import Conflict
+from urllib.parse import quote
+import asyncio
 
 # Django setup
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ai_zam.settings')
@@ -126,7 +128,6 @@ async def handle_document_message(update: Update, context: ContextTypes.DEFAULT_
         save_telegram_message(django_user, message_text, "text", True)
     except Exception as e:
         logger.error(f"Ошибка сохранения сообщения в Django: {e}")
-    # Handle document menu
     doc_buttons = ["📄 ЛЗК", "📊 ВОР", "📋 ТЗ", "❓ Опросный лист", "🔍 Акт скрытых работ", "📝 Пояснительная записка"]
     if message_text in doc_buttons:
         document_type = {
@@ -148,23 +149,34 @@ async def handle_document_message(update: Update, context: ContextTypes.DEFAULT_
     elif message_text == "🔙 Назад в главное меню":
         await start(update, context)
         return
-    # Otherwise, treat as document generation prompt
     await update.message.reply_text("Генерирую документ...", reply_markup=keyboard)
-    doc_text = generate_document_with_deepseek(message_text)
+    loop = asyncio.get_running_loop()
+    doc_text = await loop.run_in_executor(None, generate_document_with_deepseek, message_text)
     await update.message.reply_text(doc_text, reply_markup=keyboard, parse_mode='Markdown')
     try:
         save_telegram_message(django_user, doc_text, "text", False)
     except Exception as e:
         logger.error(f"Ошибка сохранения ответа бота в Django: {e}")
-    # Предложить скачать документ в формате docx/pdf/xls
-    download_msg = (
-        "\n\n*Хотите скачать документ?*\n"
-        "[Скачать DOCX](https://ai-zam.ru/telegram/export-document/?format=docx)\n"
-        "[Скачать PDF](https://ai-zam.ru/telegram/export-document/?format=pdf)\n"
-        "[Скачать XLS](https://ai-zam.ru/telegram/export-document/?format=xls)\n"
-        "\nПерейдите по нужной ссылке и вставьте сгенерированный текст документа."
+    # Отправляем отдельное сообщение с кнопками для скачивания
+    short_content = quote(doc_text[:1000])
+    logger.info(f"Отправка кнопок для скачивания: {short_content[:100]}...")
+    # Тестовая кнопка для отладки
+    test_keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("Тест", url="https://ya.ru")]
+    ])
+    await update.message.reply_text(
+        "Тестовая кнопка:",
+        reply_markup=test_keyboard
     )
-    await update.message.reply_text(download_msg, parse_mode='Markdown', disable_web_page_preview=True)
+    download_keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("Скачать DOCX", url=f"https://ai-zam.ru/telegram/export-document/?format=docx&content={short_content}")],
+        [InlineKeyboardButton("Скачать PDF", url=f"https://ai-zam.ru/telegram/export-document/?format=pdf&content={short_content}")],
+        [InlineKeyboardButton("Скачать XLS", url=f"https://ai-zam.ru/telegram/export-document/?format=xls&content={short_content}")],
+    ])
+    await update.message.reply_text(
+        "Вы можете скачать этот документ в нужном формате:",
+        reply_markup=download_keyboard
+    )
 
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
     logger.error(f"Exception while handling an update: {context.error}")

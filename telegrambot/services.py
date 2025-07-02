@@ -21,6 +21,9 @@ from telegram.ext import (
     ConversationHandler,
 )
 from asgiref.sync import sync_to_async
+from urllib.parse import quote
+from telegrambot.models import TemporaryDocument
+from uuid import uuid4
 
 logger = logging.getLogger(__name__)
 
@@ -301,6 +304,23 @@ def handle_text_message(user, text):
             recent_messages = list(user.messages.filter(is_from_user=True).order_by('-created_at')[:3])
             messages_list = list(recent_messages) if recent_messages else []
             ai_response = get_ai_response(text, messages_list)
+            # После генерации документа сохраняем его и отправляем кнопки для скачивания
+            if ai_response and len(ai_response) > 100:
+                # Сохраняем документ
+                temp_doc = TemporaryDocument.objects.create(user=user, content=ai_response)
+                doc_id = str(temp_doc.id)
+                download_keyboard = {
+                    "inline_keyboard": [
+                        [{"text": "Скачать DOCX", "url": f"https://ai-zam.ru/telegram/export-document/?id={doc_id}&format=docx"}],
+                        [{"text": "Скачать PDF", "url": f"https://ai-zam.ru/telegram/export-document/?id={doc_id}&format=pdf"}],
+                        [{"text": "Скачать XLS", "url": f"https://ai-zam.ru/telegram/export-document/?id={doc_id}&format=xls"}]
+                    ]
+                }
+                # Отправляем основной текст
+                send_telegram_message(user.telegram_id, ai_response)
+                # Отправляем кнопки для скачивания
+                send_telegram_message(user.telegram_id, "Вы можете скачать этот документ в нужном формате:", download_keyboard)
+                return "Документ сгенерирован! Кнопки для скачивания отправлены.", None
             return ai_response, None
         except Exception as e:
             logger.error(f"Ошибка в AI чате: {e}")
@@ -423,7 +443,9 @@ def process_telegram_update(update_data):
 async def ne_srv_start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     chat_id = update.effective_chat.id
-    
+    if user is None:
+        logger.error("ne_srv_start_command: user is None")
+        return
     # Сохраняем пользователя
     telegram_user = await get_or_create_telegram_user_async(user.id, user.username, user.first_name, user.last_name)
     
@@ -440,7 +462,9 @@ async def ne_srv_start_command(update: Update, context: ContextTypes.DEFAULT_TYP
 # Обработчик команды /help для первого бота
 async def ne_srv_help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
-    
+    if user is None:
+        logger.error("ne_srv_help_command: user is None")
+        return
     # Получаем или создаем пользователя
     telegram_user = await get_or_create_telegram_user_async(user.id, user.username, user.first_name, user.last_name)
     
@@ -461,8 +485,16 @@ async def ne_srv_help_command(update: Update, context: ContextTypes.DEFAULT_TYPE
 # Обработчик обычных текстовых сообщений для первого бота
 async def ne_srv_handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
+    if user is None:
+        logger.error("ne_srv_handle_message: user is None")
+        return
+    if update.message is None:
+        logger.error("ne_srv_handle_message: update.message is None")
+        return
+    if update.message.text is None:
+        logger.error("ne_srv_handle_message: update.message.text is None")
+        return
     user_message = update.message.text.lower()
-    
     # Получаем или создаем пользователя
     telegram_user = await get_or_create_telegram_user_async(user.id, user.username, user.first_name, user.last_name)
     

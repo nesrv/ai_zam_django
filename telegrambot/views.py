@@ -14,6 +14,7 @@ import io
 from fpdf import FPDF
 from docx import Document
 import pandas as pd
+from telegrambot.models import TemporaryDocument
 
 logger = logging.getLogger(__name__)
 
@@ -431,45 +432,63 @@ def clear_cache_view(request):
 
 @csrf_exempt
 def export_document(request):
-    """Экспорт сгенерированного документа в docx/pdf/xls"""
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Method not allowed'}, status=405)
-    try:
+    """Экспорт сгенерированного документа в docx/pdf/xls (GET и POST)"""
+    if request.method == 'POST':
         import json
         data = json.loads(request.body)
-        content = data.get('content', '').strip()
+        doc_id = data.get('id')
         file_format = data.get('format', '').lower()
-        if not content or file_format not in ['docx', 'pdf', 'xls']:
-            return JsonResponse({'error': 'Передайте content и format (docx/pdf/xls)'}, status=400)
-        filename = f"document.{file_format}"
-        if file_format == 'docx':
-            doc = Document()
-            for line in content.split('\n'):
-                doc.add_paragraph(line)
-            buf = io.BytesIO()
-            doc.save(buf)
-            buf.seek(0)
-            return FileResponse(buf, as_attachment=True, filename=filename)
-        elif file_format == 'pdf':
-            pdf = FPDF()
-            pdf.add_page()
-            pdf.set_font("Arial", size=12)
-            for line in content.split('\n'):
-                pdf.multi_cell(0, 10, line)
-            buf = io.BytesIO()
-            pdf.output(buf)
-            buf.seek(0)
-            return FileResponse(buf, as_attachment=True, filename=filename)
-        elif file_format == 'xls':
-            # Преобразуем текст в таблицу: каждая строка - отдельная строка Excel
-            lines = [l for l in content.split('\n') if l.strip()]
-            df = pd.DataFrame({'Документ': lines})
-            buf = io.BytesIO()
-            with pd.ExcelWriter(buf, engine='xlsxwriter') as writer:
-                df.to_excel(writer, index=False)
-            buf.seek(0)
-            return FileResponse(buf, as_attachment=True, filename=filename)
+        content = None
+        if doc_id:
+            try:
+                temp_doc = TemporaryDocument.objects.get(id=doc_id)
+                content = temp_doc.content
+            except TemporaryDocument.DoesNotExist:
+                return JsonResponse({'error': 'Документ не найден'}, status=404)
         else:
-            return JsonResponse({'error': 'Неподдерживаемый формат'}, status=400)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+            content = data.get('content', '').strip()
+    elif request.method == 'GET':
+        doc_id = request.GET.get('id')
+        file_format = request.GET.get('format', '').lower()
+        content = None
+        if doc_id:
+            try:
+                temp_doc = TemporaryDocument.objects.get(id=doc_id)
+                content = temp_doc.content
+            except TemporaryDocument.DoesNotExist:
+                return JsonResponse({'error': 'Документ не найден'}, status=404)
+        else:
+            content = request.GET.get('content', '').strip()
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+    if not content or file_format not in ['docx', 'pdf', 'xls']:
+        return JsonResponse({'error': 'Передайте id и format (docx/pdf/xls)'}, status=400)
+    filename = f"document.{file_format}"
+    if file_format == 'docx':
+        doc = Document()
+        for line in content.split('\n'):
+            doc.add_paragraph(line)
+        buf = io.BytesIO()
+        doc.save(buf)
+        buf.seek(0)
+        return FileResponse(buf, as_attachment=True, filename=filename)
+    elif file_format == 'pdf':
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size=12)
+        for line in content.split('\n'):
+            pdf.multi_cell(0, 10, line)
+        buf = io.BytesIO()
+        pdf.output(buf)
+        buf.seek(0)
+        return FileResponse(buf, as_attachment=True, filename=filename)
+    elif file_format == 'xls':
+        lines = [l for l in content.split('\n') if l.strip()]
+        df = pd.DataFrame({'Документ': lines})
+        buf = io.BytesIO()
+        with pd.ExcelWriter(buf, engine='xlsxwriter') as writer:
+            df.to_excel(writer, index=False)
+        buf.seek(0)
+        return FileResponse(buf, as_attachment=True, filename=filename)
+    else:
+        return JsonResponse({'error': 'Неподдерживаемый формат'}, status=400)
