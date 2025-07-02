@@ -12,4 +12,5 @@ urlpatterns = [
     path('broadcast/', views.send_broadcast, name='broadcast'),
     path('generate-document/', views.generate_document, name='generate_document'),
     path('clear-cache/', views.clear_cache_view, name='clear_cache'),  # Временный URL для очистки кэша
+    path('export-document/', views.export_document, name='export_document'),
 ] 

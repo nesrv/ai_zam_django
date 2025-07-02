@@ -1,6 +1,6 @@
 import json
 import logging
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -10,6 +10,10 @@ from django.utils import timezone
 from datetime import timedelta
 from .services import process_telegram_update, send_telegram_message, check_bot_token, BOT_TOKEN
 from .models import TelegramUser, TelegramMessage
+import io
+from fpdf import FPDF
+from docx import Document
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 
@@ -424,3 +428,48 @@ def clear_cache_view(request):
         'status': 'info',
         'message': 'Отправьте POST запрос для очистки кэша'
     })
+
+@csrf_exempt
+def export_document(request):
+    """Экспорт сгенерированного документа в docx/pdf/xls"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+    try:
+        import json
+        data = json.loads(request.body)
+        content = data.get('content', '').strip()
+        file_format = data.get('format', '').lower()
+        if not content or file_format not in ['docx', 'pdf', 'xls']:
+            return JsonResponse({'error': 'Передайте content и format (docx/pdf/xls)'}, status=400)
+        filename = f"document.{file_format}"
+        if file_format == 'docx':
+            doc = Document()
+            for line in content.split('\n'):
+                doc.add_paragraph(line)
+            buf = io.BytesIO()
+            doc.save(buf)
+            buf.seek(0)
+            return FileResponse(buf, as_attachment=True, filename=filename)
+        elif file_format == 'pdf':
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_font("Arial", size=12)
+            for line in content.split('\n'):
+                pdf.multi_cell(0, 10, line)
+            buf = io.BytesIO()
+            pdf.output(buf)
+            buf.seek(0)
+            return FileResponse(buf, as_attachment=True, filename=filename)
+        elif file_format == 'xls':
+            # Преобразуем текст в таблицу: каждая строка - отдельная строка Excel
+            lines = [l for l in content.split('\n') if l.strip()]
+            df = pd.DataFrame({'Документ': lines})
+            buf = io.BytesIO()
+            with pd.ExcelWriter(buf, engine='xlsxwriter') as writer:
+                df.to_excel(writer, index=False)
+            buf.seek(0)
+            return FileResponse(buf, as_attachment=True, filename=filename)
+        else:
+            return JsonResponse({'error': 'Неподдерживаемый формат'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

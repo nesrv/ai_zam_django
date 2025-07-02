@@ -820,8 +820,20 @@ function addMessageToChat(avatar, message, isUser) {
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
     if (!isUser) {
-        // Рендерим Markdown для сообщений бота
         contentDiv.innerHTML = marked.parse(message);
+        // Добавляем кнопки скачивания только для последнего сгенерированного документа
+        const downloadDiv = document.createElement('div');
+        downloadDiv.className = 'download-buttons';
+        downloadDiv.style.marginTop = '15px';
+        downloadDiv.innerHTML = `
+            <button class="btn-primary" onclick="downloadGeneratedDocument(` +
+                '`' + message.replace(/`/g, '\`') + '`' + `, 'docx')">Скачать DOCX</button>
+            <button class="btn-primary" onclick="downloadGeneratedDocument(` +
+                '`' + message.replace(/`/g, '\`') + '`' + `, 'pdf')">Скачать PDF</button>
+            <button class="btn-primary" onclick="downloadGeneratedDocument(` +
+                '`' + message.replace(/`/g, '\`') + '`' + `, 'xls')">Скачать XLS</button>
+        `;
+        contentDiv.appendChild(downloadDiv);
     } else {
         contentDiv.innerText = message;
     }
@@ -1162,5 +1174,37 @@ document.addEventListener('click', function(event) {
         toggle.classList.remove('active');
     }
 });
+
+// Добавить функцию для скачивания документа
+function downloadGeneratedDocument(content, format) {
+    fetch('/telegram/export-document/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            content: content,
+            format: format
+        })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Ошибка скачивания файла');
+        return response.blob();
+    })
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'document.' + format;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(error => {
+        showNotification('❌ Ошибка скачивания файла: ' + error.message, 'error');
+    });
+}
 </script>
 {% endblock %} 
