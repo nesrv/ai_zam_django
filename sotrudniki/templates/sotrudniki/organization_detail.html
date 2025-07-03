@@ -1,0 +1,60 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ organizaciya.nazvanie }} - Сотрудники{% endblock %}
+
+{% block extra_styles %}
+.org-header {
+    text-align: center;
+    color: white;
+    margin-bottom: 3rem;
+}
+.org-title {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+.departments-menu {
+    max-width: 800px;
+    margin: 0 auto;
+}
+.department-item {
+    margin-bottom: 15px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s;
+}
+.department-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+.department-link {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    display: block;
+}
+.department-link:hover {
+    color: #e3f2fd;
+    text-decoration: none;
+}
+{% endblock %}
+
+{% block content %}
+<div class="org-header">
+    <div class="org-title">Сотрудники организации (Полный список)</div>
+</div>
+
+<div class="departments-menu">
+    {% for podrazdelenie in podrazdeleniya %}
+    <div class="department-item">
+        <a href="{% url 'sotrudniki:list' %}?podrazdelenie={{ podrazdelenie.id }}" class="department-link">
+            {{ podrazdelenie.kod }}	{{ podrazdelenie.nazvanie }}
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

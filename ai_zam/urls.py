@@ -12,6 +12,7 @@ def favicon_view(request):
 
 from object.views import home, objects_list, object_detail, object_income_detail, update_expense, update_resource_data
 from object.views_income import update_income
+from sotrudniki.views import organizations_list
 
 # Изменяем заголовки админки
 # admin.site.site_header = "Ruslan administration"
@@ -30,6 +31,8 @@ urlpatterns = [
     path('favicon.ico', favicon_view),
     path('ai/', include('ai.urls')),
     path('telegram/', include('telegrambot.urls')),
+    path('sotrudniki/', include('sotrudniki.urls')),
+    path('organizations/', organizations_list, name='organizations_main'),
 ]
 
 if settings.DEBUG:

@@ -61,6 +61,14 @@ class Objekt(models.Model):
     ]
     
     nazvanie = models.CharField(max_length=255, verbose_name="Название")
+    organizaciya = models.ForeignKey(
+        'sotrudniki.Organizaciya',
+        on_delete=models.CASCADE,
+        verbose_name="Организация",
+        related_name="objekty",
+        null=True,
+        blank=True
+    )
     otvetstvennyj = models.ForeignKey(Kadry, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Ответственный")
     data_nachala = models.DateField(verbose_name="Дата начала")
     data_plan_zaversheniya = models.DateField(verbose_name="Дата план завершения")

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'object.templatetags',
     'ai',
     'telegrambot',
+    'sotrudniki',
 ]
 
 MIDDLEWARE = [

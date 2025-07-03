@@ -307,24 +307,28 @@ def create_profit_balance_charts(objects_with_info, days, daily_income_data, dai
         ax.grid(True, alpha=0.3)
         
         # Настройка внешнего вида
-        plt.tight_layout()
+        try:
+            plt.tight_layout()
+        except:
+            # Если tight_layout не работает, используем subplots_adjust
+            plt.subplots_adjust(left=0.1, right=0.85, top=0.9, bottom=0.2)
         
-        # Сохраняем график с временной меткой для избежания кэширования
-        charts_dir = os.path.join(settings.STATIC_ROOT, 'charts')
-        os.makedirs(charts_dir, exist_ok=True)
+        # Сохраняем график в static/images
+        static_dir = os.path.join(settings.BASE_DIR, 'static', 'images')
+        os.makedirs(static_dir, exist_ok=True)
         
         # Удаляем старые файлы графиков (оставляем только последние 5)
-        old_charts = [f for f in os.listdir(charts_dir) if f.startswith('profit_balance_chart_')]
+        old_charts = [f for f in os.listdir(static_dir) if f.startswith('profit_balance_chart_')]
         old_charts.sort(reverse=True)
         for old_chart in old_charts[5:]:  # Удаляем все кроме последних 5
             try:
-                os.remove(os.path.join(charts_dir, old_chart))
+                os.remove(os.path.join(static_dir, old_chart))
             except:
                 pass
         
         timestamp = int(time.time())
         chart_filename = f'profit_balance_chart_{timestamp}.png'
-        chart_path = os.path.join(charts_dir, chart_filename)
+        chart_path = os.path.join(static_dir, chart_filename)
         
         plt.savefig(chart_path, dpi=300, bbox_inches='tight', facecolor='#1a1a1a')
         plt.close()
@@ -335,7 +339,7 @@ def create_profit_balance_charts(objects_with_info, days, daily_income_data, dai
         else:
             print(f"Ошибка: файл не создан: {chart_path}")
         
-        return f'charts/{chart_filename}'
+        return f'images/{chart_filename}'
     except Exception as e:
         print(f"Ошибка при создании графиков: {e}")
         return None

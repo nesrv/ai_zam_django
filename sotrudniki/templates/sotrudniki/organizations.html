@@ -1,0 +1,67 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Мои организации{% endblock %}
+
+{% block extra_styles %}
+.organization-list { 
+    list-style: none; 
+    padding: 0; 
+    max-width: 800px;
+    margin: 0 auto;
+}
+.organization-item { 
+    padding: 20px; 
+    margin-bottom: 15px; 
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+    border-radius: 10px; 
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s;
+}
+.organization-item:hover { 
+    background: rgba(255, 255, 255, 0.2); 
+    transform: translateY(-2px);
+}
+.organization-link { 
+    text-decoration: none; 
+    color: white; 
+    font-weight: bold; 
+    font-size: 24px;
+    display: block;
+}
+.organization-link:hover { 
+    color: #e3f2fd; 
+    text-decoration: none;
+}
+.organization-inn { 
+    color: rgba(255, 255, 255, 0.8); 
+    font-size: 16px; 
+    margin-top: 8px;
+}
+.page-title {
+    text-align: center;
+    color: white;
+    font-size: 3rem;
+    margin-bottom: 3rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+{% endblock %}
+
+{% block content %}
+<div class="page-title">Мои организации</div>
+
+<ul class="organization-list">
+    {% for organizaciya in organizacii %}
+    <li class="organization-item">
+        <a href="{% url 'sotrudniki:organization_detail' organizaciya.pk %}" class="organization-link">
+            {{ organizaciya.nazvanie }}
+        </a>
+        <div class="organization-inn">ИНН: {{ organizaciya.inn }}</div>
+    </li>
+    {% empty %}
+    <li class="organization-item">
+        <div style="text-align: center; color: rgba(255, 255, 255, 0.7);">Нет организаций</div>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

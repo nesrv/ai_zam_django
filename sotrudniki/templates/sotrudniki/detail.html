@@ -1,0 +1,204 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ sotrudnik.fio }} - Документы сотрудника{% endblock %}
+
+{% block extra_styles %}
+.employee-header {
+    text-align: center;
+    color: white;
+    margin-bottom: 2rem;
+}
+.employee-name {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+.tab-menu {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 2rem;
+}
+.tab-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 15px 30px;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s;
+}
+.tab-btn:first-child {
+    border-radius: 10px 0 0 10px;
+}
+.tab-btn:last-child {
+    border-radius: 0 10px 10px 0;
+}
+.tab-btn.active {
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+    text-decoration: none;
+}
+.tab-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    text-decoration: none;
+}
+.documents-table {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.documents-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.documents-table th {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 15px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.documents-table td {
+    padding: 12px 15px;
+    color: white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.documents-table tr:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+.checkbox {
+    transform: scale(1.2);
+    cursor: pointer;
+}
+{% endblock %}
+
+{% block content %}
+<div class="employee-header">
+    <div class="employee-name">{{ sotrudnik.fio }}</div>
+    <div>{{ sotrudnik.specialnost|default:"-" }}</div>
+</div>
+
+<div class="tab-menu">
+    <a href="?tab=documents" class="tab-btn {% if active_tab == 'documents' %}active{% endif %}">Документы и карточки</a>
+    <a href="?tab=protocols" class="tab-btn {% if active_tab == 'protocols' %}active{% endif %}">Протоколы обучения</a>
+    <a href="?tab=instructions" class="tab-btn {% if active_tab == 'instructions' %}active{% endif %}">Инструктажи</a>
+</div>
+
+{% if active_tab == 'protocols' %}
+<div class="documents-table">
+    <table>
+        <thead>
+            <tr>
+                <th>№ программы</th>
+                <th>Курс</th>
+                <th>Дата<br>приказа</th>
+                <th>Дата<br>протокола/приказа-допуска</th>
+                <th>Дата<br>допуска к работе</th>
+                <th>Дата<br>очередной проверки</th>
+                <th>Рег. №</th>
+                <th>Распечатан</th>
+                <th>Действия (печать/скачать word)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for protokol in protokoly %}
+            <tr>
+                <td>{{ protokol.nomer_programmy }}</td>
+                <td>{{ protokol.nazvanie_kursa }}</td>
+                <td>{{ protokol.data_prikaza|date:"d.m.Y" }}</td>
+                <td>{{ protokol.data_prikaza|date:"d.m.Y" }}</td>
+                <td>{{ protokol.data_dopuska|date:"d.m.Y"|default:"-" }}</td>
+                <td>{{ protokol.data_ocherednoy_proverki|date:"d.m.Y"|default:"-" }}</td>
+                <td>{{ protokol.registracionnyy_nomer|default:"-" }}</td>
+                <td><input type="checkbox" class="checkbox" {% if protokol.raspechatn %}checked{% endif %}></td>
+                <td>-</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9" style="text-align: center; color: rgba(255, 255, 255, 0.7);">Нет протоколов</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% elif active_tab == 'instructions' %}
+<div class="documents-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Дата инструктажа</th>
+                <th>Вид инструктажа</th>
+                <th>Инструктор</th>
+                <th>Дата очередного инструктажа</th>
+                <th>Распечатан</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for instruktazh in instruktazhi %}
+            <tr>
+                <td>{{ instruktazh.data_instruktazha|date:"d.m.Y" }}</td>
+                <td>{{ instruktazh.vid_instruktazha }}</td>
+                <td>{{ instruktazh.instruktor }}</td>
+                <td>{{ instruktazh.data_ocherednogo_instruktazha|date:"d.m.Y" }}</td>
+                <td><input type="checkbox" class="checkbox" {% if instruktazh.raspechatn %}checked{% endif %}></td>
+                <td>-</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; color: rgba(255, 255, 255, 0.7);">Нет инструктажей</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="documents-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Документ</th>
+                <th>Согласован</th>
+                <th>Распечатан</th>
+                <th>Действия (распечатать, скачать)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Должностная инструкция</td>
+                <td><input type="checkbox" class="checkbox"></td>
+                <td><input type="checkbox" class="checkbox" checked></td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Личная карточка работника</td>
+                <td><input type="checkbox" class="checkbox" checked></td>
+                <td><input type="checkbox" class="checkbox"></td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Личная карточка учета выдачи СИЗ</td>
+                <td><input type="checkbox" class="checkbox" checked></td>
+                <td><input type="checkbox" class="checkbox" checked></td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Карта оценки проф. рисков</td>
+                <td><input type="checkbox" class="checkbox"></td>
+                <td><input type="checkbox" class="checkbox"></td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Инструкция по охране труда</td>
+                <td><input type="checkbox" class="checkbox"></td>
+                <td><input type="checkbox" class="checkbox"></td>
+                <td>-</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}
