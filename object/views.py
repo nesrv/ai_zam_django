@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Sum, Count, F
 from .models import Objekt, ResursyPoObjektu, RaskhodResursa, Resurs, Kadry, FakticheskijResursPoObjektu, DokhodResursa, SvodnayaRaskhodDokhodPoDnyam
 from datetime import datetime, timedelta
@@ -413,6 +413,9 @@ def object_detail(request, object_id):
             for category in category_daily_totals
         )
     
+    from .models import KategoriyaResursa
+    categories = KategoriyaResursa.objects.all()
+    
     context = {
         'object': obj,
         'resources': resources,
@@ -423,11 +426,103 @@ def object_detail(request, object_id):
         'days': days,
         'category_daily_totals': category_daily_totals,
         'total_daily_expenses': total_daily_expenses,
+        'categories': categories,
     }
     
     return render(request, 'object/object_detail.html', context)
 
 
+
+def create_object(request):
+    from .models import Kadry
+    
+    if request.method == 'POST':
+        # Обработка создания объекта
+        nazvanie = request.POST.get('nazvanie')
+        data_nachala = request.POST.get('data_nachala')
+        otvetstvennyj_id = request.POST.get('otvetstvennyj')
+        
+        if nazvanie and data_nachala:
+            otvetstvennyj = None
+            if otvetstvennyj_id:
+                otvetstvennyj = Kadry.objects.get(id=otvetstvennyj_id)
+            
+            from datetime import datetime, timedelta
+            
+            obj = Objekt.objects.create(
+                nazvanie=nazvanie,
+                data_nachala=data_nachala,
+                data_plan_zaversheniya=datetime.strptime(data_nachala, '%Y-%m-%d').date() + timedelta(days=365),
+                otvetstvennyj=otvetstvennyj
+            )
+            return redirect('object_detail', object_id=obj.id)
+    
+    # GET запрос - показываем форму
+    kadry = Kadry.objects.all()
+    
+    context = {
+        'kadry': kadry,
+    }
+    
+    return render(request, 'object/create_object.html', context)
+
+@csrf_exempt
+@require_POST
+def add_category(request):
+    from .models import KategoriyaResursa
+    
+    data = json.loads(request.body)
+    name = data.get('name')
+    
+    if name:
+        category = KategoriyaResursa.objects.create(nazvanie=name)
+        return JsonResponse({'success': True, 'id': category.id})
+    
+    return JsonResponse({'success': False})
+
+@csrf_exempt
+@require_POST
+def add_resource(request):
+    from .models import Resurs, KategoriyaResursa
+    
+    data = json.loads(request.body)
+    name = data.get('name')
+    unit = data.get('unit', 'шт')
+    category_id = data.get('category_id')
+    
+    if name and category_id:
+        category = KategoriyaResursa.objects.get(id=category_id)
+        resource = Resurs.objects.create(
+            naimenovanie=name,
+            edinica_izmereniya=unit,
+            kategoriya_resursa=category
+        )
+        return JsonResponse({'success': True, 'id': resource.id})
+    
+    return JsonResponse({'success': False})
+
+@csrf_exempt
+@require_POST
+def add_category_to_object(request):
+    data = json.loads(request.body)
+    category_id = data.get('category_id')
+    object_id = data.get('object_id')
+    
+    if category_id and object_id:
+        from .models import KategoriyaResursa, KategoriyaPoObjektu
+        
+        category = KategoriyaResursa.objects.get(id=category_id)
+        obj = Objekt.objects.get(id=object_id)
+        
+        # Создаем связь между категорией и объектом
+        KategoriyaPoObjektu.objects.get_or_create(
+            objekt=obj,
+            kategoriya=category
+        )
+        
+        return JsonResponse({'success': True})
+    
+    return JsonResponse({'success': False})
 
 def object_income_detail(request, object_id):
     # Получаем объект или 404

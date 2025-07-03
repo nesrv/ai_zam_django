@@ -153,3 +153,16 @@ class SvodnayaRaskhodDokhodPoDnyam(models.Model):
     
     def __str__(self):
         return f"{self.objekt.nazvanie} - {self.data} (Баланс: {self.balans})"
+
+class KategoriyaPoObjektu(models.Model):
+    objekt = models.ForeignKey(Objekt, on_delete=models.CASCADE, verbose_name="Объект")
+    kategoriya = models.ForeignKey(KategoriyaResursa, on_delete=models.CASCADE, verbose_name="Категория")
+    
+    class Meta:
+        verbose_name = "Категория по объекту"
+        verbose_name_plural = "Категории по объектам"
+        db_table = 'kategoriya_po_objektu'
+        unique_together = ['objekt', 'kategoriya']
+    
+    def __str__(self):
+        return f"{self.objekt.nazvanie} - {self.kategoriya.nazvanie}"

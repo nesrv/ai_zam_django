@@ -7,6 +7,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('objects/', views.objects_list, name='objects_list'),
     path('objects/<int:object_id>/', views.object_detail, name='object_detail'),
+    path('objects/create/', views.create_object, name='create_object'),
     path('objects/<int:object_id>/income/', views.object_income_detail, name='object_income_detail'),
 
     path('update-expense/', views.update_expense, name='update_expense'),
