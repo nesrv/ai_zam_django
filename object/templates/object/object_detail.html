@@ -340,7 +340,8 @@
                     <tr class="total-row">
                         <td colspan="4">ИТОГО:</td>
                         <td class="number category-total">{{ category.grouper|get_category_sum:resources|floatformat:0 }}</td>
-                        <td colspan="2"></td>
+                        <td class="number category-potracheno">0</td>
+                        <td></td>
                         {% for day in days %}
                         <td class="number category-daily-total">
                         {% with category_totals=category_daily_totals|get_item:category.grouper %}
@@ -840,6 +841,29 @@
                 const formattedSum = formatNumber(Math.round(categorySum));
                 console.log(`Setting category total to:`, formattedSum);
                 totalCell.textContent = formattedSum;
+            }
+            
+            // Рассчитываем итог для столбца "Потрач.лимитов" по формуле: Σ Потрач.лимитов * Заплан.цена
+            let categoryPotracheno = 0;
+            currentRow = categoryHeader.nextElementSibling;
+            
+            while (currentRow && !currentRow.classList.contains('total-row') && !currentRow.classList.contains('category-header')) {
+                const classList = Array.from(currentRow.classList);
+                const isResourceRow = classList.some(cls => cls.startsWith('category-'));
+                
+                if (isResourceRow) {
+                    const cells = currentRow.querySelectorAll('td');
+                    const potracheno = parseFloat(cells[5].textContent.trim().replace(/\s/g, '')) || 0; // Потрач.лимитов
+                    const cena = parseFloat(cells[3].textContent.trim().replace(/\s/g, '')) || 0; // Заплан.цена
+                    categoryPotracheno += potracheno * cena;
+                }
+                currentRow = currentRow.nextElementSibling;
+            }
+            
+            // Обновляем ячейку итога для "Потрач.лимитов"
+            const potrachenoCell = totalRow.querySelector('.category-potracheno');
+            if (potrachenoCell) {
+                potrachenoCell.textContent = formatNumber(Math.round(categoryPotracheno));
             }
             
             // Обновляем дневные итоги категории

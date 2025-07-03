@@ -427,6 +427,8 @@ def object_detail(request, object_id):
     
     return render(request, 'object/object_detail.html', context)
 
+
+
 def object_income_detail(request, object_id):
     # Получаем объект или 404
     obj = get_object_or_404(Objekt.objects.select_related('otvetstvennyj'), id=object_id)

@@ -124,18 +124,20 @@
         .resource-table th {
             background: #34495e;
             color: white;
-            padding: 10px 8px;
+            padding: 7px 6px;
             text-align: center;
             font-weight: bold;
             border: 1px solid #2c3e50;
             position: sticky;
             top: 0;
+            font-size: 0.85em;
         }
         
         .resource-table td {
-            padding: 8px;
+            padding: 6px;
             border: 1px solid #ddd;
             background: white;
+            font-size: 0.85em;
         }
         
         .resource-table .number {
@@ -362,95 +364,67 @@
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     }
     
+    function updateDayTotal(changedCell) {
+        // Находим точный индекс столбца измененной ячейки
+        const row = changedCell.closest('tr');
+        const cells = Array.from(row.querySelectorAll('td'));
+        const columnIndex = cells.indexOf(changedCell);
+        
+        if (columnIndex === -1) return;
+        
+        const date = changedCell.dataset.date;
+        if (!date) return;
+        
+        // Рассчитываем итог для этого столбца
+        const resourceRows = document.querySelectorAll('tr[class*="category-подрядные"]');
+        let dayTotal = 0;
+        
+        resourceRows.forEach(resourceRow => {
+            const resourceCells = resourceRow.querySelectorAll('td');
+            if (resourceCells[columnIndex]) {
+                // Получаем значение выполнено за день
+                const dayValue = parseFloat(resourceCells[columnIndex].textContent.replace(/\s/g, '').replace(/[^\d.-]/g, '')) || 0;
+                // Получаем расценку (столбец 3)
+                const price = parseFloat(resourceCells[3].textContent.replace(/\s/g, '').replace(/[^\d.-]/g, '')) || 0;
+                // Добавляем к итогу: выполнено * расценка
+                dayTotal += dayValue * price;
+            }
+        });
+        
+        // Обновляем ячейку итога с учетом смещения из-за colspan
+        const totalRow = document.querySelector('tr.total-row');
+        if (totalRow) {
+            const totalCells = totalRow.querySelectorAll('td');
+            // В итоговой строке первая ячейка имеет colspan="4", поэтому смещение -3
+            const totalColumnIndex = columnIndex - 3;
+            if (totalCells[totalColumnIndex] && totalColumnIndex >= 0) {
+                totalCells[totalColumnIndex].textContent = formatNumber(Math.round(dayTotal));
+            }
+        }
+    }
+    
     function updateTotalsRow() {
         const resourceRows = document.querySelectorAll('tr[class*="category-подрядные"]');
         
         let totalCost = 0;
         let totalCompleted = 0;
         let totalRemaining = 0;
-        const dailyTotals = {};
         
-        // Инициализируем dailyTotals для всех дней
-        const dayCells = document.querySelectorAll('th[style*="width: 3%"]');
-        dayCells.forEach((_, index) => {
-            dailyTotals[index] = 0;
-        });
-        
-        // Суммируем данные по всем строкам ресурсов
         resourceRows.forEach((row) => {
             const cells = row.querySelectorAll('td');
-            
             if (cells.length > 0) {
-                // Сумма (колонка 5)
-                const sumCell = cells[4];
-                if (sumCell && sumCell.textContent.trim()) {
-                    const sumValue = parseFloat(sumCell.textContent.replace(/[^\d.-]/g, '')) || 0;
-                    totalCost += sumValue;
-                }
-                
-                // Выполнено (колонка 6) - используем новую формулу: Расценка × Σ Дневной доход
-                const cenaCell = cells[3]; // Расценка
-                let resourceCompleted = 0;
-                if (cenaCell && cenaCell.textContent.trim()) {
-                    const cena = parseFloat(cenaCell.textContent.replace(/[^\d.-]/g, '')) || 0;
-                    
-                    // Суммируем все дневные доходы для этого ресурса
-                    for (let i = 7; i < cells.length; i++) {
-                        const dayCell = cells[i];
-                        if (dayCell && dayCell.textContent.trim()) {
-                            const dayValue = parseFloat(dayCell.textContent.replace(/[^\d.-]/g, '')) || 0;
-                            resourceCompleted += dayValue;
-                        }
-                    }
-                    const rowCompleted = cena * resourceCompleted;
-                    totalCompleted += rowCompleted;
-                }
-                
-                // Осталось (колонка 7)
-                const remainingCell = cells[6];
-                if (remainingCell && remainingCell.textContent.trim()) {
-                    const remainingValue = parseFloat(remainingCell.textContent.replace(/[^\d.-]/g, '')) || 0;
-                    totalRemaining += remainingValue;
-                }
-                
-                // Суммы по дням (начиная с колонки 8) - Расценка × Дневной доход
-                const cena = parseFloat(cells[3].textContent.replace(/[^\d.-]/g, '')) || 0;
-                for (let i = 7; i < cells.length; i++) {
-                    const dayCell = cells[i];
-                    const dayIndex = i - 7;
-                    const dayValue = parseFloat(dayCell.textContent.replace(/\s/g, '').replace(/[^\d.-]/g, '')) || 0;
-                    const dayTotal = cena * dayValue;
-                    if (!dailyTotals[dayIndex]) dailyTotals[dayIndex] = 0;
-                    dailyTotals[dayIndex] += dayTotal;
-                }
+                totalCost += parseFloat(cells[4].textContent.replace(/\s/g, '').replace(/[^\d.-]/g, '')) || 0;
+                totalCompleted += parseFloat(cells[5].textContent.replace(/\s/g, '').replace(/[^\d.-]/g, '')) || 0;
+                totalRemaining += parseFloat(cells[6].textContent.replace(/\s/g, '').replace(/[^\d.-]/g, '')) || 0;
             }
         });
         
-        // Обновляем итоговую строку
         const totalRow = document.querySelector('tr.total-row');
         if (totalRow) {
             const totalCells = totalRow.querySelectorAll('td');
-            if (totalCells.length > 0) {
-                // Обновляем общую сумму
-                if (totalCells[4]) {
-                    totalCells[4].textContent = formatNumber(Math.round(totalCost));
-                }
-                // Обновляем общую сумму выполнено
-                if (totalCells[5]) {
-                    totalCells[5].textContent = formatNumber(Math.round(totalCompleted));
-                }
-                // Обновляем общую сумму осталось
-                if (totalCells[6]) {
-                    totalCells[6].textContent = formatNumber(Math.round(totalRemaining));
-                }
-                // Обновляем суммы по дням
-                for (let i = 7; i < totalCells.length; i++) {
-                    const dayIndex = i - 7;
-                    if (totalCells[i] && dailyTotals[dayIndex] !== undefined) {
-                        totalCells[i].textContent = formatNumber(Math.round(dailyTotals[dayIndex]));
-                    }
-                }
-            }
+            if (totalCells[4]) totalCells[4].textContent = formatNumber(Math.round(totalCost));
+            if (totalCells[5]) totalCells[5].textContent = formatNumber(Math.round(totalCompleted));
+            if (totalCells[6]) totalCells[6].textContent = formatNumber(Math.round(totalRemaining));
         }
     }
     
@@ -504,13 +478,14 @@
                     // Обновляем ячейки Потрачено и Осталось
                     const row = cell.closest('tr');
                     const cells = row.querySelectorAll('td');
-                    cells[5].textContent = formatNumber(Math.round(data.potracheno)); // Потрачено
+                    cells[5].textContent = formatNumber(Math.round(data.potracheno)); // Вып-но
                     cells[6].textContent = formatNumber(Math.round(data.ostatok)); // Осталось
                     
-                    // Обновляем итоговую строку
-                    updateTotalsRow();
+                    // Обновляем итог для конкретного дня
+                    updateDayTotal(cell);
                 } else {
                     console.error('Server error:', data.error);
+                    alert('Ошибка при сохранении: ' + (data.error || 'Неизвестная ошибка'));
                 }
             })
             .catch(error => {
