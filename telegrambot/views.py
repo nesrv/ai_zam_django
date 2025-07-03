@@ -1,6 +1,6 @@
 import json
 import logging
-from django.http import JsonResponse, FileResponse
+from django.http import JsonResponse, FileResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -15,6 +15,9 @@ from fpdf import FPDF
 from docx import Document
 import pandas as pd
 from telegrambot.models import TemporaryDocument
+import os
+from io import BytesIO
+from fpdf.errors import FPDFException
 
 logger = logging.getLogger(__name__)
 
@@ -475,13 +478,58 @@ def export_document(request):
     elif file_format == 'pdf':
         pdf = FPDF()
         pdf.add_page()
-        pdf.set_font("Arial", size=12)
-        for line in content.split('\n'):
-            pdf.multi_cell(0, 10, line)
-        buf = io.BytesIO()
-        pdf.output(buf)
-        buf.seek(0)
-        return FileResponse(buf, as_attachment=True, filename=filename)
+        font_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'fonts', 'DejaVuSans.ttf')
+        pdf.add_font('DejaVu', '', font_path, uni=True)
+        pdf.set_font('DejaVu', '', 10)
+        content = content.replace('🔹', '-')
+
+        lines = content.split('\n')
+        table_started = False
+        table_data = []
+        for line in lines:
+            # Поиск начала таблицы
+            if line.strip().startswith('|') and line.strip().endswith('|'):
+                table_started = True
+                table_data.append([cell.strip() for cell in line.strip('|').split('|')])
+            elif table_started and (line.strip().startswith('|') and line.strip().endswith('|')):
+                table_data.append([cell.strip() for cell in line.strip('|').split('|')])
+            elif table_started and not (line.strip().startswith('|') and line.strip().endswith('|')):
+                # Таблица закончилась, выводим её
+                if table_data:
+                    # Определяем количество столбцов по первой строке
+                    num_cols = len(table_data[0]) if table_data else 5
+                    col_width = (pdf.w - pdf.l_margin - pdf.r_margin) / num_cols
+                    for row in table_data:
+                        for i, cell in enumerate(row):
+                            if i < num_cols:  # Проверяем индекс
+                                pdf.cell(col_width, 8, cell, border=1)
+                        pdf.ln(8)
+                table_started = False
+                table_data = []
+                if line.strip():
+                    pdf.ln(4)
+                    pdf.multi_cell(0, 8, line)
+            else:
+                if line.strip():
+                    safe_multicell(pdf, 0, 8, line, max_len=80)
+                else:
+                    pdf.ln(4)
+        # Если таблица была в самом конце
+        if table_data:
+            num_cols = len(table_data[0]) if table_data else 5
+            col_width = (pdf.w - pdf.l_margin - pdf.r_margin) / num_cols
+            for row in table_data:
+                for i, cell in enumerate(row):
+                    if i < num_cols:  # Проверяем индекс
+                        pdf.cell(col_width, 8, cell, border=1)
+                pdf.ln(8)
+
+        pdf_output = BytesIO()
+        pdf.output(pdf_output)
+        pdf_output.seek(0)
+        response = HttpResponse(pdf_output, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="document.pdf"'
+        return response
     elif file_format == 'xls':
         lines = [l for l in content.split('\n') if l.strip()]
         df = pd.DataFrame({'Документ': lines})
@@ -492,3 +540,41 @@ def export_document(request):
         return FileResponse(buf, as_attachment=True, filename=filename)
     else:
         return JsonResponse({'error': 'Неподдерживаемый формат'}, status=400)
+
+def safe_multicell(pdf, width, height, text, max_len=80):
+    # Если ширина 0, используем ширину страницы минус отступы
+    if width == 0:
+        width = pdf.w - pdf.l_margin - pdf.r_margin
+    
+    # Проверяем, что ширина достаточна для одного символа
+    if width < 10:
+        width = 100
+    
+    try:
+        words = text.split(' ')
+        current_line = ''
+        for word in words:
+            # Если слово слишком длинное — разбиваем его
+            while len(word) > max_len:
+                part = word[:max_len]
+                word = word[max_len:]
+                if current_line:
+                    pdf.multi_cell(width, height, current_line)
+                    current_line = ''
+                pdf.multi_cell(width, height, part)
+            # Если добавление слова превышает лимит — печатаем текущую строку
+            if len(current_line) + len(word) + 1 > max_len:
+                if current_line:
+                    pdf.multi_cell(width, height, current_line)
+                current_line = word
+            else:
+                if current_line:
+                    current_line += ' ' + word
+                else:
+                    current_line = word
+        if current_line:
+            pdf.multi_cell(width, height, current_line)
+    except FPDFException as e:
+        # Если возникла ошибка, просто добавляем текст как обычную строку
+        pdf.ln(height)
+        pdf.cell(0, height, text[:50] + '...' if len(text) > 50 else text)
