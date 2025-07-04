@@ -65,6 +65,8 @@
     padding: 12px 15px;
     color: white;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    vertical-align: middle;
 }
 .documents-table tr:hover {
     background: rgba(255, 255, 255, 0.1);
@@ -72,6 +74,12 @@
 .checkbox {
     transform: scale(1.2);
     cursor: pointer;
+}
+.documents-table td:first-child {
+    text-align: left;
+}
+.documents-table td:nth-child(2) {
+    text-align: left;
 }
 {% endblock %}
 
@@ -100,7 +108,7 @@
                 <th>Дата<br>очередной проверки</th>
                 <th>Рег. №</th>
                 <th>Распечатан</th>
-                <th>Действия (печать/скачать word)</th>
+                <th>Печать/скачать</th>
             </tr>
         </thead>
         <tbody>
@@ -114,7 +122,10 @@
                 <td>{{ protokol.data_ocherednoy_proverki|date:"d.m.Y"|default:"-" }}</td>
                 <td>{{ protokol.registracionnyy_nomer|default:"-" }}</td>
                 <td><input type="checkbox" class="checkbox" {% if protokol.raspechatn %}checked{% endif %}></td>
-                <td>-</td>
+                <td>
+                    <button onclick="printDocument('{{ protokol.id }}')" style="background: none; border: none; font-size: 20px; cursor: pointer; margin-right: 10px;" title="Просмотр перед печатью">🖨️</button>
+                    <button onclick="downloadDocument('{{ protokol.id }}')" style="background: none; border: none; font-size: 20px; cursor: pointer;" title="Скачать документ">📄</button>
+                </td>
             </tr>
             {% empty %}
             <tr>
@@ -134,7 +145,7 @@
                 <th>Инструктор</th>
                 <th>Дата очередного инструктажа</th>
                 <th>Распечатан</th>
-                <th>Действия</th>
+                <th>Печать/скачать</th>
             </tr>
         </thead>
         <tbody>
@@ -145,7 +156,10 @@
                 <td>{{ instruktazh.instruktor }}</td>
                 <td>{{ instruktazh.data_ocherednogo_instruktazha|date:"d.m.Y" }}</td>
                 <td><input type="checkbox" class="checkbox" {% if instruktazh.raspechatn %}checked{% endif %}></td>
-                <td>-</td>
+                <td>
+                    <button onclick="printInstruction('{{ instruktazh.id }}')" style="background: none; border: none; font-size: 20px; cursor: pointer; margin-right: 10px;" title="Просмотр перед печатью">🖨️</button>
+                    <button onclick="downloadInstruction('{{ instruktazh.id }}')" style="background: none; border: none; font-size: 20px; cursor: pointer;" title="Скачать документ">📄</button>
+                </td>
             </tr>
             {% empty %}
             <tr>
@@ -163,7 +177,7 @@
                 <th>Документ</th>
                 <th>Согласован</th>
                 <th>Распечатан</th>
-                <th>Действия (распечатать, скачать)</th>
+                <th>Печать/скачать </th>
             </tr>
         </thead>
         <tbody>
@@ -171,34 +185,75 @@
                 <td>Должностная инструкция</td>
                 <td><input type="checkbox" class="checkbox"></td>
                 <td><input type="checkbox" class="checkbox" checked></td>
-                <td>-</td>
+                <td>
+                    <button onclick="printDoc('dolzhnostnaya')" style="background: none; border: none; font-size: 20px; cursor: pointer; margin-right: 10px;" title="Просмотр перед печатью">🖨️</button>
+                    <button onclick="downloadDoc('dolzhnostnaya')" style="background: none; border: none; font-size: 20px; cursor: pointer;" title="Скачать документ">📄</button>
+                </td>
             </tr>
             <tr>
                 <td>Личная карточка работника</td>
                 <td><input type="checkbox" class="checkbox" checked></td>
                 <td><input type="checkbox" class="checkbox"></td>
-                <td>-</td>
+                <td>
+                    <button onclick="printDoc('kartochka')" style="background: none; border: none; font-size: 20px; cursor: pointer; margin-right: 10px;" title="Просмотр перед печатью">🖨️</button>
+                    <button onclick="downloadDoc('kartochka')" style="background: none; border: none; font-size: 20px; cursor: pointer;" title="Скачать документ">📄</button>
+                </td>
             </tr>
             <tr>
                 <td>Личная карточка учета выдачи СИЗ</td>
                 <td><input type="checkbox" class="checkbox" checked></td>
                 <td><input type="checkbox" class="checkbox" checked></td>
-                <td>-</td>
+                <td>
+                    <button onclick="printDoc('siz')" style="background: none; border: none; font-size: 20px; cursor: pointer; margin-right: 10px;" title="Просмотр перед печатью">🖨️</button>
+                    <button onclick="downloadDoc('siz')" style="background: none; border: none; font-size: 20px; cursor: pointer;" title="Скачать документ">📄</button>
+                </td>
             </tr>
             <tr>
                 <td>Карта оценки проф. рисков</td>
                 <td><input type="checkbox" class="checkbox"></td>
                 <td><input type="checkbox" class="checkbox"></td>
-                <td>-</td>
+                <td>
+                    <button onclick="printDoc('riski')" style="background: none; border: none; font-size: 20px; cursor: pointer; margin-right: 10px;" title="Просмотр перед печатью">🖨️</button>
+                    <button onclick="downloadDoc('riski')" style="background: none; border: none; font-size: 20px; cursor: pointer;" title="Скачать документ">📄</button>
+                </td>
             </tr>
             <tr>
                 <td>Инструкция по охране труда</td>
                 <td><input type="checkbox" class="checkbox"></td>
                 <td><input type="checkbox" class="checkbox"></td>
-                <td>-</td>
+                <td>
+                    <button onclick="printDoc('ohrana')" style="background: none; border: none; font-size: 20px; cursor: pointer; margin-right: 10px;" title="Просмотр перед печатью">🖨️</button>
+                    <button onclick="downloadDoc('ohrana')" style="background: none; border: none; font-size: 20px; cursor: pointer;" title="Скачать документ">📄</button>
+                </td>
             </tr>
         </tbody>
     </table>
 </div>
 {% endif %}
+
+<script>
+function printDocument(id) {
+    alert('Просмотр протокола ID: ' + id);
+}
+
+function downloadDocument(id) {
+    alert('Скачивание протокола ID: ' + id);
+}
+
+function printInstruction(id) {
+    alert('Просмотр инструктажа ID: ' + id);
+}
+
+function downloadInstruction(id) {
+    alert('Скачивание инструктажа ID: ' + id);
+}
+
+function printDoc(type) {
+    window.open('/sotrudniki/{{ sotrudnik.id }}/download/' + type + '/', '_blank');
+}
+
+function downloadDoc(type) {
+    window.location.href = '/sotrudniki/{{ sotrudnik.id }}/download/' + type + '/';
+}
+</script>
 {% endblock %}

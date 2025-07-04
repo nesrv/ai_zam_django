@@ -56,6 +56,55 @@ def update_document_status(request):
     
     return JsonResponse({'success': False})
 
+def generate_documents(request):
+    from django.conf import settings
+    import os
+    
+    # Создаем папку для документов
+    docs_dir = os.path.join(settings.MEDIA_ROOT, 'documents')
+    os.makedirs(docs_dir, exist_ok=True)
+    
+    # Проходим по всем сотрудникам
+    for sotrudnik in Sotrudnik.objects.all():
+        dokumenty, created = DokumentySotrudnika.objects.get_or_create(sotrudnik=sotrudnik)
+        
+        # Создаем должностную инструкцию
+        filename = f"dolzhn_instr_{sotrudnik.fio.replace(' ', '_')}.docx"
+        file_path = os.path.join(docs_dir, filename)
+        
+        # Создаем пустой файл (в реальности здесь бы была генерация docx)
+        with open(file_path, 'w') as f:
+            f.write(f"Должностная инструкция для {sotrudnik.fio}")
+        
+        # Создаем запись в базе
+        InstrukciiKartochki.objects.get_or_create(
+            dokumenty_sotrudnika=dokumenty,
+            nazvanie="Должностная инструкция",
+            defaults={
+                'tekst_kartochki': f"Должностная инструкция для {sotrudnik.fio}",
+                'file_path': f"documents/{filename}"
+            }
+        )
+    
+    return JsonResponse({'success': True, 'message': 'Документы созданы'})
+
+def download_document(request, sotrudnik_id, doc_type):
+    from django.http import FileResponse, Http404, HttpResponse
+    from django.conf import settings
+    import os
+    import tempfile
+    
+    sotrudnik = get_object_or_404(Sotrudnik, pk=sotrudnik_id)
+    
+    if doc_type == 'dolzhnostnaya':
+        # Путь к шаблону
+        template_path = os.path.join(settings.BASE_DIR, 'templates', 'documents', 'dolzhn_instr.txt')
+        
+        # Отображаем HTML-шаблон
+        return render(request, 'sotrudniki/dolzhn_instr.html', {'sotrudnik': sotrudnik})
+    
+    raise Http404("Файл не найден")
+
 
 def organizations_list(request):
     organizacii = Organizaciya.objects.all()

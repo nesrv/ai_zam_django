@@ -99,8 +99,8 @@
             <label for="otvetstvennyj">Ответственный</label>
             <select id="otvetstvennyj" name="otvetstvennyj">
                 <option value="">Выберите ответственного</option>
-                {% for kadry in kadry %}
-                <option value="{{ kadry.id }}">{{ kadry.fio }}</option>
+                {% for sotrudnik in sotrudniki %}
+                <option value="{{ sotrudnik.id }}">{{ sotrudnik.fio }}</option>
                 {% endfor %}
             </select>
         </div>

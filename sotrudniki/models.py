@@ -99,6 +99,7 @@ class InstrukciiKartochki(models.Model):
     soglasovan = models.BooleanField(default=False, verbose_name="Согласован")
     raspechatn = models.BooleanField(default=False, verbose_name="Распечатан")
     data_sozdaniya = models.DateTimeField(default=timezone.now, verbose_name="Дата создания")
+    file_path = models.CharField(max_length=500, blank=True, null=True, verbose_name="Путь к файлу")
     
     class Meta:
         verbose_name = "Инструкция/карточка"

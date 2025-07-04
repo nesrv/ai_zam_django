@@ -313,8 +313,8 @@ def create_profit_balance_charts(objects_with_info, days, daily_income_data, dai
             # Если tight_layout не работает, используем subplots_adjust
             plt.subplots_adjust(left=0.1, right=0.85, top=0.9, bottom=0.2)
         
-        # Сохраняем график в static/images
-        static_dir = os.path.join(settings.BASE_DIR, 'static', 'images')
+        # Сохраняем график в staticfiles/images
+        static_dir = os.path.join(settings.STATIC_ROOT, 'images')
         os.makedirs(static_dir, exist_ok=True)
         
         # Удаляем старые файлы графиков (оставляем только последние 5)
@@ -434,6 +434,7 @@ def object_detail(request, object_id):
 
 
 def create_object(request):
+    from sotrudniki.models import Sotrudnik
     from .models import Kadry
     
     if request.method == 'POST':
@@ -445,7 +446,17 @@ def create_object(request):
         if nazvanie and data_nachala:
             otvetstvennyj = None
             if otvetstvennyj_id:
-                otvetstvennyj = Kadry.objects.get(id=otvetstvennyj_id)
+                # Ищем сотрудника и создаем соответствующую запись в Kadry если нужно
+                sotrudnik = Sotrudnik.objects.get(id=otvetstvennyj_id)
+                otvetstvennyj, created = Kadry.objects.get_or_create(
+                    fio=sotrudnik.fio,
+                    defaults={
+                        'specialnost_id': 1,  # Значение по умолчанию
+                        'razryad': '',
+                        'pasport': '',
+                        'telefon': ''
+                    }
+                )
             
             from datetime import datetime, timedelta
             
@@ -458,10 +469,10 @@ def create_object(request):
             return redirect('object_detail', object_id=obj.id)
     
     # GET запрос - показываем форму
-    kadry = Kadry.objects.all()
+    sotrudniki = Sotrudnik.objects.all()
     
     context = {
-        'kadry': kadry,
+        'sotrudniki': sotrudniki,
     }
     
     return render(request, 'object/create_object.html', context)
