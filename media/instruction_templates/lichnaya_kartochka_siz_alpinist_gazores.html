@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style type="text/css">
+.commercial {
+  width: 1200px;
+  padding: 20px;
+  margin: 0 auto;
+  border: 1px solid #444;
+  font-family: Tahoma, Helvetica, sans-serif;font-family: 'times' !important;
+}
+
+@media print {
+  a {
+    display: none;
+  }
+  #footer{
+  	display: none;
+  }
+  #button-top{
+  	display: none !important;
+  }
+   #button{
+    display: none !important;
+  }
+  .commercial{
+  	border: none;
+  }
+}
+    </style>
+</head>
+<body>
+
+<div class="row" id="button" style="margin-bottom:15px;margin-top:15px;">
+  <div class="col-sm-12 text-center">
+    <button type="button" title="Печать" onclick="window.print();" class="btn btn-blue"><i class="fa fa-print"></i> Печать</button>
+  </div>
+</div>
+
+<div class="commercial">
+<table style="width: 100%;">
+    <tbody><tr>
+      <td colspan="2" style="width:100%;text-align: center;font-size: 18px;font-weight: 600;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">Общество с ограниченной ответственностью "РАЗВИТИЕ"</td>
+    </tr>
+    <tr>
+      <td style="width:50%;">Адрес:191144, Г.Санкт-Петербург, вн.тер.г. Муниципальный Округ Смольнинское, ул Мытнинская, д. 12/44, литера А</td>
+      <td style="width:50%;text-align: right;">ИНН:7842187225</td>
+    </tr>
+  </tbody></table>
+<br><br><br>
+
+<table style="width: 100%;">
+    <tbody><tr>
+      <td style="width:100%;text-align: center;font-size: 18px;font-weight: 600;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">Личная карточка учета выдачи СИЗ</td>
+    </tr>
+  </tbody></table>
+<br><br>
+
+<table style="width: 100%;">
+    <tbody><tr>
+      <td style="width:30%;text-align: left;font-size: 14px;font-weight: 600;">Фамилия, имя, отчество</td>
+      <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:70%;text-align: center;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">{{ sotrudnik.fio }}</td>
+    </tr>
+    <tr>
+      <td style="width:30%;text-align: left;font-size: 14px;font-weight: 600;">Профессия/ должность</td>
+      <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:70%;text-align: center;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">{{ sotrudnik.specialnost }}</td>
+    </tr>
+    <tr>
+      <td style="width:30%;text-align: left;font-size: 14px;font-weight: 600;">Пол</td>
+      <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:70%;text-align: center;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">{{ sotrudnik.pol }}</td>
+    </tr>
+    <tr>
+      <td style="width:30%;text-align: left;font-size: 14px;font-weight: 600;">Размер одежды</td>
+      <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:70%;text-align: center;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">{{ sotrudnik.razmer_odezhdy }}</td>
+    </tr>
+    <tr>
+      <td style="width:30%;text-align: left;font-size: 14px;font-weight: 600;">Размер обуви</td>
+      <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:70%;text-align: center;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">{{ sotrudnik.razmer_obuvi }}</td>
+    </tr>
+    <tr>
+      <td style="width:30%;text-align: left;font-size: 14px;font-weight: 600;">Размер головного убора</td>
+      <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:70%;text-align: center;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">{{ sotrudnik.razmer_golovnogo_ubora }}</td>
+    </tr>
+  </tbody></table>
+
+<br><br>
+
+<b>Учет выдачи средств индивидуальной защиты</b>
+<table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;line-height: 1;font-size: 12px;">
+    <thead>
+    <tr style="height: 40px;font-weight: 600;">
+        <td style="text-align: center;padding: 5px;">Наименование СИЗ</td>
+        <td style="text-align: center;padding: 5px;">Норма выдачи</td>
+        <td style="text-align: center;padding: 5px;">Дата выдачи</td>
+        <td style="text-align: center;padding: 5px;">Количество</td>
+        <td style="text-align: center;padding: 5px;">Подпись получателя</td>
+        <td style="text-align: center;padding: 5px;">Дата возврата</td>
+        <td style="text-align: center;padding: 5px;">Подпись сдавшего</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td style="padding: 10px;">Каска защитная</td>
+        <td style="text-align: center;padding: 10px;">1 шт. на 2 года</td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+    </tr>
+    <tr>
+        <td style="padding: 10px;">Очки защитные</td>
+        <td style="text-align: center;padding: 10px;">1 шт. на 1 год</td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+    </tr>
+    <tr>
+        <td style="padding: 10px;">Респиратор</td>
+        <td style="text-align: center;padding: 10px;">12 шт. в год</td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+    </tr>
+    <tr>
+        <td style="padding: 10px;">Костюм сварщика</td>
+        <td style="text-align: center;padding: 10px;">1 шт. на 1 год</td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+    </tr>
+    <tr>
+        <td style="padding: 10px;">Перчатки защитные</td>
+        <td style="text-align: center;padding: 10px;">12 пар в год</td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+    </tr>
+    <tr>
+        <td style="padding: 10px;">Ботинки защитные</td>
+        <td style="text-align: center;padding: 10px;">1 пара на 1 год</td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+    </tr>
+    <tr>
+        <td style="padding: 10px;">Страховочная привязь</td>
+        <td style="text-align: center;padding: 10px;">1 шт. на 2 года</td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+    </tr>
+    <tr>
+        <td style="padding: 10px;">Канат страховочный</td>
+        <td style="text-align: center;padding: 10px;">1 шт. на 2 года</td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+        <td style="text-align: center;padding: 10px;"></td>
+    </tr>
+    </tbody>
+</table>
+
+<br><br>
+
+<b>Подтверждение получения:</b><br><br>
+
+Работник ознакомлен с правилами эксплуатации и ухода за выданными СИЗ:<br><br>
+
+"_____"______________________ 20____&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/{{ sotrudnik.fio }}/<br>   
+  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(дата)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(подпись)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(ФИО)<br><br><br><br>
+
+</div>
+
+</body>
+</html>

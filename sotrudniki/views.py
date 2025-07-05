@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
-from .models import Organizaciya, Sotrudnik, DokumentySotrudnika, InstrukciiKartochki, ProtokolyObucheniya, Instruktazhi, Podrazdelenie, Specialnost
+from .models import Organizaciya, Sotrudnik, DokumentySotrudnika, InstrukciiKartochki, ProtokolyObucheniya, Instruktazhi, Podrazdelenie, Specialnost, ShablonyDokumentovPoSpecialnosti
+from django.conf import settings
+import os
 
 
 def sotrudniki_list(request):
@@ -90,26 +92,104 @@ def generate_documents(request):
 
 def download_document(request, sotrudnik_id, doc_type):
     from django.http import FileResponse, Http404, HttpResponse
-    from django.conf import settings
-    import os
     
     sotrudnik = get_object_or_404(Sotrudnik, pk=sotrudnik_id)
     
     if doc_type == 'dolzhnostnaya':
-        # Проверяем есть ли HTML файл у специальности
-        if sotrudnik.specialnost and sotrudnik.specialnost.html_file:
-            # Читаем HTML файл из специальности
-            with open(sotrudnik.specialnost.html_file.path, 'r', encoding='utf-8') as f:
-                html_content = f.read()
-            # Заменяем плейсхолдеры на данные сотрудника
-            html_content = html_content.replace('{{ sotrudnik.fio }}', sotrudnik.fio)
-            specialnost_name = sotrudnik.specialnost.nazvanie if sotrudnik.specialnost else 'Не указана'
-            html_content = html_content.replace('{{ sotrudnik.specialnost|default:"Не указана" }}', specialnost_name)
-            html_content = html_content.replace('{{ sotrudnik.specialnost }}', specialnost_name)
-            return HttpResponse(html_content, content_type='text/html')
-        else:
-            # Используем стандартный шаблон
-            return render(request, 'sotrudniki/dolzhn_instr.html', {'sotrudnik': sotrudnik})
+        # Проверяем есть ли шаблоны документов у специальности
+        if sotrudnik.specialnost and hasattr(sotrudnik.specialnost, 'shablony_dokumentov'):
+            shablony = sotrudnik.specialnost.shablony_dokumentov
+            if shablony.dolzhnostnaya_instrukciya:
+                # Читаем HTML файл должностной инструкции
+                with open(shablony.dolzhnostnaya_instrukciya.path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+                # Заменяем плейсхолдеры
+                html_content = html_content.replace('{{ sotrudnik.fio }}', sotrudnik.fio)
+                specialnost_name = sotrudnik.specialnost.nazvanie if sotrudnik.specialnost else 'Не указана'
+                html_content = html_content.replace('{{ sotrudnik.specialnost|default:"Не указана" }}', specialnost_name)
+                html_content = html_content.replace('{{ sotrudnik.specialnost }}', specialnost_name)
+                return HttpResponse(html_content, content_type='text/html')
+        
+        # Используем стандартный шаблон
+        return render(request, 'sotrudniki/dolzhn_instr.html', {'sotrudnik': sotrudnik})
+    
+    elif doc_type == 'kartochka':
+        # Проверяем есть ли шаблон личной карточки
+        html_content = None
+        
+        if sotrudnik.specialnost and hasattr(sotrudnik.specialnost, 'shablony_dokumentov'):
+            shablony = sotrudnik.specialnost.shablony_dokumentov
+            if shablony.lichnaya_kartochka_rabotnika:
+                # Читаем HTML файл личной карточки
+                with open(shablony.lichnaya_kartochka_rabotnika.path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+        
+        # Если шаблон не найден, используем шаблон по умолчанию
+        if not html_content:
+            default_template_path = os.path.join(settings.MEDIA_ROOT, 'instruction_templates', 'lichnaya_kartochka_podsobnyj.html')
+            if os.path.exists(default_template_path):
+                with open(default_template_path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+            else:
+                raise Http404("Шаблон личной карточки не найден")
+        
+        # Заменяем плейсхолдеры
+        html_content = html_content.replace('{{ sotrudnik.fio }}', sotrudnik.fio)
+        html_content = html_content.replace('{{ sotrudnik.data_rozhdeniya|date:"d.m.Y" }}', sotrudnik.data_rozhdeniya.strftime('%d.%m.%Y'))
+        html_content = html_content.replace('{{ sotrudnik.data_priema|date:"d.m.Y" }}', sotrudnik.data_priema.strftime('%d.%m.%Y'))
+        html_content = html_content.replace('{{ sotrudnik.data_nachala_raboty|date:"d.m.Y" }}', sotrudnik.data_nachala_raboty.strftime('%d.%m.%Y'))
+        
+        # Заменяем специальность
+        specialnost_name = sotrudnik.specialnost.nazvanie if sotrudnik.specialnost else 'Не указана'
+        html_content = html_content.replace('{{ sotrudnik.specialnost }}', specialnost_name)
+        
+        # Заменяем подразделение
+        podrazdelenie_name = sotrudnik.podrazdelenie.nazvanie if sotrudnik.podrazdelenie else 'Строительное управление'
+        html_content = html_content.replace('{{ sotrudnik.podrazdelenie.nazvanie|default:"Строительное управление" }}', podrazdelenie_name)
+        
+        return HttpResponse(html_content, content_type='text/html')
+    
+    elif doc_type == 'siz':
+        # Проверяем есть ли шаблон личной карточки СИЗ
+        html_content = None
+        
+        if sotrudnik.specialnost and hasattr(sotrudnik.specialnost, 'shablony_dokumentov'):
+            shablony = sotrudnik.specialnost.shablony_dokumentov
+            if shablony.lichnaya_kartochka_siz:
+                # Читаем HTML файл личной карточки СИЗ
+                with open(shablony.lichnaya_kartochka_siz.path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+        
+        # Если шаблон не найден, используем шаблон по умолчанию для "Подсобный рабочий"
+        if not html_content:
+            try:
+                from .models import ShablonyDokumentovPoSpecialnosti, Specialnost
+                default_specialnost = Specialnost.objects.get(nazvanie="Подсобный рабочий")
+                default_shablony = ShablonyDokumentovPoSpecialnosti.objects.get(specialnost=default_specialnost)
+                if default_shablony.lichnaya_kartochka_siz:
+                    with open(default_shablony.lichnaya_kartochka_siz.path, 'r', encoding='utf-8') as f:
+                        html_content = f.read()
+            except:
+                # Используем стандартный шаблон
+                default_template_path = os.path.join(settings.MEDIA_ROOT, 'document_templates', 'lichnaya_kartochka_siz_alpinist_gazores.html')
+                if os.path.exists(default_template_path):
+                    with open(default_template_path, 'r', encoding='utf-8') as f:
+                        html_content = f.read()
+        
+        if not html_content:
+            raise Http404("Шаблон личной карточки СИЗ не найден")
+        
+        # Заменяем плейсхолдеры
+        html_content = html_content.replace('{{ sotrudnik.fio }}', sotrudnik.fio)
+        specialnost_name = sotrudnik.specialnost.nazvanie if sotrudnik.specialnost else 'Не указана'
+        html_content = html_content.replace('{{ sotrudnik.specialnost }}', specialnost_name)
+        html_content = html_content.replace('{{ sotrudnik.pol }}', sotrudnik.pol or '')
+        html_content = html_content.replace('{{ sotrudnik.razmer_odezhdy }}', sotrudnik.razmer_odezhdy)
+        html_content = html_content.replace('{{ sotrudnik.razmer_golovnogo_ubora }}', sotrudnik.razmer_golovnogo_ubora)
+        html_content = html_content.replace('{{ sotrudnik.razmer_obuvi }}', sotrudnik.razmer_obuvi)
+        html_content = html_content.replace('{{ sotrudnik.data_priema|date:"d.m.Y" }}', sotrudnik.data_priema.strftime('%d.%m.%Y'))
+        
+        return HttpResponse(html_content, content_type='text/html')
     
     raise Http404("Файл не найден")
 

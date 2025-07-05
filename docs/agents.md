@@ -1,3 +1,56 @@
+для http://127.0.0.1:8000/sotrudniki/29/download/siz/
+шаблон html возьми из таблицы sotrudniki_shablonydokumentovpospecialnosti поле lichnaya_kartochka_siz
+
+на основе `выдача_сиз_альпинист-газорезчик.htm` создай html-шаблон,
+замени в нем реальные значения на:
+
+{{ sotrudnik.fio }} 
+{{ sotrudnik.specialnost }}
+{{ sotrudnik.pol }}
+{{ sotrudnik.razmer_odezhdy }}
+{{ sotrudnik.razmer_golovnogo_ubora }}
+{{ sotrudnik.razmer_obuvi }}
+
+
+для таблицы sotrudniki_sotrudnik добавь поля:
+* пол
+* размер одежды (по умолчанию,  50-52)
+* размер обуви (по умолчанию,  43)
+* размер головного убора (по умолчанию 55)
+
+
+на основе выдача_альпинист-газорезчик.htm создай html шаблон 
+Личная карточка учета выдачи СИЗ для альпиниста-газорезчика:
+
+
+
+Not Found: /sotrudniki/27/download/siz/
+[05/Jul/2025 23:27:06] "GET /sotrudniki/27/download/siz/ HTTP/1.1" 404 6822
+передай в html из view HTML файл личной карточки учета выдачи СИЗ из таблциы sotrudniki_shablonydokumentovpospecialnosti
+
+{{ sotrudnik.fio }} 
+{{ sotrudnik.specialnost }}
+{{ sotrudnik.pol }}
+{{ sotrudnik.razmer_odezhdy }}
+{{ sotrudnik.razmer_golovnogo_ubora }}
+{{ sotrudnik.razmer_obuvi }}
+
+
+передай из view {{ sotrudnik.specialnost }} во http://127.0.0.1:8000/sotrudniki/28/download/kartochka/
+
+[05/Jul/2025 22:55:52] "GET /sotrudniki/28/download/kartochka/ HTTP/1.1" 404 6874
+если шаблон личной карточки у специальности отсутсвует в sotrudniki_shablonydokumentovpospecialnosti
+возьми по умолчанию карточку для "Подсобный рабочий"
+
+
+[05/Jul/2025 22:50:59] "GET /sotrudniki/28/download/kartochka/ HTTP/1.1" 404 6840
+`Личная карточка работника` также возьми из sotrudniki_shablonydokumentovpospecialnosti
+
+
+
+на http://127.0.0.1:8000/sotrudniki/27/ при клике на 🖨️ или 📄
+соответсвующие специальности документы возьми из sotrudniki_shablonydokumentovpospecialnosti
+
 удали из бд таблицу kadry и object_specialnost
 удали из кода соотвествующие ссылки на эти таблицы
 на http://127.0.0.1:8000/objects/2/ в поле Ответственный: сделай заглушку "	Иванов Иван Иванович"

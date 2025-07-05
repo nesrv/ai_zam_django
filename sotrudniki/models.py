@@ -48,6 +48,11 @@ class Specialnost(models.Model):
 
 
 class Sotrudnik(models.Model):
+    POL_CHOICES = [
+        ('мужской', 'Мужской'),
+        ('женский', 'Женский'),
+    ]
+    
     organizaciya = models.ForeignKey(
         Organizaciya,
         on_delete=models.CASCADE,
@@ -58,6 +63,28 @@ class Sotrudnik(models.Model):
     )
     fio = models.CharField(max_length=300, verbose_name="ФИО")
     data_rozhdeniya = models.DateField(verbose_name="Дата рождения")
+    pol = models.CharField(
+        max_length=10,
+        choices=POL_CHOICES,
+        verbose_name="Пол",
+        null=True,
+        blank=True
+    )
+    razmer_odezhdy = models.CharField(
+        max_length=10,
+        default="50-52",
+        verbose_name="Размер одежды"
+    )
+    razmer_obuvi = models.CharField(
+        max_length=5,
+        default="43",
+        verbose_name="Размер обуви"
+    )
+    razmer_golovnogo_ubora = models.CharField(
+        max_length=5,
+        default="55",
+        verbose_name="Размер головного убора"
+    )
     specialnost = models.ForeignKey(
         Specialnost, 
         on_delete=models.SET_NULL, 
