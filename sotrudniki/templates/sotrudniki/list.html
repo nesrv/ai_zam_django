@@ -56,6 +56,13 @@
 {% block content %}
 <div class="page-title">Сотрудники организации</div>
 
+<div style="margin-bottom: 20px; text-align: right;">
+    <a href="{% url 'sotrudniki:add' %}{% if request.GET.podrazdelenie %}?podrazdelenie={{ request.GET.podrazdelenie }}{% endif %}" 
+       style="background: rgba(0, 150, 0, 0.8); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+        + Добавить сотрудника
+    </a>
+</div>
+
 <div class="employees-table">
     <table>
         <thead>

@@ -1,124 +1,178 @@
-# Схема базы данных AI-ZAM
+# Схема базы данных AI-ZAM (Обновленная версия)
 
 ## ER-диаграмма
 
 ```mermaid
 erDiagram
-    %% Основные сущности строительной системы
     KategoriyaResursa {
         int id PK
-        varchar nazvanie "Название категории"
+        varchar nazvanie
     }
     
     Resurs {
         int id PK
-        varchar naimenovanie "Наименование ресурса"
-        varchar edinica_izmereniya "Единица измерения"
-        int kategoriya_resursa_id FK "Категория ресурса"
+        varchar naimenovanie
+        varchar edinica_izmereniya
+        int kategoriya_resursa_id FK
     }
     
     Specialnost {
         int id PK
-        varchar nazvanie "Название специальности"
+        varchar nazvanie
     }
     
     Kadry {
         int id PK
-        varchar fio "ФИО"
-        int specialnost_id FK "Специальность"
-        varchar razryad "Разряд"
-        varchar pasport "Паспорт"
-        varchar telefon "Телефон"
+        varchar fio
+        int specialnost_id FK
+        varchar razryad
+        varchar pasport
+        varchar telefon
     }
     
     Objekt {
         int id PK
-        varchar nazvanie "Название объекта"
-        int otvetstvennyj_id FK "Ответственный"
-        date data_nachala "Дата начала"
-        date data_plan_zaversheniya "План завершения"
-        date data_fakt_zaversheniya "Факт завершения"
-        varchar status "Статус"
+        varchar nazvanie
+        int otvetstvennyj_id FK
+        int organizaciya_id FK
+        date data_nachala
+        date data_plan_zaversheniya
+        date data_fakt_zaversheniya
+        varchar status
     }
     
     ResursyPoObjektu {
         int id PK
-        int objekt_id FK "Объект"
-        int resurs_id FK "Ресурс"
-        decimal kolichestvo "Количество"
-        decimal cena "Цена"
-        decimal potracheno "Потрачено лимитов"
+        int objekt_id FK
+        int resurs_id FK
+        decimal kolichestvo
+        decimal cena
+        decimal potracheno
     }
     
     FakticheskijResursPoObjektu {
         int id PK
-        int resurs_po_objektu_id FK "Ресурс по объекту"
+        int resurs_po_objektu_id FK
     }
     
     RaskhodResursa {
         int id PK
-        int fakticheskij_resurs_id FK "Фактический ресурс"
-        date data "Дата"
-        decimal izraskhodovano "Израсходовано"
+        int fakticheskij_resurs_id FK
+        date data
+        decimal izraskhodovano
     }
     
-    %% AI и чат система
-    AIModel {
+    DohodResursa {
         int id PK
-        varchar name "Название модели"
-        text description "Описание"
-        datetime created_at "Дата создания"
-        boolean is_active "Активна"
+        int fakticheskij_resurs_id FK
+        date data
+        decimal vypolneno
     }
     
-    ChatSession {
+    Organizaciya {
         int id PK
-        varchar session_id "ID сессии"
-        int user_id FK "Пользователь"
-        datetime created_at "Дата создания"
-        datetime updated_at "Дата обновления"
-        boolean is_active "Активна"
+        varchar nazvanie
+        varchar inn
     }
     
-    ChatMessage {
+    Podrazdelenie {
         int id PK
-        int session_id FK "Сессия"
-        varchar message_type "Тип сообщения"
-        text content "Содержание"
-        datetime created_at "Дата создания"
+        varchar kod
+        varchar nazvanie
     }
     
-    %% Telegram система
+    SotrudnikSpecialnost {
+        int id PK
+        varchar nazvanie
+    }
+    
+    Sotrudnik {
+        int id PK
+        varchar fio
+        date data_rozhdeniya
+        date data_priema
+        date data_nachala_raboty
+        int organizaciya_id FK
+        int podrazdelenie_id FK
+        int specialnost_id FK
+    }
+    
+    DokumentySotrudnika {
+        int id PK
+        int sotrudnik_id FK
+    }
+    
+    InstrukciiKartochki {
+        int id PK
+        varchar nazvanie
+        text tekst_kartochki
+        boolean soglasovan
+        boolean raspechatn
+        int dokumenty_sotrudnika_id FK
+        varchar file_path
+    }
+    
+    ProtokolyObucheniya {
+        int id PK
+        varchar nomer_programmy
+        varchar nazvanie_kursa
+        text tekst_protokola
+        date data_prikaza
+        date data_dopuska
+        date data_ocherednoy_proverki
+        varchar registracionnyy_nomer
+        boolean raspechatn
+        int dokumenty_sotrudnika_id FK
+    }
+    
+    Instruktazhi {
+        int id PK
+        date data_instruktazha
+        varchar vid_instruktazha
+        text tekst_instruktazha
+        varchar instruktor
+        date data_ocherednogo_instruktazha
+        boolean raspechatn
+        int dokumenty_sotrudnika_id FK
+    }
+    
     TelegramUser {
         int id PK
-        bigint telegram_id "Telegram ID"
-        varchar username "Username"
-        varchar first_name "Имя"
-        varchar last_name "Фамилия"
-        boolean is_active "Активен"
-        datetime created_at "Дата регистрации"
-        datetime updated_at "Дата обновления"
+        bigint telegram_id
+        varchar username
+        varchar first_name
+        varchar last_name
+        boolean is_active
+        datetime created_at
+        datetime updated_at
     }
     
     TelegramMessage {
         int id PK
-        int user_id FK "Пользователь"
-        varchar message_type "Тип сообщения"
-        text content "Содержание"
-        boolean is_from_user "От пользователя"
-        datetime created_at "Дата создания"
+        int user_id FK
+        varchar message_type
+        text content
+        boolean is_from_user
+        datetime created_at
     }
     
-    %% Django Auth
-    User {
+    ChatSession {
         int id PK
-        varchar username "Имя пользователя"
-        varchar email "Email"
-        boolean is_active "Активен"
-        datetime date_joined "Дата регистрации"
+        varchar session_id
+        int user_id FK
+        datetime created_at
+        datetime updated_at
+        boolean is_active
     }
     
-    %% Связи строительной системы
+    ChatMessage {
+        int id PK
+        int session_id FK
+        varchar message_type
+        text content
+        datetime created_at
+    }
+    
     KategoriyaResursa ||--o{ Resurs : "имеет"
     Resurs ||--o{ ResursyPoObjektu : "используется в"
     Objekt ||--o{ ResursyPoObjektu : "содержит"
@@ -126,149 +180,17 @@ erDiagram
     Specialnost ||--o{ Kadry : "имеет"
     ResursyPoObjektu ||--|| FakticheskijResursPoObjektu : "фактический"
     FakticheskijResursPoObjektu ||--o{ RaskhodResursa : "расходы по дням"
-    
-    %% Связи AI системы
-    User ||--o{ ChatSession : "имеет сессии"
+    FakticheskijResursPoObjektu ||--o{ DohodResursa : "доходы по дням"
+    Organizaciya ||--o{ Sotrudnik : "работают в"
+    Organizaciya ||--o{ Objekt : "владеет"
+    Podrazdelenie ||--o{ Sotrudnik : "входят в"
+    SotrudnikSpecialnost ||--o{ Sotrudnik : "имеют"
+    Sotrudnik ||--|| DokumentySotrudnika : "документы"
+    DokumentySotrudnika ||--o{ InstrukciiKartochki : "инструкции"
+    DokumentySotrudnika ||--o{ ProtokolyObucheniya : "протоколы"
+    DokumentySotrudnika ||--o{ Instruktazhi : "инструктажи"
+    TelegramUser ||--o{ TelegramMessage : "сообщения"
     ChatSession ||--o{ ChatMessage : "содержит сообщения"
-    AIModel ||--o{ ChatMessage : "генерирует"
-    
-    %% Связи Telegram системы
-    TelegramUser ||--o{ TelegramMessage : "отправляет/получает"
-    User ||--o{ TelegramUser : "связан с"
-```
-
-## Диаграмма классов
-
-```mermaid
-classDiagram
-    %% Основные классы строительной системы
-    class KategoriyaResursa {
-        +id: int
-        +nazvanie: str
-        +__str__()
-    }
-    
-    class Resurs {
-        +id: int
-        +naimenovanie: str
-        +edinica_izmereniya: str
-        +kategoriya_resursa: FK
-        +__str__()
-    }
-    
-    class Specialnost {
-        +id: int
-        +nazvanie: str
-        +__str__()
-    }
-    
-    class Kadry {
-        +id: int
-        +fio: str
-        +specialnost: FK
-        +razryad: str
-        +pasport: str
-        +telefon: str
-        +__str__()
-    }
-    
-    class Objekt {
-        +id: int
-        +nazvanie: str
-        +otvetstvennyj: FK
-        +data_nachala: date
-        +data_plan_zaversheniya: date
-        +data_fakt_zaversheniya: date
-        +status: str
-        +__str__()
-    }
-    
-    class ResursyPoObjektu {
-        +id: int
-        +objekt: FK
-        +resurs: FK
-        +kolichestvo: decimal
-        +cena: decimal
-        +potracheno: decimal
-        +__str__()
-    }
-    
-    class FakticheskijResursPoObjektu {
-        +id: int
-        +resurs_po_objektu: FK
-        +__str__()
-    }
-    
-    class RaskhodResursa {
-        +id: int
-        +fakticheskij_resurs: FK
-        +data: date
-        +izraskhodovano: decimal
-        +__str__()
-    }
-    
-    %% AI и чат классы
-    class AIModel {
-        +id: int
-        +name: str
-        +description: text
-        +created_at: datetime
-        +is_active: bool
-        +__str__()
-    }
-    
-    class ChatSession {
-        +id: int
-        +session_id: str
-        +user: FK
-        +created_at: datetime
-        +updated_at: datetime
-        +is_active: bool
-        +__str__()
-    }
-    
-    class ChatMessage {
-        +id: int
-        +session: FK
-        +message_type: str
-        +content: text
-        +created_at: datetime
-        +__str__()
-    }
-    
-    %% Telegram классы
-    class TelegramUser {
-        +id: int
-        +telegram_id: bigint
-        +username: str
-        +first_name: str
-        +last_name: str
-        +is_active: bool
-        +created_at: datetime
-        +updated_at: datetime
-        +__str__()
-    }
-    
-    class TelegramMessage {
-        +id: int
-        +user: FK
-        +message_type: str
-        +content: text
-        +is_from_user: bool
-        +created_at: datetime
-        +__str__()
-    }
-    
-    %% Связи
-    KategoriyaResursa ||--o{ Resurs
-    Resurs ||--o{ ResursyPoObjektu
-    Objekt ||--o{ ResursyPoObjektu
-    Kadry ||--o{ Objekt
-    Specialnost ||--o{ Kadry
-    ResursyPoObjektu ||--|| FakticheskijResursPoObjektu
-    FakticheskijResursPoObjektu ||--o{ RaskhodResursa
-    ChatSession ||--o{ ChatMessage
-    TelegramUser ||--o{ TelegramMessage
 ```
 
 ## Описание таблиц
@@ -279,12 +201,29 @@ classDiagram
 |---------|----------|---------------|
 | `kategoriya_resursa` | Категории ресурсов (кадры, материалы, механизмы) | `id`, `nazvanie` |
 | `resurs` | Ресурсы (конкретные наименования) | `id`, `naimenovanie`, `kategoriya_resursa_id` |
-| `specialnost` | Специальности кадров | `id`, `nazvanie` |
+| `object_specialnost` | Специальности кадров | `id`, `nazvanie` |
 | `kadry` | Кадры (работники) | `id`, `fio`, `specialnost_id` |
-| `objekt` | Строительные объекты | `id`, `nazvanie`, `otvetstvennyj_id`, `status` |
-| `resursy_po_objektu` | Планируемые ресурсы по объектам | `id`, `objekt_id`, `resurs_id`, `kolichestvo`, `cena` |
+| `objekt` | Строительные объекты | `id`, `nazvanie`, `otvetstvennyj_id`, `organizaciya_id`, `status` |
+| `resursy_po_objektu` | Планируемые ресурсы по объектам | `id`, `objekt_id`, `resurs_id`, `kolichestvo`, `cena`, `potracheno` |
 | `fakticheskij_resurs_po_objektu` | Фактические ресурсы | `id`, `resurs_po_objektu_id` |
 | `raskhod_resursa` | Расходы ресурсов по дням | `id`, `fakticheskij_resurs_id`, `data`, `izraskhodovano` |
+| `dokhod_resursa` | Доходы ресурсов по дням | `id`, `fakticheskij_resurs_id`, `data`, `vypolneno` |
+| `kategoriya_po_objektu` | Категории по объектам | `id`, `kategoriya_id`, `objekt_id` |
+| `svodnaya_raskhod_dokhod_po_dnyam` | Сводная по расходам/доходам | `id`, `objekt_id`, `data`, `raskhod`, `dokhod`, `balans` |
+
+### Система сотрудников
+
+| Таблица | Описание | Ключевые поля |
+|---------|----------|---------------|
+| `sotrudniki_organizaciya` | Организации | `id`, `nazvanie`, `inn` |
+| `sotrudniki_podrazdelenie` | Подразделения | `id`, `kod`, `nazvanie` |
+| `sotrudniki_specialnost` | Специальности сотрудников | `id`, `nazvanie` |
+| `sotrudniki_sotrudnik` | Сотрудники | `id`, `fio`, `data_rozhdeniya`, `organizaciya_id`, `podrazdelenie_id`, `specialnost_id` |
+| `sotrudniki_dokumentysotrudnika` | Документы сотрудника | `id`, `sotrudnik_id` |
+| `sotrudniki_instrukciikartochki` | Инструкции и карточки | `id`, `nazvanie`, `dokumenty_sotrudnika_id`, `file_path` |
+| `sotrudniki_protokolyobucheniya` | Протоколы обучения | `id`, `nomer_programmy`, `nazvanie_kursa`, `dokumenty_sotrudnika_id` |
+| `sotrudniki_instruktazhi` | Инструктажи | `id`, `data_instruktazha`, `vid_instruktazha`, `dokumenty_sotrudnika_id` |
+| `sotrudniki_vidydokumentov` | Виды документов | `id`, `nazvanie`, `tip` |
 
 ### AI и чат система
 
@@ -300,15 +239,46 @@ classDiagram
 |---------|----------|---------------|
 | `telegrambot_telegramuser` | Пользователи Telegram | `id`, `telegram_id`, `username` |
 | `telegrambot_telegrammessage` | Сообщения Telegram | `id`, `user_id`, `content`, `is_from_user` |
+| `telegrambot_temporarydocument` | Временные документы | `id`, `content`, `user_id` |
 
 ## Основные связи
 
+### Строительная система
 1. **Объект → Ресурсы**: Один объект может иметь много ресурсов
 2. **Ресурс → Категория**: Каждый ресурс принадлежит одной категории
 3. **Кадры → Специальность**: Каждый кадр имеет одну специальность
 4. **Объект → Ответственный**: Каждый объект может иметь одного ответственного
-5. **Планируемые → Фактические ресурсы**: 1:1 связь
-6. **Фактические ресурсы → Расходы**: 1:много связь по дням
-7. **Пользователи → Сессии чата**: 1:много связь
-8. **Сессии → Сообщения**: 1:много связь
-9. **Telegram пользователи → Сообщения**: 1:много связь 
+5. **Объект → Организация**: Каждый объект принадлежит организации
+6. **Планируемые → Фактические ресурсы**: 1:1 связь
+7. **Фактические ресурсы → Расходы/Доходы**: 1:много связь по дням
+8. **Объект → Категории**: Много ко многим через `kategoriya_po_objektu`
+
+### Система сотрудников
+9. **Организация → Сотрудники**: 1:много связь
+10. **Подразделение → Сотрудники**: 1:много связь
+11. **Специальность → Сотрудники**: 1:много связь
+12. **Сотрудник → Документы**: 1:1 связь
+13. **Документы → Инструкции/Протоколы/Инструктажи**: 1:много связь
+
+### AI и чат система
+14. **Пользователи → Сессии чата**: 1:много связь
+15. **Сессии → Сообщения**: 1:много связь
+16. **Telegram пользователи → Сообщения**: 1:много связь
+
+## Новые возможности
+
+### Управление сотрудниками
+- Ведение личных дел сотрудников
+- Управление документооборотом
+- Протоколы обучения и инструктажи
+- Привязка к организациям и подразделениям
+
+### Доходная часть проектов
+- Учет выполненных работ по дням
+- Сопоставление доходов и расходов
+- Сводная отчетность по балансу проекта
+
+### Расширенная аналитика
+- Детализация по категориям ресурсов
+- Временные ряды доходов и расходов
+- Контроль выполнения планов

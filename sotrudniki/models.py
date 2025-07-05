@@ -1,10 +1,12 @@
 from django.db import models
 from django.utils import timezone
+from django.core.validators import FileExtensionValidator
 
 
 class Organizaciya(models.Model):
     nazvanie = models.CharField(max_length=300, verbose_name="Название")
     inn = models.CharField(max_length=12, unique=True, verbose_name="ИНН")
+    is_active = models.BooleanField(default=True, verbose_name="Активная")
     
     class Meta:
         verbose_name = "Организация"
@@ -15,6 +17,14 @@ class Organizaciya(models.Model):
 
 
 class Podrazdelenie(models.Model):
+    organizaciya = models.ForeignKey(
+        'Organizaciya',
+        on_delete=models.CASCADE,
+        verbose_name="Организация",
+        related_name="podrazdeleniya",
+        null=True,
+        blank=True
+    )
     kod = models.CharField(max_length=50, unique=True, verbose_name="Код")
     nazvanie = models.CharField(max_length=200, verbose_name="Название")
     
@@ -95,11 +105,10 @@ class InstrukciiKartochki(models.Model):
         verbose_name="Документы сотрудника"
     )
     nazvanie = models.CharField(max_length=300, verbose_name="Название")
-    tekst_kartochki = models.TextField(verbose_name="Текст карточки")
+    shablon_instrukcii = models.URLField(max_length=500, null=True, blank=True, verbose_name="Шаблон инструкции")
     soglasovan = models.BooleanField(default=False, verbose_name="Согласован")
     raspechatn = models.BooleanField(default=False, verbose_name="Распечатан")
     data_sozdaniya = models.DateTimeField(default=timezone.now, verbose_name="Дата создания")
-    file_path = models.CharField(max_length=500, blank=True, null=True, verbose_name="Путь к файлу")
     
     class Meta:
         verbose_name = "Инструкция/карточка"
@@ -169,4 +178,76 @@ class VidyDokumentov(models.Model):
     
     def __str__(self):
         return f"{self.nazvanie} ({self.get_tip_display()})"
+
+
+class ShablonDolzhnostnojInstrukcii(models.Model):
+    name = models.CharField(
+        max_length=255, 
+        verbose_name="Название шаблона",
+        help_text="Введите название должностной инструкции"
+    )
+    html_file = models.FileField(
+        upload_to='instruction_templates/',
+        validators=[FileExtensionValidator(allowed_extensions=['html'])],
+        verbose_name="HTML файл инструкции",
+        help_text="Загрузите HTML файл с шаблоном инструкции"
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+
+    class Meta:
+        verbose_name = "Шаблон должностной инструкции"
+        verbose_name_plural = "Шаблоны должностных инструкций"
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+class ShablonyDokumentovPoSpecialnosti(models.Model):
+    specialnost = models.OneToOneField(
+        Specialnost,
+        on_delete=models.CASCADE,
+        verbose_name="Специальность",
+        related_name="shablony_dokumentov"
+    )
+    dolzhnostnaya_instrukciya = models.FileField(
+        upload_to='document_templates/',
+        validators=[FileExtensionValidator(allowed_extensions=['html'])],
+        verbose_name="HTML файл должностной инструкции",
+        help_text="Загрузите HTML файл с шаблоном должностной инструкции",
+        null=True,
+        blank=True
+    )
+    lichnaya_kartochka_rabotnika = models.FileField(
+        upload_to='document_templates/',
+        validators=[FileExtensionValidator(allowed_extensions=['html'])],
+        verbose_name="HTML файл личной карточки работника",
+        help_text="Загрузите HTML файл с шаблоном личной карточки работника",
+        null=True,
+        blank=True
+    )
+    lichnaya_kartochka_siz = models.FileField(
+        upload_to='document_templates/',
+        validators=[FileExtensionValidator(allowed_extensions=['html'])],
+        verbose_name="HTML файл личной карточки учета выдачи СИЗ",
+        help_text="Загрузите HTML файл с шаблоном личной карточки учета выдачи СИЗ",
+        null=True,
+        blank=True
+    )
+    karta_ocenki_riskov = models.FileField(
+        upload_to='document_templates/',
+        validators=[FileExtensionValidator(allowed_extensions=['html'])],
+        verbose_name="HTML файл карты оценки проф. рисков",
+        help_text="Загрузите HTML файл с шаблоном карты оценки проф. рисков",
+        null=True,
+        blank=True
+    )
+    
+    class Meta:
+        verbose_name = "Шаблоны документов по специальности"
+        verbose_name_plural = "Шаблоны документов по специальностям"
+    
+    def __str__(self):
+        return f"Шаблоны для {self.specialnost.nazvanie}"
 

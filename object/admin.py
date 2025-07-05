@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django import forms
-from .models import KategoriyaResursa, Resurs, Specialnost, Kadry, Objekt, ResursyPoObjektu, FakticheskijResursPoObjektu, RaskhodResursa, DokhodResursa, SvodnayaRaskhodDokhodPoDnyam
+from .models import KategoriyaResursa, Resurs, Objekt, ResursyPoObjektu, FakticheskijResursPoObjektu, RaskhodResursa, DokhodResursa, SvodnayaRaskhodDokhodPoDnyam
 
 def format_number(value):
     """Форматирует число с пробелами как разделителями разрядов"""
@@ -20,16 +20,7 @@ class ResursAdmin(admin.ModelAdmin):
     search_fields = ('naimenovanie',)
     list_filter = ('kategoriya_resursa', 'edinica_izmereniya')
 
-@admin.register(Specialnost)
-class SpecialnostAdmin(admin.ModelAdmin):
-    list_display = ('nazvanie',)
-    search_fields = ('nazvanie',)
 
-@admin.register(Kadry)
-class KadryAdmin(admin.ModelAdmin):
-    list_display = ('fio', 'specialnost', 'razryad', 'telefon')
-    search_fields = ('fio', 'pasport', 'telefon')
-    list_filter = ('specialnost', 'razryad')
 
 class ResursyPoObjektuInline(admin.TabularInline):
     model = ResursyPoObjektu

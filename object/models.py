@@ -26,31 +26,7 @@ class Resurs(models.Model):
     def __str__(self):
         return self.naimenovanie
 
-# Специальности и кадры
-class Specialnost(models.Model):
-    nazvanie = models.CharField(max_length=255, verbose_name="Название специальности")
-    
-    class Meta:
-        verbose_name = "Специальность"
-        verbose_name_plural = "Специальности"
-    
-    def __str__(self):
-        return self.nazvanie
 
-class Kadry(models.Model):
-    fio = models.CharField(max_length=255, verbose_name="ФИО")
-    specialnost = models.ForeignKey(Specialnost, on_delete=models.CASCADE, verbose_name="Специальность", related_name="kadry")
-    razryad = models.CharField(max_length=50, verbose_name="Разряд")
-    pasport = models.CharField(max_length=100, verbose_name="Паспорт")
-    telefon = models.CharField(max_length=20, verbose_name="Телефон")
-    
-    class Meta:
-        verbose_name = "Кадр"
-        verbose_name_plural = "Кадры"
-        db_table = 'kadry'
-    
-    def __str__(self):
-        return self.fio
 
 # Объект
 class Objekt(models.Model):
@@ -69,11 +45,12 @@ class Objekt(models.Model):
         null=True,
         blank=True
     )
-    otvetstvennyj = models.ForeignKey(Kadry, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Ответственный")
+    otvetstvennyj = models.CharField(max_length=255, default="Иванов Иван Иванович", verbose_name="Ответственный")
     data_nachala = models.DateField(verbose_name="Дата начала")
     data_plan_zaversheniya = models.DateField(verbose_name="Дата план завершения")
     data_fakt_zaversheniya = models.DateField(null=True, blank=True, verbose_name="Дата факт завершения")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='планируется', verbose_name="Статус")
+    is_active = models.BooleanField(default=True, verbose_name="Активный")
     
     class Meta:
         verbose_name = "Объект"

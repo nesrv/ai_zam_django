@@ -1,7 +1,8 @@
 from django.contrib import admin
 from .models import (
     Organizaciya, Podrazdelenie, Specialnost, Sotrudnik, DokumentySotrudnika,
-    InstrukciiKartochki, ProtokolyObucheniya, Instruktazhi, VidyDokumentov
+    InstrukciiKartochki, ProtokolyObucheniya, Instruktazhi, VidyDokumentov, ShablonDolzhnostnojInstrukcii,
+    ShablonyDokumentovPoSpecialnosti
 )
 
 
@@ -17,10 +18,17 @@ class PodrazdelenieAdmin(admin.ModelAdmin):
     search_fields = ['kod', 'nazvanie']
 
 
+class ShablonyDokumentovPoSpecialnostiInline(admin.StackedInline):
+    model = ShablonyDokumentovPoSpecialnosti
+    extra = 0
+    fields = ['dolzhnostnaya_instrukciya', 'lichnaya_kartochka_rabotnika', 'lichnaya_kartochka_siz', 'karta_ocenki_riskov']
+
+
 @admin.register(Specialnost)
 class SpecialnostAdmin(admin.ModelAdmin):
     list_display = ['nazvanie']
     search_fields = ['nazvanie']
+    inlines = [ShablonyDokumentovPoSpecialnostiInline]
 
 
 class InstrukciiKartochkiInline(admin.TabularInline):
@@ -57,6 +65,7 @@ class InstrukciiKartochkiAdmin(admin.ModelAdmin):
     list_display = ['nazvanie', 'dokumenty_sotrudnika', 'soglasovan', 'raspechatn', 'data_sozdaniya']
     list_filter = ['soglasovan', 'raspechatn', 'data_sozdaniya']
     search_fields = ['nazvanie']
+    fields = ['dokumenty_sotrudnika', 'nazvanie', 'shablon_instrukcii', 'soglasovan', 'raspechatn']
 
 
 @admin.register(ProtokolyObucheniya)
@@ -78,3 +87,18 @@ class VidyDokumentovAdmin(admin.ModelAdmin):
     list_display = ['nazvanie', 'tip']
     list_filter = ['tip']
     search_fields = ['nazvanie']
+
+
+@admin.register(ShablonDolzhnostnojInstrukcii)
+class ShablonDolzhnostnojInstrukciiAdmin(admin.ModelAdmin):
+    list_display = ['name', 'created_at', 'updated_at']
+    search_fields = ['name']
+    readonly_fields = ['created_at', 'updated_at']
+
+
+@admin.register(ShablonyDokumentovPoSpecialnosti)
+class ShablonyDokumentovPoSpecialnostiAdmin(admin.ModelAdmin):
+    list_display = ['specialnost', 'dolzhnostnaya_instrukciya', 'lichnaya_kartochka_rabotnika', 'lichnaya_kartochka_siz', 'karta_ocenki_riskov']
+    list_filter = ['specialnost']
+    search_fields = ['specialnost__nazvanie']
+    fields = ['specialnost', 'dolzhnostnaya_instrukciya', 'lichnaya_kartochka_rabotnika', 'lichnaya_kartochka_siz', 'karta_ocenki_riskov']

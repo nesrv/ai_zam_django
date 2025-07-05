@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Sum, Count, F
-from .models import Objekt, ResursyPoObjektu, RaskhodResursa, Resurs, Kadry, FakticheskijResursPoObjektu, DokhodResursa, SvodnayaRaskhodDokhodPoDnyam
+from .models import Objekt, ResursyPoObjektu, RaskhodResursa, Resurs, FakticheskijResursPoObjektu, DokhodResursa, SvodnayaRaskhodDokhodPoDnyam
 from datetime import datetime, timedelta
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -24,7 +24,7 @@ def home(request):
     total_cost = ResursyPoObjektu.objects.aggregate(total=Sum(F('kolichestvo') * F('cena')))['total'] or 0
     
     # Статистика по кадрам
-    total_staff = Kadry.objects.count()
+    total_staff = 0  # Заглушка
     
     # Последние объекты
     recent_objects = Objekt.objects.order_by('-id')[:5]
@@ -45,7 +45,7 @@ def objects_list(request):
     # Отладочная информация
     print("\n\n*** objects_list view called ***\n\n")
     
-    objects = Objekt.objects.select_related('otvetstvennyj').all()
+    objects = Objekt.objects.all()
     
     # Создаем дни точно так же, как в object_detail
     today = datetime.now().date()
@@ -346,7 +346,7 @@ def create_profit_balance_charts(objects_with_info, days, daily_income_data, dai
 
 def object_detail(request, object_id):
     # Получаем объект или 404
-    obj = get_object_or_404(Objekt.objects.select_related('otvetstvennyj'), id=object_id)
+    obj = get_object_or_404(Objekt, id=object_id)
     
     # Получаем ресурсы по объекту
     resources = ResursyPoObjektu.objects.filter(objekt=obj).select_related('resurs', 'resurs__kategoriya_resursa')
@@ -435,7 +435,6 @@ def object_detail(request, object_id):
 
 def create_object(request):
     from sotrudniki.models import Sotrudnik
-    from .models import Kadry
     
     if request.method == 'POST':
         # Обработка создания объекта
@@ -444,19 +443,13 @@ def create_object(request):
         otvetstvennyj_id = request.POST.get('otvetstvennyj')
         
         if nazvanie and data_nachala:
-            otvetstvennyj = None
+            otvetstvennyj_name = "Иванов Иван Иванович"
             if otvetstvennyj_id:
-                # Ищем сотрудника и создаем соответствующую запись в Kadry если нужно
-                sotrudnik = Sotrudnik.objects.get(id=otvetstvennyj_id)
-                otvetstvennyj, created = Kadry.objects.get_or_create(
-                    fio=sotrudnik.fio,
-                    defaults={
-                        'specialnost_id': 1,  # Значение по умолчанию
-                        'razryad': '',
-                        'pasport': '',
-                        'telefon': ''
-                    }
-                )
+                try:
+                    sotrudnik = Sotrudnik.objects.get(id=otvetstvennyj_id)
+                    otvetstvennyj_name = sotrudnik.fio
+                except Sotrudnik.DoesNotExist:
+                    pass
             
             from datetime import datetime, timedelta
             
@@ -464,7 +457,7 @@ def create_object(request):
                 nazvanie=nazvanie,
                 data_nachala=data_nachala,
                 data_plan_zaversheniya=datetime.strptime(data_nachala, '%Y-%m-%d').date() + timedelta(days=365),
-                otvetstvennyj=otvetstvennyj
+                otvetstvennyj=otvetstvennyj_name
             )
             return redirect('object_detail', object_id=obj.id)
     
@@ -537,7 +530,7 @@ def add_category_to_object(request):
 
 def object_income_detail(request, object_id):
     # Получаем объект или 404
-    obj = get_object_or_404(Objekt.objects.select_related('otvetstvennyj'), id=object_id)
+    obj = get_object_or_404(Objekt, id=object_id)
     
     # Получаем только ресурсы категории "Подрядные организации"
     resources = ResursyPoObjektu.objects.filter(

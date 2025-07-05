@@ -1,6 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
-from .models import Organizaciya, Sotrudnik, DokumentySotrudnika, InstrukciiKartochki, ProtokolyObucheniya, Instruktazhi
+from .models import Organizaciya, Sotrudnik, DokumentySotrudnika, InstrukciiKartochki, ProtokolyObucheniya, Instruktazhi, Podrazdelenie, Specialnost
 
 
 def sotrudniki_list(request):
@@ -92,32 +92,80 @@ def download_document(request, sotrudnik_id, doc_type):
     from django.http import FileResponse, Http404, HttpResponse
     from django.conf import settings
     import os
-    import tempfile
     
     sotrudnik = get_object_or_404(Sotrudnik, pk=sotrudnik_id)
     
     if doc_type == 'dolzhnostnaya':
-        # Путь к шаблону
-        template_path = os.path.join(settings.BASE_DIR, 'templates', 'documents', 'dolzhn_instr.txt')
-        
-        # Отображаем HTML-шаблон
-        return render(request, 'sotrudniki/dolzhn_instr.html', {'sotrudnik': sotrudnik})
+        # Проверяем есть ли HTML файл у специальности
+        if sotrudnik.specialnost and sotrudnik.specialnost.html_file:
+            # Читаем HTML файл из специальности
+            with open(sotrudnik.specialnost.html_file.path, 'r', encoding='utf-8') as f:
+                html_content = f.read()
+            # Заменяем плейсхолдеры на данные сотрудника
+            html_content = html_content.replace('{{ sotrudnik.fio }}', sotrudnik.fio)
+            specialnost_name = sotrudnik.specialnost.nazvanie if sotrudnik.specialnost else 'Не указана'
+            html_content = html_content.replace('{{ sotrudnik.specialnost|default:"Не указана" }}', specialnost_name)
+            html_content = html_content.replace('{{ sotrudnik.specialnost }}', specialnost_name)
+            return HttpResponse(html_content, content_type='text/html')
+        else:
+            # Используем стандартный шаблон
+            return render(request, 'sotrudniki/dolzhn_instr.html', {'sotrudnik': sotrudnik})
     
     raise Http404("Файл не найден")
 
 
 def organizations_list(request):
-    organizacii = Organizaciya.objects.all()
+    organizacii = Organizaciya.objects.filter(is_active=True)
     return render(request, 'sotrudniki/organizations.html', {'organizacii': organizacii})
 
 
 def organization_detail(request, pk):
     organizaciya = get_object_or_404(Organizaciya, pk=pk)
     sotrudniki = Sotrudnik.objects.filter(organizaciya=organizaciya).select_related('specialnost', 'podrazdelenie')
-    from .models import Podrazdelenie
-    podrazdeleniya = Podrazdelenie.objects.all()
+    podrazdeleniya = organizaciya.podrazdeleniya.all()
     return render(request, 'sotrudniki/organization_detail.html', {
         'organizaciya': organizaciya,
         'sotrudniki': sotrudniki,
         'podrazdeleniya': podrazdeleniya
+    })
+
+
+def sotrudnik_add(request):
+    if request.method == 'POST':
+        fio = request.POST.get('fio')
+        data_rozhdeniya = request.POST.get('data_rozhdeniya')
+        data_priema = request.POST.get('data_priema')
+        data_nachala_raboty = request.POST.get('data_nachala_raboty')
+        specialnost_id = request.POST.get('specialnost')
+        podrazdelenie_id = request.POST.get('podrazdelenie')
+        organizaciya_id = request.POST.get('organizaciya')
+        
+        sotrudnik = Sotrudnik.objects.create(
+            fio=fio,
+            data_rozhdeniya=data_rozhdeniya,
+            data_priema=data_priema,
+            data_nachala_raboty=data_nachala_raboty,
+            specialnost_id=specialnost_id if specialnost_id else None,
+            podrazdelenie_id=podrazdelenie_id if podrazdelenie_id else None,
+            organizaciya_id=organizaciya_id if organizaciya_id else None
+        )
+        
+        if podrazdelenie_id:
+            return redirect(f'/sotrudniki/?podrazdelenie={podrazdelenie_id}')
+        return redirect('/sotrudniki/')
+    
+    podrazdelenie_id = request.GET.get('podrazdelenie')
+    podrazdelenie = None
+    if podrazdelenie_id:
+        podrazdelenie = get_object_or_404(Podrazdelenie, pk=podrazdelenie_id)
+    
+    organizacii = Organizaciya.objects.filter(is_active=True)
+    podrazdeleniya = Podrazdelenie.objects.all()
+    specialnosti = Specialnost.objects.all()
+    
+    return render(request, 'sotrudniki/add.html', {
+        'organizacii': organizacii,
+        'podrazdeleniya': podrazdeleniya,
+        'specialnosti': specialnosti,
+        'selected_podrazdelenie': podrazdelenie
     })

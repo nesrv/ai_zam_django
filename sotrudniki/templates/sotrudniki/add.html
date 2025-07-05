@@ -1,0 +1,148 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Добавить сотрудника{% endblock %}
+
+{% block extra_styles %}
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.form-group {
+    margin-bottom: 20px;
+}
+.form-group label {
+    display: block;
+    color: white;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 16px;
+}
+.form-group select {
+    color: #333;
+    background: rgba(255, 255, 255, 0.9);
+}
+.form-group select option {
+    color: #333;
+    background: white;
+}
+.form-group input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+.btn-submit {
+    background: rgba(0, 150, 0, 0.8);
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.btn-submit:hover {
+    background: rgba(0, 150, 0, 1);
+}
+.btn-cancel {
+    background: rgba(150, 0, 0, 0.8);
+    color: white;
+    padding: 12px 30px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 10px;
+    transition: all 0.3s;
+}
+.btn-cancel:hover {
+    background: rgba(150, 0, 0, 1);
+    text-decoration: none;
+    color: white;
+}
+.page-title {
+    text-align: center;
+    color: white;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+{% endblock %}
+
+{% block content %}
+<div class="page-title">Добавить сотрудника</div>
+
+<div class="form-container">
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="fio">ФИО *</label>
+            <input type="text" id="fio" name="fio" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="data_rozhdeniya">Дата рождения *</label>
+            <input type="date" id="data_rozhdeniya" name="data_rozhdeniya" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="organizaciya">Организация</label>
+            <select id="organizaciya" name="organizaciya">
+                <option value="">Выберите организацию</option>
+                {% for org in organizacii %}
+                <option value="{{ org.id }}">{{ org.nazvanie }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="podrazdelenie">Подразделение</label>
+            <select id="podrazdelenie" name="podrazdelenie">
+                <option value="">Выберите подразделение</option>
+                {% for pod in podrazdeleniya %}
+                <option value="{{ pod.id }}" {% if selected_podrazdelenie and selected_podrazdelenie.id == pod.id %}selected{% endif %}>
+                    {{ pod.kod }} - {{ pod.nazvanie }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="specialnost">Специальность</label>
+            <select id="specialnost" name="specialnost">
+                <option value="">Выберите специальность</option>
+                {% for spec in specialnosti %}
+                <option value="{{ spec.id }}">{{ spec.nazvanie }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="data_priema">Дата приема *</label>
+            <input type="date" id="data_priema" name="data_priema" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="data_nachala_raboty">Дата начала работы *</label>
+            <input type="date" id="data_nachala_raboty" name="data_nachala_raboty" required>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <button type="submit" class="btn-submit">Добавить сотрудника</button>
+            <a href="{% if selected_podrazdelenie %}/sotrudniki/?podrazdelenie={{ selected_podrazdelenie.id }}{% else %}/sotrudniki/{% endif %}" class="btn-cancel">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
