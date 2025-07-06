@@ -21,7 +21,7 @@ class PodrazdelenieAdmin(admin.ModelAdmin):
 class ShablonyDokumentovPoSpecialnostiInline(admin.StackedInline):
     model = ShablonyDokumentovPoSpecialnosti
     extra = 0
-    fields = ['dolzhnostnaya_instrukciya', 'lichnaya_kartochka_rabotnika', 'lichnaya_kartochka_siz', 'karta_ocenki_riskov']
+    fields = ['dolzhnostnaya_instrukciya', 'lichnaya_kartochka_rabotnika', 'lichnaya_kartochka_siz', 'karta_ocenki_riskov', 'instrukciya_po_ohrane_truda']
 
 
 @admin.register(Specialnost)
@@ -98,7 +98,7 @@ class ShablonDolzhnostnojInstrukciiAdmin(admin.ModelAdmin):
 
 @admin.register(ShablonyDokumentovPoSpecialnosti)
 class ShablonyDokumentovPoSpecialnostiAdmin(admin.ModelAdmin):
-    list_display = ['specialnost', 'dolzhnostnaya_instrukciya', 'lichnaya_kartochka_rabotnika', 'lichnaya_kartochka_siz', 'karta_ocenki_riskov']
+    list_display = ['specialnost', 'dolzhnostnaya_instrukciya', 'lichnaya_kartochka_rabotnika', 'lichnaya_kartochka_siz', 'karta_ocenki_riskov', 'instrukciya_po_ohrane_truda']
     list_filter = ['specialnost']
     search_fields = ['specialnost__nazvanie']
-    fields = ['specialnost', 'dolzhnostnaya_instrukciya', 'lichnaya_kartochka_rabotnika', 'lichnaya_kartochka_siz', 'karta_ocenki_riskov']
+    fields = ['specialnost', 'dolzhnostnaya_instrukciya', 'lichnaya_kartochka_rabotnika', 'lichnaya_kartochka_siz', 'karta_ocenki_riskov', 'instrukciya_po_ohrane_truda']

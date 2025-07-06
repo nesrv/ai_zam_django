@@ -270,6 +270,15 @@ class ShablonyDokumentovPoSpecialnosti(models.Model):
         null=True,
         blank=True
     )
+    instrukciya_po_ohrane_truda = models.FileField(
+        upload_to='document_templates/',
+        validators=[FileExtensionValidator(allowed_extensions=['html'])],
+        verbose_name="HTML файл инструкции по охране труда",
+        help_text="Загрузите HTML файл с шаблоном инструкции по охране труда",
+        null=True,
+        blank=True,
+        default="document_templates/instrukciya_po_ohrane_truda_template.html"
+    )
     
     class Meta:
         verbose_name = "Шаблоны документов по специальности"

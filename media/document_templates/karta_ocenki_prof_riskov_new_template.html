@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Карта оценки профессиональных рисков</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style type="text/css">
+        .commercial {
+            width: 1200px;
+            padding: 20px;
+            margin: 0 auto;
+            border: 1px solid #444;
+            font-family: Tahoma, Helvetica, sans-serif;
+            font-family: 'times' !important;
+        }
+        .commercial-title {
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        @media print {
+            a { display: none; }
+            #footer { display: none; }
+            #button-top { display: none !important; }
+            #button { display: none !important; }
+            .commercial { border: none; }
+        }
+    </style>
+</head>
+<body class="body-Window ac-bootstrap1" style="">
+
+<div class="commercial">
+    <table style="width: 100%;">
+        <tbody>
+            <tr>
+                <td colspan="2" style="width:100%;text-align: center;font-size: 18px;font-weight: 600;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">{{ sotrudnik.organizaciya }}</td>
+            </tr>
+            <tr>
+                <td style="width:50%;">Адрес:191144, Г.Санкт-Петербург, вн.тер.г. Муниципальный Округ Смольнинское, ул Мытнинская, д. 12/44, литера А</td>
+                <td style="width:50%;text-align: right;">ИНН:7842187225</td>
+            </tr>
+        </tbody>
+    </table>
+    <br><br><br>
+    <table style="width: 100%;">
+        <tbody>
+            <tr>
+                <td style="width:100%;text-align: center;font-size: 18px;font-weight: 600;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">Карта оценки профессиональных рисков</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br><br>
+    <table style="width: 100%;">
+        <tbody>
+            <tr>
+                <td style="width:30%;text-align: left;font-size: 14px;font-weight: 600;">Фамилия, имя, отчество</td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:70%;text-align: center;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">{{ sotrudnik.fio }}</td>
+            </tr>
+            <tr>
+                <td style="width:30%;text-align: left;font-size: 14px;font-weight: 600;">Дата рождения</td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:70%;text-align: center;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">{{ sotrudnik.data_rozhdeniya|date:"d.m.Y" }}</td>
+            </tr>
+            <tr>
+                <td style="width:30%;text-align: left;font-size: 14px;font-weight: 600;">Профессия/ должность</td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:70%;text-align: center;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">{{ sotrudnik.specialnost }}</td>
+            </tr>
+            <tr>
+                <td style="width:30%;text-align: left;font-size: 14px;font-weight: 600;">Структурное подразделение</td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:70%;text-align: center;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">{{ sotrudnik.podrazdelenie }}</td>
+            </tr>
+            <tr>
+                <td style="width:30%;text-align: left;font-size: 14px;font-weight: 600;">Дата приема</td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:70%;text-align: center;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">{{ sotrudnik.data_priema|date:"d.m.Y" }}</td>
+            </tr>
+            <tr>
+                <td style="width:30%;text-align: left;font-size: 14px;font-weight: 600;">Дата начала работы</td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:70%;text-align: center;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">{{ sotrudnik.data_nachala_raboty|date:"d.m.Y" }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <br><br>
+
+    <p style="font-size: 16px;"><b>Рабочая зона. Трудовая функция, используемое оборудование, инструмент, приспособления, материалы:</b></p>
+
+    <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;line-height: 1;font-size: 15px;">
+        <tbody>
+            <tr>
+                <td style="padding: 10px;text-align: center;font-size: 14px;"><b>Строительные площадки</b></td>
+            </tr>
+            <tr>
+                <td style="text-align: left; padding: 5px;font-size: 15px;"><b>Трудовая функция </b></td>        
+            </tr>
+            <tr style="border-bottom: none;">
+                <td style="text-align: left; padding: 5px;">
+                    Работы по разборке (обрушению) зданий и сооружений, а также по укреплению и восстановлению аварийных частей и элементов зданий и сооружений
+                </td>
+            </tr>
+            <tr style="border-bottom: none;">
+                <td style="text-align: left; padding: 5px;">
+                    Разборка (разрушение) зданий и сооружений при их реконструкции или сносе
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: left; padding: 5px;border-top: 1px solid black;">
+                    <b>Работы повышенной опасности:</b>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: left; padding: 5px;">
+                    Ремонтные, монтажные и демонтажные работы
+                    <ul style="padding-left:15px;">
+                        <li>Работы по разборке (обрушению) зданий и сооружений, а также по укреплению и восстановлению аварийных частей и элементов зданий и сооружений</li>
+                        <li>Разборка (разрушение) зданий и сооружений при их реконструкции или сносе</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: left; padding: 5px;">
+                    Работы, связанные с опасностью поражения персонала электрическим током
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: left; padding: 5px;">
+                    Работы на высоте
+                    <ul style="padding-left:15px;">
+                        <li>Работы на высоте, выполняемые на нестационарных рабочих местах, в том числе работы по очистке крыш зданий от снега</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: left; padding: 5px;">
+                    Работы, связанные с эксплуатацией сосудов, работающих под избыточным давлением
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: left; padding: 5px;">
+                    Электросварочные и газосварочные работы
+                    <ul style="padding-left:15px;">
+                        <li>Сварочные (резательные) работы</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: left; padding: 5px;">
+                    Газоопасные работы
+                    <ul style="padding-left:15px;">
+                        <li>Газоопасные работы </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: left; padding: 5px;">
+                    Огневые работы
+                    <ul style="padding-left:15px;">
+                        <li>Огневые работы </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:500px;text-align: left; padding: 5px;font-size: 15px;"><b>Используемое оборудование, инструмент, приспособления</b></td>
+            </tr>
+            <tr>
+                <td style="width:250px;text-align: left;  padding: 5px;" valign="top">
+                    <table border="1" cellpadding="5" style="width: 100%; border: 0px #fff;font-size: 13px;line-height: 1;">
+                        <tbody>
+                            <tr>
+                                <td style="padding: 5px;vertical-align:top;width: 25%;">   
+                                    <b>1. Болгарка</b>
+                                    <br><br><br>
+                                </td>   
+                                <td style="padding: 5px;vertical-align:top;width: 25%;">   
+                                    <b>2. Газовый баллон</b>
+                                    <br><br><br>
+                                </td>   
+                                <td style="padding: 5px;vertical-align:top;width: 25%;">   
+                                    <b>3. Компрессор</b>
+                                    <br><br><br>
+                                </td>   
+                                <td style="padding: 5px;vertical-align:top;width: 25%;">   
+                                    <b>4. Отбойный молоток</b>
+                                    <br><br><br>
+                                </td>   
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px;vertical-align:top;width: 25%;">   
+                                    <b>5. Страховочная привязь</b>
+                                    <br><br>
+                                </td>   
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>        
+            </tr>
+        </tbody>
+    </table><br>
+        
+    <p style="font-size: 16px;"><b>Рабочая зона: Строительные площадки</b></p>
+    <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;line-height: 1;font-size: 15px;">
+        <thead>
+            <tr>
+                <td colspan="2" style="padding: 5px;"><b>Реестр идентифицированных опасностей, связанных с рабочей зоной</b></td>
+            </tr>
+            <tr>
+                <td style="width:40%;padding: 5px;"><b>Опасность (опасное событие)***</b></td>
+                <td style="padding: 5px;"><b>Принятые защитные меры (Меры управления/контроля профессиональных рисков)</b></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding: 5px;vertical-align:top;">
+                    <b>1.1 Скользкие, обледенелые, зажиренные, мокрые поверхности</b><br>1.1.1 Падение работника из-за потери равновесия при поскальзывании при передвижении
+                    <br><br>
+                    <b>Тяжесть вреда (U): 10.00</b>
+                </td>
+                <td style="padding: 5px;">
+                    Организация безопасной эксплуатации территории, зданий, сооружений<br>
+                    Допуск к работе по показателям профессиональной компетентности<br>
+                    Обучение и проверка знаний требований охраны труда<br>
+                    Организация страхования от НС на производстве и профзаболеваний<br>
+                    Применение средств индивидуальной защиты (СИЗ)<br>
+                    Организация оказания первой помощи пострадавшим<br>
+                    Контроль (периодический) выполнения работниками требований безопасности<br>
+                    <br>
+                    <b>Вероятность Р реализации опасности: 0.290</b>
+                    <br>
+                    <b>Уровень профессионального риска (R): 2.904</b>
+                </td>
+            </tr>
+        </tbody>
+    </table><br>
+
+    <p style="font-size: 20px;"><b>Результаты оценки профессиональных рисков</b></p>
+
+    <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;line-height: 1;font-size: 14px;">
+        <tbody>
+            <tr>
+                <td style="width:50%;padding: 5px;"><b>Суммарный уровень профессионального риска</b></td>
+                <td style="width:50%;padding: 5px;">382.823</td>
+            </tr>
+            <tr>
+                <td style="width:50%;padding: 5px;"><b>Класс (категория) риска</b></td>
+                <td style="width:50%;padding: 5px;">Умеренный</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;line-height: 1;font-size: 14px;">
+        <tbody>
+            <tr>
+                <td style="width:50%;padding: 5px;"><b>План мероприятий по снижению профессиональных рисков:</b></td>
+                <td style="width:50%;padding: 5px;">Предупреждающие мероприятия и корректирующие действия не требуются, т.к. категория риска является не более «Средний». Следует снижать или не допускать повышения категории риска. Достигается путем выполнения процедур СУОТ, принятых в Организации.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;line-height: 1;font-size: 14px;">
+        <tbody>
+            <tr>
+                <td style="width:50%;padding: 5px;" colspan="2"><b>План контроля применяемых защитных мер (мер управления/контроля профессиональных рисков)</b></td>
+            </tr>
+            <tr>
+                <td style="width:50%;padding: 5px;">Периодичность контроля</td>
+                <td style="width:50%;padding: 5px;">1 раз в год</td>
+            </tr>
+            <tr>
+                <td style="width:50%;padding: 5px;">ФИО, должность ответственного лица</td>
+                <td style="width:50%;padding: 5px;">Симонян Игорь Шотаевич, Производитель работ</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    
+    <b>С результатами оценки профессиональных рисков ознакомлены:</b><br><br><br>
+    <table style="width: 100%;">
+        <tbody>
+            <tr>
+                <td style="width:45%;text-align: left;vertical-align:top;" height="70">"_____"______________ 20____</td>
+                <td style="text-align: center;vertical-align:middle;">____________________<br><sup>(подпись)</sup></td>
+                <td style="width:33%;text-align: center;vertical-align:top;">/{{ sotrudnik.fio }}/</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

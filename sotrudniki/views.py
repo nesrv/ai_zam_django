@@ -191,6 +191,68 @@ def download_document(request, sotrudnik_id, doc_type):
         
         return HttpResponse(html_content, content_type='text/html')
     
+    elif doc_type == 'riski':
+        # Проверяем есть ли шаблон карты оценки рисков
+        html_content = None
+        
+        if sotrudnik.specialnost and hasattr(sotrudnik.specialnost, 'shablony_dokumentov'):
+            shablony = sotrudnik.specialnost.shablony_dokumentov
+            if shablony.karta_ocenki_riskov:
+                # Читаем HTML файл карты оценки рисков
+                with open(shablony.karta_ocenki_riskov.path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+        
+        # Если шаблон не найден, используем стандартный шаблон
+        if not html_content:
+            default_template_path = os.path.join(settings.MEDIA_ROOT, 'document_templates', 'karta_ocenki_prof_riskov_template.html')
+            if os.path.exists(default_template_path):
+                with open(default_template_path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+            else:
+                raise Http404("Шаблон карты оценки рисков не найден")
+        
+        # Заменяем плейсхолдеры
+        html_content = html_content.replace('{{ sotrudnik.fio }}', sotrudnik.fio)
+        organizaciya_name = sotrudnik.organizaciya.nazvanie if sotrudnik.organizaciya else 'ООО "РАЗВИТИЕ"'
+        html_content = html_content.replace('{{ sotrudnik.organizaciya }}', organizaciya_name)
+        podrazdelenie_name = sotrudnik.podrazdelenie.nazvanie if sotrudnik.podrazdelenie else 'Строительное управление'
+        html_content = html_content.replace('{{ sotrudnik.podrazdelenie }}', podrazdelenie_name)
+        specialnost_name = sotrudnik.specialnost.nazvanie if sotrudnik.specialnost else 'Не указана'
+        html_content = html_content.replace('{{ sotrudnik.specialnost }}', specialnost_name)
+        html_content = html_content.replace('{{ sotrudnik.data_rozhdeniya|date:"d.m.Y" }}', sotrudnik.data_rozhdeniya.strftime('%d.%m.%Y'))
+        html_content = html_content.replace('{{ sotrudnik.data_priema|date:"d.m.Y" }}', sotrudnik.data_priema.strftime('%d.%m.%Y'))
+        html_content = html_content.replace('{{ sotrudnik.data_nachala_raboty|date:"d.m.Y" }}', sotrudnik.data_nachala_raboty.strftime('%d.%m.%Y'))
+        
+        return HttpResponse(html_content, content_type='text/html')
+    
+    elif doc_type == 'ohrana':
+        # Проверяем есть ли шаблон инструкции по охране труда
+        html_content = None
+        
+        if sotrudnik.specialnost and hasattr(sotrudnik.specialnost, 'shablony_dokumentov'):
+            shablony = sotrudnik.specialnost.shablony_dokumentov
+            if shablony.instrukciya_po_ohrane_truda:
+                # Читаем HTML файл инструкции по охране труда
+                with open(shablony.instrukciya_po_ohrane_truda.path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+        
+        # Если шаблон не найден, используем стандартный шаблон
+        if not html_content:
+            default_template_path = os.path.join(settings.MEDIA_ROOT, 'document_templates', 'instrukciya_po_ohrane_truda_template.html')
+            if os.path.exists(default_template_path):
+                with open(default_template_path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+            else:
+                raise Http404("Шаблон инструкции по охране труда не найден")
+        
+        # Заменяем плейсхолдеры
+        html_content = html_content.replace('{{ sotrudnik.fio }}', sotrudnik.fio)
+        specialnost_name = sotrudnik.specialnost.nazvanie if sotrudnik.specialnost else 'Не указана'
+        html_content = html_content.replace('{{ sotrudnik.specialnost }}', specialnost_name)
+        html_content = html_content.replace('{{ sotrudnik.specialnost|upper }}', specialnost_name.upper())
+        
+        return HttpResponse(html_content, content_type='text/html')
+    
     raise Http404("Файл не найден")
 
 

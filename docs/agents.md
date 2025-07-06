@@ -1,15 +1,48 @@
+для http://127.0.0.1:8000/sotrudniki/27/download/ohrana/ допиши view
+шаблон html возьми из таблицы sotrudniki_shablonydokumentovpospecialnosti поле instrukciya_po_ohrane_truda
+
+
+на основе iot.htm сделай шаблон инструкции по охране труда
+
+обнови админку для sotrudniki_shablonydokumentovpospecialnosti
+
+в таблицу sotrudniki_shablonydokumentovpospecialnosti добавь поле:
+Инструкция по охране труда (по умолчанию файл media\document_templates\instrukciya_po_ohrane_truda_template.html)
+
+для http://127.0.0.1:8000/sotrudniki/27/download/ohrana/
+допиши view
+шаблон html возьми из таблицы sotrudniki_shablonydokumentovpospecialnosti поле dolzhnostnaya_instrukciya
+на основе iot.htm сделай шаблон инструкции по охране труда
+замени:
+специальность на {{ sotrudnik.specialnost }}
+фио на {{ sotrudnik.fio }} 
+
+добавь в  media\document_templates\karta_ocenki_prof_riskov_template.html
+
+
+ на основе 
+ocenka_riskov_amanbek__uulu_emirlan_20250706075250.rtf
+
+для http://127.0.0.1:8000/sotrudniki/27/download/riski/ сделай view
+шаблон возьми из sotrudniki_shablonydokumentovpospecialnosti - поле karta_ocenki_riskov
+
 для http://127.0.0.1:8000/sotrudniki/29/download/siz/
 шаблон html возьми из таблицы sotrudniki_shablonydokumentovpospecialnosti поле lichnaya_kartochka_siz
 
-на основе `выдача_сиз_альпинист-газорезчик.htm` создай html-шаблон,
+из файла `karta_ocenki_prof_riskov.htm` создай html-шаблон,
 замени в нем реальные значения на:
 
+{{ sotrudnik.organizaciya }}
+{{ sotrudnik.podrazdelenie }}
 {{ sotrudnik.fio }} 
 {{ sotrudnik.specialnost }}
-{{ sotrudnik.pol }}
-{{ sotrudnik.razmer_odezhdy }}
-{{ sotrudnik.razmer_golovnogo_ubora }}
-{{ sotrudnik.razmer_obuvi }}
+{{ sotrudnik.data_rozhdeniya }}
+{{ sotrudnik.data_priema }}
+{{ sotrudnik.data_nachala_raboty }}
+
+реализуй	http://127.0.0.1:8000/sotrudniki/27/download/riski/
+Raised by:	sotrudniki.views.download_document
+
 
 
 для таблицы sotrudniki_sotrudnik добавь поля:
@@ -34,6 +67,8 @@ Not Found: /sotrudniki/27/download/siz/
 {{ sotrudnik.razmer_odezhdy }}
 {{ sotrudnik.razmer_golovnogo_ubora }}
 {{ sotrudnik.razmer_obuvi }}
+
+
 
 
 передай из view {{ sotrudnik.specialnost }} во http://127.0.0.1:8000/sotrudniki/28/download/kartochka/
