@@ -1,3 +1,92 @@
+
+
+для http://127.0.0.1:8000/sotrudniki/31/?tab=protocols при нажатии на 🖨️ или 📄 документ возьми из sotrudniki_protokolyobucheniya и sotrudniki_sotrudnikishablonyprotokolov
+
+ передай в html:
+* № программы
+* Курс
+
+
+переделай `2025-В.07-0016.mhtml` под html-шаблон, замени реальные данные на:
+{{ sotrudnik.organizaciya }}
+{{ sotrudnik.podrazdelenie }}
+{{ sotrudnik.fio }} 
+{{ sotrudnik.specialnost }}
+{{ sotrudnik.data_dopuska }}
+
+
+для http://127.0.0.1:8000/sotrudniki/31/?tab=protocols возьми данные из sotrudniki_protokolyobucheniya
+
+к sotrudniki_sotrudnik добавь поле:
+протоколы обучения со связью 1 ко многим к sotrudniki_protokolyobucheniya
+
+удали sotrudniki_protokolyobucheniya и class ProtokolyObucheniya
+
+sotrudniki_dokumentysotrudnika
+
+удали sotrudniki_protokolyobucheniya 
+
+создай таблицу sotrudniki_protokolyobucheniya и class ProtokolyObucheniya:
+* шаблон протокола (1 - 1 sotrudniki_sotrudnikishablonyprotokolov)
+* дата приказа
+* дата протокола/приказа-допуска
+* дата допуска к работе	
+* дата очередной проверки
+* рег №
+* распеч
+
+добавь к таблице sotrudniki_sotrudnikishablonyprotokolov поля:
+№ программы
+Курс
+
+
+sotrudniki_sotrudnikishablonyprotokolov
+
+на основе stagirovka.htm создай html-шаблон 'стажировка альпинист газорезчик',
+замени реальные данные:
+
+{{ sotrudnik.organizaciya }}
+{{ sotrudnik.podrazdelenie }}
+{{ sotrudnik.fio }} 
+{{ sotrudnik.specialnost }}
+{{ sotrudnik.data_dopuska }}
+
+
+создай таблицу 'сотрудники шаблоны прототоколов' с полем:
+html_file = models.FileField(
+        upload_to='instruction_templates/',
+        validators=[FileExtensionValidator(allowed_extensions=['html'])],
+        verbose_name="HTML файл протокола",
+        help_text="Загрузите HTML файл с шаблоном протокола"
+    )
+
+добавь в таблицу sotrudniki_sotrudnik поле:
+протоколы (1 - ко многим к sotrudniki_protokoly)
+
+переименуй таблицу sotrudniki_protokolyobucheniya в `сотрудники шаблоны протоколов`
+удали
+
+создай таблицу  sotrudniki_protokoly
+  * протокол (связь 1 ко многим)
+  data_prikaza = models.DateField(verbose_name="Дата приказа")
+    data_dopuska = models.DateField(null=True, blank=True, verbose_name="Дата допуска")
+    data_ocherednoy_proverki = models.DateField(null=True, blank=True, verbose_name="Дата очередной проверки")
+    registracionnyy_nomer = models.CharField(max_length=50, verbose_name="Регистрационный номер")
+nomer_programmy = models.CharField(max_length=50, verbose_name="Номер программы")
+nazvanie_kursa = models.CharField(max_length=200, verbose_name="Название курса")
+html_file = models.FileField(
+        upload_to='instruction_templates/',
+        validators=[FileExtensionValidator(allowed_extensions=['html'])],
+        verbose_name="HTML файл протокола",
+        help_text="Загрузите HTML файл с шаблоном протокола"
+    )
+data_prikaza = models.DateField(verbose_name="Дата приказа")
+
+при нажатии на 🖨️ на http://127.0.0.1:8000/sotrudniki/31/ увеличь ширину открывающегося окна на 20 %
+
+обнови http://127.0.0.1:8000/sotrudniki/add/?podrazdelenie=3
+с учетом новых полей в модели class Sotrudnik
+
 для http://127.0.0.1:8000/sotrudniki/27/download/ohrana/ допиши view
 шаблон html возьми из таблицы sotrudniki_shablonydokumentovpospecialnosti поле instrukciya_po_ohrane_truda
 
@@ -8,6 +97,8 @@
 
 в таблицу sotrudniki_shablonydokumentovpospecialnosti добавь поле:
 Инструкция по охране труда (по умолчанию файл media\document_templates\instrukciya_po_ohrane_truda_template.html)
+
+
 
 для http://127.0.0.1:8000/sotrudniki/27/download/ohrana/
 допиши view

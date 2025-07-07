@@ -1,8 +1,8 @@
 from django.contrib import admin
 from .models import (
     Organizaciya, Podrazdelenie, Specialnost, Sotrudnik, DokumentySotrudnika,
-    InstrukciiKartochki, ProtokolyObucheniya, Instruktazhi, VidyDokumentov, ShablonDolzhnostnojInstrukcii,
-    ShablonyDokumentovPoSpecialnosti
+    InstrukciiKartochki, ProtokolyObucheniya, Instruktazhi,
+    ShablonyDokumentovPoSpecialnosti, SotrudnikiShablonyProtokolov
 )
 
 
@@ -49,7 +49,7 @@ class InstruktazhiInline(admin.TabularInline):
 @admin.register(DokumentySotrudnika)
 class DokumentySotrudnikaAdmin(admin.ModelAdmin):
     list_display = ['sotrudnik']
-    inlines = [InstrukciiKartochkiInline, ProtokolyObucheniyaInline, InstruktazhiInline]
+    inlines = [InstrukciiKartochkiInline, InstruktazhiInline]
 
 
 @admin.register(Sotrudnik)
@@ -58,6 +58,7 @@ class SotrudnikAdmin(admin.ModelAdmin):
     list_filter = ['organizaciya', 'specialnost', 'podrazdelenie', 'data_priema']
     search_fields = ['fio']
     date_hierarchy = 'data_priema'
+    inlines = [ProtokolyObucheniyaInline]
 
 
 @admin.register(InstrukciiKartochki)
@@ -68,32 +69,12 @@ class InstrukciiKartochkiAdmin(admin.ModelAdmin):
     fields = ['dokumenty_sotrudnika', 'nazvanie', 'shablon_instrukcii', 'soglasovan', 'raspechatn']
 
 
-@admin.register(ProtokolyObucheniya)
-class ProtokolyObucheniyaAdmin(admin.ModelAdmin):
-    list_display = ['nomer_programmy', 'nazvanie_kursa', 'dokumenty_sotrudnika', 'data_prikaza', 'raspechatn']
-    list_filter = ['data_prikaza', 'raspechatn']
-    search_fields = ['nomer_programmy', 'nazvanie_kursa']
-
-
 @admin.register(Instruktazhi)
 class InstruktazhiAdmin(admin.ModelAdmin):
     list_display = ['vid_instruktazha', 'dokumenty_sotrudnika', 'data_instruktazha', 'instruktor', 'raspechatn']
     list_filter = ['vid_instruktazha', 'data_instruktazha', 'raspechatn']
     search_fields = ['vid_instruktazha', 'instruktor']
 
-
-@admin.register(VidyDokumentov)
-class VidyDokumentovAdmin(admin.ModelAdmin):
-    list_display = ['nazvanie', 'tip']
-    list_filter = ['tip']
-    search_fields = ['nazvanie']
-
-
-@admin.register(ShablonDolzhnostnojInstrukcii)
-class ShablonDolzhnostnojInstrukciiAdmin(admin.ModelAdmin):
-    list_display = ['name', 'created_at', 'updated_at']
-    search_fields = ['name']
-    readonly_fields = ['created_at', 'updated_at']
 
 
 @admin.register(ShablonyDokumentovPoSpecialnosti)
@@ -102,3 +83,18 @@ class ShablonyDokumentovPoSpecialnostiAdmin(admin.ModelAdmin):
     list_filter = ['specialnost']
     search_fields = ['specialnost__nazvanie']
     fields = ['specialnost', 'dolzhnostnaya_instrukciya', 'lichnaya_kartochka_rabotnika', 'lichnaya_kartochka_siz', 'karta_ocenki_riskov', 'instrukciya_po_ohrane_truda']
+
+
+@admin.register(ProtokolyObucheniya)
+class ProtokolyObucheniyaAdmin(admin.ModelAdmin):
+    list_display = ['shablon_protokola', 'sotrudnik', 'data_prikaza', 'registracionnyy_nomer', 'raspechatn']
+    list_filter = ['data_prikaza', 'raspechatn']
+    search_fields = ['registracionnyy_nomer', 'shablon_protokola__nomer_programmy', 'shablon_protokola__kurs', 'sotrudnik__fio']
+
+
+@admin.register(SotrudnikiShablonyProtokolov)
+class SotrudnikiShablonyProtokolovAdmin(admin.ModelAdmin):
+    list_display = ['nomer_programmy', 'kurs', 'html_file']
+    list_filter = ['nomer_programmy']
+    search_fields = ['nomer_programmy', 'kurs']
+    fields = ['nomer_programmy', 'kurs', 'html_file']

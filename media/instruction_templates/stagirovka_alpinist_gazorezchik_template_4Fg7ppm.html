@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Стажировка альпинист газорезчик</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style type="text/css">
+        .commercial {
+            width: 900px;
+            padding: 20px;
+            margin: 0 auto;
+            border: 1px solid #444;
+            font-family: Tahoma, Helvetica, sans-serif;
+            font-family: 'times' !important;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+        .commercial-title {
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        td {
+            padding: 5px;
+        }
+        @media print {
+            a { display: none; }
+            #footer { display: none; }
+            #button-top { display: none !important; }
+            #button { display: none !important; }
+            .commercial { border: none; }
+            .page_break_div { display: none; }
+        }
+        .page_break { page-break-before: always; }
+        .page_break_div { text-align: center; }
+        .page_break_text {
+            width: 130px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #eee6cf;
+            margin-top: -30px;
+        }
+        .page_break_hr {
+            margin: 20px 0;
+            padding: 0;
+            height: 0;
+            border: none;
+            border-top: 1px dashed #000;
+        }
+    </style>
+</head>
+<body class="body-Window ac-bootstrap1">
+
+<div class="commercial">
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000"><b>{{ sotrudnik.organizaciya }}</b></td>
+            </tr>
+            <tr>
+                <td style="width:50%;">Адрес:191144, Г.Санкт-Петербург, вн.тер.г. Муниципальный Округ Смольнинское, ул Мытнинская, д. 12/44, литера А</td>
+                <td style="width:50%;text-align: right;">ИНН:7842187225<br>ОГРН:1207800162371</td>
+            </tr>
+        </tbody>
+    </table>
+    <br><br>
+    <div style="text-align: center;">
+        <b>ПРИКАЗ</b>
+    </div>
+    <br>
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td style="width:50%;">№ 2025/СТ.02-0011</td>
+                <td style="width:50%;text-align: right;">«25» июня 2025 г.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <p style="text-align: center;">
+        <b>«О назначении стажировки»</b>
+    </p>
+
+    <p style="text-align: justify;line-height: 1;">
+        В целях исполнения требований ст. ст. 214, 219 Трудового кодекса Российской Федерации, Правил обучения по охране труда и проверки знания требований охраны труда (утв. Постановлением Правительства РФ от 24.12.2021 N 2464) приказываю:
+    </p>
+
+    <p style="text-align: justify;line-height: 1;">
+        1. После успешного прохождения в установленном порядке инструктажа по охране труда и обучения требованиям охраны труда, назначить проведение стажировки на рабочем месте следующим работникам:
+    </p>
+    
+    <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 14px;">
+        <thead>
+            <tr style="text-align: center;">
+                <td style="width: 100px">Период проведения стажировки</td>
+                <td>Ф.И.О. работника, направляемого на стажировку на рабочем месте</td>
+                <td style="width: 200px">Должность</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>26.06.2025<br>27.06.2025</td>
+                <td>{{ sotrudnik.fio }}</td>
+                <td>{{ sotrudnik.specialnost }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <div style="text-align: justify;">
+        2. Ответственным за организацию и проведение стажировки на рабочем месте, назначить:
+    </div>
+
+    <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 14px;">
+        <thead>
+            <tr style="text-align: center;">
+                <td>Ф.И.О. работника, ответственного за организацию и проведение стажировки на рабочем месте</td>
+                <td style="width: 200px">Должность</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Симонян Игорь Шотаевич</td>
+                <td>Производитель работ</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <br>
+    <div style="text-align: justify;">
+        3. Ответственному за организацию и проведение стажировки на рабочем месте регистрировать результаты прохождения стажировки в стажировочном листе.
+    </div>
+
+    <br><br><br>
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td style="width: 50%">Заместитель генерального директора<br>{{ sotrudnik.organizaciya }}<br></td>
+                <td style="text-align: right;">/В.В. Масленников/</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br><br>
+    <b>С приказом № 2025/СТ.02-0011 от «25» июня 2025 г. ознакомлены:</b><br>
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td style="width: 244px">{{ sotrudnik.specialnost }}</td>
+                <td style="text-align: right;">/{{ sotrudnik.fio }}/</td>
+            </tr>
+            <tr>
+                <td style="width: 244px">Производитель работ</td>
+                <td style="text-align: right;">/И.Ш. Симонян/</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="page_break_div"><hr class="page_break_hr"><div class="page_break_text">[ Разрыв страницы ]</div></div>
+<div class="page_break"></div>
+
+<div class="commercial">
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000"><b>Общество с ограниченной ответственностью "РАЗВИТИЕ"</b></td>
+            </tr>
+            <tr>
+                <td style="width:50%;">Адрес:191144, Г.Санкт-Петербург, вн.тер.г. Муниципальный Округ Смольнинское, ул Мытнинская, д. 12/44, литера А</td>
+                <td style="width:50%;text-align: right;">ИНН:7842187225<br>ОГРН:1207800162371</td>
+            </tr>
+        </tbody>
+    </table>
+    <br><br><br>
+    
+    <div style="text-align: right;">
+        «УТВЕРЖДАЮ»<br>
+        Заместитель генерального директора<br>
+        ООО «РАЗВИТИЕ»<br>
+        ___________________В.В. Масленников<br>
+        «25» июня 2025 г.
+    </div>
+    
+    <br><br>
+    <div style="text-align: center;">
+        <b>Программа стажировки на рабочем месте № 2025/СТ.02-0011</b>
+    </div>
+    
+    <br><br>
+    <div style="text-align: justify;">
+        Цель стажировки по охране труда на рабочем месте - приобретение работниками практических навыков безопасных методов и приемов выполнения работ:
+    </div>
+    
+    <br><br>
+    <div style="text-align: left;">
+        Газоопасные работы<br>
+        -Газоопасные работы<br>
+        Огневые работы<br>
+        -Огневые работы<br>
+        Работы на высоте<br>
+        -Работы на высоте, выполняемые на нестационарных рабочих местах, в том числе работы по очистке крыш зданий от снега<br>
+        Работы по разборке (обрушению) зданий и сооружений, а также по укреплению и восстановлению аварийных частей и элементов зданий и сооружений<br>
+        Работы, связанные с опасностью поражения персонала электрическим током<br>
+        Работы, связанные с эксплуатацией сосудов, работающих под избыточным давлением<br>
+        Разборка (разрушение) зданий и сооружений при их реконструкции или сносе<br>
+        Ремонтные, монтажные и демонтажные работы<br>
+        -Работы по разборке (обрушению) зданий и сооружений, а также по укреплению и восстановлению аварийных частей и элементов зданий и сооружений<br>
+        -Разборка (разрушение) зданий и сооружений при их реконструкции или сносе<br>
+        Электросварочные и газосварочные работы<br>
+        -Сварочные (резательные) работы
+    </div>
+    
+    <br><br>
+    <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 14px;">
+        <thead>
+            <tr style="text-align: center;">
+                <td style="width: 50px">№ п.п.</td>
+                <td>Тема</td>
+                <td style="width: 150px">Время изучения темы, час</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align: center;">1</td>
+                <td>Издание приказа о назначении ответственного за организацию и проведение стажировки на рабочем месте</td>
+                <td style="text-align: center;">До начала проведения стажировки</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">2</td>
+                <td>Отработка практических навыков выполнения работ с использованием знаний и умений, полученных в рамках обучения требованиям по охране труда по программе обучения безопасным методам и приемам выполнения работ при воздействии вредных и (или) опасных производственных факторов, источников опасности, идентифицированных в рамках специальной оценки условий труда и оценки профессиональных рисков.</td>
+                <td style="text-align: center;">2 смены</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">3</td>
+                <td>Оценка результатов прохождения стажировки. Регистрация результатов прохождения стажировки</td>
+                <td style="text-align: center;">После окончания стажировки</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="commercial">
+    <div style="text-align: center; line-height: 1;">
+        <b>СТАЖИРОВОЧНЫЙ ЛИСТ № 2025/СТ.02-0011</b>
+    </div>
+    <br><br>
+    <div style="text-align: justify; line-height: 1;">
+        Отработка практических навыков выполнения работ с использованием знаний и умений, полученных в рамках обучения требованиям охраны труда.
+    </div>
+    <br>
+    <div style="text-align: justify; line-height: 1;">
+        <b>Сведения о работнике, прошедшем стажировку на рабочем месте:</b>
+    </div>
+
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td style="width:50%;text-align: left;font-size: 14px;">Фамилия, имя, отчество (при наличии)</td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:50%;text-align: left;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">{{ sotrudnik.fio }}</td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align: left;font-size: 14px;">Профессия (должность)</td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:50%;text-align: left;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">{{ sotrudnik.specialnost }}</td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align: left;font-size: 14px;">Количество смен стажировки на рабочем месте</td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:50%;text-align: left;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">2 смены</td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align: left;font-size: 14px;">Период проведения стажировки на рабочем месте</td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:50%;text-align: left;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">с 26.06.2025<br>по 27.06.2025</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <br><br>
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td style="width:40%;text-align: left;font-size: 14px;"><b>Дата допуска работника к самостоятельной работе</b></td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:40%;text-align: left;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">c «{{ sotrudnik.data_dopuska|date:"d" }}» {{ sotrudnik.data_dopuska|date:"F" }} {{ sotrudnik.data_dopuska|date:"Y" }} г.</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <br><br><br><br>
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td style="width:40%;text-align: left;font-size: 14px;">Подпись лица, прошедшего стажировку на рабочем месте</td>
+                <td style="width:20%;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000"></td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:40%;text-align: left;font-size: 14px;">/{{ sotrudnik.fio }}/</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br><br>
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td style="width:40%;text-align: left;font-size: 14px;">Подпись лица, проводившего стажировку на рабочем месте</td>
+                <td style="width:20%;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000"></td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:40%;text-align: left;font-size: 14px;">/И.Ш. Симонян/</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="page_break_div"><hr class="page_break_hr"><div class="page_break_text">[ Разрыв страницы ]</div></div>
+<div class="page_break"></div>
+
+<div class="commercial">
+    <div style="text-align: left;">
+        Заместителю генерального директора<br>
+        ООО «РАЗВИТИЕ»<br>
+        Масленникову В.В.
+    </div>
+    
+    <br><br><br>
+    <div style="text-align: center;">
+        <b>Отзыв по результатам собеседования и стажировки на рабочем месте</b>
+    </div>
+    
+    <br><br>
+    <div style="text-align: justify;">
+        <b>Сведения о работнике, прошедшем стажировку на рабочем месте:</b>
+    </div>
+    
+    <br>
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td style="width:50%;text-align: left;font-size: 14px;">Фамилия, имя, отчество (при наличии)</td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:50%;text-align: left;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">{{ sotrudnik.fio }}</td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align: left;font-size: 14px;">Профессия (должность)</td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:50%;text-align: left;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">{{ sotrudnik.specialnost }}</td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align: left;font-size: 14px;">Период проведения стажировки на рабочем месте</td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:50%;text-align: left;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">с 26.06.2025 по 27.06.2025</td>
+            </tr>
+            <tr>
+                <td style="width:50%;text-align: left;font-size: 14px;">Количество смен стажировки на рабочем месте</td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:50%;text-align: left;font-size: 14px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">2 смены</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <br><br><br>
+    <div style="text-align: justify; line-height: 1.5;">
+        В период стажировки, работник выполнил весь объем мероприятий, отработал практические навыки выполнения работ с использованием знаний и умений, полученных в рамках обучения требованиям по охране труда. За время прохождения стажировки, работник показал необходимый уровень развития практических навыков и компетенции в процессе выполнения работ. При выполнении работ, проявлял активность, умело справлялся с поставленными задачами.
+    </div>
+    
+    <br>
+    <div style="text-align: justify;">
+        <b>Степень готовности работника – удовлетворительная.</b>
+    </div>
+    
+    <br><br><br><br>
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td style="width:40%;text-align: left;font-size: 14px;">Подпись лица, проводившего стажировку на рабочем месте</td>
+                <td style="width:20%;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000"></td>
+                <td style="padding-top: 10px; padding-bottom: 10px;padding-left: 5px;padding-right: 5px;width:40%;text-align: left;font-size: 14px;">/И.Ш. Симонян/</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="page_break_div"><hr class="page_break_hr"><div class="page_break_text">[ Разрыв страницы ]</div></div>
+<div class="page_break"></div>
+
+<div class="commercial">
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000"><b>Общество с ограниченной ответственностью "РАЗВИТИЕ"</b></td>
+            </tr>
+            <tr>
+                <td style="width:50%;">Адрес:191144, Г.Санкт-Петербург, вн.тер.г. Муниципальный Округ Смольнинское, ул Мытнинская, д. 12/44, литера А</td>
+                <td style="width:50%;text-align: right;">ИНН:7842187225<br>ОГРН:1207800162371</td>
+            </tr>
+        </tbody>
+    </table>
+    <br><br>
+    <div style="text-align: center;">
+        <b>ПРИКАЗ</b>
+    </div>
+    <br><br>
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td style="width:50%;">№ 2025/СТ.02-0011</td>
+                <td style="width:50%;text-align: right;">«27» июня 2025 г.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <p style="text-align: center;">
+        <b>«О допуске к самостоятельной работе после стажировки на рабочем месте»</b>
+    </p>
+
+    <p style="text-align: justify;line-height: 1;">
+        В целях исполнения требований ст. ст. 214, 219 Трудового кодекса Российской Федерации, Правил обучения по охране труда и проверки знания требований охраны труда (утв. Постановлением Правительства РФ от 24.12.2021 N 2464) приказываю:
+    </p>
+
+    <p style="text-align: justify;line-height: 1;">
+        1. Допустить к самостоятельной работе после окончания стажировки на рабочем месте следующих работников:
+    </p>
+    
+    <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 14px;">
+        <thead>
+            <tr style="text-align: center;">
+                <td style="width: 50px">№ п.п.</td>
+                <td>Ф.И.О. работника</td>
+                <td style="width: 200px">Должность</td>
+                <td style="width: 150px">Дата допуска к работе</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align: center;">1</td>
+                <td>{{ sotrudnik.fio }}</td>
+                <td>{{ sotrudnik.specialnost }}</td>
+                <td style="text-align: center;">{{ sotrudnik.data_dopuska|date:"d.m.Y" }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br><br><br><br>
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td style="width: 50%">Заместитель генерального директора<br>ООО «РАЗВИТИЕ»<br></td>
+                <td style="text-align: right;">/В.В. Масленников/</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br><br>
+    <b>С приказом № 2025/СТ.02-0011 от «27» июня 2025 г. ознакомлены:</b><br>
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td style="width: 244px">{{ sotrudnik.specialnost }}</td>
+                <td style="text-align: right;">/{{ sotrudnik.fio }}/</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="page_break_div"><hr class="page_break_hr"><div class="page_break_text">[ Разрыв страницы ]</div></div>
+<div class="page_break"></div>
+
+<div class="commercial">
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000"><b>Общество с ограниченной ответственностью "РАЗВИТИЕ"</b></td>
+            </tr>
+            <tr>
+                <td style="width:50%;">Адрес:191144, Г.Санкт-Петербург, вн.тер.г. Муниципальный Округ Смольнинское, ул Мытнинская, д. 12/44, литера А</td>
+                <td style="width:50%;text-align: right;">ИНН:7842187225<br>ОГРН:1207800162371</td>
+            </tr>
+        </tbody>
+    </table>
+    <br><br>
+    <div style="text-align: center;">
+        <b>ПРИКАЗ</b>
+    </div>
+    <br><br>
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td style="width:50%;">№ 2025/СТ.02-0011/ДО</td>
+                <td style="width:50%;text-align: right;">«27» июня 2025 г.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <p style="text-align: center;">
+        <b>«О допуске работников к самостоятельной работе на станках и оборудовании»</b>
+    </p>
+
+    <p style="text-align: justify;line-height: 1;">
+        В целях исполнения требований ст. ст. 214, 219 Трудового кодекса Российской Федерации, Правил обучения по охране труда и проверки знания требований охраны труда (утв. Постановлением Правительства РФ от 24.12.2021 N 2464) приказываю:
+    </p>
+
+    <p style="text-align: justify;line-height: 1;">
+        1. Допустить к самостоятельной работе на станках и оборудовании после окончания обучения по охране труда и проверке знаний требований охраны труда:
+    </p>
+    
+    <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 14px;">
+        <thead>
+            <tr style="text-align: center;">
+                <td style="width: 50px">№ п.п.</td>
+                <td>Ф.И.О. работника</td>
+                <td style="width: 200px">Должность</td>
+                <td style="width: 150px">Дата допуска к работе</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align: center;">1</td>
+                <td>{{ sotrudnik.fio }}</td>
+                <td>{{ sotrudnik.specialnost }}</td>
+                <td style="text-align: center;">{{ sotrudnik.data_dopuska|date:"d.m.Y" }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <div style="text-align: left;">
+        <b>Оборудование</b>
+    </div>
+    
+    <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 14px;">
+        <tbody>
+            <tr>
+                <td style="width: 50px; text-align: center;">1.</td>
+                <td>Болгарка</td>
+            </tr>
+            <tr>
+                <td style="width: 50px; text-align: center;">2.</td>
+                <td>Газовый баллон</td>
+            </tr>
+            <tr>
+                <td style="width: 50px; text-align: center;">3.</td>
+                <td>Компрессор</td>
+            </tr>
+            <tr>
+                <td style="width: 50px; text-align: center;">4.</td>
+                <td>Отбойный молоток</td>
+            </tr>
+            <tr>
+                <td style="width: 50px; text-align: center;">5.</td>
+                <td>Страховочная привязь</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br><br><br><br>
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td style="width: 50%">Заместитель генерального директора<br>ООО «РАЗВИТИЕ»<br></td>
+                <td style="text-align: right;">/В.В. Масленников/</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br><br>
+    <b>С приказом № 2025/СТ.02-0011/ДО от «27» июня 2025 г. ознакомлены:</b><br>
+    <table style="width: 100%;border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <td style="width: 244px">{{ sotrudnik.specialnost }}</td>
+                <td style="text-align: right;">/{{ sotrudnik.fio }}/</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

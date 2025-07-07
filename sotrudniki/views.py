@@ -20,7 +20,7 @@ def sotrudnik_detail(request, pk):
     dokumenty, created = DokumentySotrudnika.objects.get_or_create(sotrudnik=sotrudnik)
     
     instrukcii = InstrukciiKartochki.objects.filter(dokumenty_sotrudnika=dokumenty)
-    protokoly = ProtokolyObucheniya.objects.filter(dokumenty_sotrudnika=dokumenty)
+    protokoly = ProtokolyObucheniya.objects.filter(sotrudnik=sotrudnik).select_related('shablon_protokola')
     instruktazhi = Instruktazhi.objects.filter(dokumenty_sotrudnika=dokumenty)
     
     tab = request.GET.get('tab', 'documents')
@@ -90,7 +90,7 @@ def generate_documents(request):
     
     return JsonResponse({'success': True, 'message': 'Документы созданы'})
 
-def download_document(request, sotrudnik_id, doc_type):
+def download_document(request, sotrudnik_id, doc_type, protokol_id=None):
     from django.http import FileResponse, Http404, HttpResponse
     
     sotrudnik = get_object_or_404(Sotrudnik, pk=sotrudnik_id)
@@ -225,6 +225,31 @@ def download_document(request, sotrudnik_id, doc_type):
         
         return HttpResponse(html_content, content_type='text/html')
     
+    elif doc_type == 'protokol':
+        # Получаем ID протокола
+        if not protokol_id:
+            raise Http404("Протокол не найден")
+        
+        # Получаем протокол с связанным шаблоном
+        protokol = get_object_or_404(ProtokolyObucheniya.objects.select_related('shablon_protokola'), 
+                                   id=protokol_id, sotrudnik=sotrudnik)
+        
+        # Получаем HTML файл из шаблона
+        if protokol.shablon_protokola.html_file:
+            with open(protokol.shablon_protokola.html_file.path, 'r', encoding='utf-8') as f:
+                html_content = f.read()
+        else:
+            raise Http404("Шаблон протокола не найден")
+        
+        # Заменяем плейсхолдеры
+        html_content = html_content.replace('{{ sotrudnik.fio }}', sotrudnik.fio)
+        html_content = html_content.replace('{{ sotrudnik.organizaciya }}', sotrudnik.organizaciya.nazvanie if sotrudnik.organizaciya else 'ООО "РАЗВИТИЕ"')
+        html_content = html_content.replace('{{ sotrudnik.podrazdelenie }}', sotrudnik.podrazdelenie.nazvanie if sotrudnik.podrazdelenie else 'Строительное управление')
+        html_content = html_content.replace('{{ sotrudnik.specialnost }}', sotrudnik.specialnost.nazvanie if sotrudnik.specialnost else 'Не указана')
+        html_content = html_content.replace('{{ sotrudnik.data_dopuska }}', protokol.data_dopuska_k_rabote.strftime('%d.%m.%Y'))
+        
+        return HttpResponse(html_content, content_type='text/html')
+    
     elif doc_type == 'ohrana':
         # Проверяем есть ли шаблон инструкции по охране труда
         html_content = None
@@ -281,6 +306,10 @@ def sotrudnik_add(request):
         specialnost_id = request.POST.get('specialnost')
         podrazdelenie_id = request.POST.get('podrazdelenie')
         organizaciya_id = request.POST.get('organizaciya')
+        pol = request.POST.get('pol')
+        razmer_odezhdy = request.POST.get('razmer_odezhdy', '50-52')
+        razmer_obuvi = request.POST.get('razmer_obuvi', '43')
+        razmer_golovnogo_ubora = request.POST.get('razmer_golovnogo_ubora', '55')
         
         sotrudnik = Sotrudnik.objects.create(
             fio=fio,
@@ -289,7 +318,11 @@ def sotrudnik_add(request):
             data_nachala_raboty=data_nachala_raboty,
             specialnost_id=specialnost_id if specialnost_id else None,
             podrazdelenie_id=podrazdelenie_id if podrazdelenie_id else None,
-            organizaciya_id=organizaciya_id if organizaciya_id else None
+            organizaciya_id=organizaciya_id if organizaciya_id else None,
+            pol=pol if pol else None,
+            razmer_odezhdy=razmer_odezhdy,
+            razmer_obuvi=razmer_obuvi,
+            razmer_golovnogo_ubora=razmer_golovnogo_ubora
         )
         
         if podrazdelenie_id:

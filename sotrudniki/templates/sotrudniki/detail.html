@@ -114,11 +114,11 @@
         <tbody>
             {% for protokol in protokoly %}
             <tr>
-                <td>{{ protokol.nomer_programmy }}</td>
-                <td>{{ protokol.nazvanie_kursa }}</td>
+                <td>{{ protokol.shablon_protokola.nomer_programmy }}</td>
+                <td>{{ protokol.shablon_protokola.kurs }}</td>
                 <td>{{ protokol.data_prikaza|date:"d.m.Y" }}</td>
-                <td>{{ protokol.data_prikaza|date:"d.m.Y" }}</td>
-                <td>{{ protokol.data_dopuska|date:"d.m.Y"|default:"-" }}</td>
+                <td>{{ protokol.data_protokola_dopuska|date:"d.m.Y" }}</td>
+                <td>{{ protokol.data_dopuska_k_rabote|date:"d.m.Y"|default:"-" }}</td>
                 <td>{{ protokol.data_ocherednoy_proverki|date:"d.m.Y"|default:"-" }}</td>
                 <td>{{ protokol.registracionnyy_nomer|default:"-" }}</td>
                 <td><input type="checkbox" class="checkbox" {% if protokol.raspechatn %}checked{% endif %}></td>
@@ -233,11 +233,11 @@
 
 <script>
 function printDocument(id) {
-    alert('Просмотр протокола ID: ' + id);
+    window.open('/sotrudniki/{{ sotrudnik.id }}/download/protokol/' + id + '/', '_blank', 'width=1201,height=1347,scrollbars=yes,resizable=yes');
 }
 
 function downloadDocument(id) {
-    alert('Скачивание протокола ID: ' + id);
+    window.location.href = '/sotrudniki/{{ sotrudnik.id }}/download/protokol/' + id + '/';
 }
 
 function printInstruction(id) {
@@ -249,7 +249,7 @@ function downloadInstruction(id) {
 }
 
 function printDoc(type) {
-    window.open('/sotrudniki/{{ sotrudnik.id }}/download/' + type + '/', '_blank', 'width=794,height=1123,scrollbars=yes,resizable=yes');
+    window.open('/sotrudniki/{{ sotrudnik.id }}/download/' + type + '/', '_blank', 'width=1001,height=1123,scrollbars=yes,resizable=yes');
 }
 
 function downloadDoc(type) {

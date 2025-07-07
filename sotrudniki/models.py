@@ -145,27 +145,50 @@ class InstrukciiKartochki(models.Model):
         return self.nazvanie
 
 
-class ProtokolyObucheniya(models.Model):
-    dokumenty_sotrudnika = models.ForeignKey(
-        DokumentySotrudnika,
-        on_delete=models.CASCADE,
-        verbose_name="Документы сотрудника"
+class SotrudnikiShablonyProtokolov(models.Model):
+    nomer_programmy = models.CharField(max_length=50, verbose_name="№ программы")
+    kurs = models.CharField(max_length=200, verbose_name="Курс")
+    html_file = models.FileField(
+        upload_to='instruction_templates/',
+        validators=[FileExtensionValidator(allowed_extensions=['html'])],
+        verbose_name="HTML файл протокола",
+        help_text="Загрузите HTML файл с шаблоном протокола"
     )
-    nomer_programmy = models.CharField(max_length=50, verbose_name="Номер программы")
-    nazvanie_kursa = models.CharField(max_length=200, verbose_name="Название курса")
-    tekst_protokola = models.TextField(verbose_name="Текст протокола")
+    
+    class Meta:
+        verbose_name = "Сотрудники шаблоны протоколов"
+        verbose_name_plural = "Сотрудники шаблоны протоколов"
+    
+    def __str__(self):
+        return f"{self.nomer_programmy} - {self.kurs}"
+
+
+
+class ProtokolyObucheniya(models.Model):
+    sotrudnik = models.ForeignKey(
+        Sotrudnik,
+        on_delete=models.CASCADE,
+        verbose_name="Сотрудник",
+        related_name="protokoly_obucheniya"
+    )
+    shablon_protokola = models.OneToOneField(
+        SotrudnikiShablonyProtokolov,
+        on_delete=models.CASCADE,
+        verbose_name="Шаблон протокола"
+    )
     data_prikaza = models.DateField(verbose_name="Дата приказа")
-    data_dopuska = models.DateField(null=True, blank=True, verbose_name="Дата допуска")
+    data_protokola_dopuska = models.DateField(verbose_name="Дата протокола/приказа-допуска")
+    data_dopuska_k_rabote = models.DateField(verbose_name="Дата допуска к работе")
     data_ocherednoy_proverki = models.DateField(null=True, blank=True, verbose_name="Дата очередной проверки")
-    registracionnyy_nomer = models.CharField(max_length=50, verbose_name="Регистрационный номер")
-    raspechatn = models.BooleanField(default=False, verbose_name="Распечатан")
+    registracionnyy_nomer = models.CharField(max_length=50, verbose_name="Рег №")
+    raspechatn = models.BooleanField(default=False, verbose_name="Распеч")
     
     class Meta:
         verbose_name = "Протокол обучения"
         verbose_name_plural = "Протоколы обучения"
     
     def __str__(self):
-        return f"{self.nomer_programmy} - {self.nazvanie_kursa}"
+        return f"{self.shablon_protokola} - {self.registracionnyy_nomer}"
 
 
 class Instruktazhi(models.Model):
@@ -187,48 +210,6 @@ class Instruktazhi(models.Model):
     
     def __str__(self):
         return f"{self.vid_instruktazha} - {self.data_instruktazha}"
-
-
-class VidyDokumentov(models.Model):
-    TIP_CHOICES = [
-        ('dokument', 'Документ'),
-        ('protokol', 'Протокол'),
-        ('instruktazh', 'Инструктаж'),
-    ]
-    
-    nazvanie = models.CharField(max_length=200, verbose_name="Название")
-    tip = models.CharField(max_length=20, choices=TIP_CHOICES, verbose_name="Тип")
-    
-    class Meta:
-        verbose_name = "Вид документа"
-        verbose_name_plural = "Виды документов"
-    
-    def __str__(self):
-        return f"{self.nazvanie} ({self.get_tip_display()})"
-
-
-class ShablonDolzhnostnojInstrukcii(models.Model):
-    name = models.CharField(
-        max_length=255, 
-        verbose_name="Название шаблона",
-        help_text="Введите название должностной инструкции"
-    )
-    html_file = models.FileField(
-        upload_to='instruction_templates/',
-        validators=[FileExtensionValidator(allowed_extensions=['html'])],
-        verbose_name="HTML файл инструкции",
-        help_text="Загрузите HTML файл с шаблоном инструкции"
-    )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
-
-    class Meta:
-        verbose_name = "Шаблон должностной инструкции"
-        verbose_name_plural = "Шаблоны должностных инструкций"
-        ordering = ['name']
-
-    def __str__(self):
-        return self.name
 
 
 class ShablonyDokumentovPoSpecialnosti(models.Model):
