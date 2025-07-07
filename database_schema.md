@@ -4,43 +4,149 @@
 
 ```mermaid
 erDiagram
+    %% AI Module
+    AIModel {
+        int id PK
+        varchar name
+        text description
+        datetime created_at
+        boolean is_active
+    }
+
+    %% Chat System
+    ChatSession {
+        int id PK
+        varchar session_id UK
+        int user_id FK
+        datetime created_at
+        datetime updated_at
+        boolean is_active
+    }
+
+    ChatMessage {
+        int id PK
+        int session_id FK
+        varchar message_type
+        text content
+        datetime created_at
+    }
+
+    %% Organizations and Staff
+    Organizaciya {
+        int id PK
+        varchar nazvanie
+        varchar inn UK
+        boolean is_active
+    }
+
+    Podrazdelenie {
+        int id PK
+        int organizaciya_id FK
+        varchar kod UK
+        varchar nazvanie
+    }
+
+    Specialnost {
+        int id PK
+        varchar nazvanie
+    }
+
+    Sotrudnik {
+        int id PK
+        int organizaciya_id FK
+        varchar fio
+        date data_rozhdeniya
+        varchar pol
+        varchar razmer_odezhdy
+        varchar razmer_obuvi
+        varchar razmer_golovnogo_ubora
+        int specialnost_id FK
+        int podrazdelenie_id FK
+        date data_priema
+        date data_nachala_raboty
+    }
+
+    %% Documents and Templates
+    DokumentySotrudnika {
+        int id PK
+        int sotrudnik_id FK
+    }
+
+    InstrukciiKartochki {
+        int id PK
+        int dokumenty_sotrudnika_id FK
+        varchar nazvanie
+        varchar shablon_instrukcii
+        boolean soglasovan
+        boolean raspechatn
+        datetime data_sozdaniya
+    }
+
+    SotrudnikiShablonyProtokolov {
+        int id PK
+        varchar nomer_programmy
+        varchar kurs
+        varchar html_file
+    }
+
+    ProtokolyObucheniya {
+        int id PK
+        int sotrudnik_id FK
+        int shablon_protokola_id FK
+        date data_prikaza
+        date data_protokola_dopuska
+        date data_dopuska_k_rabote
+        date data_ocherednoy_proverki
+        varchar registracionnyy_nomer
+        boolean raspechatn
+    }
+
+    Instruktazhi {
+        int id PK
+        int dokumenty_sotrudnika_id FK
+        date data_instruktazha
+        varchar vid_instruktazha
+        text tekst_instruktazha
+        varchar instruktor
+        date data_ocherednogo_instruktazha
+        boolean raspechatn
+    }
+
+    ShablonyDokumentovPoSpecialnosti {
+        int id PK
+        int specialnost_id FK
+        varchar dolzhnostnaya_instrukciya
+        varchar lichnaya_kartochka_rabotnika
+        varchar lichnaya_kartochka_siz
+        varchar karta_ocenki_riskov
+        varchar instrukciya_po_ohrane_truda
+    }
+
+    %% Resources and Objects
     KategoriyaResursa {
         int id PK
         varchar nazvanie
     }
-    
+
     Resurs {
         int id PK
         varchar naimenovanie
         varchar edinica_izmereniya
         int kategoriya_resursa_id FK
     }
-    
-    Specialnost {
-        int id PK
-        varchar nazvanie
-    }
-    
-    Kadry {
-        int id PK
-        varchar fio
-        int specialnost_id FK
-        varchar razryad
-        varchar pasport
-        varchar telefon
-    }
-    
+
     Objekt {
         int id PK
         varchar nazvanie
-        int otvetstvennyj_id FK
         int organizaciya_id FK
+        varchar otvetstvennyj
         date data_nachala
         date data_plan_zaversheniya
         date data_fakt_zaversheniya
         varchar status
+        boolean is_active
     }
-    
+
     ResursyPoObjektu {
         int id PK
         int objekt_id FK
@@ -49,96 +155,45 @@ erDiagram
         decimal cena
         decimal potracheno
     }
-    
+
     FakticheskijResursPoObjektu {
         int id PK
         int resurs_po_objektu_id FK
     }
-    
+
     RaskhodResursa {
         int id PK
         int fakticheskij_resurs_id FK
         date data
         decimal izraskhodovano
     }
-    
-    DohodResursa {
+
+    DokhodResursa {
         int id PK
         int fakticheskij_resurs_id FK
         date data
         decimal vypolneno
     }
-    
-    Organizaciya {
+
+    SvodnayaRaskhodDokhodPoDnyam {
         int id PK
-        varchar nazvanie
-        varchar inn
+        int objekt_id FK
+        date data
+        decimal raskhod
+        decimal dokhod
+        decimal balans
     }
-    
-    Podrazdelenie {
+
+    KategoriyaPoObjektu {
         int id PK
-        varchar kod
-        varchar nazvanie
+        int objekt_id FK
+        int kategoriya_id FK
     }
-    
-    SotrudnikSpecialnost {
-        int id PK
-        varchar nazvanie
-    }
-    
-    Sotrudnik {
-        int id PK
-        varchar fio
-        date data_rozhdeniya
-        date data_priema
-        date data_nachala_raboty
-        int organizaciya_id FK
-        int podrazdelenie_id FK
-        int specialnost_id FK
-    }
-    
-    DokumentySotrudnika {
-        int id PK
-        int sotrudnik_id FK
-    }
-    
-    InstrukciiKartochki {
-        int id PK
-        varchar nazvanie
-        text tekst_kartochki
-        boolean soglasovan
-        boolean raspechatn
-        int dokumenty_sotrudnika_id FK
-        varchar file_path
-    }
-    
-    ProtokolyObucheniya {
-        int id PK
-        varchar nomer_programmy
-        varchar nazvanie_kursa
-        text tekst_protokola
-        date data_prikaza
-        date data_dopuska
-        date data_ocherednoy_proverki
-        varchar registracionnyy_nomer
-        boolean raspechatn
-        int dokumenty_sotrudnika_id FK
-    }
-    
-    Instruktazhi {
-        int id PK
-        date data_instruktazha
-        varchar vid_instruktazha
-        text tekst_instruktazha
-        varchar instruktor
-        date data_ocherednogo_instruktazha
-        boolean raspechatn
-        int dokumenty_sotrudnika_id FK
-    }
-    
+
+    %% Telegram Bot
     TelegramUser {
         int id PK
-        bigint telegram_id
+        bigint telegram_id UK
         varchar username
         varchar first_name
         varchar last_name
@@ -146,7 +201,7 @@ erDiagram
         datetime created_at
         datetime updated_at
     }
-    
+
     TelegramMessage {
         int id PK
         int user_id FK
@@ -155,42 +210,62 @@ erDiagram
         boolean is_from_user
         datetime created_at
     }
-    
-    ChatSession {
-        int id PK
-        varchar session_id
+
+    TemporaryDocument {
+        uuid id PK
         int user_id FK
-        datetime created_at
-        datetime updated_at
-        boolean is_active
-    }
-    
-    ChatMessage {
-        int id PK
-        int session_id FK
-        varchar message_type
         text content
         datetime created_at
     }
+
+    %% Django Auth
+    User {
+        int id PK
+        varchar username
+        varchar email
+        varchar first_name
+        varchar last_name
+        boolean is_active
+        datetime date_joined
+    }
+
+    %% Relationships
+    ChatSession ||--o{ ChatMessage : "has messages"
+    User ||--o{ ChatSession : "creates sessions"
     
-    KategoriyaResursa ||--o{ Resurs : "имеет"
-    Resurs ||--o{ ResursyPoObjektu : "используется в"
-    Objekt ||--o{ ResursyPoObjektu : "содержит"
-    Kadry ||--o{ Objekt : "отвечает за"
-    Specialnost ||--o{ Kadry : "имеет"
-    ResursyPoObjektu ||--|| FakticheskijResursPoObjektu : "фактический"
-    FakticheskijResursPoObjektu ||--o{ RaskhodResursa : "расходы по дням"
-    FakticheskijResursPoObjektu ||--o{ DohodResursa : "доходы по дням"
-    Organizaciya ||--o{ Sotrudnik : "работают в"
-    Organizaciya ||--o{ Objekt : "владеет"
-    Podrazdelenie ||--o{ Sotrudnik : "входят в"
-    SotrudnikSpecialnost ||--o{ Sotrudnik : "имеют"
-    Sotrudnik ||--|| DokumentySotrudnika : "документы"
-    DokumentySotrudnika ||--o{ InstrukciiKartochki : "инструкции"
-    DokumentySotrudnika ||--o{ ProtokolyObucheniya : "протоколы"
-    DokumentySotrudnika ||--o{ Instruktazhi : "инструктажи"
-    TelegramUser ||--o{ TelegramMessage : "сообщения"
-    ChatSession ||--o{ ChatMessage : "содержит сообщения"
+    Organizaciya ||--o{ Sotrudnik : "employs"
+    Organizaciya ||--o{ Podrazdelenie : "has departments"
+    Organizaciya ||--o{ Objekt : "owns projects"
+    
+    Specialnost ||--o{ Sotrudnik : "has specialty"
+    Specialnost ||--|| ShablonyDokumentovPoSpecialnosti : "has templates"
+    
+    Podrazdelenie ||--o{ Sotrudnik : "belongs to"
+    
+    Sotrudnik ||--|| DokumentySotrudnika : "has documents"
+    Sotrudnik ||--o{ ProtokolyObucheniya : "has protocols"
+    
+    DokumentySotrudnika ||--o{ InstrukciiKartochki : "contains instructions"
+    DokumentySotrudnika ||--o{ Instruktazhi : "contains briefings"
+    
+    SotrudnikiShablonyProtokolov ||--|| ProtokolyObucheniya : "template for"
+    
+    KategoriyaResursa ||--o{ Resurs : "categorizes"
+    KategoriyaResursa ||--o{ KategoriyaPoObjektu : "used in projects"
+    
+    Resurs ||--o{ ResursyPoObjektu : "allocated to"
+    
+    Objekt ||--o{ ResursyPoObjektu : "uses resources"
+    Objekt ||--o{ SvodnayaRaskhodDokhodPoDnyam : "has daily summary"
+    Objekt ||--o{ KategoriyaPoObjektu : "has categories"
+    
+    ResursyPoObjektu ||--|| FakticheskijResursPoObjektu : "actual usage"
+    
+    FakticheskijResursPoObjektu ||--o{ RaskhodResursa : "expenses"
+    FakticheskijResursPoObjektu ||--o{ DokhodResursa : "income"
+    
+    TelegramUser ||--o{ TelegramMessage : "sends messages"
+    TelegramUser ||--o{ TemporaryDocument : "generates documents"
 ```
 
 ## Описание таблиц

@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
 from datetime import date
-from sotrudniki.models import Sotrudnik, DokumentySotrudnika, ProtokolyObucheniya
 
 
 class Command(BaseCommand):

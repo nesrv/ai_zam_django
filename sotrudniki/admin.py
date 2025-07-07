@@ -8,8 +8,9 @@ from .models import (
 
 @admin.register(Organizaciya)
 class OrganizaciyaAdmin(admin.ModelAdmin):
-    list_display = ['nazvanie', 'inn']
-    search_fields = ['nazvanie', 'inn']
+    list_display = ['nazvanie', 'inn', 'ogrn', 'is_active']
+    search_fields = ['nazvanie', 'inn', 'ogrn']
+    fields = ['nazvanie', 'inn', 'ogrn', 'adres', 'is_active']
 
 
 @admin.register(Podrazdelenie)

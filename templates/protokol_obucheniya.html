@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Протокол обучения</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.4;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        .center {
+            text-align: center;
+        }
+        .right {
+            text-align: right;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        .header-table {
+            border: none;
+        }
+        .header-table td {
+            border: none;
+            padding: 5px;
+        }
+        .company-header {
+            border-bottom: 1px solid black;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            padding-bottom: 10px;
+        }
+        .no-border {
+            border: none;
+        }
+        .signature-line {
+            border-bottom: 1px solid black;
+            display: inline-block;
+            min-width: 200px;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Заголовок организации -->
+    <table class="header-table">
+        <tr>
+            <td colspan="2" class="company-header">
+                {{ sotrudnik.organizaciya }}
+            </td>
+        </tr>
+        <tr>
+            <td style="width:50%;">
+                Адрес: {{ sotrudnik.organizaciya.adres|default:"Не указан" }}
+            </td>
+            <td class="right">
+                ИНН: {{ sotrudnik.organizaciya.inn|default:"Не указан" }}<br>
+                ОГРН: {{ sotrudnik.organizaciya.ogrn|default:"Не указан" }}
+            </td>
+        </tr>
+    </table>
+
+    <br><br>
+
+    <!-- Заголовок приказа -->
+    <div class="center">
+        <h2>ПРИКАЗ</h2>
+    </div>
+
+    <br>
+
+    <table class="header-table">
+        <tr>
+            <td style="width:50%;">№ {{ protokol.nomer_programmy|default:"2025/В.07-0016" }}</td>
+            <td class="right">«{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.</td>
+        </tr>
+    </table>
+
+    <div class="center">
+        г. {{ sotrudnik.organizaciya.gorod|default:"Санкт-Петербург" }}
+    </div>
+
+    <br>
+
+    <p class="center bold">
+        «О направлении работников на обучение по охране труда с отрывом от производства»
+    </p>
+
+    <br>
+
+    <p style="text-align: justify;">
+        В целях исполнения требований ст. ст. 214, 219 Трудового кодекса Российской Федерации, 
+        Правил обучения по охране труда и проверки знания требований охраны труда 
+        (утв. Постановлением Правительства РФ от 24.12.2021 N 2464) приказываю:
+    </p>
+
+    <p style="text-align: justify;">
+        1. Направить на обучение по охране труда с отрывом от производства (работы) 
+        по программе обучения безопасным методам и приемам выполнения работ повышенной опасности 
+        («{{ protokol.nazvanie_kursa|default:"Безопасные методы и приемы выполнения ремонтных, монтажных и демонтажных работ зданий и сооружений" }}»), 
+        к которым предъявляются дополнительные требования в соответствии с нормативными правовыми актами, 
+        содержащими государственные нормативные требования охраны труда, следующих работников:
+    </p>
+
+    <!-- Таблица работников -->
+    <table>
+        <thead>
+            <tr class="center">
+                <th style="width: 50px">№ п.п.</th>
+                <th>Ф.И.О. работника, направляемого на обучение</th>
+                <th style="width: 300px">Должность</th>
+                <th style="width: 150px">Период обучения</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="center">1</td>
+                <td>{{ sotrudnik.fio }}</td>
+                <td>{{ sotrudnik.specialnost }}</td>
+                <td class="center">
+                    {{ protokol.data_dopuska|date:"d.m.Y" }}—{{ protokol.data_dopuska|date:"d.m.Y" }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br><br><br>
+
+    <!-- Подписи -->
+    <table class="header-table">
+        <tr>
+            <td style="width: 50%">
+                Заместитель генерального директора<br>
+                {{ sotrudnik.organizaciya }}<br>
+            </td>
+            <td class="right">
+                /{{ sotrudnik.organizaciya.rukovoditel|default:"В.В. Масленников" }}/
+            </td>
+        </tr>
+    </table>
+
+    <br><br>
+
+    <p class="bold">
+        С приказом № {{ protokol.nomer_programmy|default:"2025/В.07-0016" }} 
+        от «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г. ознакомлен:
+    </p>
+
+    <br><br>
+
+    <table class="header-table">
+        <tr>
+            <td style="width: 244px">{{ sotrudnik.specialnost }}</td>
+            <td class="right">/{{ sotrudnik.fio }}/</td>
+        </tr>
+    </table>
+
+    <!-- Разрыв страницы -->
+    <div style="page-break-before: always;"></div>
+
+    <!-- Вторая страница - Программа обучения -->
+    <table class="header-table">
+        <tr>
+            <td colspan="2" class="company-header">
+                {{ sotrudnik.organizaciya }}
+            </td>
+        </tr>
+        <tr>
+            <td style="width:50%;">
+                Адрес: {{ sotrudnik.organizaciya.adres|default:"Не указан" }}
+            </td>
+            <td class="right">
+                ИНН: {{ sotrudnik.organizaciya.inn|default:"Не указан" }}<br>
+                ОГРН: {{ sotrudnik.organizaciya.ogrn|default:"Не указан" }}
+            </td>
+        </tr>
+    </table>
+
+    <br><br>
+
+    <table class="header-table">
+        <tr>
+            <td style="width:100%; text-align: right; font-size: 18px;" class="bold">«УТВЕРЖДАЮ»</td>
+        </tr>
+        <tr>
+            <td style="width:100%; text-align: right; font-size: 16px;">
+                Заместитель генерального директора
+            </td>
+        </tr>
+        <tr>
+            <td style="width:100%; text-align: right; font-size: 16px;">
+                {{ sotrudnik.organizaciya }}
+            </td>
+        </tr>
+        <tr>
+            <td style="width:100%; text-align: right; font-size: 16px;">
+                ___________________{{ sotrudnik.organizaciya.rukovoditel|default:"В.В. Масленников" }}<br>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:100%; text-align: right; font-size: 16px;">
+                «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.
+            </td>
+        </tr>
+    </table>
+
+    <br><br>
+
+    <div class="center">
+        <h3>
+            Программа обучения № {{ protokol.nomer_programmy|default:"2025/В.07-0016" }}<br>
+            {{ protokol.nazvanie_kursa|default:"безопасным методам и приемам выполнения работ повышенной опасности" }}
+        </h3>
+    </div>
+
+    <br>
+
+    <!-- Программа обучения - детали курса -->
+    <div style="text-align: left;">
+        <p><strong>Продолжительность обучения</strong> – 8 часов.</p>
+        <p><strong>Форма обучения</strong> – очно-заочная, с применением дистанционных образовательных технологий и/или электронного обучения.</p>
+        <p><strong>Форма проведения проверки знаний требований охраны труда</strong> – собеседование, устный или письменный экзамен, тестирование (в том числе на компьютере).</p>
+    </div>
+
+</body>
+</html>

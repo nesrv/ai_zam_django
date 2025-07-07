@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
 from datetime import timedelta
-from sotrudniki.models import Sotrudnik, DokumentySotrudnika, Instruktazhi
 
 
 class Command(BaseCommand):
@@ -8,8 +7,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for sotrudnik in Sotrudnik.objects.all():
-            dokumenty, created = DokumentySotrudnika.objects.get_or_create(sotrudnik=sotrudnik)
-            
             # Дата инструктажа = дата начала работы
             data_instruktazha = sotrudnik.data_nachala_raboty
             # Дата очередного инструктажа = дата инструктажа + 6 месяцев

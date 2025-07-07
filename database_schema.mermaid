@@ -1,0 +1,263 @@
+erDiagram
+    %% AI Module
+    AIModel {
+        int id PK
+        varchar name
+        text description
+        datetime created_at
+        boolean is_active
+    }
+
+    %% Chat System
+    ChatSession {
+        int id PK
+        varchar session_id UK
+        int user_id FK
+        datetime created_at
+        datetime updated_at
+        boolean is_active
+    }
+
+    ChatMessage {
+        int id PK
+        int session_id FK
+        varchar message_type
+        text content
+        datetime created_at
+    }
+
+    %% Organizations and Staff
+    Organizaciya {
+        int id PK
+        varchar nazvanie
+        varchar inn UK
+        boolean is_active
+    }
+
+    Podrazdelenie {
+        int id PK
+        int organizaciya_id FK
+        varchar kod UK
+        varchar nazvanie
+    }
+
+    Specialnost {
+        int id PK
+        varchar nazvanie
+    }
+
+    Sotrudnik {
+        int id PK
+        int organizaciya_id FK
+        varchar fio
+        date data_rozhdeniya
+        varchar pol
+        varchar razmer_odezhdy
+        varchar razmer_obuvi
+        varchar razmer_golovnogo_ubora
+        int specialnost_id FK
+        int podrazdelenie_id FK
+        date data_priema
+        date data_nachala_raboty
+    }
+
+    %% Documents and Templates
+    DokumentySotrudnika {
+        int id PK
+        int sotrudnik_id FK
+    }
+
+    InstrukciiKartochki {
+        int id PK
+        int dokumenty_sotrudnika_id FK
+        varchar nazvanie
+        varchar shablon_instrukcii
+        boolean soglasovan
+        boolean raspechatn
+        datetime data_sozdaniya
+    }
+
+    SotrudnikiShablonyProtokolov {
+        int id PK
+        varchar nomer_programmy
+        varchar kurs
+        varchar html_file
+    }
+
+    ProtokolyObucheniya {
+        int id PK
+        int sotrudnik_id FK
+        int shablon_protokola_id FK
+        date data_prikaza
+        date data_protokola_dopuska
+        date data_dopuska_k_rabote
+        date data_ocherednoy_proverki
+        varchar registracionnyy_nomer
+        boolean raspechatn
+    }
+
+    Instruktazhi {
+        int id PK
+        int dokumenty_sotrudnika_id FK
+        date data_instruktazha
+        varchar vid_instruktazha
+        text tekst_instruktazha
+        varchar instruktor
+        date data_ocherednogo_instruktazha
+        boolean raspechatn
+    }
+
+    ShablonyDokumentovPoSpecialnosti {
+        int id PK
+        int specialnost_id FK
+        varchar dolzhnostnaya_instrukciya
+        varchar lichnaya_kartochka_rabotnika
+        varchar lichnaya_kartochka_siz
+        varchar karta_ocenki_riskov
+        varchar instrukciya_po_ohrane_truda
+    }
+
+    %% Resources and Objects
+    KategoriyaResursa {
+        int id PK
+        varchar nazvanie
+    }
+
+    Resurs {
+        int id PK
+        varchar naimenovanie
+        varchar edinica_izmereniya
+        int kategoriya_resursa_id FK
+    }
+
+    Objekt {
+        int id PK
+        varchar nazvanie
+        int organizaciya_id FK
+        varchar otvetstvennyj
+        date data_nachala
+        date data_plan_zaversheniya
+        date data_fakt_zaversheniya
+        varchar status
+        boolean is_active
+    }
+
+    ResursyPoObjektu {
+        int id PK
+        int objekt_id FK
+        int resurs_id FK
+        decimal kolichestvo
+        decimal cena
+        decimal potracheno
+    }
+
+    FakticheskijResursPoObjektu {
+        int id PK
+        int resurs_po_objektu_id FK
+    }
+
+    RaskhodResursa {
+        int id PK
+        int fakticheskij_resurs_id FK
+        date data
+        decimal izraskhodovano
+    }
+
+    DokhodResursa {
+        int id PK
+        int fakticheskij_resurs_id FK
+        date data
+        decimal vypolneno
+    }
+
+    SvodnayaRaskhodDokhodPoDnyam {
+        int id PK
+        int objekt_id FK
+        date data
+        decimal raskhod
+        decimal dokhod
+        decimal balans
+    }
+
+    KategoriyaPoObjektu {
+        int id PK
+        int objekt_id FK
+        int kategoriya_id FK
+    }
+
+    %% Telegram Bot
+    TelegramUser {
+        int id PK
+        bigint telegram_id UK
+        varchar username
+        varchar first_name
+        varchar last_name
+        boolean is_active
+        datetime created_at
+        datetime updated_at
+    }
+
+    TelegramMessage {
+        int id PK
+        int user_id FK
+        varchar message_type
+        text content
+        boolean is_from_user
+        datetime created_at
+    }
+
+    TemporaryDocument {
+        uuid id PK
+        int user_id FK
+        text content
+        datetime created_at
+    }
+
+    %% Django Auth
+    User {
+        int id PK
+        varchar username
+        varchar email
+        varchar first_name
+        varchar last_name
+        boolean is_active
+        datetime date_joined
+    }
+
+    %% Relationships
+    ChatSession ||--o{ ChatMessage : "has messages"
+    User ||--o{ ChatSession : "creates sessions"
+    
+    Organizaciya ||--o{ Sotrudnik : "employs"
+    Organizaciya ||--o{ Podrazdelenie : "has departments"
+    Organizaciya ||--o{ Objekt : "owns projects"
+    
+    Specialnost ||--o{ Sotrudnik : "has specialty"
+    Specialnost ||--|| ShablonyDokumentovPoSpecialnosti : "has templates"
+    
+    Podrazdelenie ||--o{ Sotrudnik : "belongs to"
+    
+    Sotrudnik ||--|| DokumentySotrudnika : "has documents"
+    Sotrudnik ||--o{ ProtokolyObucheniya : "has protocols"
+    
+    DokumentySotrudnika ||--o{ InstrukciiKartochki : "contains instructions"
+    DokumentySotrudnika ||--o{ Instruktazhi : "contains briefings"
+    
+    SotrudnikiShablonyProtokolov ||--|| ProtokolyObucheniya : "template for"
+    
+    KategoriyaResursa ||--o{ Resurs : "categorizes"
+    KategoriyaResursa ||--o{ KategoriyaPoObjektu : "used in projects"
+    
+    Resurs ||--o{ ResursyPoObjektu : "allocated to"
+    
+    Objekt ||--o{ ResursyPoObjektu : "uses resources"
+    Objekt ||--o{ SvodnayaRaskhodDokhodPoDnyam : "has daily summary"
+    Objekt ||--o{ KategoriyaPoObjektu : "has categories"
+    
+    ResursyPoObjektu ||--|| FakticheskijResursPoObjektu : "actual usage"
+    
+    FakticheskijResursPoObjektu ||--o{ RaskhodResursa : "expenses"
+    FakticheskijResursPoObjektu ||--o{ DokhodResursa : "income"
+    
+    TelegramUser ||--o{ TelegramMessage : "sends messages"
+    TelegramUser ||--o{ TemporaryDocument : "generates documents"

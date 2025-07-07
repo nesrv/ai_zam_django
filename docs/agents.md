@@ -1,4 +1,18 @@
+измени логику моделей для бд:
+один шаблон протокола из таблицы sotrudniki_sotrudnikishablonyprotokolov может использоваться для многих протоколов из таблицы sotrudniki_protokolyobucheniya
 
+
+
+
+в таблицу sotrudniki_organizaciya добавь:
+* ОГРН
+* адрес
+
+
+при рендера http://127.0.0.1:8000/sotrudniki/27/download/protokol/4/ данные внутри {{ }} отображаются как шаблонизированные переменные
+нужно из viewn
+
+измени урл http://127.0.0.1:8000/organizations/ на http://127.0.0.1:8000/kadry/
 
 для http://127.0.0.1:8000/sotrudniki/31/?tab=protocols при нажатии на 🖨️ или 📄 документ возьми из sotrudniki_protokolyobucheniya и sotrudniki_sotrudnikishablonyprotokolov
 
@@ -6,13 +20,19 @@
 * № программы
 * Курс
 
+не все данные из `protokol-2025-В.06-0011.htm`
+переделай  под html-шаблон формата a-4, замени реальные данные на:
 
-переделай `2025-В.07-0016.mhtml` под html-шаблон, замени реальные данные на:
 {{ sotrudnik.organizaciya }}
+{{ sotrudnik.organizaciya.adres }}
+{{ sotrudnik.organizaciya.ogrn }}
 {{ sotrudnik.podrazdelenie }}
 {{ sotrudnik.fio }} 
 {{ sotrudnik.specialnost }}
 {{ sotrudnik.data_dopuska }}
+{{ sotrudniki_protokolyobucheniya.registracionnyy_nomer }}
+{{ sotrudniki_protokolyobucheniya.data_prikaza }}
+и так далее
 
 
 для http://127.0.0.1:8000/sotrudniki/31/?tab=protocols возьми данные из sotrudniki_protokolyobucheniya

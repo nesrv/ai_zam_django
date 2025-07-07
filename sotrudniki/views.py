@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from .models import Organizaciya, Sotrudnik, DokumentySotrudnika, InstrukciiKartochki, ProtokolyObucheniya, Instruktazhi, Podrazdelenie, Specialnost, ShablonyDokumentovPoSpecialnosti
 from django.conf import settings
+from django.template import Template, Context
 import os
 
 
@@ -226,6 +227,8 @@ def download_document(request, sotrudnik_id, doc_type, protokol_id=None):
         return HttpResponse(html_content, content_type='text/html')
     
     elif doc_type == 'protokol':
+        from django.template import Template, Context
+        
         # Получаем ID протокола
         if not protokol_id:
             raise Http404("Протокол не найден")
@@ -241,14 +244,20 @@ def download_document(request, sotrudnik_id, doc_type, protokol_id=None):
         else:
             raise Http404("Шаблон протокола не найден")
         
-        # Заменяем плейсхолдеры
-        html_content = html_content.replace('{{ sotrudnik.fio }}', sotrudnik.fio)
-        html_content = html_content.replace('{{ sotrudnik.organizaciya }}', sotrudnik.organizaciya.nazvanie if sotrudnik.organizaciya else 'ООО "РАЗВИТИЕ"')
-        html_content = html_content.replace('{{ sotrudnik.podrazdelenie }}', sotrudnik.podrazdelenie.nazvanie if sotrudnik.podrazdelenie else 'Строительное управление')
-        html_content = html_content.replace('{{ sotrudnik.specialnost }}', sotrudnik.specialnost.nazvanie if sotrudnik.specialnost else 'Не указана')
-        html_content = html_content.replace('{{ sotrudnik.data_dopuska }}', protokol.data_dopuska_k_rabote.strftime('%d.%m.%Y'))
+        # Создаем Django Template и рендерим с контекстом
+        template = Template(html_content)
+        context = Context({
+            'sotrudnik': sotrudnik,
+            'protokol': protokol
+        })
         
-        return HttpResponse(html_content, content_type='text/html')
+        # Активируем русскую локализацию для дат
+        from django.utils import translation
+        translation.activate('ru')
+        
+        rendered_html = template.render(context)
+        
+        return HttpResponse(rendered_html, content_type='text/html')
     
     elif doc_type == 'ohrana':
         # Проверяем есть ли шаблон инструкции по охране труда

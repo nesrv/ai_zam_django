@@ -6,6 +6,8 @@ from django.core.validators import FileExtensionValidator
 class Organizaciya(models.Model):
     nazvanie = models.CharField(max_length=300, verbose_name="Название")
     inn = models.CharField(max_length=12, unique=True, verbose_name="ИНН")
+    ogrn = models.CharField(max_length=15, verbose_name="ОГРН", null=True, blank=True)
+    adres = models.TextField(verbose_name="Адрес", null=True, blank=True)
     is_active = models.BooleanField(default=True, verbose_name="Активная")
     
     class Meta:
@@ -171,7 +173,7 @@ class ProtokolyObucheniya(models.Model):
         verbose_name="Сотрудник",
         related_name="protokoly_obucheniya"
     )
-    shablon_protokola = models.OneToOneField(
+    shablon_protokola = models.ForeignKey(
         SotrudnikiShablonyProtokolov,
         on_delete=models.CASCADE,
         verbose_name="Шаблон протокола"

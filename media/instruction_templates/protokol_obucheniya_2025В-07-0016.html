@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Протокол обучения</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+        
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 14px;
+            line-height: 1.2;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .commercial {
+            width: 100%;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .commercial_landscape {
+            width: 100%;
+            max-width: 297mm;
+            margin: 20px auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        table, th, td {
+            border: 1px solid black;
+        }
+        
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+        
+        .no-border {
+            border: none;
+        }
+        
+        .no-border td {
+            border: none;
+        }
+        
+        .center {
+            text-align: center;
+        }
+        
+        .right {
+            text-align: right;
+        }
+        
+        .bold {
+            font-weight: bold;
+        }
+        
+        .page-break {
+            page-break-before: always;
+        }
+        
+        .company-header {
+            border-bottom: 1px solid black;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            padding-bottom: 10px;
+        }
+        
+        @media print {
+            .no-print {
+                display: none;
+            }
+            .commercial {
+                border: none;
+            }
+            .commercial_landscape {
+                border: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Кнопки печати (скрываются при печати) -->
+    <div class="no-print" style="text-align: center; margin-bottom: 15px;">
+        <button type="button" onclick="window.print();" style="padding: 10px 20px; margin: 5px;">
+            🖨️ Печать
+        </button>
+    </div>
+
+    <!-- Страница 1: Приказ -->
+    <div class="commercial">
+        <table class="no-border">
+            <tr>
+                <td colspan="2" class="company-header">
+                    {{ sotrudnik.organizaciya }}
+                </td>
+            </tr>
+            <tr>
+                <td style="width:50%;">
+                    Адрес: {{ sotrudnik.organizaciya.adres|default:"Не указан" }}
+                </td>
+                <td class="right">
+                    ИНН: {{ sotrudnik.organizaciya.inn|default:"Не указан" }}<br>
+                    ОГРН: {{ sotrudnik.organizaciya.ogrn|default:"Не указан" }}
+                </td>
+            </tr>
+        </table>
+
+        <br><br>
+
+        <div class="center">
+            <h2>ПРИКАЗ</h2>
+        </div>
+
+        <br>
+
+        <table class="no-border">
+            <tr>
+                <td style="width:50%;">№ {{ protokol.nomer_programmy|default:"2025/В.07-0016" }}</td>
+                <td class="right">«{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.</td>
+            </tr>
+        </table>
+
+        <div class="center">
+            г. {{ sotrudnik.organizaciya.gorod|default:"Санкт-Петербург" }}
+        </div>
+
+        <br>
+
+        <p class="center bold">
+            «О направлении работников на обучение по охране труда с отрывом от производства»
+        </p>
+
+        <br>
+
+        <p style="text-align: justify;">
+            В целях исполнения требований ст. ст. 214, 219 Трудового кодекса Российской Федерации, 
+            Правил обучения по охране труда и проверки знания требований охраны труда 
+            (утв. Постановлением Правительства РФ от 24.12.2021 N 2464) приказываю:
+        </p>
+
+        <p style="text-align: justify;">
+            1. Направить на обучение по охране труда с отрывом от производства (работы) 
+            по программе обучения безопасным методам и приемам выполнения работ повышенной опасности 
+            («{{ protokol.nazvanie_kursa|default:"Безопасные методы и приемы выполнения ремонтных, монтажных и демонтажных работ зданий и сооружений" }}»), 
+            к которым предъявляются дополнительные требования в соответствии с нормативными правовыми актами, 
+            содержащими государственные нормативные требования охраны труда, следующих работников:
+        </p>
+
+        <!-- Таблица работников -->
+        <table>
+            <thead>
+                <tr class="center">
+                    <th style="width: 50px">№ п.п.</th>
+                    <th>Ф.И.О. работника, направляемого на обучение</th>
+                    <th style="width: 300px">Должность</th>
+                    <th style="width: 150px">Период обучения</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="center">1</td>
+                    <td>{{ sotrudnik.fio }}</td>
+                    <td>{{ sotrudnik.specialnost }}</td>
+                    <td class="center">
+                        {{ sotrudnik.data_dopuska|date:"d.m.Y" }}–{{ sotrudnik.data_dopuska|date:"d.m.Y" }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br><br><br>
+
+        <!-- Подписи -->
+        <table class="no-border">
+            <tr>
+                <td style="width: 50%">
+                    Заместитель генерального директора<br>
+                    {{ sotrudnik.organizaciya }}<br>
+                </td>
+                <td class="right">
+                    /{{ sotrudnik.organizaciya.rukovoditel|default:"В.В. Масленников" }}/
+                </td>
+            </tr>
+        </table>
+
+        <br><br>
+
+        <p class="bold">
+            С приказом № {{ protokol.nomer_programmy|default:"2025/В.07-0016" }} 
+            от «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г. ознакомлен:
+        </p>
+
+        <br><br>
+
+        <table class="no-border">
+            <tr>
+                <td style="width: 244px">{{ sotrudnik.specialnost }}</td>
+                <td class="right">/{{ sotrudnik.fio }}/</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Страница 2: Программа обучения -->
+    <div class="commercial page-break">
+        <table class="no-border">
+            <tr>
+                <td colspan="2" class="company-header">
+                    {{ sotrudnik.organizaciya }}
+                </td>
+            </tr>
+            <tr>
+                <td style="width:50%;">
+                    Адрес: {{ sotrudnik.organizaciya.adres|default:"Не указан" }}
+                </td>
+                <td class="right">
+                    ИНН: {{ sotrudnik.organizaciya.inn|default:"Не указан" }}<br>
+                    ОГРН: {{ sotrudnik.organizaciya.ogrn|default:"Не указан" }}
+                </td>
+            </tr>
+        </table>
+
+        <br><br>
+
+        <table class="no-border">
+            <tr>
+                <td class="right bold" style="font-size: 18px;">«УТВЕРЖДАЮ»</td>
+            </tr>
+            <tr>
+                <td class="right" style="font-size: 16px;">Заместитель генерального директора</td>
+            </tr>
+            <tr>
+                <td class="right" style="font-size: 16px;">{{ sotrudnik.organizaciya }}</td>
+            </tr>
+            <tr>
+                <td class="right" style="font-size: 16px;">
+                    ___________________{{ sotrudnik.organizaciya.rukovoditel|default:"В.В. Масленников" }}<br>
+                </td>
+            </tr>
+            <tr>
+                <td class="right" style="font-size: 16px;">
+                    «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.
+                </td>
+            </tr>
+        </table>
+
+        <br><br>
+
+        <div class="center">
+            <h3>
+                Программа обучения № {{ protokol.nomer_programmy|default:"2025/В.07-0016" }}<br>
+                {{ protokol.nazvanie_kursa|default:"безопасным методам и приемам выполнения работ повышенной опасности" }}
+            </h3>
+        </div>
+
+        <br>
+
+        <div style="text-align: left;">
+            <ul style="list-style:disc;">
+                <li>Ремонтные, монтажные и демонтажные работы<br>
+                -Работы по разборке (обрушению) зданий и сооружений, а также по укреплению и восстановлению аварийных частей и элементов зданий и сооружений<br>
+                -Разборка (разрушение) зданий и сооружений при их реконструкции или сносе<br>
+                </li>
+            </ul>
+        </div>
+
+        <br>
+
+        <!-- Таблица программы обучения -->
+        <table>
+            <thead>
+                <tr class="center">
+                    <th rowspan="2" style="width: 10px"><strong>№ п.п.</strong></th>
+                    <th rowspan="2"><strong>Наименование темы</strong></th>
+                    <th rowspan="2" style="width: 50px;"><strong>Кол-во часов</strong></th>
+                    <th colspan="3"><strong>в том числе</strong></th>
+                </tr>
+                <tr>
+                    <th style="width: 50px;text-align: center;"><strong>ТЗ</strong></th>
+                    <th style="width: 50px;text-align: center;"><strong>ПЗ</strong></th>
+                    <th style="width: 50px;text-align: center;"><strong>Аттестация</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Основы охраны труда в Российской Федерации</td>
+                    <td class="center">1</td>
+                    <td class="center">0.9</td>
+                    <td class="center">-</td>
+                    <td class="center">0.1</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Стратегия безопасности труда и охраны здоровья</td>
+                    <td class="center">1</td>
+                    <td class="center">0.4</td>
+                    <td class="center">0.5</td>
+                    <td class="center">0.1</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Система управления охраной труда в организации</td>
+                    <td class="center">1</td>
+                    <td class="center">0.4</td>
+                    <td class="center">0.5</td>
+                    <td class="center">0.1</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Безопасные методы и приемы выполнения работ повышенной опасности</td>
+                    <td class="center">2.5</td>
+                    <td class="center">0.9</td>
+                    <td class="center">1.5</td>
+                    <td class="center">0.1</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Расследование и предупреждение несчастных случаев и профессиональных заболеваний</td>
+                    <td class="center">1</td>
+                    <td class="center">0.4</td>
+                    <td class="center">0.5</td>
+                    <td class="center">0.1</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Организация оказания первой помощи</td>
+                    <td class="center">1</td>
+                    <td class="center">0.4</td>
+                    <td class="center">0.5</td>
+                    <td class="center">0.1</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Итоговая аттестация</td>
+                    <td class="center">0.5</td>
+                    <td class="center">-</td>
+                    <td class="center">-</td>
+                    <td class="center">0.5</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><strong>ИТОГО</strong></td>
+                    <td class="center"><strong>8</strong></td>
+                    <td class="center"><strong>3.4</strong></td>
+                    <td class="center"><strong>3.5</strong></td>
+                    <td class="center"><strong>1.1</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
+
+        <div style="text-align: left;">
+            <p><strong>Продолжительность обучения</strong> – 8 часов.</p>
+            <p><strong>Форма обучения</strong> – очно-заочная, с применением дистанционных образовательных технологий и/или электронного обучения.</p>
+            <p><strong>Форма проведения проверки знаний требований охраны труда</strong> – собеседование, устный или письменный экзамен, тестирование (в том числе на компьютере).</p>
+        </div>
+    </div>
+
+    <!-- Страница 3: Протокол заседания комиссии -->
+    <div class="commercial_landscape page-break">
+        <table class="no-border">
+            <tr>
+                <td colspan="2" class="company-header">
+                    {{ sotrudnik.organizaciya }}
+                </td>
+            </tr>
+            <tr>
+                <td style="width:50%;">
+                    Адрес: {{ sotrudnik.organizaciya.adres|default:"Не указан" }}
+                </td>
+                <td class="right">
+                    ИНН: {{ sotrudnik.organizaciya.inn|default:"Не указан" }}<br>
+                    ОГРН: {{ sotrudnik.organizaciya.ogrn|default:"Не указан" }}
+                </td>
+            </tr>
+        </table>
+
+        <br><br>
+
+        <p class="center bold" style="margin: 0;">ПРОТОКОЛ</p>
+        <p class="center bold" style="margin: 0;">заседания комиссии по проверке знаний требований безопасным методам и приемам выполнения работ</p>
+        <p class="center bold" style="margin: 0;">№ {{ protokol.nomer_programmy|default:"2025/В.07-0016" }} от «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.</p>
+
+        <br>
+
+        <p style="text-align: justify; line-height: 1;">
+            В соответствии с Постановлением Правительства РФ от 24.12.2021 № 2464 "О порядке обучения по охране труда и проверки знания требований охраны труда", 
+            приказом {{ sotrudnik.organizaciya }} от «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г. 
+            комиссия по проверке знания требований охраны труда в составе:
+        </p>
+
+        <table class="no-border">
+            <tr>
+                <td style="width: 20%">Председатель комиссии:</td>
+                <td>{{ sotrudnik.organizaciya.predsedatel_komissii|default:"Владимиров Виктор Валерьевич - Главный инженер" }}</td>
+            </tr>
+            <tr>
+                <td valign="top" style="width: 20%">Члены комиссии:</td>
+                <td>
+                    {{ sotrudnik.organizaciya.chleny_komissii|default:"Хахаев Руслан Анатольевич - Заместитель генерального директора<br>Симонян Игорь Шотаевич - Производитель работ" }}
+                </td>
+            </tr>
+        </table>
+
+        <div style="text-align: justify;">
+            провела проверку знаний требований охраны труда работников по программе обучения 
+            {{ protokol.nazvanie_kursa|default:"безопасным методам и приемам выполнения работ повышенной опасности" }} 
+            № {{ protokol.nomer_programmy|default:"2025/В.07-0016" }} в объеме 8 часов:
+        </div>
+
+        <br>
+
+        <table style="font-size: 12px;">
+            <thead>
+                <tr class="center">
+                    <th style="width: 10px">№ п.п.</th>
+                    <th style="width: 250px">Ф.И.О. работника</th>
+                    <th style="width: 250px">Должность</th>
+                    <th>Результат проверки знания (удовлетворительно/неудовлетворительно)</th>
+                    <th>Дата проверки знания требований охраны труда</th>
+                    <th>Рег. № записи в реестре обученных лиц</th>
+                    <th>Подпись работника, прошедшего проверку знания требований охраны труда</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 15px;">1.</td>
+                    <td>{{ sotrudnik.fio }}</td>
+                    <td>{{ sotrudnik.specialnost }}</td>
+                    <td>удовлетворительно</td>
+                    <td>{{ sotrudnik.data_dopuska|date:"d.m.Y" }}</td>
+                    <td>{{ protokol.registracionnyy_nomer|default:"129091967" }}</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
+
+        <table class="no-border">
+            <tr>
+                <td>Председатель комиссии:</td>
+                <td>/{{ sotrudnik.organizaciya.predsedatel_komissii_podpis|default:"В.В. Владимиров" }}/</td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+            </tr>
+            <tr>
+                <td valign="top">Члены комиссии:</td>
+                <td>
+                    /{{ sotrudnik.organizaciya.chleny_komissii_podpis|default:"Р.А. Хахаев/<br><br>/И.Ш. Симонян/" }}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Страница 4: Дневник практического занятия -->
+    <div class="commercial page-break">
+        <p style="font-size: 18px; text-align: center;" class="bold">
+            ДНЕВНИК<br>
+            практического занятия по формированию умений и навыков безопасного выполнения работ повышенной опасности
+        </p>
+
+        <br>
+
+        <p style="font-size: 14px; margin: 0;">
+            Фамилия, имя, отчество: <strong>{{ sotrudnik.fio }}</strong>
+        </p>
+        <p style="font-size: 14px; margin: 0;">
+            Должность: <strong>{{ sotrudnik.specialnost }}</strong>
+        </p>
+        <p style="font-size: 14px; margin: 0;">
+            Место проведения практического занятия: <strong>{{ sotrudnik.organizaciya }}</strong>
+        </p>
+        <p style="font-size: 14px; margin: 0;">
+            Программа обучения: <strong>№ {{ protokol.nomer_programmy|default:"2025/В.07-0016" }} «{{ protokol.nazvanie_kursa|default:"Безопасные методы и приемы выполнения ремонтных, монтажных и демонтажных работ зданий и сооружений" }}»</strong>
+        </p>
+
+        <br>
+
+        <p style="font-size: 14px; margin-top: 5px; margin-bottom: 0;"><strong>Сведения об ответственном за проведение обучения:</strong></p>
+        <p style="font-size: 14px; margin: 0;">Фамилия, имя, отчество: {{ sotrudnik.podrazdelenie.rukovoditel|default:"Симонян Игорь Шотаевич" }}</p>
+        <p style="font-size: 14px; margin: 0;">Должность: {{ sotrudnik.podrazdelenie.rukovoditel_dolzhnost|default:"Производитель работ" }}</p>
+
+        <p style="font-size: 14px; margin: 0;">
+            Период обучения: с «{{ sotrudnik.data_dopuska|date:"d" }}» {{ sotrudnik.data_dopuska|date:"F" }} {{ sotrudnik.data_dopuska|date:"Y" }} г. 
+            по «{{ sotrudnik.data_dopuska|date:"d" }}» {{ sotrudnik.data_dopuska|date:"F" }} {{ sotrudnik.data_dopuska|date:"Y" }} г.
+        </p>
+
+        <p style="font-size: 14px; margin: 0;">
+            Количество академ. часов практического занятия: 3 часа 30 минут.
+        </p>
+
+        <br>
+
+        <p style="text-align: justify; margin-top: 5px;"><strong>Сведения о прохождении практического занятия:</strong></p>
+
+        <table style="font-size: 12px; line-height: 1;">
+            <tr>
+                <th class="center"><strong>№</strong></th>
+                <th class="center"><strong>Наименование тем и краткое содержание занятий (выполненных работ)</strong></th>
+            </tr>
+            <tr>
+                <td class="center">1</td>
+                <td>Характеристика условий труда. Вредные и (или) опасные производственные факторы, опасности, идентифицированные в рамках специальной оценки условий труда и оценки профессиональных рисков.</td>
+            </tr>
+            <tr>
+                <td class="center">2</td>
+                <td>Перечень основных возможных аварий и аварийных ситуаций. Действия при возникновении аварий и аварийных ситуаций. Действия по оказанию первой помощи пострадавшим при травмировании, отравлении и других повреждениях здоровья.</td>
+            </tr>
+            <tr>
+                <td class="center">3</td>
+                <td>Требования охраны труда перед началом выполнения работ повышенной опасности. Подготовка рабочего места. Порядок осмотра работником и подготовка к работе средств индивидуальной защиты до использования.</td>
+            </tr>
+            <tr>
+                <td class="center">4</td>
+                <td>Требования безопасности, предъявляемые к инструментам, механизмам, приспособлениям. Проверка исправности оборудования, приспособлений и инструмента.</td>
+            </tr>
+            <tr>
+                <td class="center">5</td>
+                <td>Требования охраны труда во время выполнения работ повышенной опасности. Способы и приемы безопасного выполнения работ повышенной опасности, использования оборудования, приспособлений и инструментов. Требования, предъявляемые к правильному использованию (применению) средств индивидуальной защиты работников. Действия, направленные на предотвращение аварийных ситуаций</td>
+            </tr>
+            <tr>
+                <td class="center">6</td>
+                <td>Требования охраны труда по окончании работ повышенной опасности.</td>
+            </tr>
+            <tr>
+                <td class="center">7</td>
+                <td>Выполнение работ повышенной опасности, указанных в программе, под руководством ответственного за обучение</td>
+            </tr>
+        </table>
+
+        <br>
+
+        <div style="font-size: 16px;">
+            <strong>Заключение:</strong> В процессе практического занятия обучаемый ({{ sotrudnik.fio }}) проявил себя хорошо. Вся программа усвоена.
+        </div>
+
+        <br><br>
+
+        <table class="no-border">
+            <tr>
+                <td>Подпись лица, ответственного за обучение</td>
+                <td>_________________________________</td>
+                <td>/{{ sotrudnik.podrazdelenie.rukovoditel|default:"И.Ш. Симонян" }}/</td>
+            </tr>
+            <tr>
+                <td>Подпись лица, прошедшего практическое занятие</td>
+                <td>_________________________________</td>
+                <td>/{{ sotrudnik.fio }}/</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Страница 4: Итоговая аттестация -->
+    <div class="commercial page-break">
+        <p style="font-size: 14px;">
+            Итоговая аттестация по программе: <strong>«{{ protokol.nazvanie_kursa|default:"Безопасные методы и приемы выполнения ремонтных, монтажных и демонтажных работ зданий и сооружений" }}»</strong>
+        </p>
+
+        <p style="font-size: 12px; margin-top: 5px; margin-bottom: 5px;">
+            ФИО: {{ sotrudnik.fio }}<br>
+            Должность: {{ sotrudnik.specialnost }}<br>
+            Место работы: {{ sotrudnik.organizaciya }}<br>
+            Дата: «{{ sotrudnik.data_dopuska|date:"d" }}» {{ sotrudnik.data_dopuska|date:"F" }} {{ sotrudnik.data_dopuska|date:"Y" }} г.<br>
+            Подпись _____________________<br>
+        </p>
+    </div>
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from datetime import date
-from sotrudniki.models import Podrazdelenie, Specialnost, Sotrudnik, DokumentySotrudnika, InstrukciiKartochki, ProtokolyObucheniya, Instruktazhi
+from sotrudniki.models import Podrazdelenie, Specialnost, Sotrudnik, InstrukciiKartochki, ProtokolyObucheniya, Instruktazhi
 
 
 class Command(BaseCommand):
@@ -45,9 +45,6 @@ class Command(BaseCommand):
         )
 
         if created:
-            # Создаем документы сотрудника
-            dokumenty, _ = DokumentySotrudnika.objects.get_or_create(sotrudnik=sotrudnik)
-
             # Создаем инструкции и карточки
             InstrukciiKartochki.objects.create(
                 dokumenty_sotrudnika=dokumenty,
