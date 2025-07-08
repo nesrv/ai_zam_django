@@ -1,8 +1,7 @@
 from django.contrib import admin
 from .models import (
-    Organizaciya, Podrazdelenie, Specialnost, Sotrudnik, DokumentySotrudnika,
-    InstrukciiKartochki, ProtokolyObucheniya, Instruktazhi,
-    ShablonyDokumentovPoSpecialnosti, SotrudnikiShablonyProtokolov
+    Organizaciya, Podrazdelenie, Specialnost, Sotrudnik,
+    ProtokolyObucheniya, ShablonyDokumentovPoSpecialnosti, SotrudnikiShablonyProtokolov, Instruktazhi, DokumentySotrudnika
 )
 
 
@@ -32,11 +31,6 @@ class SpecialnostAdmin(admin.ModelAdmin):
     inlines = [ShablonyDokumentovPoSpecialnostiInline]
 
 
-class InstrukciiKartochkiInline(admin.TabularInline):
-    model = InstrukciiKartochki
-    extra = 0
-
-
 class ProtokolyObucheniyaInline(admin.TabularInline):
     model = ProtokolyObucheniya
     extra = 0
@@ -44,13 +38,9 @@ class ProtokolyObucheniyaInline(admin.TabularInline):
 
 class InstruktazhiInline(admin.TabularInline):
     model = Instruktazhi
+    fk_name = 'sotrudnik'
     extra = 0
-
-
-@admin.register(DokumentySotrudnika)
-class DokumentySotrudnikaAdmin(admin.ModelAdmin):
-    list_display = ['sotrudnik']
-    inlines = [InstrukciiKartochkiInline, InstruktazhiInline]
+    fields = ['specialnost', 'tip_instruktazha', 'data_provedeniya', 'instruktor']
 
 
 @admin.register(Sotrudnik)
@@ -59,22 +49,29 @@ class SotrudnikAdmin(admin.ModelAdmin):
     list_filter = ['organizaciya', 'specialnost', 'podrazdelenie', 'data_priema']
     search_fields = ['fio']
     date_hierarchy = 'data_priema'
-    inlines = [ProtokolyObucheniyaInline]
+    inlines = [ProtokolyObucheniyaInline, InstruktazhiInline]
+    readonly_fields = ['get_shablony_dokumentov']
+    
+    def get_shablony_dokumentov(self, obj):
+        if obj.specialnost and hasattr(obj.specialnost, 'shablony_dokumentov'):
+            shablony = obj.specialnost.shablony_dokumentov
+            docs = []
+            if shablony.dolzhnostnaya_instrukciya:
+                docs.append(f"Должностная инструкция: {shablony.dolzhnostnaya_instrukciya.name}")
+            if shablony.lichnaya_kartochka_rabotnika:
+                docs.append(f"Личная карточка работника: {shablony.lichnaya_kartochka_rabotnika.name}")
+            if shablony.lichnaya_kartochka_siz:
+                docs.append(f"Личная карточка СИЗ: {shablony.lichnaya_kartochka_siz.name}")
+            if shablony.karta_ocenki_riskov:
+                docs.append(f"Карта оценки рисков: {shablony.karta_ocenki_riskov.name}")
+            if shablony.instrukciya_po_ohrane_truda:
+                docs.append(f"Инструкция по охране труда: {shablony.instrukciya_po_ohrane_truda.name}")
+            return "\n".join(docs) if docs else "Нет документов"
+        return "Специальность не указана или нет шаблонов"
+    get_shablony_dokumentov.short_description = "Документы по специальности"
 
 
-@admin.register(InstrukciiKartochki)
-class InstrukciiKartochkiAdmin(admin.ModelAdmin):
-    list_display = ['nazvanie', 'dokumenty_sotrudnika', 'soglasovan', 'raspechatn', 'data_sozdaniya']
-    list_filter = ['soglasovan', 'raspechatn', 'data_sozdaniya']
-    search_fields = ['nazvanie']
-    fields = ['dokumenty_sotrudnika', 'nazvanie', 'shablon_instrukcii', 'soglasovan', 'raspechatn']
 
-
-@admin.register(Instruktazhi)
-class InstruktazhiAdmin(admin.ModelAdmin):
-    list_display = ['vid_instruktazha', 'dokumenty_sotrudnika', 'data_instruktazha', 'instruktor', 'raspechatn']
-    list_filter = ['vid_instruktazha', 'data_instruktazha', 'raspechatn']
-    search_fields = ['vid_instruktazha', 'instruktor']
 
 
 
@@ -89,13 +86,34 @@ class ShablonyDokumentovPoSpecialnostiAdmin(admin.ModelAdmin):
 @admin.register(ProtokolyObucheniya)
 class ProtokolyObucheniyaAdmin(admin.ModelAdmin):
     list_display = ['shablon_protokola', 'sotrudnik', 'data_prikaza', 'registracionnyy_nomer', 'raspechatn']
-    list_filter = ['data_prikaza', 'raspechatn']
+    list_filter = ['data_prikaza', 'raspechatn', 'shablon_protokola']
     search_fields = ['registracionnyy_nomer', 'shablon_protokola__nomer_programmy', 'shablon_protokola__kurs', 'sotrudnik__fio']
 
 
 @admin.register(SotrudnikiShablonyProtokolov)
 class SotrudnikiShablonyProtokolovAdmin(admin.ModelAdmin):
     list_display = ['nomer_programmy', 'kurs', 'html_file']
-    list_filter = ['nomer_programmy']
+    list_filter = ['nomer_programmy', 'specialnost']
     search_fields = ['nomer_programmy', 'kurs']
-    fields = ['nomer_programmy', 'kurs', 'html_file']
+    fields = ['nomer_programmy', 'kurs', 'specialnost', 'html_file']
+    filter_horizontal = ['specialnost']
+    
+    def get_readonly_fields(self, request, obj=None):
+        if obj and obj.protokolyobucheniya_set.exists():
+            return ['nomer_programmy', 'kurs']
+        return []
+
+
+@admin.register(Instruktazhi)
+class InstruktazhiAdmin(admin.ModelAdmin):
+    list_display = ['tip_instruktazha', 'sotrudnik', 'specialnost', 'data_provedeniya', 'instruktor']
+    list_filter = ['tip_instruktazha', 'specialnost', 'data_provedeniya']
+    search_fields = ['specialnost__nazvanie', 'instruktor__fio', 'sotrudnik__fio']
+    fields = ['sotrudnik', 'specialnost', 'tip_instruktazha', 'data_provedeniya', 'instruktor', 'html_file']
+
+
+@admin.register(DokumentySotrudnika)
+class DokumentySotrudnikaAdmin(admin.ModelAdmin):
+    list_display = ['sotrudnik', 'tip_dokumenta', 'sozdano', 'data_sozdaniya']
+    list_filter = ['tip_dokumenta', 'sozdano', 'data_sozdaniya']
+    search_fields = ['sotrudnik__fio']

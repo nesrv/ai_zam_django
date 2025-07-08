@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
-from .models import Organizaciya, Sotrudnik, DokumentySotrudnika, InstrukciiKartochki, ProtokolyObucheniya, Instruktazhi, Podrazdelenie, Specialnost, ShablonyDokumentovPoSpecialnosti
+from .models import Organizaciya, Sotrudnik, ProtokolyObucheniya, Podrazdelenie, Specialnost, ShablonyDokumentovPoSpecialnosti, SotrudnikiShablonyProtokolov, Instruktazhi
 from django.conf import settings
 from django.template import Template, Context
 import os
@@ -18,22 +18,58 @@ def sotrudniki_list(request):
 
 def sotrudnik_detail(request, pk):
     sotrudnik = get_object_or_404(Sotrudnik, pk=pk)
-    dokumenty, created = DokumentySotrudnika.objects.get_or_create(sotrudnik=sotrudnik)
     
-    instrukcii = InstrukciiKartochki.objects.filter(dokumenty_sotrudnika=dokumenty)
     protokoly = ProtokolyObucheniya.objects.filter(sotrudnik=sotrudnik).select_related('shablon_protokola')
-    instruktazhi = Instruktazhi.objects.filter(dokumenty_sotrudnika=dokumenty)
     
     tab = request.GET.get('tab', 'documents')
     
     context = {
         'sotrudnik': sotrudnik,
-        'instrukcii': instrukcii,
         'protokoly': protokoly,
-        'instruktazhi': instruktazhi,
         'active_tab': tab,
     }
     return render(request, 'sotrudniki/detail.html', context)
+
+
+def sotrudnik_documents(request, pk):
+    from .models import DokumentySotrudnika
+    sotrudnik = get_object_or_404(Sotrudnik, pk=pk)
+    
+    # Автоматически создаем документы для сотрудника
+    if sotrudnik.specialnost and hasattr(sotrudnik.specialnost, 'shablony_dokumentov'):
+        shablony = sotrudnik.specialnost.shablony_dokumentov
+        
+        # Создаем документы если их еще нет
+        doc_types = [
+            ('dolzhnostnaya', shablony.dolzhnostnaya_instrukciya),
+            ('kartochka', shablony.lichnaya_kartochka_rabotnika),
+            ('siz', shablony.lichnaya_kartochka_siz),
+            ('riski', shablony.karta_ocenki_riskov),
+        ]
+        
+        for doc_type, template_file in doc_types:
+            if template_file:
+                DokumentySotrudnika.objects.get_or_create(
+                    sotrudnik=sotrudnik,
+                    tip_dokumenta=doc_type
+                )
+    
+    # Получаем созданные документы
+    dokumenty = DokumentySotrudnika.objects.filter(sotrudnik=sotrudnik)
+    
+    # Получаем протоколы обучения по специальности
+    protokoly_shablony = SotrudnikiShablonyProtokolov.objects.filter(specialnost=sotrudnik.specialnost)
+    
+    # Получаем инструктажи по специальности
+    instruktazhi_shablony = Instruktazhi.objects.filter(specialnost=sotrudnik.specialnost)
+    
+    context = {
+        'sotrudnik': sotrudnik,
+        'dokumenty': dokumenty,
+        'protokoly_shablony': protokoly_shablony,
+        'instruktazhi_shablony': instruktazhi_shablony,
+    }
+    return render(request, 'sotrudniki/documents.html', context)
 
 
 def update_document_status(request):
@@ -43,12 +79,8 @@ def update_document_status(request):
         field = request.POST.get('field')
         value = request.POST.get('value') == 'true'
         
-        if doc_type == 'instrukcii':
-            doc = get_object_or_404(InstrukciiKartochki, pk=doc_id)
-        elif doc_type == 'protokoly':
+        if doc_type == 'protokoly':
             doc = get_object_or_404(ProtokolyObucheniya, pk=doc_id)
-        elif doc_type == 'instruktazhi':
-            doc = get_object_or_404(Instruktazhi, pk=doc_id)
         else:
             return JsonResponse({'success': False})
         
@@ -60,36 +92,7 @@ def update_document_status(request):
     return JsonResponse({'success': False})
 
 def generate_documents(request):
-    from django.conf import settings
-    import os
-    
-    # Создаем папку для документов
-    docs_dir = os.path.join(settings.MEDIA_ROOT, 'documents')
-    os.makedirs(docs_dir, exist_ok=True)
-    
-    # Проходим по всем сотрудникам
-    for sotrudnik in Sotrudnik.objects.all():
-        dokumenty, created = DokumentySotrudnika.objects.get_or_create(sotrudnik=sotrudnik)
-        
-        # Создаем должностную инструкцию
-        filename = f"dolzhn_instr_{sotrudnik.fio.replace(' ', '_')}.docx"
-        file_path = os.path.join(docs_dir, filename)
-        
-        # Создаем пустой файл (в реальности здесь бы была генерация docx)
-        with open(file_path, 'w') as f:
-            f.write(f"Должностная инструкция для {sotrudnik.fio}")
-        
-        # Создаем запись в базе
-        InstrukciiKartochki.objects.get_or_create(
-            dokumenty_sotrudnika=dokumenty,
-            nazvanie="Должностная инструкция",
-            defaults={
-                'tekst_kartochki': f"Должностная инструкция для {sotrudnik.fio}",
-                'file_path': f"documents/{filename}"
-            }
-        )
-    
-    return JsonResponse({'success': True, 'message': 'Документы созданы'})
+    return JsonResponse({'success': True, 'message': 'Функция временно отключена'})
 
 def download_document(request, sotrudnik_id, doc_type, protokol_id=None):
     from django.http import FileResponse, Http404, HttpResponse
@@ -334,9 +337,7 @@ def sotrudnik_add(request):
             razmer_golovnogo_ubora=razmer_golovnogo_ubora
         )
         
-        if podrazdelenie_id:
-            return redirect(f'/sotrudniki/?podrazdelenie={podrazdelenie_id}')
-        return redirect('/sotrudniki/')
+        return redirect(f'/sotrudniki/{sotrudnik.id}/documents/')
     
     podrazdelenie_id = request.GET.get('podrazdelenie')
     podrazdelenie = None

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инструктаж</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+        
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 12px;
+            line-height: 1.2;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .document {
+            width: 100%;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 0;
+        }
+        
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .header-table td {
+            padding: 5px;
+            font-size: 14px;
+        }
+        
+        .company-name {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+        }
+        
+        .title {
+            text-align: center;
+            font-weight: bold;
+            margin: 30px 0;
+            font-size: 14px;
+        }
+        
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .info-table td {
+            padding: 8px 5px;
+            font-size: 12px;
+            vertical-align: top;
+        }
+        
+        .info-table .field-name {
+            width: 40%;
+        }
+        
+        .info-table .field-value {
+            width: 60%;
+            text-align: center;
+            border-bottom: 1px solid #000;
+        }
+        
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #000;
+            font-size: 10px;
+        }
+        
+        .main-table th,
+        .main-table td {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        .main-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        
+        .empty-row {
+            height: 30px;
+        }
+        
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            
+            body {
+                -webkit-print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="document">
+        <table class="header-table">
+            <tr>
+                <td colspan="2" class="company-name">{{ sotrudnik.organizaciya }}</td>
+            </tr>
+            <tr>
+                <td style="width: 70%;">Адрес: {{ sotrudnik.organizaciya.adres }}</td>
+                <td style="width: 30%; text-align: right;">ОГРН: {{ sotrudnik.organizaciya.ogrn }}</td>
+            </tr>
+        </table>
+
+        <div class="title">
+            Регистрация проведения инструктажа по охране труда на рабочем месте<br>
+            (первичный, повторный, внеплановый)
+        </div>
+
+        <table class="info-table">
+            <tr>
+                <td class="field-name">Фамилия, имя, отчество (при наличии) работника, прошедшего инструктаж по охране труда</td>
+                <td class="field-value">{{ sotrudnik.fio }}</td>
+            </tr>
+            <tr>
+                <td class="field-name">Профессия (должность) работника, прошедшего инструктаж по охране труда</td>
+                <td class="field-value">{{ sotrudnik.specialnost }}</td>
+            </tr>
+            <tr>
+                <td class="field-name">Число, месяц, год рождения работника, прошедшего инструктаж по охране труда</td>
+                <td class="field-value">{{ sotrudnik.data_rozhdeniya|date:"d.m.Y" }}</td>
+            </tr>
+            <tr>
+                <td class="field-name">Наименование локального акта (локальных актов), в объеме требований которого проведен инструктаж по охране труда (первичный, повторный)</td>
+                <td class="field-value">Инструкция по охране труда для {{ sotrudnik.specialnost|lower }}</td>
+            </tr>
+        </table>
+
+        <table class="main-table">
+            <thead>
+                <tr>
+                    <th rowspan="2" style="width: 80px;">Дата проведения инструктажа по охране труда</th>
+                    <th rowspan="2" style="width: 80px;">Вид инструктажа по охране труда</th>
+                    <th rowspan="2" style="width: 120px;">Причина проведения инструктажа по охране труда (для внепланового или целевого инструктажа по охране труда)</th>
+                    <th rowspan="2" style="width: 120px;">Фамилия, имя, отчество (при наличии), профессия (должность) работника, проводившего инструктаж по охране труда</th>
+                    <th rowspan="2" style="width: 120px;">Наименование локального акта (локальных актов), в объеме требований которого проведен инструктаж по охране труда</th>
+                    <th colspan="2">Подпись</th>
+                </tr>
+                <tr>
+                    <th style="width: 80px;">работника, проводившего инструктаж по охране труда</th>
+                    <th style="width: 80px;">работника, прошедшего инструктаж по охране труда</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in "0123456789012345678" %}
+                <tr class="empty-row">
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

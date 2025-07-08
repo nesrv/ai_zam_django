@@ -1,3 +1,59 @@
+при переходе на http://127.0.0.1:8000/sotrudniki/32/documents/#
+документы для сотрудника должны быть созданы автоматически (с обновлением таблиц бд).
+также на этой странице сделай возможность просмотра созданных документов
+с возможностью их редактирования
+
+
+на странице добавления нового сотрудника
+http://127.0.0.1:8000/sotrudniki/add/?podrazdelenie=3
+после нажания на кнопку 'Добавить сотрудника' открывается новая страница 'Оформление комплекта документов на сотрудника':
+
+# Документы 
+(автозаполнение из sotrudniki_shablonydokumentovpospecialnosti) 
+
+* Должностная инструкция 				
+* Личная карточка работника			
+* Личная карточка учета выдачи СИЗ			
+* Карта оценки проф. рисков
+
+# Протоколы обучения
+(автозаполнение из sotrudniki_sotrudnikishablonyprotokolov)
+
+# Инструктажи
+(автозаполнение из sotrudniki_instruktazhi)
+
+на http://127.0.0.1:8000/admin/sotrudniki/sotrudnik/31/change/
+добавь отображение документов по специальности (из sotrudniki_shablonydokumentovpospecialnosti)
+
+сделай связь между sotrudniki_sotrudnik и sotrudniki_instruktazhi
+у одного сотрудника может быть несколько инструктажей (по умолчанию нет)
+
+
+удали таблицы sotrudniki_dokumentysotrudnika и sotrudniki_instruktazhi
+удали зависящие от них связи, зависимости и импорты
+
+создай таблицу 'инструктажи':
+* специальность (связь с таблицей sotrudniki_specialnost, у одной специальности могут быть разные шаблоны)
+* тип инструктажа (вводный, первичный, повторный, внеплановый, целевой)
+* дата проведения инструктажа
+* инструктор (связь 1-1 с таблицей sotrudniki_sotrudnik)
+* html_file = models.FileField(
+        upload_to='instruction_templates/',
+        validators=[FileExtensionValidator(allowed_extensions=['html'])],
+        verbose_name="HTML файл инструктажа"
+    ) 
+по умолчанию подгружается файл instruktag.html
+
+
+
+
+
+
+для таблицы sotrudniki_sotrudnikishablonyprotokolov:
+добавь поле specialnost со связью к sotrudniki_specialnost (шаблон документа может соответствовать нескольким разным специальностям) 
+
+
+
 измени логику моделей для бд:
 один шаблон протокола из таблицы sotrudniki_sotrudnikishablonyprotokolov может использоваться для многих протоколов из таблицы sotrudniki_protokolyobucheniya
 
@@ -20,19 +76,15 @@
 * № программы
 * Курс
 
-не все данные из `protokol-2025-В.06-0011.htm`
-переделай  под html-шаблон формата a-4, замени реальные данные на:
+ `Инструктаж.html` переделай  под html-шаблон формата a4, замени реальные данные на:
 
 {{ sotrudnik.organizaciya }}
 {{ sotrudnik.organizaciya.adres }}
 {{ sotrudnik.organizaciya.ogrn }}
-{{ sotrudnik.podrazdelenie }}
 {{ sotrudnik.fio }} 
 {{ sotrudnik.specialnost }}
-{{ sotrudnik.data_dopuska }}
-{{ sotrudniki_protokolyobucheniya.registracionnyy_nomer }}
-{{ sotrudniki_protokolyobucheniya.data_prikaza }}
-и так далее
+
+
 
 
 для http://127.0.0.1:8000/sotrudniki/31/?tab=protocols возьми данные из sotrudniki_protokolyobucheniya

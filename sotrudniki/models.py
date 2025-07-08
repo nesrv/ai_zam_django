@@ -112,44 +112,18 @@ class Sotrudnik(models.Model):
         return self.fio
 
 
-class DokumentySotrudnika(models.Model):
-    sotrudnik = models.OneToOneField(
-        Sotrudnik,
-        on_delete=models.CASCADE,
-        verbose_name="Сотрудник"
-    )
-    
-    class Meta:
-        verbose_name = "Документы сотрудника"
-        verbose_name_plural = "Документы сотрудников"
-    
-    def __str__(self):
-        return f"Документы - {self.sotrudnik.fio}"
 
-
-class InstrukciiKartochki(models.Model):
-    dokumenty_sotrudnika = models.ForeignKey(
-        DokumentySotrudnika,
-        on_delete=models.CASCADE,
-        verbose_name="Документы сотрудника"
-    )
-    nazvanie = models.CharField(max_length=300, verbose_name="Название")
-    shablon_instrukcii = models.URLField(max_length=500, null=True, blank=True, verbose_name="Шаблон инструкции")
-    soglasovan = models.BooleanField(default=False, verbose_name="Согласован")
-    raspechatn = models.BooleanField(default=False, verbose_name="Распечатан")
-    data_sozdaniya = models.DateTimeField(default=timezone.now, verbose_name="Дата создания")
-    
-    class Meta:
-        verbose_name = "Инструкция/карточка"
-        verbose_name_plural = "Инструкции/карточки"
-    
-    def __str__(self):
-        return self.nazvanie
 
 
 class SotrudnikiShablonyProtokolov(models.Model):
     nomer_programmy = models.CharField(max_length=50, verbose_name="№ программы")
     kurs = models.CharField(max_length=200, verbose_name="Курс")
+    specialnost = models.ManyToManyField(
+        Specialnost,
+        verbose_name="Специальности",
+        help_text="Выберите специальности, для которых подходит этот шаблон",
+        blank=True
+    )
     html_file = models.FileField(
         upload_to='instruction_templates/',
         validators=[FileExtensionValidator(allowed_extensions=['html'])],
@@ -193,25 +167,86 @@ class ProtokolyObucheniya(models.Model):
         return f"{self.shablon_protokola} - {self.registracionnyy_nomer}"
 
 
+
+
+
 class Instruktazhi(models.Model):
-    dokumenty_sotrudnika = models.ForeignKey(
-        DokumentySotrudnika,
+    TIP_CHOICES = [
+        ('вводный', 'Вводный'),
+        ('первичный', 'Первичный'),
+        ('повторный', 'Повторный'),
+        ('внеплановый', 'Внеплановый'),
+        ('целевой', 'Целевой'),
+    ]
+    
+    sotrudnik = models.ForeignKey(
+        Sotrudnik,
         on_delete=models.CASCADE,
-        verbose_name="Документы сотрудника"
+        verbose_name="Сотрудник",
+        related_name="instruktazhi",
+        null=True,
+        blank=True
     )
-    data_instruktazha = models.DateField(verbose_name="Дата инструктажа")
-    vid_instruktazha = models.CharField(max_length=100, verbose_name="Вид инструктажа")
-    tekst_instruktazha = models.TextField(verbose_name="Текст инструктажа")
-    instruktor = models.CharField(max_length=150, verbose_name="Инструктор")
-    data_ocherednogo_instruktazha = models.DateField(verbose_name="Дата очередного инструктажа")
-    raspechatn = models.BooleanField(default=False, verbose_name="Распечатан")
+    specialnost = models.ForeignKey(
+        Specialnost,
+        on_delete=models.CASCADE,
+        verbose_name="Специальность"
+    )
+    tip_instruktazha = models.CharField(
+        max_length=20,
+        choices=TIP_CHOICES,
+        verbose_name="Тип инструктажа"
+    )
+    data_provedeniya = models.DateField(verbose_name="Дата проведения инструктажа")
+    instruktor = models.ForeignKey(
+        Sotrudnik,
+        on_delete=models.CASCADE,
+        verbose_name="Инструктор",
+        related_name="instruktazhi_kak_instruktor"
+    )
+    html_file = models.FileField(
+        upload_to='instruction_templates/',
+        validators=[FileExtensionValidator(allowed_extensions=['html'])],
+        verbose_name="HTML файл инструктажа",
+        default="instruction_templates/instruktag.html"
+    )
     
     class Meta:
         verbose_name = "Инструктаж"
         verbose_name_plural = "Инструктажи"
     
     def __str__(self):
-        return f"{self.vid_instruktazha} - {self.data_instruktazha}"
+        sotrudnik_name = self.sotrudnik.fio if self.sotrudnik else 'Не указан'
+        return f"{self.tip_instruktazha} - {sotrudnik_name}"
+
+
+class DokumentySotrudnika(models.Model):
+    sotrudnik = models.ForeignKey(
+        Sotrudnik,
+        on_delete=models.CASCADE,
+        verbose_name="Сотрудник",
+        related_name="dokumenty"
+    )
+    tip_dokumenta = models.CharField(
+        max_length=50,
+        choices=[
+            ('dolzhnostnaya', 'Должностная инструкция'),
+            ('kartochka', 'Личная карточка работника'),
+            ('siz', 'Личная карточка СИЗ'),
+            ('riski', 'Карта оценки рисков'),
+        ],
+        verbose_name="Тип документа"
+    )
+    sozdano = models.BooleanField(default=True, verbose_name="Создано")
+    data_sozdaniya = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    
+    class Meta:
+        verbose_name = "Документ сотрудника"
+        verbose_name_plural = "Документы сотрудников"
+        unique_together = ['sotrudnik', 'tip_dokumenta']
+    
+    def __str__(self):
+        return f"{self.get_tip_dokumenta_display()} - {self.sotrudnik.fio}"
 
 
 class ShablonyDokumentovPoSpecialnosti(models.Model):
