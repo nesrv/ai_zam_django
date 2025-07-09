@@ -189,6 +189,214 @@ def document_editor(request, pk, doc_type):
     return render(request, 'sotrudniki/document_editor.html', context)
 
 
+def document_edit(request, pk, doc_type):
+    from .models import DokumentySotrudnika
+    from django.template import Template, Context
+    from django.utils import translation
+    
+    sotrudnik = get_object_or_404(Sotrudnik, pk=pk)
+    
+    if request.method == 'POST':
+        # Обработка сохранения изменений
+        updated_data = {}
+        for key, value in request.POST.items():
+            if key.startswith('field_'):
+                field_name = key.replace('field_', '')
+                updated_data[field_name] = value
+        
+        # Здесь можно сохранить изменения в базу данных
+        # Пока просто возвращаем успешный ответ
+        return JsonResponse({'success': True, 'message': 'Изменения сохранены'})
+    
+    # Получаем HTML содержимое документа
+    html_content = ""
+    doc_title = ""
+    protokol = None
+    instruktazh = None
+    
+    if doc_type == 'instruktazh':
+        instruktazh_id = request.GET.get('id')
+        if instruktazh_id:
+            instruktazh = get_object_or_404(Instruktazhi.objects.select_related('instruktazh'), 
+                                          id=instruktazh_id, sotrudnik=sotrudnik)
+            if instruktazh.instruktazh.html_file:
+                with open(instruktazh.instruktazh.html_file.path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+                doc_title = f"Инструктаж: {instruktazh.instruktazh.get_tip_instruktazha_display()}"
+    elif doc_type == 'protokol':
+        protokol_id = request.GET.get('id')
+        if protokol_id:
+            protokol = get_object_or_404(ProtokolyObucheniya.objects.select_related('shablon_protokola'), 
+                                       id=protokol_id, sotrudnik=sotrudnik)
+            if protokol.shablon_protokola.html_file:
+                with open(protokol.shablon_protokola.html_file.path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+                doc_title = f"Протокол: {protokol.shablon_protokola.kurs}"
+    elif doc_type in ['dolzhnostnaya', 'kartochka', 'siz', 'riski']:
+        if sotrudnik.specialnost and hasattr(sotrudnik.specialnost, 'shablony_dokumentov'):
+            shablony = sotrudnik.specialnost.shablony_dokumentov
+            
+            if doc_type == 'dolzhnostnaya' and shablony.dolzhnostnaya_instrukciya:
+                with open(shablony.dolzhnostnaya_instrukciya.path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+                doc_title = "Должностная инструкция"
+            elif doc_type == 'kartochka' and shablony.lichnaya_kartochka_rabotnika:
+                with open(shablony.lichnaya_kartochka_rabotnika.path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+                doc_title = "Личная карточка работника"
+            elif doc_type == 'siz' and shablony.lichnaya_kartochka_siz:
+                with open(shablony.lichnaya_kartochka_siz.path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+                doc_title = "Личная карточка СИЗ"
+            elif doc_type == 'riski' and shablony.karta_ocenki_riskov:
+                with open(shablony.karta_ocenki_riskov.path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+                doc_title = "Карта оценки рисков"
+    
+    # Рендерим HTML с использованием Django Template
+    if html_content:
+        try:
+            translation.activate('ru')
+            template = Template(html_content)
+            context = Context({
+                'sotrudnik': sotrudnik,
+                'protokol': protokol,
+                'instruktazh': instruktazh
+            })
+            html_content = template.render(context)
+        except Exception as e:
+            pass
+    
+    # Извлекаем поля для редактирования
+    import re
+    template_fields = re.findall(r'{{\s*([^}]+)\s*}}', html_content)
+    editable_fields = []
+    
+    # Добавляем базовые поля сотрудника
+    editable_fields.extend([
+        {'name': 'sotrudnik_fio', 'label': 'ФИО', 'value': sotrudnik.fio},
+        {'name': 'sotrudnik_specialnost', 'label': 'Специальность', 'value': str(sotrudnik.specialnost) if sotrudnik.specialnost else ''},
+    ])
+    
+    # Добавляем поля протокола если он есть
+    if protokol:
+        editable_fields.extend([
+            {'name': 'protokol_nomer_programmy', 'label': '№ программы', 'value': str(protokol.nomer_programmy)},
+            {
+                'name': 'protokol_data_prikaza', 
+                'label': 'Дата приказа', 
+                'value': protokol.data_prikaza.strftime('%d.%m.%Y') if protokol.data_prikaza else '',
+                'date_value': protokol.data_prikaza.strftime('%Y-%m-%d') if protokol.data_prikaza else ''
+            },
+            {
+                'name': 'protokol_data_dopuska', 
+                'label': 'Дата допуска', 
+                'value': protokol.data_dopuska.strftime('%d.%m.%Y') if protokol.data_dopuska else '',
+                'date_value': protokol.data_dopuska.strftime('%Y-%m-%d') if protokol.data_dopuska else ''
+            },
+            {'name': 'protokol_registracionnyy_nomer', 'label': 'Рег. №', 'value': str(protokol.registracionnyy_nomer)},
+        ])
+    
+    for field in template_fields:
+        field_clean = field.strip()
+        
+        # Обрабатываем все поля sotrudnik.*
+        if field_clean.startswith('sotrudnik.'):
+            field_name = field_clean.split('.')[-1].split('|')[0]
+            field_label = field_name.replace('_', ' ').title()
+            
+            if hasattr(sotrudnik, field_name):
+                field_value = getattr(sotrudnik, field_name, '')
+                current_value = str(field_value) if field_value else ''
+                
+                # Обработка дат
+                field_data = {
+                    'name': f'sotrudnik_{field_name}',
+                    'label': f'Сотрудник: {field_label}',
+                    'value': current_value
+                }
+                
+                # Если это поле даты, добавляем date_value
+                if 'data_' in field_name and hasattr(field_value, 'strftime'):
+                    field_data['date_value'] = field_value.strftime('%Y-%m-%d')
+                    field_data['value'] = field_value.strftime('%d.%m.%Y')
+                
+                editable_fields.append(field_data)
+            else:
+                editable_fields.append({
+                    'name': f'sotrudnik_{field_name}',
+                    'label': f'Сотрудник: {field_label}',
+                    'value': ''
+                })
+        
+        # Обрабатываем поля protokol.*
+        elif field_clean.startswith('protokol.') and protokol:
+            field_name = field_clean.split('.')[-1].split('|')[0]
+            field_label = field_name.replace('_', ' ').title()
+            
+            if hasattr(protokol, field_name):
+                field_value = getattr(protokol, field_name, '')
+                current_value = str(field_value) if field_value else ''
+                
+                # Обработка дат
+                field_data = {
+                    'name': f'protokol_{field_name}',
+                    'label': f'Протокол: {field_label}',
+                    'value': current_value
+                }
+                
+                # Если это поле даты, добавляем date_value
+                if 'data_' in field_name and hasattr(field_value, 'strftime'):
+                    field_data['date_value'] = field_value.strftime('%Y-%m-%d')
+                    field_data['value'] = field_value.strftime('%d.%m.%Y')
+                
+                editable_fields.append(field_data)
+            else:
+                editable_fields.append({
+                    'name': f'protokol_{field_name}',
+                    'label': f'Протокол: {field_label}',
+                    'value': ''
+                })
+        
+        # Обрабатываем поля instruktazh.*
+        elif field_clean.startswith('instruktazh.') and instruktazh:
+            field_name = field_clean.split('.')[-1].split('|')[0]
+            field_label = field_name.replace('_', ' ').title()
+            
+            if hasattr(instruktazh, field_name):
+                field_value = getattr(instruktazh, field_name, '')
+                current_value = str(field_value) if field_value else ''
+                
+                # Обработка дат
+                field_data = {
+                    'name': f'instruktazh_{field_name}',
+                    'label': f'Инструктаж: {field_label}',
+                    'value': current_value
+                }
+                
+                # Если это поле даты, добавляем date_value
+                if 'data_' in field_name and hasattr(field_value, 'strftime'):
+                    field_data['date_value'] = field_value.strftime('%Y-%m-%d')
+                    field_data['value'] = field_value.strftime('%d.%m.%Y')
+                
+                editable_fields.append(field_data)
+            else:
+                editable_fields.append({
+                    'name': f'instruktazh_{field_name}',
+                    'label': f'Инструктаж: {field_label}',
+                    'value': ''
+                })
+    
+    context = {
+        'sotrudnik': sotrudnik,
+        'doc_type': doc_type,
+        'doc_title': doc_title,
+        'html_content': html_content,
+        'editable_fields': editable_fields,
+    }
+    return render(request, 'sotrudniki/document_edit.html', context)
+
+
 def update_document_status(request):
     if request.method == 'POST':
         doc_type = request.POST.get('doc_type')

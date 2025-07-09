@@ -107,7 +107,7 @@ h1 {
                             </p>
                             <p>Дата создания: {{ doc.data_sozdaniya|date:"d.m.Y H:i" }}</p>
                             <a href="/sotrudniki/{{ sotrudnik.id }}/editor/{{ doc.tip_dokumenta }}/" class="btn">🔍 Просмотр</a>
-                            <a href="#" class="btn" style="background: #28a745;">✏️ Редактировать</a>
+                            <a href="/sotrudniki/{{ sotrudnik.id }}/edit/{{ doc.tip_dokumenta }}/" class="btn" style="background: #28a745;">✏️ Редактировать</a>
                         </div>
                     {% endfor %}
                 </div>
@@ -136,7 +136,7 @@ h1 {
                                 {% endif %}
                             </p>
                             <a href="{% url 'sotrudniki:document_editor' sotrudnik.pk 'protokol' %}?id={{ protokol.id }}" class="btn">🔍 Просмотр</a>
-                            <a href="#" class="btn" style="background: #28a745;">✏️ Редактировать</a>
+                            <a href="{% url 'sotrudniki:document_edit' sotrudnik.pk 'protokol' %}?id={{ protokol.id }}" class="btn" style="background: #28a745;">✏️ Редактировать</a>
                         </div>
                     {% endfor %}
                 </div>
@@ -159,7 +159,7 @@ h1 {
                             <p>Инструктор: {{ instruktazh.instruktor.fio }}</p>
                             <p>Сотрудник: <span style="color: green;">✓ {{ instruktazh.sotrudnik.fio }}</span></p>
                             <a href="{% url 'sotrudniki:document_editor' sotrudnik.pk 'instruktazh' %}?id={{ instruktazh.id }}" class="btn">🔍 Просмотр</a>
-                            <a href="#" class="btn" style="background: #28a745;">✏️ Редактировать</a>
+                            <a href="{% url 'sotrudniki:document_edit' sotrudnik.pk 'instruktazh' %}?id={{ instruktazh.id }}" class="btn" style="background: #28a745;">✏️ Редактировать</a>
                         </div>
                     {% endfor %}
                 </div>

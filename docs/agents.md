@@ -1,4 +1,29 @@
-на http://127.0.0.1:8000/sotrudniki/28/documents/# при нажатии на кнопку "✏️ Редактировать" сделай страницу редактирования документа по полям {{ }},
+для таблицы sotrudniki_dokumentysotrudnika добавь поле - дата подписания.
+
+ширину <div class="edit-panel"> уменьши на 10 %, 
+ширину  <div class="preview-panel"> увеличь на 20 %
+
+<div class="editor-content"> увеличь на 20 %
+
+
+на http://127.0.0.1:8000/sotrudniki/36/edit/protokol/?id=11 при изменении редактируемых полей изменения сразу должны вноситься в окно предварительного просмотра
+
+ на странице редактирования документов для редактирования должны быть доступны
+{{ protokol.nomer_programmy }}
+{{ protokol.data_prikaza|date:"d.m.Y" }}–{{ protokol.data_dopuska|date:"d.m.Y" }}
+{{ protokol.registracionnyy_nomer }}
+{{ protokol.data_prikaza|date:"F" }}
+
+editor-container
+на http://127.0.0.1:8000/sotrudniki/28/edit/protokol/ увеличь ширину 
+<div class="editor-container"> на 10 %
+
+
+
+на новой странице http://127.0.0.1:8000/sotrudniki/28/edit/dolzhnostnaya/
+пишет "Нет редактируемых полей в этом документе"
+
+на http://127.0.0.1:8000/sotrudniki/28/documents/# при нажатии на кнопку "✏️ Редактировать" сделай страницу редактирования документа для полей {{ }},
 интерфейс новой страницы должен быть похожим на http://127.0.0.1:8000/sotrudniki/28/editor/dolzhnostnaya/
 
 

@@ -1,0 +1,298 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Редактирование документа - {{ doc_title }}{% endblock %}
+
+{% block extra_styles %}
+.editor-container {
+    max-width: 1848px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.editor-title {
+    color: white;
+    font-size: 24px;
+    margin: 0;
+}
+
+.editor-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 10px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-save {
+    background: rgba(0, 150, 0, 0.8);
+}
+
+.btn-save:hover {
+    background: rgba(0, 150, 0, 1);
+}
+
+.editor-content {
+    display: grid;
+    grid-template-columns: 0.33fr 2.4fr;
+    gap: 20px;
+    height: 84vh;
+}
+
+.edit-panel, .preview-panel {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    height: 100%;
+}
+
+.panel-title {
+    color: white;
+    font-size: 16px;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.preview-frame {
+    width: 100%;
+    height: calc(100% - 40px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    background: white;
+}
+
+.employee-info {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    color: white;
+    font-size: 14px;
+}
+
+.field-group {
+    margin-bottom: 15px;
+}
+
+.field-label {
+    color: white;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.field-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 14px;
+}
+
+.field-input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.edit-form {
+    height: calc(100% - 40px);
+    overflow-y: auto;
+}
+{% endblock %}
+
+{% block content %}
+<div class="editor-container">
+    <div class="employee-info">
+        <strong>Сотрудник:</strong> {{ sotrudnik.fio }} | 
+        <strong>Специальность:</strong> {{ sotrudnik.specialnost|default:"Не указана" }}
+    </div>
+
+    <div class="editor-header">
+        <h1 class="editor-title">{{ doc_title }}</h1>
+        <div class="editor-actions">
+            <button class="btn btn-save" onclick="saveDocument()">💾 Сохранить</button>
+            <button class="btn" onclick="printDocument()">🖨️ Печать</button>
+            <a href="/sotrudniki/{{ sotrudnik.id }}/documents/" class="btn">← Назад</a>
+        </div>
+    </div>
+
+    <div class="editor-content">
+        <div class="edit-panel">
+            <div class="panel-title">Редактирование полей</div>
+            <form id="edit-form" class="edit-form">
+                {% for field in editable_fields %}
+                <div class="field-group">
+                    <label class="field-label">{{ field.label }}</label>
+                    {% if 'data_' in field.name or 'date' in field.name %}
+                        <input type="date" 
+                               class="field-input" 
+                               name="field_{{ field.name }}" 
+                               value="{{ field.date_value|default:field.value }}"
+                               oninput="debouncedUpdatePreview()"
+                               onchange="updatePreview()">
+                    {% else %}
+                        <input type="text" 
+                               class="field-input" 
+                               name="field_{{ field.name }}" 
+                               value="{{ field.value }}"
+                               oninput="debouncedUpdatePreview()"
+                               onchange="updatePreview()">
+                    {% endif %}
+                </div>
+                {% empty %}
+                <div style="color: rgba(255, 255, 255, 0.7); text-align: center; padding: 20px;">
+                    Нет редактируемых полей в этом документе
+                </div>
+                {% endfor %}
+            </form>
+        </div>
+
+        <div class="preview-panel">
+            <div class="panel-title">Предварительный просмотр</div>
+            <iframe id="preview-frame" class="preview-frame"></iframe>
+        </div>
+    </div>
+</div>
+
+<script>
+let originalHtmlContent = `{{ html_content|escapejs }}`;
+let updateTimeout;
+
+{% verbatim %}
+function debouncedUpdatePreview() {
+    clearTimeout(updateTimeout);
+    updateTimeout = setTimeout(updatePreview, 300);
+}
+
+function updatePreview() {
+    let htmlContent = originalHtmlContent;
+    const form = document.getElementById('edit-form');
+    const inputs = form.querySelectorAll('.field-input');
+    
+    inputs.forEach(input => {
+        const fieldName = input.name.replace('field_', '');
+        let value = input.value || '';
+        
+        // Обработка дат
+        if (input.type === 'date' && value) {
+            const date = new Date(value);
+            const formattedDate = date.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit', 
+                year: 'numeric'
+            });
+            
+            // Создаем различные варианты поиска переменных
+            const patterns = [
+                fieldName,
+                'protokol.' + fieldName,
+                'sotrudnik.' + fieldName,
+                'instruktazh.' + fieldName
+            ];
+            
+            patterns.forEach(pattern => {
+                // Заменяем переменные с фильтром date
+                const dateFilterRegex = new RegExp('{{\\s*' + pattern.replace('.', '\\.') + '\\s*\\|\\s*date\\s*:\\s*["\']?[^}]*["\']?\\s*}}', 'g');
+                htmlContent = htmlContent.replace(dateFilterRegex, formattedDate);
+                
+                // Заменяем обычные переменные дат
+                const exactRegex = new RegExp('{{\\s*' + pattern.replace('.', '\\.') + '\\s*}}', 'g');
+                htmlContent = htmlContent.replace(exactRegex, formattedDate);
+            });
+        } else {
+            // Обработка обычных текстовых полей
+            const patterns = [
+                fieldName,
+                'protokol.' + fieldName,
+                'sotrudnik.' + fieldName,
+                'instruktazh.' + fieldName
+            ];
+            
+            patterns.forEach(pattern => {
+                // Ищем точные совпадения переменных Django
+                const exactRegex = new RegExp('{{\\s*' + pattern.replace('.', '\\.') + '\\s*}}', 'g');
+                htmlContent = htmlContent.replace(exactRegex, value);
+                
+                // Ищем переменные с любыми фильтрами
+                const filterRegex = new RegExp('{{\\s*' + pattern.replace('.', '\\.') + '\\s*\\|[^}]*}}', 'g');
+                htmlContent = htmlContent.replace(filterRegex, value);
+            });
+        }
+    });
+    
+    const previewFrame = document.getElementById('preview-frame');
+    if (previewFrame) {
+        const doc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+        doc.open();
+        doc.write(htmlContent);
+        doc.close();
+    }
+}
+{% endverbatim %}
+
+function saveDocument() {
+    const formData = new FormData(document.getElementById('edit-form'));
+    
+    fetch(window.location.href, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Изменения сохранены успешно!');
+        } else {
+            alert('Ошибка при сохранении: ' + (data.message || 'Неизвестная ошибка'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ошибка при сохранении документа');
+    });
+}
+
+function printDocument() {
+    const previewFrame = document.getElementById('preview-frame');
+    previewFrame.contentWindow.print();
+}
+
+// Инициализация предварительного просмотра
+document.addEventListener('DOMContentLoaded', function() {
+    updatePreview();
+});
+</script>
+{% endblock %}
