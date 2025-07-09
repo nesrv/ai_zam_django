@@ -84,6 +84,12 @@
 {% endblock %}
 
 {% block content %}
+<div style="margin-bottom: 1rem;">
+    <a href="/sotrudniki/" style="background: rgba(255, 255, 255, 0.1); color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s; display: inline-block;" onmouseover="this.style.background='rgba(255, 255, 255, 0.2)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'">
+        ← Назад к сотрудникам
+    </a>
+</div>
+
 <div class="employee-header">
     <div class="employee-name">{{ sotrudnik.fio }}</div>
     <div>{{ sotrudnik.specialnost|default:"-" }}</div>

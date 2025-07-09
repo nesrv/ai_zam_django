@@ -1,13 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
-from .models import Organizaciya, Sotrudnik, ProtokolyObucheniya, Podrazdelenie, Specialnost, ShablonyDokumentovPoSpecialnosti, SotrudnikiShablonyProtokolov, Instruktazhi
+from .models import Organizaciya, Sotrudnik, ProtokolyObucheniya, Podrazdelenie, Specialnost, ShablonyDokumentovPoSpecialnosti, SotrudnikiShablonyProtokolov, Instruktazhi, ShablonyInstruktazhej
 from django.conf import settings
 from django.template import Template, Context
 import os
 
 
 def sotrudniki_list(request):
-    sotrudniki = Sotrudnik.objects.select_related('organizaciya', 'specialnost', 'podrazdelenie').all()
+    sotrudniki = Sotrudnik.objects.select_related('organizaciya', 'specialnost', 'podrazdelenie').filter(organizaciya__is_active=True)
     
     podrazdelenie_id = request.GET.get('podrazdelenie')
     if podrazdelenie_id:
@@ -33,6 +33,7 @@ def sotrudnik_detail(request, pk):
 
 def sotrudnik_documents(request, pk):
     from .models import DokumentySotrudnika
+    from datetime import date
     sotrudnik = get_object_or_404(Sotrudnik, pk=pk)
     
     # Автоматически создаем документы для сотрудника
@@ -54,22 +55,138 @@ def sotrudnik_documents(request, pk):
                     tip_dokumenta=doc_type
                 )
     
+    # Автоматически создаем протоколы обучения
+    protokoly_shablony = SotrudnikiShablonyProtokolov.objects.filter(specialnost=sotrudnik.specialnost)
+    for shablon in protokoly_shablony:
+        ProtokolyObucheniya.objects.get_or_create(
+            sotrudnik=sotrudnik,
+            shablon_protokola=shablon,
+            defaults={
+                'nomer_programmy': '2025/AA.00-0000',
+                'data_prikaza': date.today(),
+                'data_protokola_dopuska': date.today(),
+                'data_dopuska_k_rabote': date.today(),
+                'registracionnyy_nomer': f"{sotrudnik.id}-{shablon.id}"
+            }
+        )
+    
+    # Автоматически создаем инструктажи для сотрудника
+    from datetime import date
+    instruktazhi_shablony = ShablonyInstruktazhej.objects.filter(specialnost=sotrudnik.specialnost)
+    for shablon in instruktazhi_shablony:
+        Instruktazhi.objects.get_or_create(
+            sotrudnik=sotrudnik,
+            instruktazh=shablon,
+            defaults={
+                'data_provedeniya': date.today(),
+                'instruktor': sotrudnik
+            }
+        )
+    
     # Получаем созданные документы
     dokumenty = DokumentySotrudnika.objects.filter(sotrudnik=sotrudnik)
-    
-    # Получаем протоколы обучения по специальности
-    protokoly_shablony = SotrudnikiShablonyProtokolov.objects.filter(specialnost=sotrudnik.specialnost)
-    
-    # Получаем инструктажи по специальности
-    instruktazhi_shablony = Instruktazhi.objects.filter(specialnost=sotrudnik.specialnost)
+    protokoly = ProtokolyObucheniya.objects.filter(sotrudnik=sotrudnik).select_related('shablon_protokola')
+    instruktazhi = Instruktazhi.objects.filter(sotrudnik=sotrudnik).select_related('instruktazh__specialnost', 'instruktor')
     
     context = {
         'sotrudnik': sotrudnik,
         'dokumenty': dokumenty,
-        'protokoly_shablony': protokoly_shablony,
-        'instruktazhi_shablony': instruktazhi_shablony,
+        'protokoly': protokoly,
+        'instruktazhi': instruktazhi,
     }
     return render(request, 'sotrudniki/documents.html', context)
+
+
+def document_editor(request, pk, doc_type):
+    from .models import DokumentySotrudnika
+    from django.template import Template, Context
+    from django.utils import translation
+    
+    sotrudnik = get_object_or_404(Sotrudnik, pk=pk)
+    
+    # Получаем HTML содержимое документа
+    html_content = ""
+    doc_title = ""
+    protokol = None
+    instruktazh = None
+    
+    if doc_type == 'instruktazh':
+        # Получаем ID инструктажа из параметров запроса
+        instruktazh_id = request.GET.get('id')
+        if instruktazh_id:
+            instruktazh = get_object_or_404(Instruktazhi.objects.select_related('instruktazh'), 
+                                          id=instruktazh_id, sotrudnik=sotrudnik)
+            if instruktazh.instruktazh.html_file:
+                with open(instruktazh.instruktazh.html_file.path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+                doc_title = f"Инструктаж: {instruktazh.instruktazh.get_tip_instruktazha_display()}"
+    elif doc_type == 'protokol':
+        # Получаем ID протокола из параметров запроса
+        protokol_id = request.GET.get('id')
+        if protokol_id:
+            protokol = get_object_or_404(ProtokolyObucheniya.objects.select_related('shablon_protokola'), 
+                                       id=protokol_id, sotrudnik=sotrudnik)
+            if protokol.shablon_protokola.html_file:
+                with open(protokol.shablon_protokola.html_file.path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+                doc_title = f"Протокол: {protokol.shablon_protokola.kurs}"
+    elif doc_type in ['dolzhnostnaya', 'kartochka', 'siz', 'riski']:
+        if sotrudnik.specialnost and hasattr(sotrudnik.specialnost, 'shablony_dokumentov'):
+            shablony = sotrudnik.specialnost.shablony_dokumentov
+            
+            if doc_type == 'dolzhnostnaya' and shablony.dolzhnostnaya_instrukciya:
+                with open(shablony.dolzhnostnaya_instrukciya.path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+                doc_title = "Должностная инструкция"
+            elif doc_type == 'kartochka' and shablony.lichnaya_kartochka_rabotnika:
+                with open(shablony.lichnaya_kartochka_rabotnika.path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+                doc_title = "Личная карточка работника"
+            elif doc_type == 'siz' and shablony.lichnaya_kartochka_siz:
+                with open(shablony.lichnaya_kartochka_siz.path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+                doc_title = "Личная карточка СИЗ"
+            elif doc_type == 'riski' and shablony.karta_ocenki_riskov:
+                with open(shablony.karta_ocenki_riskov.path, 'r', encoding='utf-8') as f:
+                    html_content = f.read()
+                doc_title = "Карта оценки рисков"
+    
+    # Рендерим HTML с использованием Django Template для корректной обработки переменных
+    if html_content:
+        try:
+            # Активируем русскую локализацию для дат
+            translation.activate('ru')
+            
+            template = Template(html_content)
+            context = Context({
+                'sotrudnik': sotrudnik,
+                'protokol': protokol,
+                'instruktazh': instruktazh
+            })
+            html_content = template.render(context)
+        except Exception as e:
+            # Если возникла ошибка при рендеринге, используем простую замену строк
+            html_content = html_content.replace('{{ sotrudnik.fio }}', sotrudnik.fio)
+            html_content = html_content.replace('{{ sotrudnik.specialnost }}', sotrudnik.specialnost.nazvanie if sotrudnik.specialnost else 'Не указана')
+            if sotrudnik.data_rozhdeniya:
+                html_content = html_content.replace('{{ sotrudnik.data_rozhdeniya|date:"d.m.Y" }}', sotrudnik.data_rozhdeniya.strftime('%d.%m.%Y'))
+            if sotrudnik.data_priema:
+                html_content = html_content.replace('{{ sotrudnik.data_priema|date:"d.m.Y" }}', sotrudnik.data_priema.strftime('%d.%m.%Y'))
+            if sotrudnik.data_nachala_raboty:
+                html_content = html_content.replace('{{ sotrudnik.data_nachala_raboty|date:"d.m.Y" }}', sotrudnik.data_nachala_raboty.strftime('%d.%m.%Y'))
+            if sotrudnik.organizaciya:
+                html_content = html_content.replace('{{ sotrudnik.organizaciya }}', sotrudnik.organizaciya.nazvanie)
+                html_content = html_content.replace('{{ sotrudnik.organizaciya.adres }}', sotrudnik.organizaciya.adres or '')
+                html_content = html_content.replace('{{ sotrudnik.organizaciya.ogrn }}', sotrudnik.organizaciya.ogrn or '')
+                html_content = html_content.replace('{{ sotrudnik.organizaciya.inn }}', sotrudnik.organizaciya.inn or '')
+    
+    context = {
+        'sotrudnik': sotrudnik,
+        'doc_type': doc_type,
+        'doc_title': doc_title,
+        'html_content': html_content,
+    }
+    return render(request, 'sotrudniki/document_editor.html', context)
 
 
 def update_document_status(request):
@@ -289,6 +406,30 @@ def download_document(request, sotrudnik_id, doc_type, protokol_id=None):
         html_content = html_content.replace('{{ sotrudnik.specialnost|upper }}', specialnost_name.upper())
         
         return HttpResponse(html_content, content_type='text/html')
+    
+    elif doc_type == 'instruktazh':
+        from django.template import Template, Context
+        
+        if not protokol_id:
+            raise Http404("Инструктаж не найден")
+        
+        instruktazh = get_object_or_404(Instruktazhi.objects.select_related('instruktazh', 'instruktor'), 
+                                       id=protokol_id, sotrudnik=sotrudnik)
+        
+        if instruktazh.instruktazh.html_file:
+            with open(instruktazh.instruktazh.html_file.path, 'r', encoding='utf-8') as f:
+                html_content = f.read()
+        else:
+            raise Http404("Шаблон инструктажа не найден")
+        
+        template = Template(html_content)
+        context = Context({
+            'sotrudnik': sotrudnik,
+            'instruktazh': instruktazh
+        })
+        
+        rendered_html = template.render(context)
+        return HttpResponse(rendered_html, content_type='text/html')
     
     raise Http404("Файл не найден")
 

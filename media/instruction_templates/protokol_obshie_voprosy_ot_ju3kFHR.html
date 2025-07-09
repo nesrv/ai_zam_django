@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Протокол - Общие вопросы охраны труда</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style type="text/css">
+        .commercial {
+            width: 900px;
+            padding: 20px;
+            margin: 0 auto;
+            border: 1px solid #444;
+            font-family: 'times' !important;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .commercial_landscape {
+            width: 1200px;
+            padding: 20px;
+            margin: 20px auto;
+            border: 1px solid #444;
+            font-family: 'times' !important;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        td {
+            padding: 5px;
+        }
+
+        @media print {
+            .commercial {
+                border: none;
+            }
+            .commercial_landscape {
+                border: none;
+                transform: rotate(270deg) translateX(-390px) translateY(-300px);
+                margin: 0 auto;
+            }
+            .page_break_div {
+                display: none;
+            }
+        }
+
+        .page_break {
+            page-break-before: always;
+        }
+
+        .page_break_div {
+            text-align: center;
+        }
+
+        .page_break_text {
+            width: 130px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #eee6cf;
+            margin-top: -30px;
+        }
+
+        .page_break_hr {
+            margin: 20px 0;
+            padding: 0;
+            height: 0;
+            border: none;
+            border-top: 1px dashed #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="commercial">
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                        <b>{{ sotrudnik.organizaciya }}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%;">Адрес: {{ sotrudnik.organizaciya.adres }}</td>
+                    <td style="width:50%;text-align: right;">ИНН: {{ sotrudnik.organizaciya.inn }}<br>ОГРН: {{ sotrudnik.organizaciya.ogrn }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <div style="text-align: center; line-height: 1;">
+            <b>ПРИКАЗ</b>
+        </div>
+        <br>
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width:50%;">№ {{ protokol.nomer_programmy }}</td>
+                    <td style="width:50%;text-align: right;">«{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="text-align: center; line-height: 1;">
+            г. Санкт-Петербург
+        </div>
+
+        <br>
+
+        <p style="text-align: center; line-height: 1;">
+            <b>«О направлении работников на обучение по охране труда с отрывом от производства»</b>
+        </p>
+
+        <p style="text-align: justify; line-height: 1;">
+            В целях исполнения требований ст. ст. 214, 219 Трудового кодекса Российской Федерации, Правил обучения по охране труда и проверки знания требований охраны труда (утв. Постановлением Правительства РФ от 24.12.2021 N 2464) приказываю:
+        </p>
+
+        <p style="text-align: justify; line-height: 1;">
+            1. Направить на обучение по охране труда с отрывом от производства (работы) по программе обучения по общим вопросам охраны труда и функционирования системы управления охраной труда, следующих работников:
+        </p>
+
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 14px;line-height: 1;">
+            <thead>
+                <tr style="text-align: center;">
+                    <td style="width: 50px">№ п.п.</td>
+                    <td>Ф.И.О. работника, направляемого на обучение</td>
+                    <td style="width: 300px">Должность</td>
+                    <td style="width: 150px">Период обучения</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>{{ sotrudnik.fio }}</td>
+                    <td>{{ sotrudnik.specialnost }}</td>
+                    <td>{{ protokol.data_prikaza|date:"d.m.Y" }}–{{ protokol.data_dopuska|date:"d.m.Y" }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br><br>
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width: 50%">Заместитель генерального директора<br>{{ sotrudnik.organizaciya }}<br></td>
+                    <td style="text-align: right;">/В.В. Масленников/</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br><br>
+        <b>С приказом № {{ protokol.nomer_programmy }} от «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г. ознакомлен:</b>
+        <br><br>
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width: 244px">{{ sotrudnik.specialnost }}</td>
+                    <td style="text-align: right;">/{{ sotrudnik.fio }}/</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial">
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                        <b>{{ sotrudnik.organizaciya }}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%;">Адрес: {{ sotrudnik.organizaciya.adres }}</td>
+                    <td style="width:50%;text-align: right;">ИНН: {{ sotrudnik.organizaciya.inn }}<br>ОГРН: {{ sotrudnik.organizaciya.ogrn }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <table style="width: 100%;line-height: 1;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 18px;"><b>«УТВЕРЖДАЮ»</b></td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">Заместитель генерального директора</td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">{{ sotrudnik.organizaciya }}</td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">___________________В.В. Масленников<br></td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">«{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br><br>
+        <div style="text-align: center;">
+            <b>Программа № {{ protokol.nomer_programmy }}<br>
+            обучения по общим вопросам охраны труда и функционирования системы управления охраной труда<br>
+            </b>
+        </div>
+        <br>
+        <div style="text-align: justify;">
+            <ul style="list-style:disc;">
+                <li>Основы охраны труда в Российской Федерации</li>
+                <li>Стратегия безопасности труда и охраны здоровья</li>
+                <li>Система управления охраной труда в организации</li>
+                <li>Специальная оценка условий труда и оценка профессиональных рисков</li>
+                <li>Расследование и предупреждение несчастных случаев и профессиональных заболеваний</li>
+            </ul>
+        </div>
+        <br>
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 14px;">
+            <thead>
+                <tr style="text-align: center;">
+                    <td style="width: 50px"><b>№ п.п.</b></td>
+                    <td><b>Тема</b></td>
+                    <td style="width: 150px"><b>Время изучения темы, час</b></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 50px">1</td>
+                    <td>Основы охраны труда в Российской Федерации</td>
+                    <td style="width: 150px;text-align: center;">4</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">2</td>
+                    <td>Стратегия безопасности труда и охраны здоровья</td>
+                    <td style="width: 150px;text-align: center;">2</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">3</td>
+                    <td>Система управления охраной труда в организации</td>
+                    <td style="width: 150px;text-align: center;">4</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">4</td>
+                    <td>Специальная оценка условий труда и оценка профессиональных рисков</td>
+                    <td style="width: 150px;text-align: center;">4</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">5</td>
+                    <td>Расследование и предупреждение несчастных случаев и профессиональных заболеваний</td>
+                    <td style="width: 150px;text-align: center;">2</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">6</td>
+                    <td>Итоговая аттестация</td>
+                    <td style="width: 150px;text-align: center;">0.5</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px"></td>
+                    <td><b>ИТОГО:</b></td>
+                    <td style="width: 150px;text-align: center;"><b>16.5 часов</b></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
+        <div style="text-align: left;">
+            <b>Продолжительность обучения</b> – 16.5 часов.<br>
+            <b>Форма обучения</b> – очно-заочная, с применением дистанционных образовательных технологий и/или электронного обучения<br>
+            <b>Форма проведения проверки знаний требований охраны труда</b> – собеседование, устный или письменный экзамен, тестирование (в том числе на компьютере).
+        </div>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial_landscape">
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                        <b>{{ sotrudnik.organizaciya }}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%;">Адрес: {{ sotrudnik.organizaciya.adres }}</td>
+                    <td style="width:50%;text-align: right;">ИНН: {{ sotrudnik.organizaciya.inn }}<br>ОГРН: {{ sotrudnik.organizaciya.ogrn }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <p style="text-align: center;margin: 0px;">
+            <b>ПРОТОКОЛ</b>
+        </p>
+        <p style="text-align: center;margin: 0px;">
+            <b>заседания комиссии по проверке знаний требований охраны труда</b>
+        </p>
+
+        <p style="text-align: center;margin: 0px;">
+            <b>№ {{ protokol.nomer_programmy }} от «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.</b>
+        </p>
+
+        <p style="text-align: justify;line-height: 1;margin-top: 10px;">
+            В соответствии с Постановлением Правительства РФ от 24.12.2021 № 2464 "О порядке обучения по охране труда и проверки знания требований охраны труда" (вместе с "Правилами обучения по охране труда и проверки знания требований охраны труда"), приказом {{ sotrudnik.organizaciya }} от «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г. № {{ protokol.nomer_programmy }} комиссия по проверке знания требований охраны труда в составе:
+        </p>
+
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width: 20%">Председатель комиссии:</td>
+                    <td>Владимиров Виктор Валерьевич - Главный инженер</td>
+                </tr>
+                <tr>
+                    <td valign="top" style="width: 20%">Члены комиссии:</td>
+                    <td>
+                        Хахаев Руслан Анатольевич - Заместитель генерального директора<br>
+                        Симонян Игорь Шотаевич - Производитель работ
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="text-align: justify;">
+            провела проверку знаний требований охраны труда работников по программе обучения по общим вопросам охраны труда и функционирования системы управления охраной труда № {{ protokol.nomer_programmy }} в объеме 16.5 часов:
+        </div>
+
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 12px;">
+            <thead>
+                <tr style="text-align: center;">
+                    <td style="width: 10px">№ п.п.</td>
+                    <td style="width: 250px">Ф.И.О. работника</td>
+                    <td style="width: 250px">Должность</td>
+                    <td>Результат проверки знания (удовлетворительно/неудовлетворительно)</td>
+                    <td>Дата проверки знания требований охраны труда</td>
+                    <td>Рег. № записи в реестре обученных лиц</td>
+                    <td>Подпись работника, прошедшего проверку знания требований охраны труда</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 15px;">1.</td>
+                    <td>{{ sotrudnik.fio }}</td>
+                    <td>{{ sotrudnik.specialnost }}</td>
+                    <td>удовлетворительно</td>
+                    <td>{{ protokol.data_dopuska|date:"d.m.Y" }}</td>
+                    <td>{{ protokol.registracionnyy_nomer }}</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td>Председатель комиссии:</td>
+                    <td>/В.В. Владимиров/</td>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                </tr>
+                <tr>
+                    <td valign="top">Члены комиссии:</td>
+                    <td>
+                        /Р.А. Хахаев/<br><br>
+                        /И.Ш. Симонян/
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial">
+        <p style="line-height: 1;font-size: 14px;">Итоговая аттестация по программе: <b>«Общие вопросы охраны труда и функционирования системы управления охраной труда»</b></p>
+
+        <p style="line-height: 1;font-size: 12px;margin-top: 5px;margin-bottom: 5px;">
+            ФИО: {{ sotrudnik.fio }}<br>
+            Должность: {{ sotrudnik.specialnost }}<br>
+            Место работы: {{ sotrudnik.organizaciya }}<br>
+            Дата: «{{ protokol.data_dopuska|date:"d" }}» {{ protokol.data_dopuska|date:"F" }} {{ protokol.data_dopuska|date:"Y" }} г.<br>
+            Подпись _____________________<br>
+        </p>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #1<br>
+            <b>Какие основные принципы обеспечения безопасности и охраны здоровья работников установлены в Трудовом кодексе РФ?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Приоритет жизни и здоровья работников</li>
+                <li>Минимизация затрат на охрану труда</li>
+                <li>Максимизация производительности труда</li>
+                <li>Все перечисленное</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #2<br>
+            <b>Что включает в себя система управления охраной труда в организации?</b>
+            <br>Выберите несколько вариантов ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Политику в области охраны труда</li>
+                <li>Планирование мероприятий по охране труда</li>
+                <li>Контроль и мониторинг</li>
+                <li>Все перечисленное</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #3<br>
+            <b>Какова периодичность проведения специальной оценки условий труда?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Не реже одного раза в 3 года</li>
+                <li>Не реже одного раза в 5 лет</li>
+                <li>Ежегодно</li>
+                <li>По мере необходимости</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #4<br>
+            <b>Что такое профессиональный риск?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Вероятность причинения вреда здоровью в результате воздействия вредных и опасных производственных факторов</li>
+                <li>Размер заработной платы работника</li>
+                <li>Количество рабочих часов в день</li>
+                <li>Стаж работы сотрудника</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #5<br>
+            <b>В какие сроки работодатель обязан уведомить о несчастном случае на производстве?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Немедленно</li>
+                <li>В течение суток</li>
+                <li>В течение трех дней</li>
+                <li>В течение недели</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #6<br>
+            <b>Кто несет ответственность за обеспечение безопасных условий труда в организации?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Работодатель</li>
+                <li>Работник</li>
+                <li>Служба охраны труда</li>
+                <li>Профсоюз</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #7<br>
+            <b>Какие виды инструктажей по охране труда предусмотрены законодательством?</b>
+            <br>Выберите несколько вариантов ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Вводный</li>
+                <li>Первичный на рабочем месте</li>
+                <li>Повторный</li>
+                <li>Все перечисленное</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #8<br>
+            <b>Что является основной целью проведения специальной оценки условий труда?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Выявление вредных и опасных производственных факторов</li>
+                <li>Определение размера заработной платы</li>
+                <li>Планирование отпусков</li>
+                <li>Контроль дисциплины труда</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #9<br>
+            <b>Какие меры принимаются для снижения профессиональных рисков?</b>
+            <br>Выберите несколько вариантов ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Устранение опасности</li>
+                <li>Снижение риска</li>
+                <li>Использование СИЗ</li>
+                <li>Все перечисленное</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #10<br>
+            <b>Какова продолжительность расследования несчастного случая на производстве?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>3 дня</li>
+                <li>15 дней</li>
+                <li>30 дней</li>
+                <li>В зависимости от тяжести случая</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

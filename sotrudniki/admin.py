@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     Organizaciya, Podrazdelenie, Specialnost, Sotrudnik,
-    ProtokolyObucheniya, ShablonyDokumentovPoSpecialnosti, SotrudnikiShablonyProtokolov, Instruktazhi, DokumentySotrudnika
+    ProtokolyObucheniya, ShablonyDokumentovPoSpecialnosti, SotrudnikiShablonyProtokolov, Instruktazhi, DokumentySotrudnika, ShablonyInstruktazhej
 )
 
 
@@ -40,7 +40,7 @@ class InstruktazhiInline(admin.TabularInline):
     model = Instruktazhi
     fk_name = 'sotrudnik'
     extra = 0
-    fields = ['specialnost', 'tip_instruktazha', 'data_provedeniya', 'instruktor']
+    fields = ['instruktazh', 'data_provedeniya', 'instruktor']
 
 
 @admin.register(Sotrudnik)
@@ -85,31 +85,31 @@ class ShablonyDokumentovPoSpecialnostiAdmin(admin.ModelAdmin):
 
 @admin.register(ProtokolyObucheniya)
 class ProtokolyObucheniyaAdmin(admin.ModelAdmin):
-    list_display = ['shablon_protokola', 'sotrudnik', 'data_prikaza', 'registracionnyy_nomer', 'raspechatn']
+    list_display = ['shablon_protokola', 'sotrudnik', 'nomer_programmy', 'data_prikaza', 'registracionnyy_nomer', 'raspechatn']
     list_filter = ['data_prikaza', 'raspechatn', 'shablon_protokola']
-    search_fields = ['registracionnyy_nomer', 'shablon_protokola__nomer_programmy', 'shablon_protokola__kurs', 'sotrudnik__fio']
+    search_fields = ['registracionnyy_nomer', 'nomer_programmy', 'shablon_protokola__kurs', 'sotrudnik__fio']
 
 
 @admin.register(SotrudnikiShablonyProtokolov)
 class SotrudnikiShablonyProtokolovAdmin(admin.ModelAdmin):
-    list_display = ['nomer_programmy', 'kurs', 'html_file']
-    list_filter = ['nomer_programmy', 'specialnost']
-    search_fields = ['nomer_programmy', 'kurs']
-    fields = ['nomer_programmy', 'kurs', 'specialnost', 'html_file']
+    list_display = ['kurs', 'html_file']
+    list_filter = ['specialnost']
+    search_fields = ['kurs']
+    fields = ['kurs', 'specialnost', 'html_file']
     filter_horizontal = ['specialnost']
     
-    def get_readonly_fields(self, request, obj=None):
-        if obj and obj.protokolyobucheniya_set.exists():
-            return ['nomer_programmy', 'kurs']
-        return []
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == 'kurs':
+            kwargs['widget'] = admin.widgets.AdminTextareaWidget(attrs={'rows': 4, 'cols': 80})
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
 
 
 @admin.register(Instruktazhi)
 class InstruktazhiAdmin(admin.ModelAdmin):
-    list_display = ['tip_instruktazha', 'sotrudnik', 'specialnost', 'data_provedeniya', 'instruktor']
-    list_filter = ['tip_instruktazha', 'specialnost', 'data_provedeniya']
-    search_fields = ['specialnost__nazvanie', 'instruktor__fio', 'sotrudnik__fio']
-    fields = ['sotrudnik', 'specialnost', 'tip_instruktazha', 'data_provedeniya', 'instruktor', 'html_file']
+    list_display = ['instruktazh', 'sotrudnik', 'data_provedeniya', 'instruktor']
+    list_filter = ['instruktazh__tip_instruktazha', 'instruktazh__specialnost', 'data_provedeniya']
+    search_fields = ['instruktazh__specialnost__nazvanie', 'instruktor__fio', 'sotrudnik__fio']
+    fields = ['sotrudnik', 'instruktazh', 'data_provedeniya', 'instruktor']
 
 
 @admin.register(DokumentySotrudnika)
@@ -117,3 +117,10 @@ class DokumentySotrudnikaAdmin(admin.ModelAdmin):
     list_display = ['sotrudnik', 'tip_dokumenta', 'sozdano', 'data_sozdaniya']
     list_filter = ['tip_dokumenta', 'sozdano', 'data_sozdaniya']
     search_fields = ['sotrudnik__fio']
+
+
+@admin.register(ShablonyInstruktazhej)
+class ShablonyInstruktazhejAdmin(admin.ModelAdmin):
+    list_display = ['specialnost', 'tip_instruktazha', 'html_file']
+    list_filter = ['specialnost', 'tip_instruktazha']
+    search_fields = ['specialnost__nazvanie']

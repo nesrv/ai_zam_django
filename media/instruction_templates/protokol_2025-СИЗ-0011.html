@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Протокол СИЗ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style type="text/css">
+        .commercial {
+            width: 900px;
+            padding: 20px;
+            margin: 0 auto;
+            border: 1px solid #444;
+            font-family: 'times' !important;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .commercial_landscape {
+            width: 1200px;
+            padding: 20px;
+            margin: 20px auto;
+            border: 1px solid #444;
+            font-family: 'times' !important;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .commercial-title {
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        td {
+            padding: 5px;
+        }
+
+        @media print {
+            .commercial {
+                border: none;
+            }
+            .commercial_landscape {
+                border: none;
+                transform: rotate(270deg) translateX(-390px) translateY(-300px);
+                margin: 0 auto;
+            }
+        }
+
+        .page_break {
+            page-break-before: always;
+        }
+
+        .page_break_div {
+            text-align: center;
+        }
+
+        .page_break_text {
+            width: 130px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #eee6cf;
+            margin-top: -30px;
+        }
+
+        .page_break_hr {
+            margin: 20px 0;
+            padding: 0;
+            height: 0;
+            border: none;
+            border-top: 1px dashed #000;
+        }
+    </style>
+</head>
+<body class="body-Window ac-bootstrap1">
+
+    <div class="commercial">
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                        <b>{{ sotrudnik.organizaciya }}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%;">Адрес: {{ sotrudnik.organizaciya.adres }}</td>
+                    <td style="width:50%;text-align: right;">ИНН: {{ sotrudnik.organizaciya.inn }}<br>ОГРН: {{ sotrudnik.organizaciya.ogrn }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <div style="text-align: center; line-height: 1;">
+            <b>ПРИКАЗ</b>
+        </div>
+        <br>
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width:50%;">№ {{ protokol.registracionnyy_nomer }}</td>
+                    <td style="width:50%;text-align: right;">«{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p style="text-align: center; line-height: 1;">
+            г. Санкт-Петербург
+        </p>
+
+        <p style="text-align: center; line-height: 1;">
+            <b>«О направлении работников на обучение по охране труда с отрывом от производства»</b>
+        </p>
+
+        <p style="text-align: justify; line-height: 1;">
+            В целях исполнения требований ст. ст. 214, 219 Трудового кодекса Российской Федерации, Правил обучения по охране труда и проверки знания требований охраны труда (утв. Постановлением Правительства РФ от 24.12.2021 N 2464) приказываю:
+        </p>
+
+        <p style="text-align: justify; line-height: 1;">
+            1. Направить на обучение по охране труда с отрывом от производства (работы) по программе обучения по использованию (применению) средств индивидуальной защиты, следующих работников:
+        </p>
+
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 14px;line-height: 1;">
+            <thead>
+                <tr style="text-align: center;">
+                    <td style="width: 50px">№ п.п.</td>
+                    <td>Ф.И.О. работника, направляемого на обучение</td>
+                    <td style="width: 300px">Должность</td>
+                    <td style="width: 150px">Период обучения</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>{{ sotrudnik.fio }}</td>
+                    <td>{{ sotrudnik.specialnost }}</td>
+                    <td>{{ protokol.data_prikaza|date:"d.m.Y" }}–{{ protokol.data_dopuska|date:"d.m.Y" }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br><br>
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width: 50%">Заместитель генерального директора<br>{{ sotrudnik.organizaciya }}<br></td>
+                    <td style="text-align: right;">/В.В. Масленников/</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br><br>
+        <b>С приказом № {{ protokol.registracionnyy_nomer }} от «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г. ознакомлен:</b>
+        <br><br>
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width: 244px">{{ sotrudnik.specialnost }}</td>
+                    <td style="text-align: right;">/{{ sotrudnik.fio }}/</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial">
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                        <b>{{ sotrudnik.organizaciya }}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%;">Адрес: {{ sotrudnik.organizaciya.adres }}</td>
+                    <td style="width:50%;text-align: right;">ИНН: {{ sotrudnik.organizaciya.inn }}<br>ОГРН: {{ sotrudnik.organizaciya.ogrn }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <table style="width: 100%;line-height: 1;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 18px;"><b>«УТВЕРЖДАЮ»</b></td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">Заместитель генерального директора</td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">{{ sotrudnik.organizaciya }}</td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">___________________В.В. Масленников<br></td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">«{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br><br>
+        <div style="text-align: center;">
+            <b>Программа № {{ protokol.nomer_programmy }}<br>
+            обучения по использованию (применению, ношению) средств индивидуальной защиты<br>
+            </b>
+        </div>
+        <br>
+        <div style="text-align: justify;">
+            <ul style="list-style:disc;">
+                <li>Обувь специальная для защиты от пониженных температур</li>
+                <li>Одежда сигнальная повышенной видимости</li>
+                <li>Одежда специальная для защиты от пониженных температур, пониженных температур и ветра</li>
+                <li>Одежда специальная защитная</li>
+                <li>Средства защиты головы</li>
+                <li>Средства защиты ног</li>
+                <li>Средства защиты рук</li>
+                <li>Средства индивидуальной защиты головы от механических воздействий</li>
+                <li>Средства индивидуальной защиты головы: головной убор для защиты от пониженных температур</li>
+                <li>Средства индивидуальной защиты органов дыхания фильтрующего типа противоаэрозольные</li>
+                <li>Средства индивидуальной защиты от падения с высоты</li>
+                <li>Средства индивидуальной защиты рук для защиты от пониженных температур</li>
+            </ul>
+        </div>
+        <br>
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 14px;">
+            <thead>
+                <tr style="text-align: center;">
+                    <td style="width: 50px"><b>№ п.п.</b></td>
+                    <td><b>Тема</b></td>
+                    <td style="width: 150px"><b>Время изучения темы, час</b></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 50px">1</td>
+                    <td>Действующее законодательство по использованию (применению, ношению) средств индивидуальной защиты</td>
+                    <td style="width: 150px;text-align: center;">5 минут</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">2</td>
+                    <td>Осмотр работником средств индивидуальной защиты до использования</td>
+                    <td style="width: 150px;text-align: center;">5 минут</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">3</td>
+                    <td>Демонстрация правильного использования (применения, ношения) средств индивидуальной защиты</td>
+                    <td style="width: 150px;text-align: center;">15 минут</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">4</td>
+                    <td>Тренировка по применению средств индивидуальной защиты</td>
+                    <td style="width: 150px;text-align: center;">15 минут</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">5</td>
+                    <td>Осмотр работником средств индивидуальной защиты после использования</td>
+                    <td style="width: 150px;text-align: center;">5 минут</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">6</td>
+                    <td>Практическое занятие по формированию умений и навыков использования (применения, ношения) средств индивидуальной защиты с применением технических средств обучения и наглядных пособий</td>
+                    <td style="width: 150px;text-align: center;">1 час</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">7</td>
+                    <td>Проверка знания требований охраны труда по вопросам использования (применения, ношения) средств индивидуальной защиты</td>
+                    <td style="width: 150px;text-align: center;">15 минут</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
+        <div style="text-align: left;">
+            <b>Продолжительность обучения</b> – 2 часа.<br>
+            <b>Форма обучения</b> – очная<br>
+            <b>Форма проведения проверки знаний требований охраны труда</b> – демонстрация сформированных навыков правильного использования (применения, ношения) средств индивидуальной защиты.
+        </div>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial_landscape">
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                        <b>{{ sotrudnik.organizaciya }}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%;">Адрес: {{ sotrudnik.organizaciya.adres }}</td>
+                    <td style="width:50%;text-align: right;">ИНН: {{ sotrudnik.organizaciya.inn }}<br>ОГРН: {{ sotrudnik.organizaciya.ogrn }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <p style="text-align: center;margin: 0px;">
+            <b>ПРОТОКОЛ</b>
+        </p>
+        <p style="text-align: center;margin: 0px;">
+            <b>заседания комиссии по проверке знаний требований безопасным методам и приемам выполнения работ</b>
+        </p>
+
+        <p style="text-align: center;margin: 0px;">
+            <b>№ {{ protokol.registracionnyy_nomer }} от «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.</b>
+        </p>
+
+        <p style="text-align: justify;line-height: 1;margin-top: 10px;">
+            В соответствии с Постановлением Правительства РФ от 24.12.2021 № 2464 "О порядке обучения по охране труда и проверки знания требований охраны труда" (вместе с "Правилами обучения по охране труда и проверки знания требований охраны труда"), приказом {{ sotrudnik.organizaciya }} от «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г. № {{ protokol.registracionnyy_nomer }} комиссия по проверке знания требований охраны труда в составе:
+        </p>
+
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width: 20%">Председатель комиссии:</td>
+                    <td>Владимиров Виктор Валерьевич - Главный инженер</td>
+                </tr>
+                <tr>
+                    <td valign="top" style="width: 20%">Члены комиссии:</td>
+                    <td>Хахаев Руслан Анатольевич - Заместитель генерального директора<br>Симонян Игорь Шотаевич - Производитель работ</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="text-align: justify;">
+            провела проверку знаний требований охраны труда работников по программе обучения по использованию (применению, ношению) средств индивидуальной защиты № {{ protokol.nomer_programmy }} в объеме 2 часов:
+        </div>
+
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 12px;">
+            <thead>
+                <tr style="text-align: center;">
+                    <td style="width: 10px">№ п.п.</td>
+                    <td style="width: 250px">Ф.И.О. работника</td>
+                    <td style="width: 250px">Должность</td>
+                    <td>Результат проверки знания (удовлетворительно/неудовлетворительно)</td>
+                    <td>Дата проверки знания требований охраны труда</td>
+                    <td>Рег. № записи в реестре обученных лиц</td>
+                    <td>Подпись работника, прошедшего проверку знания требований охраны труда</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 15px;">1.</td>
+                    <td>{{ sotrudnik.fio }}</td>
+                    <td>{{ sotrudnik.specialnost }}</td>
+                    <td>удовлетворительно</td>
+                    <td>{{ protokol.data_dopuska|date:"d.m.Y" }}</td>
+                    <td>{{ protokol.registracionnyy_nomer }}</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td>Председатель комиссии:</td>
+                    <td>/В.В. Владимиров/</td>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                </tr>
+                <tr>
+                    <td valign="top">Члены комиссии:</td>
+                    <td>/Р.А. Хахаев/<br><br>/И.Ш. Симонян/</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial">
+        <p style="font-size: 18px; text-align: center;"><b>ДНЕВНИК<br>практического занятия</b></p>
+
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Фамилия, имя, отчество:<b>{{ sotrudnik.fio }}</b></p>
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Должность: <b>{{ sotrudnik.specialnost }}</b></p>
+
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Место проведения практического занятия: <b>{{ sotrudnik.organizaciya }}</b></p>
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Программа обучения: <b>№ {{ protokol.nomer_programmy }} «Использование (применение) средств индивидуальной защиты»</b></p>
+
+        <br>
+        <p style="font-size: 14px; text-align: left;margin: 0px;"><b>Сведения об ответственном за проведение обучения:</b></p>
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Фамилия, имя, отчество: Симонян Игорь Шотаевич</p>
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Должность: Производитель работ</p>
+        <br>
+
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Период обучения: с «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г. по «{{ protokol.data_dopuska|date:"d" }}» {{ protokol.data_dopuska|date:"F" }} {{ protokol.data_dopuska|date:"Y" }} г.</p>
+
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Количество академ. часов практического занятия: 1 час.</p>
+
+        <br>
+        <p style="text-align: justify;margin-top: 0px;"><strong>Сведения о прохождении практического занятия:</strong></p>
+
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 12px;line-height: 1;">
+            <tbody>
+                <tr>
+                    <td>
+                        <p style="text-align: center;"><strong>№</strong></p>
+                    </td>
+                    <td>
+                        <p style="text-align: center;"><strong>Наименование тем и краткое содержание занятий (выполненных работ)</strong></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p style="text-align: center;">1</p>
+                    </td>
+                    <td>Тренировка по использованию (применению) СИЗ согласно типовым нормам выдачи по профессии (должности)</td>
+                </tr>
+                <tr>
+                    <td>
+                        <p style="text-align: center;">2</p>
+                    </td>
+                    <td>Тренировка по проведению работником осмотра средств индивидуальной защиты до и после использования</td>
+                </tr>
+                <tr>
+                    <td>
+                        <p style="text-align: center;">3</p>
+                    </td>
+                    <td>Отработка умения выбраковать СИЗ</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
+        <div style="font-size: 16px; text-align: left;">
+            <b>Заключение:</b> В процессе практического занятия обучаемый ({{ sotrudnik.fio }}) проявил себя хорошо. Вся программа усвоена.
+        </div>
+
+        <br><br>
+        <table style="border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td>
+                        <p>Подпись лица, ответственного за обучение</p>
+                    </td>
+                    <td>_________________________________</td>
+                    <td>/ И.Ш. Симонян /</td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>Подпись лица, прошедшего практическое занятие</p>
+                    </td>
+                    <td>_________________________________</td>
+                    <td>/ {{ sotrudnik.fio }} /</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial">
+        <p style="line-height: 1;font-size: 14px;">Итоговая аттестация по программе: <b>«Использование (применение) средств индивидуальной защиты»</b></p>
+
+        <p style="line-height: 1;font-size: 12px;margin-top: 5px;margin-bottom: 5px;">
+            ФИО: {{ sotrudnik.fio }}<br>
+            Должность: {{ sotrudnik.specialnost }}<br>
+            Место работы: {{ sotrudnik.organizaciya }}<br>
+            Дата: «{{ protokol.data_dopuska|date:"d" }}» {{ protokol.data_dopuska|date:"F" }} {{ protokol.data_dopuska|date:"Y" }} г.<br>
+            Подпись _____________________<br>
+        </p>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #1<br>
+            <b>Какое средство индивидуальной защиты выдается работникам не более чем на 1 год, даже если срок носки установлен "до износа", согласно Приказу Минтруда России от 09.12.2014г. №997н?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Головной убор</li>
+                <li>Костюм для защиты от общих производственных загрязнений и механических воздействий</li>
+                <li>Очки защитные.</li>
+                <li>Сапоги резиновые с защитным подноском</li>
+                <li>Сигнальный жилет</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #2<br>
+            <b>Какие из перечисленных продуктов являются СИЗ головы в соответствии с ТР ТС 019/2011 «О безопасности средств индивидуальной защиты»?</b>
+            <br>Выберите несколько вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Подшлемник</li>
+                <li>Каска защитная.</li>
+                <li>Каскетка.</li>
+                <li>Шапка от пониженных температур.</li>
+                <li>Бейсболка</li>
+                <li>Подшлемник термостойкий.</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #3<br>
+            <b>Вставьте правильный ответ в свободное поле в тексте: Конструкция карабина должна исключать ________, а также исключать защемление и травмирование рук при работе с ним</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Случайное открытие.</li>
+                <li>Самопроизвольное</li>
+                <li>Не контролируемое разъединение</li>
+                <li>Проворот</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #4<br>
+            <b>Какая из приведенных рекомендаций не приемлема при эксплуатации СИЗ глаз (очков защитных) и уходе за ними?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>не кладите очки на твердую поверхность линзами вниз</li>
+                <li>не оставляйте очки рядом с нагревательными приборами</li>
+                <li>не пытайтесь гнуть оправу, нагревать, загибать заушники</li>
+                <li>в случае сильного загрязнения очков промойте мыльной пеной, ополосните проточной водой и высушите чистой салфеткой</li>
+                <li>в случае сильного загрязнения очков протрите салфеткой с нанесенным кремом, затем салфеткой, содержащей спирт.</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #5<br>
+            <b>На какие СИЗ оформляют декларацию соответствия?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>СИЗ 1 класса защиты.</li>
+                <li>СИЗ 2 класса защиты</li>
+                <li>На все СИЗ</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #6<br>
+            <b>Сколько степеней защиты имеет бланк сертификата соответствия требованиям ТР ТС 019/2011 «О безопасности СИЗ»?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>3</li>
+                <li>2</li>
+                <li>4.</li>
+                <li>5</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #7<br>
+            <b>Для чего рекомендуется с костюмом для защиты от искр и брызг расплавленного металла использовать дополнительно нарукавники из огнестойких материалов при проведении сварочных работ?</b>
+            <br>Выберите несколько вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Для усиления защитных характеристик костюма.</li>
+                <li>Для продления срока службы костюма.</li>
+                <li>Для соблюдения требований ТР ТС 019/2011</li>
+                <li>Все ответы верные</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #8<br>
+            <b>Техническое регулирование – это правовое регулирование в области: (дополните определение)</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>установления, применения и исполнения обязательных требований, применения на добровольной основе требований к объектам техрегулирования и правовое регулирование отношений в области оценки соответствия.</li>
+                <li>установления обязательных требований к объектам техрегулирования</li>
+                <li>установления и применения обязательных требований к объектам техрегулирования и правовое регулирование отношений в области оценки соответствия</li>
+                <li>установления, применения и исполнения обязательных требований, применения на добровольной основе требований к объектам техрегулирования</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #9<br>
+            <b>Что входит в понятие «органолептический контроль»?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Контроль, при котором первичная информация воспринимается органами чувств.</li>
+                <li>Контроль, при котором первичная информация воспринимается органами зрения</li>
+                <li>Контроль, при котором первичная информация воспринимается органами обоняния</li>
+                <li>Контроль, при котором первичная информация воспринимается органами осязания</li>
+            </ul>
+        </div>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #10<br>
+            <b>Какой вид СИЗ глаз необходимо использовать при работе в плохо освещённом помещении?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Щиток лицевой с окантовкой</li>
+                <li>Маска</li>
+                <li>Очки с антизапотевающим покрытием</li>
+                <li>Очки защитные открытого типа с желтой линзой.</li>
+                <li>Очки закрытого типа с непрямой вентиляцией</li>
+                <li>Щиток сварщика</li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>

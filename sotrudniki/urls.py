@@ -12,6 +12,7 @@ urlpatterns = [
     path('<int:sotrudnik_id>/download/<str:doc_type>/', views.download_document, name='download_document'),
     path('<int:sotrudnik_id>/download/<str:doc_type>/<int:protokol_id>/', views.download_document, name='download_protokol'),
     path('<int:pk>/documents/', views.sotrudnik_documents, name='documents'),
+    path('<int:pk>/editor/<str:doc_type>/', views.document_editor, name='document_editor'),
     path('<int:pk>/', views.sotrudnik_detail, name='detail'),
     path('', views.sotrudniki_list, name='list'),
 ]

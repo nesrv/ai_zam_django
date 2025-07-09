@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Протокол обучения</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style type="text/css">
+        .commercial {
+            width: 900px;
+            padding: 20px;
+            margin: 0 auto;
+            border: 1px solid #444;
+            font-family: 'times' !important;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .commercial_landscape {
+            width: 1200px;
+            padding: 20px;
+            margin: 20px auto;
+            border: 1px solid #444;
+            font-family: 'times' !important;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        td {
+            padding: 5px;
+        }
+
+        @media print {
+            .commercial {
+                border: none;
+            }
+            .commercial_landscape {
+                border: none;
+                transform: rotate(270deg) translateX(-390px) translateY(-300px);
+                margin: 0 auto;
+            }
+            .page_break_div {
+                display: none;
+            }
+        }
+
+        .page_break {
+            page-break-before: always;
+        }
+
+        .page_break_div {
+            text-align: center;
+        }
+
+        .page_break_text {
+            width: 130px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #eee6cf;
+            margin-top: -30px;
+        }
+
+        .page_break_hr {
+            margin: 20px 0;
+            padding: 0;
+            height: 0;
+            border: none;
+            border-top: 1px dashed #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="commercial">
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                        <b>{{ sotrudnik.organizaciya }}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%;">Адрес: {{ sotrudnik.organizaciya.adres }}</td>
+                    <td style="width:50%;text-align: right;">ИНН: {{ sotrudnik.organizaciya.inn }}<br>ОГРН: {{ sotrudnik.organizaciya.ogrn }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <div style="text-align: center; line-height: 1;">
+            <b>ПРИКАЗ</b>
+        </div>
+        <br>
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width:50%;">№ {{ protokol.nomer_programmy }}</td>
+                    <td style="width:50%;text-align: right;">«{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="text-align: center; line-height: 1;">
+            г. Санкт-Петербург
+        </div>
+
+        <br>
+
+        <p style="text-align: center; line-height: 1;">
+            <b>«О направлении работников на обучение по охране труда с отрывом от производства»</b>
+        </p>
+
+        <p style="text-align: justify; line-height: 1;">
+            В целях исполнения требований ст. ст. 214, 219 Трудового кодекса Российской Федерации, Правил обучения по охране труда и проверки знания требований охраны труда (утв. Постановлением Правительства РФ от 24.12.2021 N 2464) приказываю:
+        </p>
+
+        <p style="text-align: justify; line-height: 1;">
+            1. Направить на обучение по охране труда с отрывом от производства (работы) по программе обучения безопасным методам и приемам выполнения работ при воздействии вредных и (или) опасных производственных факторов, источников опасности, идентифицированных в рамках специальной оценки условий труда и оценки профессиональных рисков, следующих работников:
+        </p>
+
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 14px;line-height: 1;">
+            <thead>
+                <tr style="text-align: center;">
+                    <td style="width: 50px">№ п.п.</td>
+                    <td>Ф.И.О. работника, направляемого на обучение</td>
+                    <td style="width: 300px">Должность</td>
+                    <td style="width: 150px">Период обучения</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>{{ sotrudnik.fio }}</td>
+                    <td>{{ sotrudnik.specialnost }}</td>
+                    <td>{{ protokol.data_prikaza|date:"d.m.Y" }}–{{ protokol.data_dopuska|date:"d.m.Y" }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br><br>
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width: 50%">Заместитель генерального директора<br>{{ sotrudnik.organizaciya }}<br></td>
+                    <td style="text-align: right;">/В.В. Масленников/</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br><br>
+        <b>С приказом № {{ protokol.nomer_programmy }} от «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г. ознакомлен:</b>
+        <br><br>
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width: 244px">{{ sotrudnik.specialnost }}</td>
+                    <td style="text-align: right;">/{{ sotrudnik.fio }}/</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial">
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                        <b>{{ sotrudnik.organizaciya }}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%;">Адрес: {{ sotrudnik.organizaciya.adres }}</td>
+                    <td style="width:50%;text-align: right;">ИНН: {{ sotrudnik.organizaciya.inn }}<br>ОГРН: {{ sotrudnik.organizaciya.ogrn }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <table style="width: 100%;line-height: 1;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 18px;"><b>«УТВЕРЖДАЮ»</b></td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">Заместитель генерального директора</td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">{{ sotrudnik.organizaciya }}</td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">___________________В.В. Масленников<br></td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">«{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br><br>
+        <div style="text-align: center; line-height: 1.2;">
+            <b>Программа № {{ protokol.nomer_programmy }}<br>
+            обучения безопасным методам и приемам выполнения работ при воздействии вредных и (или) опасных производственных факторов, источников опасности, идентифицированных в рамках специальной оценки условий труда и оценки профессиональных рисков<br>
+            </b>
+        </div>
+        <br>
+        <div style="text-align: justify; line-height: 1;">
+            <ul style="list-style:disc;">
+                <li>Работы по разборке (обрушению) зданий и сооружений, а также по укреплению и восстановлению аварийных частей и элементов зданий и сооружений</li>
+                <li>Разборка (разрушение) зданий и сооружений при их реконструкции или сносе</li>
+            </ul>
+        </div>
+        <br>
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 14px;line-height: 1;">
+            <thead>
+                <tr style="text-align: center;">
+                    <td style="width: 50px"><b>№ п.п.</b></td>
+                    <td><b>Тема</b></td>
+                    <td style="width: 150px"><b>Время изучения темы, час</b></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 50px">1</td>
+                    <td>Классификация опасностей. Идентификация вредных и (или) опасных производственных факторов на рабочем месте</td>
+                    <td style="width: 150px;text-align: center;">30 минут</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">2</td>
+                    <td>Оценка уровня профессионального риска выявленных (идентифицированных) опасностей</td>
+                    <td style="width: 150px;text-align: center;">30 минут</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">3</td>
+                    <td>Безопасные методы и приемы выполнения работ, указанных в программе</td>
+                    <td style="width: 150px;text-align: center;">30 минут</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">4</td>
+                    <td>Меры защиты от воздействия вредных и (или) опасных производственных факторов</td>
+                    <td style="width: 150px;text-align: center;">30 минут</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">5</td>
+                    <td>Средства индивидуальной защиты от воздействия вредных и (или) опасных производственных факторов</td>
+                    <td style="width: 150px;text-align: center;">30 минут</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">6</td>
+                    <td>Разработка мероприятий по снижению уровней профессиональных рисков</td>
+                    <td style="width: 150px;text-align: center;">30 минут</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">7</td>
+                    <td>Организация оказания первой помощи (при необходимости)</td>
+                    <td style="width: 150px;text-align: center;">30 минут</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">8</td>
+                    <td>Практические занятия по формированию умений и навыков безопасного выполнения работ, с применением технических средств обучения и наглядных пособий.</td>
+                    <td style="width: 150px;text-align: center;">11 часов 30 минут</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">9</td>
+                    <td>Проверка знания требований охраны труда</td>
+                    <td style="width: 150px;text-align: center;">1 час</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
+        <div style="text-align: left; line-height: 1.3;">
+            <b>Продолжительность обучения</b> – 16 часов.<br>
+            <b>Форма обучения</b> – очная<br>
+            <b>Форма проведения проверки знаний требований охраны труда</b> – собеседование, устный или письменный экзамен, тестирование (в том числе на компьютере)
+        </div>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial_landscape">
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                        <b>{{ sotrudnik.organizaciya }}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%;">Адрес: {{ sotrudnik.organizaciya.adres }}</td>
+                    <td style="width:50%;text-align: right;">ИНН: {{ sotrudnik.organizaciya.inn }}<br>ОГРН: {{ sotrudnik.organizaciya.ogrn }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <p style="text-align: center;margin: 0px;">
+            <b>ПРОТОКОЛ</b>
+        </p>
+        <p style="text-align: center;margin: 0px;">
+            <b>заседания комиссии по проверке знаний требований безопасным методам и приемам выполнения работ</b>
+        </p>
+
+        <p style="text-align: center;margin: 0px;">
+            <b>№ {{ protokol.nomer_programmy }} от «{{ protokol.data_dopuska|date:"d" }}» {{ protokol.data_dopuska|date:"F" }} {{ protokol.data_dopuska|date:"Y" }} г.</b>
+        </p>
+
+        <p style="text-align: justify;line-height: 1;margin-top: 5px;">
+            В соответствии с Постановлением Правительства РФ от 24.12.2021 № 2464 "О порядке обучения по охране труда и проверки знания требований охраны труда" (вместе с "Правилами обучения по охране труда и проверки знания требований охраны труда"), приказом {{ sotrudnik.organizaciya }} от «02» июня 2025 г. № 02.06/25-1 комиссия по проверке знания требований охраны труда в составе:
+        </p>
+
+        <table style="width: 100%;line-height: 1;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width: 20%">Председатель комиссии:</td>
+                    <td>Владимиров Виктор Валерьевич - Главный инженер</td>
+                </tr>
+                <tr>
+                    <td valign="top" style="width: 20%">Члены комиссии:</td>
+                    <td>
+                        Хахаев Руслан Анатольевич - Заместитель генерального директора<br>
+                        Симонян Игорь Шотаевич - Производитель работ
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="text-align: justify;">
+            провела проверку знаний требований охраны труда работников по программе обучения безопасным методам и приемам выполнения работ при воздействии вредных и (или) опасных производственных факторов, источников опасности, идентифицированных в рамках специальной оценки условий труда и оценки профессиональных рисков № {{ protokol.nomer_programmy }} в объеме 16 часов:
+        </div>
+
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 12px;">
+            <thead>
+                <tr style="text-align: center;">
+                    <td style="width: 10px">№ п.п.</td>
+                    <td style="width: 250px">Ф.И.О. работника</td>
+                    <td style="width: 250px">Должность</td>
+                    <td>Результат проверки знания (удовлетворительно/неудовлетворительно)</td>
+                    <td>Дата проверки знания требований охраны труда</td>
+                    <td>Рег. № записи в реестре обученных лиц</td>
+                    <td>Подпись работника, прошедшего проверку знания требований охраны труда</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 15px;">1.</td>
+                    <td>{{ sotrudnik.fio }}</td>
+                    <td>{{ sotrudnik.specialnost }}</td>
+                    <td>удовлетворительно</td>
+                    <td>{{ protokol.data_dopuska|date:"d.m.Y" }}</td>
+                    <td>{{ protokol.registracionnyy_nomer }}</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td>Председатель комиссии:</td>
+                    <td>/В.В. Владимиров/</td>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                </tr>
+                <tr>
+                    <td valign="top">Члены комиссии:</td>
+                    <td>
+                        /Р.А. Хахаев/<br><br>
+                        /И.Ш. Симонян/
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial">
+        <p style="font-size: 18px; text-align: center;">
+            <b>ДНЕВНИК<br>практического занятия по формированию умений и навыков безопасного выполнения работ</b>
+        </p>
+
+        <br>
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Фамилия, имя, отчество: <b>{{ sotrudnik.fio }}</b></p>
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Должность: <b>{{ sotrudnik.specialnost }}</b></p>
+
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Место проведения практического занятия: <b>{{ sotrudnik.organizaciya }}</b></p>
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Программа обучения: <b>№ {{ protokol.nomer_programmy }} «Безопасные методы и приемы выполнения работ при воздействии вредных и (или) опасных производственных факторов, источников опасности, идентифицированных в рамках специальной оценки условий труда и оценки профессиональных рисков»</b></p>
+
+        <br>
+        <p style="font-size: 14px; text-align: left;margin: 0px;"><b>Сведения об ответственном за проведение обучения:</b></p>
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Фамилия, имя, отчество: Симонян Игорь Шотаевич</p>
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Должность: Производитель работ</p>
+        <br>
+
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Период обучения: с «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г. по «{{ protokol.data_dopuska|date:"d" }}» {{ protokol.data_dopuska|date:"F" }} {{ protokol.data_dopuska|date:"Y" }} г.</p>
+
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Количество академ. часов практического занятия: 11 часов 30 минут.</p>
+
+        <br>
+        <p style="text-align: justify;margin: 0px;"><strong>Сведения о прохождении практического занятия:</strong></p>
+
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 12px;line-height: 1;">
+            <tbody>
+                <tr>
+                    <td><p style="text-align: center;"><strong>№</strong></p></td>
+                    <td><p style="text-align: center;"><strong>Наименование тем и краткое содержание занятий (выполненных работ)</strong></p></td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">1</p></td>
+                    <td>Характеристика условий труда. Вредные и (или) опасные производственные факторы, опасности, идентифицированные в рамках специальной оценки условий труда и оценки профессиональных рисков.</td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">2</p></td>
+                    <td>Перечень основных возможных аварий и аварийных ситуаций. Действия при возникновении аварий и аварийных ситуаций. Действия по оказанию первой помощи пострадавшим при травмировании, отравлении и других повреждениях здоровья.</td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">3</p></td>
+                    <td>Требования охраны труда перед началом работы. Подготовка рабочего места. Порядок осмотра работником и подготовка к работе средств индивидуальной защиты до использования.</td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">4</p></td>
+                    <td>Требования безопасности, предъявляемые к инструментам, механизмам, приспособлениям. Проверка исправности оборудования, приспособлений и инструмента.</td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">5</p></td>
+                    <td>Требования охраны труда во время работы. Способы и приемы безопасного выполнения работ, использования оборудования, приспособлений и инструментов. Требования, предъявляемые к правильному использованию (применению) средств индивидуальной защиты работников. Действия, направленные на предотвращение аварийных ситуаций</td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">6</p></td>
+                    <td>Требования охраны труда по окончании работы</td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">7</p></td>
+                    <td>Выполнение работ, указанных в программе, под руководством ответственного за обучение</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
+        <div style="font-size: 16px; text-align: left;">
+            <b>Заключение:</b> В процессе практического занятия обучаемый ({{ sotrudnik.fio }}) проявил себя хорошо. Вся программа усвоена.
+        </div>
+
+        <br>
+        <table style="line-height: 1;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td><p>Подпись лица, ответственного за обучение</p></td>
+                    <td>_________________________________</td>
+                    <td>/ И.Ш. Симонян /</td>
+                </tr>
+                <tr>
+                    <td><p>Подпись лица, прошедшего практическое занятие</p></td>
+                    <td>_________________________________</td>
+                    <td>/ {{ sotrudnik.fio }} /</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial">
+        <p style="line-height: 1;font-size: 14px;">Итоговая аттестация по программе: <b>«Безопасные методы и приемы выполнения работ при воздействии вредных и (или) опасных производственных факторов, источников опасности, идентифицированных в рамках специальной оценки условий труда и оценки профессиональных рисков»</b></p>
+
+        <p style="line-height: 1;font-size: 12px;margin-top: 5px;margin-bottom: 5px;">
+            ФИО: {{ sotrudnik.fio }}<br>
+            Должность: {{ sotrudnik.specialnost }}<br>
+            Место работы: {{ sotrudnik.organizaciya }}<br>
+            Дата: «{{ protokol.data_dopuska|date:"d" }}» {{ protokol.data_dopuska|date:"F" }} {{ protokol.data_dopuska|date:"Y" }} г.<br>
+            Подпись _____________________<br>
+        </p>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #1<br>
+            <b>Когда выдаются средства индивидуальной защиты, предназначенные для использования в особых температурных условиях обусловленных ежегодными сезонными изменениями температуры?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>В начале календарного года</li>
+                <li>С наступлением соответствующего периода года, а с его окончанием сдаются работодателю для организованного хранения до следующего сезона.</li>
+                <li>При трудоустройстве</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #2<br>
+            <b>Обязанности работника в области охраны труда.</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Соблюдать требования охраны труда</li>
+                <li>Правильно использовать производственное оборудование, инструменты, сырье и материалы, применять технологию</li>
+                <li>Все вышеуказанное.</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #3<br>
+            <b>Как выдаются средства индивидуальной защиты работникам, совмещающим профессии или постоянно выполняющим совмещаемые работы, в том числе в составе комплексных бригад?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Средства индивидуальной защиты выдаются по основной профессии</li>
+                <li>Помимо выдаваемых им средств индивидуальной защиты по основной профессии, дополнительно выдаются в зависимости от выполняемых работ и другие виды средств индивидуальной защиты, предусмотренные соответствующими типовыми нормами для совмещаемой профессии (совмещаемому виду работ) с внесением отметки о выданных средствах индивидуальной защиты в личную карточку учета выдачи средств индивидуальной защиты.</li>
+                <li>По выбору работника</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #4<br>
+            <b>Является ли выдача средств индивидуальной защиты предупреждающей мерой по снижению профессионального риска?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Не является</li>
+                <li>Является финальной по приоритетам компенсационной мерой в случае, когда иные меры уже реализованы или не могут быть реализованы по объективным причинам.</li>
+                <li>Является самой приоритетной мерой по снижению профессиональных рисков, работник обеспечивается СИЗ При приеме на работу</li>
+                <li>не является, так как относится к мерам реактивного реагирования на определенный в ходе специальной оценки условий труда уровень вредности рабочего места</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #5<br>
+            <b>Обязаны ли работники применять выданные им средства индивидуальной защиты?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Обязаны.</li>
+                <li>Не обязаны</li>
+                <li>Обязаны требующих практических навыков, остальные не обязаны</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #6<br>
+            <b>Обязан ли работник применять выданные ему работодателем средства индивидуальной защиты?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Обязан</li>
+                <li>Не обязан</li>
+                <li>Обязан применять правильно.</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #7<br>
+            <b>Имеет ли право работник отказаться от продолжения работы на своем рабочем месте в случае возникновения опасности для его жизни?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>да, имеет, такое право ему предоставлено Трудовым кодексом РФ.</li>
+                <li>нет, не имеет, так как работник не должен уходить со своего рабочего места в случае возникновения такой ситуации</li>
+                <li>нет, не имеет, так как в случае отказа от продолжения работы он тем самым нарушит условия трудового договора</li>
+                <li>нет, не имеет, так как Трудовым кодексом РФ запрещено покидать рабочее место в случае угрозы жизни и здоровья до полного выяснения всех обстоятельств</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #8<br>
+            <b>Что входит в перечень мероприятий по оказанию первой помощи?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Вызов скорой медицинской помощи, других специальных служб, сотрудники которых обязаны оказывать первую помощь в соответствии с федеральным законом или со специальным правилом</li>
+                <li>Определение наличия сознания у пострадавшего</li>
+                <li>Все вышеуказанное.</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #9<br>
+            <b>Кем устанавливается время пользования средствами индивидуальной защиты, предназначенными для использования в особых температурных условиях, обусловленных ежегодными сезонными изменениями температуры?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Устанавливается работодателем</li>
+                <li>Устанавливается работодателем с учётом мнения выборного органа первичной профсоюзной организации или иного представительного органа работников и местных климатических условий.</li>
+                <li>местными органами власти</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #10<br>
+            <b>Какое определение СИЗ является верным: «Средство индивидуальной защиты – это ...»</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Средство, используемое для предотвращения воздействия на работника вредных и (или) опасных производственных факторов, особых температурных условий, а также для защиты от загрязнения</li>
+                <li>Средство, используемое для уменьшения воздействия на работника вредных и (или) опасных производственных факторов, особых температурных условий, а также для защиты от загрязнения</li>
+                <li>Средство, используемое для предотвращения или уменьшения воздействия на работника вредных и (или) опасных производственных факторов</li>
+                <li>Средство, используемое для предотвращения или уменьшения воздействия на работника вредных и (или) опасных производственных факторов, особых температурных условий, а также для защиты от загрязнения.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

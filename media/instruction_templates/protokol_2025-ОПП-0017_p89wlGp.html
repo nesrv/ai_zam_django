@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Протокол обучения</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style type="text/css">
+        .commercial {
+            width: 900px;
+            padding: 20px;
+            margin: 0 auto;
+            border: 1px solid #444;
+            font-family: 'times' !important;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .commercial_landscape {
+            width: 1200px;
+            padding: 20px;
+            margin: 20px auto;
+            border: 1px solid #444;
+            font-family: 'times' !important;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        td {
+            padding: 5px;
+        }
+
+        @media print {
+            .commercial {
+                border: none;
+            }
+            .commercial_landscape {
+                border: none;
+                transform: rotate(270deg) translateX(-390px) translateY(-300px);
+                margin: 0 auto;
+            }
+            .page_break_div {
+                display: none;
+            }
+        }
+
+        .page_break {
+            page-break-before: always;
+        }
+
+        .page_break_div {
+            text-align: center;
+        }
+
+        .page_break_text {
+            width: 130px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #eee6cf;
+            margin-top: -30px;
+        }
+
+        .page_break_hr {
+            margin: 20px 0;
+            padding: 0;
+            height: 0;
+            border: none;
+            border-top: 1px dashed #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="commercial">
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                        <b>{{ sotrudnik.organizaciya }}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%;">Адрес: {{ sotrudnik.organizaciya.adres }}</td>
+                    <td style="width:50%;text-align: right;">ИНН: {{ sotrudnik.organizaciya.inn }}<br>ОГРН: {{ sotrudnik.organizaciya.ogrn }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <div style="text-align: center; line-height: 1;">
+            <b>ПРИКАЗ</b>
+        </div>
+        <br>
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width:50%;">№ {{ protokol.nomer_programmy }}</td>
+                    <td style="width:50%;text-align: right;">«{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="text-align: center; line-height: 1;">
+            г. Санкт-Петербург
+        </div>
+
+        <br>
+
+        <p style="text-align: center; line-height: 1;">
+            <b>«О направлении работников на обучение по охране труда с отрывом от производства»</b>
+        </p>
+        <br>
+        <p style="text-align: justify; line-height: 1;">
+            В целях исполнения требований ст. ст. 214, 219 Трудового кодекса Российской Федерации, Правил обучения по охране труда и проверки знания требований охраны труда (утв. Постановлением Правительства РФ от 24.12.2021 N 2464) приказываю:
+        </p>
+
+        <p style="text-align: justify; line-height: 1;">
+            1. Направить на обучение по охране труда с отрывом от производства (работы) по программе обучения безопасным методам и приемам выполнения работ повышенной опасности («{{ protokol.nazvanie_kursa }}»), к которым предъявляются дополнительные требования в соответствии с нормативными правовыми актами, содержащими государственные нормативные требования охраны труда, следующих работников:
+        </p>
+
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 14px;line-height: 1;">
+            <thead>
+                <tr style="text-align: center;">
+                    <td style="width: 50px">№ п.п.</td>
+                    <td>Ф.И.О. работника, направляемого на обучение</td>
+                    <td style="width: 300px">Должность</td>
+                    <td style="width: 150px">Период обучения</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>{{ sotrudnik.fio }}</td>
+                    <td>{{ sotrudnik.specialnost }}</td>
+                    <td>{{ protokol.data_prikaza|date:"d.m.Y" }}–{{ protokol.data_dopuska|date:"d.m.Y" }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br><br>
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width: 50%">Заместитель генерального директора<br>{{ sotrudnik.organizaciya }}<br></td>
+                    <td style="text-align: right;">/В.В. Масленников/</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br><br>
+        <b>С приказом № {{ protokol.nomer_programmy }} от «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г. ознакомлен:</b>
+        <br><br>
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width: 244px">{{ sotrudnik.specialnost }}</td>
+                    <td style="text-align: right;">/{{ sotrudnik.fio }}/</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial">
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                        <b>{{ sotrudnik.organizaciya }}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%;">Адрес: {{ sotrudnik.organizaciya.adres }}</td>
+                    <td style="width:50%;text-align: right;">ИНН: {{ sotrudnik.organizaciya.inn }}<br>ОГРН: {{ sotrudnik.organizaciya.ogrn }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <table style="width: 100%; line-height: 1;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 18px;"><b>«УТВЕРЖДАЮ»</b></td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">Заместитель генерального директора</td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">{{ sotrudnik.organizaciya }}</td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">___________________В.В. Масленников<br></td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">«{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br><br>
+        <div style="text-align: center;">
+            <b>Программа обучения № {{ protokol.nomer_programmy }}<br>
+            безопасным методам и приемам выполнения работ повышенной опасности («{{ protokol.nazvanie_kursa }}»), к которым предъявляются дополнительные требования в соответствии с нормативными правовыми актами, содержащими государственные нормативные требования охраны труда<br>
+            </b>
+        </div>
+        <br>
+        <div style="text-align: left;">
+            <ul style="list-style:disc;">
+                <li>Газоопасные работы<br>-Газоопасные работы<br></li>
+            </ul>
+        </div>
+
+        <br>
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 14px;line-height: 1;">
+            <thead>
+                <tr style="text-align: center;">
+                    <td rowspan="2" style="width: 10px"><b>№ п.п.</b></td>
+                    <td rowspan="2"><b>Наименование темы</b></td>
+                    <td rowspan="2" style="width: 50px;"><b>Кол-во часов</b></td>
+                    <td colspan="3"><b>в том числе</b></td>
+                </tr>
+                <tr>
+                    <td style="width: 50px;text-align: center;"><b>ТЗ</b></td>
+                    <td style="width: 50px;text-align: center;"><b>ПЗ</b></td>
+                    <td style="width: 50px;text-align: center;"><b>Аттестация</b></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Основы охраны труда в Российской Федерации</td>
+                    <td style="text-align: center;">1</td>
+                    <td style="text-align: center;">0.9</td>
+                    <td style="text-align: center;">-</td>
+                    <td style="text-align: center;">0.1</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Стратегия безопасности труда и охраны здоровья</td>
+                    <td style="text-align: center;">1</td>
+                    <td style="text-align: center;">0.4</td>
+                    <td style="text-align: center;">0.5</td>
+                    <td style="text-align: center;">0.1</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Система управления охраной труда в организации</td>
+                    <td style="text-align: center;">1</td>
+                    <td style="text-align: center;">0.4</td>
+                    <td style="text-align: center;">0.5</td>
+                    <td style="text-align: center;">0.1</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Безопасные методы и приемы выполнения работ повышенной опасности</td>
+                    <td style="text-align: center;">2.5</td>
+                    <td style="text-align: center;">0,9</td>
+                    <td style="text-align: center;">1.5</td>
+                    <td style="text-align: center;">0.1</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Расследование и предупреждение несчастных случаев и профессиональных заболеваний</td>
+                    <td style="text-align: center;">1</td>
+                    <td style="text-align: center;">0.4</td>
+                    <td style="text-align: center;">0.5</td>
+                    <td style="text-align: center;">0.1</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Организация оказания первой помощи</td>
+                    <td style="text-align: center;">1</td>
+                    <td style="text-align: center;">0.4</td>
+                    <td style="text-align: center;">0.5</td>
+                    <td style="text-align: center;">0.1</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Итоговая аттестация</td>
+                    <td style="text-align: center;">0.5</td>
+                    <td style="text-align: center;">-</td>
+                    <td style="text-align: center;">-</td>
+                    <td style="text-align: center;">0.5</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><b>ИТОГО</b></td>
+                    <td style="text-align: center;"><b>8</b></td>
+                    <td style="text-align: center;"><b>3.4</b></td>
+                    <td style="text-align: center;"><b>3.5</b></td>
+                    <td style="text-align: center;"><b>1.1</b></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
+        <div style="text-align: left;">
+            <b>Продолжительность обучения</b> – 8 часов.<br>
+            <b>Форма обучения</b> – очно-заочная, с применением дистанционных образовательных технологий и/или электронного обучения.<br>
+            <b>Форма проведения проверки знаний требований охраны труда</b> – собеседование, устный или письменный экзамен, тестирование (в том числе на компьютере).
+        </div>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial_landscape">
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                        <b>{{ sotrudnik.organizaciya }}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%;">Адрес: {{ sotrudnik.organizaciya.adres }}</td>
+                    <td style="width:50%;text-align: right;">ИНН: {{ sotrudnik.organizaciya.inn }}<br>ОГРН: {{ sotrudnik.organizaciya.ogrn }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <p style="text-align: center;margin: 0px;">
+            <b>ПРОТОКОЛ</b>
+        </p>
+        <p style="text-align: center;margin: 0px;">
+            <b>заседания комиссии по проверке знаний требований безопасным методам и приемам выполнения работ</b>
+        </p>
+
+        <p style="text-align: center;margin: 0px;">
+            <b>№ {{ protokol.nomer_programmy }} от «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.</b>
+        </p>
+
+        <p style="text-align: justify;line-height: 1;">
+            В соответствии с Постановлением Правительства РФ от 24.12.2021 № 2464 "О порядке обучения по охране труда и проверки знания требований охраны труда" (вместе с "Правилами обучения по охране труда и проверки знания требований охраны труда"), приказом {{ sotrudnik.organizaciya }} от «02» июня 2025 г. № 02.06/25-1 комиссия по проверке знания требований охраны труда в составе:
+        </p>
+
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width: 20%">Председатель комиссии:</td>
+                    <td>Владимиров Виктор Валерьевич - Главный инженер</td>
+                </tr>
+                <tr>
+                    <td valign="top" style="width: 20%">Члены комиссии:</td>
+                    <td>
+                        Хахаев Руслан Анатольевич - Заместитель генерального директора<br>
+                        Симонян Игорь Шотаевич - Производитель работ
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="text-align: justify;">
+            провела проверку знаний требований охраны труда работников по программе обучения безопасным методам и приемам выполнения работ повышенной опасности («{{ protokol.nazvanie_kursa }}»), к которым предъявляются дополнительные требования в соответствии с нормативными правовыми актами, содержащими государственные нормативные требования охраны труда рисков № {{ protokol.nomer_programmy }} в объеме 8 часов:
+        </div>
+
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 12px;">
+            <thead>
+                <tr style="text-align: center;">
+                    <td style="width: 10px">№ п.п.</td>
+                    <td style="width: 250px">Ф.И.О. работника</td>
+                    <td style="width: 250px">Должность</td>
+                    <td>Результат проверки знания (удовлетворительно/неудовлетворительно)</td>
+                    <td>Дата проверки знания требований охраны труда</td>
+                    <td>Рег. № записи в реестре обученных лиц</td>
+                    <td>Подпись работника, прошедшего проверку знания требований охраны труда</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 15px;">1.</td>
+                    <td>{{ sotrudnik.fio }}</td>
+                    <td>{{ sotrudnik.specialnost }}</td>
+                    <td>удовлетворительно</td>
+                    <td>{{ protokol.data_dopuska|date:"d.m.Y" }}</td>
+                    <td>{{ protokol.registracionnyy_nomer }}</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td>Председатель комиссии:</td>
+                    <td>/В.В. Владимиров/</td>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                </tr>
+                <tr>
+                    <td valign="top">Члены комиссии:</td>
+                    <td>
+                        /Р.А. Хахаев/<br><br>
+                        /И.Ш. Симонян/
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial">
+        <p style="font-size: 18px; text-align: center;">
+            <b>ДНЕВНИК<br>практического занятия по формированию умений и навыков безопасного выполнения работ повышенной опасности</b>
+        </p>
+
+        <br>
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Фамилия, имя, отчество: <b>{{ sotrudnik.fio }}</b></p>
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Должность: <b>{{ sotrudnik.specialnost }}</b></p>
+
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Место проведения практического занятия: <b>{{ sotrudnik.organizaciya }}</b></p>
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Программа обучения: <b>№ {{ protokol.nomer_programmy }} «{{ protokol.nazvanie_kursa }}»</b></p>
+
+        <p style="font-size: 14px; text-align: left;margin-top: 5px;margin-bottom: 0px;"><b>Сведения об ответственном за проведение обучения:</b></p>
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Фамилия, имя, отчество: Симонян Игорь Шотаевич</p>
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Должность: Производитель работ</p>
+
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Период обучения: с «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г. по «{{ protokol.data_dopuska|date:"d" }}» {{ protokol.data_dopuska|date:"F" }} {{ protokol.data_dopuska|date:"Y" }} г.</p>
+
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Количество академ. часов практического занятия: 3 часа 30 минут.</p>
+
+        <p style="text-align: justify;margin-top: 5px;"><strong>Сведения о прохождении практического занятия:</strong></p>
+
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 12px;line-height: 1;">
+            <tbody>
+                <tr>
+                    <td><p style="text-align: center;"><strong>№</strong></p></td>
+                    <td><p style="text-align: center;"><strong>Наименование тем и краткое содержание занятий (выполненных работ)</strong></p></td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">1</p></td>
+                    <td>Характеристика условий труда. Вредные и (или) опасные производственные факторы, опасности, идентифицированные в рамках специальной оценки условий труда и оценки профессиональных рисков.</td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">2</p></td>
+                    <td>Перечень основных возможных аварий и аварийных ситуаций. Действия при возникновении аварий и аварийных ситуаций. Действия по оказанию первой помощи пострадавшим при травмировании, отравлении и других повреждениях здоровья.</td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">3</p></td>
+                    <td>Требования охраны труда перед началом выполнения работ повышенной опасности. Подготовка рабочего места. Порядок осмотра работником и подготовка к работе средств индивидуальной защиты до использования.</td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">4</p></td>
+                    <td>Требования безопасности, предъявляемые к инструментам, механизмам, приспособлениям. Проверка исправности оборудования, приспособлений и инструмента.</td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">5</p></td>
+                    <td>Требования охраны труда во время выполнения работ повышенной опасности. Способы и приемы безопасного выполнения работ повышенной опасности, использования оборудования, приспособлений и инструментов. Требования, предъявляемые к правильному использованию (применению) средств индивидуальной защиты работников. Действия, направленные на предотвращение аварийных ситуаций</td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">6</p></td>
+                    <td>Требования охраны труда по окончании работ повышенной опасности.</td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">7</p></td>
+                    <td>Выполнение работ повышенной опасности, указанных в программе, под руководством ответственного за обучение</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
+        <div style="font-size: 16px; text-align: left;">
+            <b>Заключение:</b> В процессе практического занятия обучаемый ({{ sotrudnik.fio }}) проявил себя хорошо. Вся программа усвоена.
+        </div>
+
+        <br><br>
+        <table style="border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td><p>Подпись лица, ответственного за обучение</p></td>
+                    <td>_________________________________</td>
+                    <td>/ И.Ш. Симонян /</td>
+                </tr>
+                <tr>
+                    <td><p>Подпись лица, прошедшего практическое занятие</p></td>
+                    <td>_________________________________</td>
+                    <td>/ {{ sotrudnik.fio }} /</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial">
+        <p style="line-height: 1;font-size: 14px;">Итоговая аттестация по программе: <b>«{{ protokol.nazvanie_kursa }}»</b></p>
+
+        <p style="line-height: 1;font-size: 12px;margin-top: 5px;margin-bottom: 5px;">
+            ФИО: {{ sotrudnik.fio }}<br>
+            Должность: {{ sotrudnik.specialnost }}<br>
+            Место работы: {{ sotrudnik.organizaciya }}<br>
+            Дата: «{{ protokol.data_dopuska|date:"d" }}» {{ protokol.data_dopuska|date:"F" }} {{ protokol.data_dopuska|date:"Y" }} г.<br>
+            Подпись _____________________<br>
+        </p>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #1<br>
+            <b>Завершите фразу: "Опробование электроприводов разрешается после установления связи между работниками, находящимися на пульте управления _____".</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>и работниками, находящимися в зоне действия потенциально опасных факторов</li>
+                <li>на щите управления и на механизмах.</li>
+                <li>на площадке производства работ и на расстоянии не более 3 м от нее</li>
+                <li>на щите управления и на строительной площадке</li>
+                <li>и работниками, осуществляющими контроль за производством работ (бригадир, инженерно-технический работник)</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #2<br>
+            <b>Меры безопасности при рытье траншей вблизи мест движения транспорта и прохода людей:</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>остановка движения</li>
+                <li>установка защитных ограждений и сигнального освещения.</li>
+                <li>установка громкоговорителя</li>
+                <li>остановка работы</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #3<br>
+            <b>Какие меры следует предпринимать при перемещении баллонов со сжатым газом, барабанов с карбидом кальция?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>необходимо принимать меры против влияния неблагоприятных метеорологических условий</li>
+                <li>необходимо принимать меры против толчков и ударов.</li>
+                <li>необходимо принимать меры против курения и применения открытого огня</li>
+                <li>необходимо принимать меры против перегрева</li>
+                <li>необходимо принимать меры против длительной перевозки</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #4<br>
+            <b>Можно ли оставить технологическое оборудование включенным, если нужно отлучиться на 5 минут?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Нет.</li>
+                <li>Да</li>
+                <li>Да, если разрешил руководитель</li>
+                <li>Да, если поставить табличку с указанием времени возвращения</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #5<br>
+            <b>Выберите верное окончание предложения: "Перечень работ повышенной опасности, приведенный в "Примерном положении о системе управления охраной труда" (утв. Приказом Минтруда России № 776н)…"</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>…является исчерпывающим</li>
+                <li>…может быть дополнен по решению работодателя.</li>
+                <li>…применяется, исходя из результатов специальной оценки условий труда</li>
+                <li>…применяется в зависимости от категории риска организации</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #6<br>
+            <b>Если планом мероприятий при проведении спасательных работ предполагается крепить системы спасения и эвакуации к используемым при работах точкам крепления, то они должны выдерживать дополнительные нагрузки:</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Указанные в эксплуатационной документации производителями этих систем, но не менее 22 кН</li>
+                <li>Указанные в эксплуатационной документации производителями этих систем.</li>
+                <li>Указанные в ППР на высоте и наряде допуске</li>
+                <li>Определенные локальными актами СУОТ предприятия, в соответствии с эксплуатационной документации производителя</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #7<br>
+            <b>Разработанный и утвержденный план мероприятий при проведении спасательных работ, эвакуации и спасения из ОЗП (План мероприятий) должен включать в себя:</b>
+            <br>Выберите несколько вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Перечень необходимых средств защиты и спецодежды работников, в функции которых входит спасение, и при необходимости другого персонала.</li>
+                <li>Требования охраны труда и промышленной безопасности при выполнении работ с повышенной опасностью в ОЗП</li>
+                <li>Перечень необходимого спасательного и другого специального оборудования.</li>
+                <li>Все перечисленное</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #8<br>
+            <b>К основным изолирующим электрозащитным средствам для электроустановок напряжением выше 1000 В относятся?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Изолирующие штанги всех видов, изолирующие клещи, указатели напряжения.</li>
+                <li>Изолирующие штанги всех видов, изолирующие клещи, диэлектрические перчатки</li>
+                <li>Изолирующие штанги всех видов, диэлектрические перчатки, указатели напряжения</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #9<br>
+            <b>Какие из приведенных действий при спасении пострадавшего в опасной атмосфере ОЗП верны?</b>
+            <br>Выберите несколько вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Приготовить дополнительный дыхательный аппарат для пострадавшего.</li>
+                <li>Снять свою маску дыхательного аппарата для того, чтобы обеспечить воздухом пострадавшего</li>
+                <li>Не теряя времени войти в ОЗП на задержке дыхания для быстрого рывка в целях спасения людей</li>
+                <li>Задержать дыхание для совершения последнего усилия при кончающемся запасе воздуха</li>
+                <li>Оставить необходимый для выхода из ОЗП запас воздуха, чтобы выйдя наружу пополнить его.</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #10<br>
+            <b>Какое минимальное количество настилов должно быть при выполнении работ с лесов высотой 6 м и более?</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Не менее трех</li>
+                <li>Не менее двух.</li>
+                <li>Достаточно одного</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

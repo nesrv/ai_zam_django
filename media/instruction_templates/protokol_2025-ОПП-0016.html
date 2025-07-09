@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Протокол обучения</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style type="text/css">
+        .commercial {
+            width: 900px;
+            padding: 20px;
+            margin: 0 auto;
+            border: 1px solid #444;
+            font-family: 'times' !important;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .commercial_landscape {
+            width: 1200px;
+            padding: 20px;
+            margin: 20px auto;
+            border: 1px solid #444;
+            font-family: 'times' !important;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        td {
+            padding: 5px;
+        }
+
+        @media print {
+            .commercial {
+                border: none;
+            }
+            .commercial_landscape {
+                border: none;
+                transform: rotate(270deg) translateX(-390px) translateY(-300px);
+                margin: 0 auto;
+            }
+            .page_break_div {
+                display: none;
+            }
+        }
+
+        .page_break {
+            page-break-before: always;
+        }
+
+        .page_break_div {
+            text-align: center;
+        }
+
+        .page_break_text {
+            width: 130px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #eee6cf;
+            margin-top: -30px;
+        }
+
+        .page_break_hr {
+            margin: 20px 0;
+            padding: 0;
+            height: 0;
+            border: none;
+            border-top: 1px dashed #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="commercial">
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                        <b>{{ sotrudnik.organizaciya }}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%;">Адрес: {{ sotrudnik.organizaciya.adres }}</td>
+                    <td style="width:50%;text-align: right;">ИНН: {{ sotrudnik.organizaciya.inn }}<br>ОГРН: {{ sotrudnik.organizaciya.ogrn }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <div style="text-align: center; line-height: 1;">
+            <b>ПРИКАЗ</b>
+        </div>
+        <br>
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width:50%;">№ {{ protokol.nomer_programmy }}</td>
+                    <td style="width:50%;text-align: right;">«{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="text-align: center; line-height: 1;">
+            г. Санкт-Петербург
+        </div>
+
+        <br>
+
+        <p style="text-align: center; line-height: 1;">
+            <b>«О направлении работников на обучение по охране труда с отрывом от производства»</b>
+        </p>
+
+        <p style="text-align: justify; line-height: 1;">
+            В целях исполнения требований ст. ст. 214, 219 Трудового кодекса Российской Федерации, Правил обучения по охране труда и проверки знания требований охраны труда (утв. Постановлением Правительства РФ от 24.12.2021 N 2464) приказываю:
+        </p>
+
+        <p style="text-align: justify; line-height: 1;">
+            1. Направить на обучение по охране труда с отрывом от производства (работы) по программе обучения по оказанию первой помощи пострадавшим, следующих работников:
+        </p>
+
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 14px;line-height: 1;">
+            <thead>
+                <tr style="text-align: center;">
+                    <td style="width: 50px">№ п.п.</td>
+                    <td>Ф.И.О. работника, направляемого на обучение</td>
+                    <td style="width: 300px">Должность</td>
+                    <td style="width: 150px">Период обучения</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>{{ sotrudnik.fio }}</td>
+                    <td>{{ sotrudnik.specialnost }}</td>
+                    <td>{{ protokol.data_prikaza|date:"d.m.Y" }}–{{ protokol.data_dopuska|date:"d.m.Y" }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br><br>
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width: 50%">Заместитель генерального директора<br>{{ sotrudnik.organizaciya }}<br></td>
+                    <td style="text-align: right;">/В.В. Масленников/</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br><br>
+        <b>С приказом № {{ protokol.nomer_programmy }} от «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г. ознакомлен:</b>
+        <br><br>
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width: 244px">{{ sotrudnik.specialnost }}</td>
+                    <td style="text-align: right;">/{{ sotrudnik.fio }}/</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial">
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                        <b>{{ sotrudnik.organizaciya }}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%;">Адрес: {{ sotrudnik.organizaciya.adres }}</td>
+                    <td style="width:50%;text-align: right;">ИНН: {{ sotrudnik.organizaciya.inn }}<br>ОГРН: {{ sotrudnik.organizaciya.ogrn }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <table style="width: 100%;line-height: 1;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 18px;"><b>«УТВЕРЖДАЮ»</b></td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">Заместитель генерального директора</td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">{{ sotrudnik.organizaciya }}</td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">___________________В.В. Масленников<br></td>
+                </tr>
+                <tr>
+                    <td style="width:100%;text-align: right;font-size: 16px;">«{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br><br>
+        <div style="text-align: center;">
+            <b>Программа № {{ protokol.nomer_programmy }}<br>
+            обучения по оказанию первой помощи пострадавшим<br>
+            </b>
+        </div>
+        <br>
+        <div style="text-align: justify;">
+            <ul style="list-style:disc;">
+                <li>Огневые работы<br>-Огневые работы<br></li>
+                <li>Работы, связанные с эксплуатацией сосудов, работающих под избыточным давлением<br></li>
+                <li>Электросварочные и газосварочные работы<br>-Сварочные (резательные) работы<br></li>
+            </ul>
+        </div>
+        <br>
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 14px;">
+            <thead>
+                <tr style="text-align: center;">
+                    <td style="width: 50px"><b>№ п.п.</b></td>
+                    <td><b>Тема</b></td>
+                    <td style="width: 150px"><b>Время изучения темы, мин.</b></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 50px">1</td>
+                    <td>ТЕМА 1. Организационно правовые аспекты оказания первой помощи. Теоретическое занятие</td>
+                    <td style="width: 150px;text-align: center;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">2</td>
+                    <td>Теоретическое занятие по теме 1</td>
+                    <td style="width: 150px;text-align: center;">45 мин</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">3</td>
+                    <td>ТЕМА 2. Оказание первой помощи при отсутствии сознания, остановке дыхания и кровообращения</td>
+                    <td style="width: 150px;text-align: center;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">4</td>
+                    <td>Теоретическое занятие по теме 2</td>
+                    <td style="width: 150px;text-align: center;">45</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">5</td>
+                    <td>Практическое занятие по теме 2</td>
+                    <td style="width: 150px;text-align: center;">100</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">6</td>
+                    <td>ТЕМА 3. Оказание первой помощи при наружных кровотечениях и травмах</td>
+                    <td style="width: 150px;text-align: center;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">7</td>
+                    <td>Теоретическое занятие по теме 3</td>
+                    <td style="width: 150px;text-align: center;">45</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">8</td>
+                    <td>Практическое занятие по теме 3</td>
+                    <td style="width: 150px;text-align: center;">100</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">9</td>
+                    <td>ТЕМА 4. Оказание первой помощи при прочих состояниях</td>
+                    <td style="width: 150px;text-align: center;"></td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">10</td>
+                    <td>Теоретическое занятие по теме 4</td>
+                    <td style="width: 150px;text-align: center;">45</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px">11</td>
+                    <td>Практическое занятие по теме 4</td>
+                    <td style="width: 150px;text-align: center;">100</td>
+                </tr>
+                <tr>
+                    <td style="width: 50px"></td>
+                    <td><b>ИТОГО:</b></td>
+                    <td style="width: 150px;text-align: center;"><b>8 часов</b></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
+        <div style="text-align: left;">
+            <b>Продолжительность обучения</b> – 8 часов.<br>
+            <b>Форма обучения</b> – очно-заочная, с применением дистанционных образовательных технологий и/или электронного обучения<br>
+            <b>Форма проведения проверки знаний требований охраны труда</b> – собеседование, устный или письменный экзамен, тестирование (в том числе на компьютере).
+        </div>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial_landscape">
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td colspan="2" style="width:100%;text-align: center;font-size: 18px;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #000000">
+                        <b>{{ sotrudnik.organizaciya }}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%;">Адрес: {{ sotrudnik.organizaciya.adres }}</td>
+                    <td style="width:50%;text-align: right;">ИНН: {{ sotrudnik.organizaciya.inn }}<br>ОГРН: {{ sotrudnik.organizaciya.ogrn }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <p style="text-align: center;margin: 0px;">
+            <b>ПРОТОКОЛ</b>
+        </p>
+        <p style="text-align: center;margin: 0px;">
+            <b>заседания комиссии по проверке знаний требований безопасным методам и приемам выполнения работ</b>
+        </p>
+
+        <p style="text-align: center;margin: 0px;">
+            <b>№ {{ protokol.nomer_programmy }} от «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г.</b>
+        </p>
+
+        <p style="text-align: justify;line-height: 1;margin-top: 10px;">
+            В соответствии с Постановлением Правительства РФ от 24.12.2021 № 2464 "О порядке обучения по охране труда и проверки знания требований охраны труда" (вместе с "Правилами обучения по охране труда и проверки знания требований охраны труда"), приказом {{ sotrudnik.organizaciya }} от «02» июня 2025 г. № 02.06/25-1 комиссия по проверке знания требований охраны труда в составе:
+        </p>
+
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width: 20%">Председатель комиссии:</td>
+                    <td>Владимиров Виктор Валерьевич - Главный инженер</td>
+                </tr>
+                <tr>
+                    <td valign="top" style="width: 20%">Члены комиссии:</td>
+                    <td>
+                        Хахаев Руслан Анатольевич - Заместитель генерального директора<br>
+                        Симонян Игорь Шотаевич - Производитель работ
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="text-align: justify;">
+            провела проверку знаний требований охраны труда работников по программе обучения по оказанию первой помощи пострадавшим № {{ protokol.nomer_programmy }} в объеме 8 часов:
+        </div>
+
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 12px;">
+            <thead>
+                <tr style="text-align: center;">
+                    <td style="width: 10px">№ п.п.</td>
+                    <td style="width: 250px">Ф.И.О. работника</td>
+                    <td style="width: 250px">Должность</td>
+                    <td>Результат проверки знания (удовлетворительно/неудовлетворительно)</td>
+                    <td>Дата проверки знания требований охраны труда</td>
+                    <td>Рег. № записи в реестре обученных лиц</td>
+                    <td>Подпись работника, прошедшего проверку знания требований охраны труда</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 15px;">1.</td>
+                    <td>{{ sotrudnik.fio }}</td>
+                    <td>{{ sotrudnik.specialnost }}</td>
+                    <td>удовлетворительно</td>
+                    <td>{{ protokol.data_dopuska|date:"d.m.Y" }}</td>
+                    <td>{{ protokol.registracionnyy_nomer }}</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+
+        <table style="width: 100%;border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td>Председатель комиссии:</td>
+                    <td>/В.В. Владимиров/</td>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                </tr>
+                <tr>
+                    <td valign="top">Члены комиссии:</td>
+                    <td>
+                        /Р.А. Хахаев/<br><br>
+                        /И.Ш. Симонян/
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial">
+        <p style="font-size: 18px; text-align: center;">
+            <b>ДНЕВНИК<br>практического занятия по оказанию первой помощи пострадавшим</b>
+        </p>
+
+        <p style="font-size: 14px; text-align: left;margin-bottom: 0px;">Фамилия, имя, отчество: <b>{{ sotrudnik.fio }}</b></p>
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Должность: <b>{{ sotrudnik.specialnost }}</b></p>
+
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Место проведения практического занятия: <b>{{ sotrudnik.organizaciya }}</b></p>
+        <p style="font-size: 14px; text-align: left;margin-top: 0px;">Программа обучения: <b>№ {{ protokol.nomer_programmy }} «Оказание первой помощи пострадавшим»</b></p>
+
+        <p style="font-size: 14px; text-align: left;margin-bottom: 0px;"><b>Сведения об ответственном за проведение обучения:</b></p>
+        <p style="font-size: 14px; text-align: left;margin: 0px;">Фамилия, имя, отчество: Симонян Игорь Шотаевич</p>
+        <p style="font-size: 14px; text-align: left;margin-top: 0px;">Должность: Производитель работ</p>
+
+        <p style="font-size: 14px; text-align: left;margin-bottom: 0px;">Период обучения: с «{{ protokol.data_prikaza|date:"d" }}» {{ protokol.data_prikaza|date:"F" }} {{ protokol.data_prikaza|date:"Y" }} г. по «{{ protokol.data_dopuska|date:"d" }}» {{ protokol.data_dopuska|date:"F" }} {{ protokol.data_dopuska|date:"Y" }} г.</p>
+
+        <p style="font-size: 14px; text-align: left;margin-top: 0px;">Количество академ. часов практического занятия: 5 часов.</p>
+
+        <p style="text-align: justify;"><strong>Сведения о прохождении практического занятия:</strong></p>
+
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;font-size: 12px;line-height: 1;">
+            <tbody>
+                <tr>
+                    <td><p style="text-align: center;"><strong>№</strong></p></td>
+                    <td><p style="text-align: center;"><strong>Наименование тем и краткое содержание занятий (выполненных работ)</strong></p></td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">1</p></td>
+                    <td>Состав и назначение аптечки для Оказания первой помощи работникам, аптечки автомобильной.</td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">2</p></td>
+                    <td>Отработка навыков определения сознания у пострадавшего. Отработка приемов искусственного дыхания "рот ко рту", "рот к носу" с применением тренажера. Отработка приемов давления руками на грудину пострадавшего. Выполнение алгоритма реанимации. Отработка приема перевода пострадавшего в устойчивое боковое положение. Отработка приемов удаления инородного тела из верхних дыхательных путей пострадавшего.</td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">3</p></td>
+                    <td>Отработка проведения обзорного/подробного осмотра пострадавшего. Отработка приемов временной остановки наружного кровотечения при ранениях головы, шеи, груди, живота, таза и конечностей с помощью пальцевого прижатия артерий (сонной, подключичной, подмышечной, плечевой, бедренной); наложение табельного и импровизированного кровоостанавливающего жгута (жгута-закрутки, ремня), максимальное сгибание конечности в суставе, прямое давление на рану, наложение давящей повязки. Отработка наложения окклюзионной (герметизирующей) повязки при ранении грудной клетки. Отработка приемов наложения повязок при наличии инородного предмета в ране живота, груди, конечностей. Отработка приемов первой помощи при переломах. Иммобилизация (подручными средствами, аутоиммобилизация, с использованием медицинских изделий). Отработка приемов фиксации шейного отдела позвоночника.</td>
+                </tr>
+                <tr>
+                    <td><p style="text-align: center;">4</p></td>
+                    <td>Отработка приемов наложения повязок при ожогах различных областей тела. Применение местного охлаждения. Отработка приемов наложения термоизолирующей повязки при отморожениях. Отработка приемов придания оптимального положения тела пострадавшему при отсутствии сознания, травмах различных областей тела, значительной кровопотере. Отработка приемов экстренного извлечения пострадавшего из труднодоступного места, отработка основных приемов (пострадавший в сознании, пострадавший без сознания). Отработка приемов перемещения пострадавших на руках одним, двумя и более участниками оказания первой помощи. Отработка приемов переноски пострадавших с травмами головы, шеи, груди, живота, таза, конечностей и позвоночника. Отработка приемов оказания психологической поддержки пострадавшим при различных острых стрессовых реакциях. Способы самопомощи в экстремальных ситуациях.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
+        <div style="font-size: 16px; text-align: left;">
+            <b>Заключение:</b> В процессе практического занятия обучаемый ({{ sotrudnik.fio }}) проявил себя хорошо. Вся программа усвоена.
+        </div>
+
+        <br><br>
+        <table style="border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td><p>Подпись лица, ответственного за обучение</p></td>
+                    <td>_________________________________</td>
+                    <td>/ И.Ш. Симонян /</td>
+                </tr>
+                <tr>
+                    <td><p>Подпись лица, прошедшего практическое занятие</p></td>
+                    <td>_________________________________</td>
+                    <td>/ {{ sotrudnik.fio }} /</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="page_break_div">
+        <hr class="page_break_hr">
+        <div class="page_break_text">[ Разрыв страницы ]</div>
+    </div>
+    <div class="page_break"></div>
+
+    <div class="commercial">
+        <p style="line-height: 1;font-size: 14px;">Итоговая аттестация по программе: <b>«Оказание первой помощи пострадавшим»</b></p>
+
+        <p style="line-height: 1;font-size: 12px;margin-top: 5px;margin-bottom: 5px;">
+            ФИО: {{ sotrudnik.fio }}<br>
+            Должность: {{ sotrudnik.specialnost }}<br>
+            Место работы: {{ sotrudnik.organizaciya }}<br>
+            Дата: «{{ protokol.data_dopuska|date:"d" }}» {{ protokol.data_dopuska|date:"F" }} {{ protokol.data_dopuska|date:"Y" }} г.<br>
+            Подпись _____________________<br>
+        </p>
+
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #1<br>
+            <b>Выберите условия, при которых осуществляется экстренное извлечение пострадавшего из аварийного автомобиля или труднодоступного места: 1. экстренное извлечение пострадавшего производится только силами сотрудников скорой медицинской помощи или спасателями МЧС; 2. во всех случаях, когда пострадавшему требуется немедленное оказание первой помощи; 3. при наличии угрозы для жизни и здоровья пострадавшего и невозможности оказания первой помощи в автомобиле (труднодоступном месте); 4. в случае, если у пострадавшего отсутствуют признаки серьезных травм; . Выберите цифру, под которой указаны все верные условия:</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>2, 3</li>
+                <li>1, 2, 3, 4</li>
+                <li>3.</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #2<br>
+            <b>Если инородное тело нарушило проходимость дыхательных путей у беременной, оказание первой помощи заключается в:</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>Попытке извлечения инородного тела с помощью пинцета</li>
+                <li>Ударах по спине и надавливаниях на нижнюю часть грудной клетки.</li>
+                <li>Надавливаниях на верхнюю часть живота</li>
+                <li>Надавливании на корень языка для вызывания у пострадавшей рвоты</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #3<br>
+            <b>Пострадавшему с признаками травмы живота и таза рекомендуется придать следующее положение:</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>положение на спине с приподнятыми ногами</li>
+                <li>устойчиво боковое положение</li>
+                <li>сидячее положение</li>
+                <li>положение на спине с полусогнутыми и разведенными ногами.</li>
+                <li>положение на животе</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #4<br>
+            <b>Наблюдение за пострадавшим, которому оказана первая помощь, осуществляется:</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>до доставки пострадавшего в медицинскую организацию</li>
+                <li>до прибытия скорой медицинской помощи на место происшествия</li>
+                <li>до улучшения его самочувствия</li>
+                <li>до момента передачи его бригаде скорой медицинской помощи.</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #5<br>
+            <b>Установите правильную последовательность оценки обстановки и обеспечения безопасных условий для оказания первой помощи согласно Универсальному алгоритму первой помощи: 1. при необходимости, оценить количество пострадавших; 2. определить угрожающие факторы для собственной жизни и здоровья; 3. прекратить действие повреждающих факторов на пострадавшего; 4. определить угрожающие факторы для жизни и здоровья пострадавшего; 5. устранить угрожающие факторы для жизни и здоровья. Выберите вариант, где указана правильная последовательность:</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>24531.</li>
+                <li>42531</li>
+                <li>24351</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #6<br>
+            <b>При признаках закупорки дыхательных путей умеренной степени следует выполнить следующие мероприятия первой помощи:</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>постучать основанием ладони в межлопаточную область пострадавшего для извлечения инородного тела</li>
+                <li>предложить пострадавшему откашляться.</li>
+                <li>выполнить 5 резких толчков в подвздошную область живота пострадавшего</li>
+                <li>в этом случае мероприятия первой помощи не требуются</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #7<br>
+            <b>Во время проведения опыта лаборант внезапно потерял сознание и упал на пол. Коллеги убедились в собственной безопасности и приступили к оказанию первой помощи. Установите правильную последовательность при выполнении мероприятий по восстановлению проходимости дыхательных путей и определению признаков жизни у пострадавшего: 1. Определение наличия кровообращения, проверка пульса на магистральных артериях; 2. Определение наличия дыхания с помощью слуха, зрения и осязания; 3. Запрокидывание головы с подъемом подбородка; 4. Выдвижение нижней челюсти. Выберите вариант, где указана верная последовательность:</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>3421.</li>
+                <li>2341</li>
+                <li>3412</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #8<br>
+            <b>При отсутствии сознания у пострадавшего с признаками самостоятельного дыхания следует сделать следующее:</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>положить пострадавшему под голову валик из одежды, вызвать скорую медицинскую помощь</li>
+                <li>подложить валик из одежды под плечи пострадавшего, обеспечив сгибание шейного отдела позвоночника</li>
+                <li>придать пострадавшему устойчивое боковое положение.</li>
+                <li>повернуть пострадавшего на живот</li>
+            </ul>
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #9<br>
+            <b>Укажите, какие средства для остановки кровотечений относятся к подручным: Выберите все верные варианты:</b>
+            <br>Выберите несколько вариант ответа
+        </div>
+        <div style="line-height:1;font-size: 13px;">
+            Вопрос #10<br>
+            <b>При полном нарушении проходимости верхних дыхательных путей, вызванном инородным телом, пострадавший</b>
+            <br>Выберите один вариант ответа
+            <ul style="margin-top: 0px;margin-bottom: 3px; padding-left: 15px;" type="circle">
+                <li>не может дышать или дыхание явно затруднено (шумное, хриплое), хватается за горло, не может говорить, только кивает.</li>
+                <li>проявляет беспокойство, кашляет, просит о помощи</li>
+                <li>с трудом говорит, лицо багровеет</li>
+                <li>жалуется на наличие инородного тела в дыхательных путях, ощущение, что «поперхнулся», просит постучать по спине</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

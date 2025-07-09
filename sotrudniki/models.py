@@ -116,8 +116,7 @@ class Sotrudnik(models.Model):
 
 
 class SotrudnikiShablonyProtokolov(models.Model):
-    nomer_programmy = models.CharField(max_length=50, verbose_name="№ программы")
-    kurs = models.CharField(max_length=200, verbose_name="Курс")
+    kurs = models.CharField(max_length=500, verbose_name="Курс")
     specialnost = models.ManyToManyField(
         Specialnost,
         verbose_name="Специальности",
@@ -132,11 +131,11 @@ class SotrudnikiShablonyProtokolov(models.Model):
     )
     
     class Meta:
-        verbose_name = "Сотрудники шаблоны протоколов"
-        verbose_name_plural = "Сотрудники шаблоны протоколов"
+        verbose_name = "Протоколы обучения- шаблоны"
+        verbose_name_plural = "Протоколы - шаблоны "
     
     def __str__(self):
-        return f"{self.nomer_programmy} - {self.kurs}"
+        return self.kurs
 
 
 
@@ -152,6 +151,11 @@ class ProtokolyObucheniya(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Шаблон протокола"
     )
+    nomer_programmy = models.CharField(
+        max_length=50, 
+        default="2025/AA.00-0000",
+        verbose_name="№ программы"
+    )
     data_prikaza = models.DateField(verbose_name="Дата приказа")
     data_protokola_dopuska = models.DateField(verbose_name="Дата протокола/приказа-допуска")
     data_dopuska_k_rabote = models.DateField(verbose_name="Дата допуска к работе")
@@ -161,7 +165,12 @@ class ProtokolyObucheniya(models.Model):
     
     class Meta:
         verbose_name = "Протокол обучения"
-        verbose_name_plural = "Протоколы обучения"
+        verbose_name_plural = "Протоколы"
+    
+    @property
+    def data_dopuska(self):
+        """Алиас для data_dopuska_k_rabote для совместимости с шаблонами"""
+        return self.data_dopuska_k_rabote
     
     def __str__(self):
         return f"{self.shablon_protokola} - {self.registracionnyy_nomer}"
@@ -171,44 +180,23 @@ class ProtokolyObucheniya(models.Model):
 
 
 class Instruktazhi(models.Model):
-    TIP_CHOICES = [
-        ('вводный', 'Вводный'),
-        ('первичный', 'Первичный'),
-        ('повторный', 'Повторный'),
-        ('внеплановый', 'Внеплановый'),
-        ('целевой', 'Целевой'),
-    ]
-    
     sotrudnik = models.ForeignKey(
         Sotrudnik,
         on_delete=models.CASCADE,
         verbose_name="Сотрудник",
-        related_name="instruktazhi",
-        null=True,
-        blank=True
+        related_name="instruktazhi"
     )
-    specialnost = models.ForeignKey(
-        Specialnost,
+    instruktazh = models.ForeignKey(
+        'ShablonyInstruktazhej',
         on_delete=models.CASCADE,
-        verbose_name="Специальность"
+        verbose_name="Инструктаж"
     )
-    tip_instruktazha = models.CharField(
-        max_length=20,
-        choices=TIP_CHOICES,
-        verbose_name="Тип инструктажа"
-    )
-    data_provedeniya = models.DateField(verbose_name="Дата проведения инструктажа")
+    data_provedeniya = models.DateField(verbose_name="Дата проведения")
     instruktor = models.ForeignKey(
         Sotrudnik,
         on_delete=models.CASCADE,
         verbose_name="Инструктор",
         related_name="instruktazhi_kak_instruktor"
-    )
-    html_file = models.FileField(
-        upload_to='instruction_templates/',
-        validators=[FileExtensionValidator(allowed_extensions=['html'])],
-        verbose_name="HTML файл инструктажа",
-        default="instruction_templates/instruktag.html"
     )
     
     class Meta:
@@ -216,8 +204,7 @@ class Instruktazhi(models.Model):
         verbose_name_plural = "Инструктажи"
     
     def __str__(self):
-        sotrudnik_name = self.sotrudnik.fio if self.sotrudnik else 'Не указан'
-        return f"{self.tip_instruktazha} - {sotrudnik_name}"
+        return f"{self.instruktazh} - {self.sotrudnik.fio}"
 
 
 class DokumentySotrudnika(models.Model):
@@ -242,11 +229,44 @@ class DokumentySotrudnika(models.Model):
     
     class Meta:
         verbose_name = "Документ сотрудника"
-        verbose_name_plural = "Документы сотрудников"
+        verbose_name_plural = "Документы"
         unique_together = ['sotrudnik', 'tip_dokumenta']
     
     def __str__(self):
         return f"{self.get_tip_dokumenta_display()} - {self.sotrudnik.fio}"
+
+
+class ShablonyInstruktazhej(models.Model):
+    TIP_CHOICES = [
+        ('вводный', 'Вводный'),
+        ('первичный', 'Первичный'),
+        ('повторный', 'Повторный'),
+        ('внеплановый', 'Внеплановый'),
+        ('целевой', 'Целевой'),
+    ]
+    
+    specialnost = models.ForeignKey(
+        Specialnost,
+        on_delete=models.CASCADE,
+        verbose_name="Специальность"
+    )
+    tip_instruktazha = models.CharField(
+        max_length=20,
+        choices=TIP_CHOICES,
+        verbose_name="Тип инструктажа"
+    )
+    html_file = models.FileField(
+        upload_to='instruction_templates/',
+        validators=[FileExtensionValidator(allowed_extensions=['html'])],
+        verbose_name="HTML файл шаблона"
+    )
+    
+    class Meta:
+        verbose_name = "Инструктаж - шаблон"
+        verbose_name_plural = "Инструктажи - шаблоны"
+    
+    def __str__(self):
+        return f"{self.get_tip_instruktazha_display()} - {self.specialnost.nazvanie}"
 
 
 class ShablonyDokumentovPoSpecialnosti(models.Model):
@@ -299,8 +319,8 @@ class ShablonyDokumentovPoSpecialnosti(models.Model):
     )
     
     class Meta:
-        verbose_name = "Шаблоны документов по специальности"
-        verbose_name_plural = "Шаблоны документов по специальностям"
+        verbose_name = "Документы по специальностям"
+        verbose_name_plural = "Документы - шаблоны"
     
     def __str__(self):
         return f"Шаблоны для {self.specialnost.nazvanie}"
