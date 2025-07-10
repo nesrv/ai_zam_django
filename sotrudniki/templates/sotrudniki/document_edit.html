@@ -4,7 +4,7 @@
 
 {% block extra_styles %}
 .editor-container {
-    max-width: 1848px;
+    width: 95%;
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
@@ -60,7 +60,7 @@
 
 .editor-content {
     display: grid;
-    grid-template-columns: 0.33fr 2.4fr;
+    grid-template-columns: 0.7fr 2.8fr;
     gap: 20px;
     height: 84vh;
 }
@@ -175,6 +175,11 @@
                     Нет редактируемых полей в этом документе
                 </div>
                 {% endfor %}
+                {% if editable_fields %}
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="btn btn-save" onclick="saveChangesToDatabase()" style="width: 100%;">✅ Внести изменения</button>
+                </div>
+                {% endif %}
             </form>
         </div>
 
@@ -282,6 +287,32 @@ function saveDocument() {
     .catch(error => {
         console.error('Error:', error);
         alert('Ошибка при сохранении документа');
+    });
+}
+
+function saveChangesToDatabase() {
+    const formData = new FormData(document.getElementById('edit-form'));
+    formData.append('save_to_db', 'true');
+    
+    fetch(window.location.href, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Изменения внесены в базу данных!');
+            location.reload();
+        } else {
+            alert('Ошибка при сохранении: ' + (data.message || 'Неизвестная ошибка'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ошибка при сохранении в базу данных');
     });
 }
 

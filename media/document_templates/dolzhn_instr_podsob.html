@@ -106,11 +106,7 @@
         }
     </style>
 </head>
-<body>
-    <div class="no-print" style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
-        <button onclick="window.print()" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 5px;">🖨️ Печать</button>
-        <button onclick="window.close()" style="padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">Закрыть</button>
-    </div>
+<body> 
 
     <div class="document">
         <div class="header">
@@ -199,7 +195,14 @@
         <div>
             <p>С настоящим приложением к должностной инструкции ознакомлен(а):</p>
             <br>
-            <p>"___"_______________ 20___ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;____________________&nbsp;&nbsp;&nbsp;&nbsp;/ {{ sotrudnik.fio }}/</p>
+            <p>"___"_______________ 20___ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;____________________&nbsp;&nbsp;&nbsp;&nbsp;/ {{ sotrudnik.fio }} /</p>
+            <p style="margin-left: 270px;">(подпись)</p>
+        </div>
+
+        <div style="margin-top: 40px;">
+            <p>Копию приложения к должностной инструкции получил(а):</p>
+            <br>
+            <p>"___"_______________ 20___ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;____________________&nbsp;&nbsp;&nbsp;&nbsp;/ {{ sotrudnik.fio }} /</p>
             <p style="margin-left: 270px;">(подпись)</p>
         </div>
        

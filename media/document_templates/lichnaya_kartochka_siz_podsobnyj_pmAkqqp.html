@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Личная карточка учета выдачи СИЗ</title>
+    <style>
+        .commercial {
+            width: 900px;
+            padding: 20px;
+            margin: 0 auto;
+            border: 1px solid #444;
+            font-family: 'Times New Roman', serif;
+        }
+        @media print {
+            .commercial {
+                border: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="commercial">
+        <p style="text-align: left;font-size: 18px;font-weight: 600;">Личная карточка учета выдачи СИЗ № СИЗ/____________</p>
+        <table cellpadding="5" border="1" style="width: 100%; border-collapse: collapse;">
+            <tbody>
+                <tr>
+                    <td style="width:70%; padding: 5px;">ФИО <b>{{ sotrudnik.fio }}</b></td>
+                    <td style="padding: 5px;">Пол <b>{{ sotrudnik.pol }}</b></td>
+                </tr>
+                <tr>
+                    <td style="width:70%; padding: 5px;">Табельный номер <b></b></td>
+                    <td style="padding: 5px;">Размер:</td>
+                </tr>
+                <tr>
+                    <td style="width:70%; padding: 5px;">Структурное подразделение <b>Строительное управление</b></td>
+                    <td style="padding: 5px;">одежды <b>{{ sotrudnik.razmer_odezhdy }}</b></td>
+                </tr>
+                <tr>
+                    <td style="width:70%; padding: 5px;">Профессия (должность) <b>{{ sotrudnik.specialnost }}</b></td>
+                    <td style="padding: 5px;">обуви <b>{{ sotrudnik.razmer_obuvi }}</b></td>
+                </tr>
+                <tr>
+                    <td style="width:70%; padding: 5px;">Дата поступления на работу <b>{{ sotrudnik.data_priema|date:"d.m.Y" }}</b></td>
+                    <td style="padding: 5px;">головного убора <b>{{ sotrudnik.razmer_golovnogo_ubora }}</b></td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <table border="1" cellpadding="5" style="width: 100%; border-collapse: collapse; border: 1px solid black;line-height: 1;font-size: 10px;">
+            <thead>
+                <tr>
+                    <th style="width:220px;text-align: center; padding: 5px;">Тип средства защиты</th>
+                    <th style="width:160px;text-align: center; padding: 5px;">Пункт Норм</th>
+                    <th style="text-align: center; padding: 5px;">Наименование СИЗ</th>
+                    <th style="width:130px;text-align: center; padding: 5px;">Нормы выдачи на год (период)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align: left;padding: 5px;">Одежда специальная защитная</td>
+                    <td style="text-align: left;padding: 5px;">приложение № 1 к Приказу Минтруда России от 29.10.2021 N 767н, п. 3959</td>
+                    <td style="text-align: left;padding: 5px;">Костюм для защиты от механических воздействий (истирания)</td>
+                    <td style="text-align: left;padding: 5px;">1 шт.</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;padding: 5px;">Средства защиты ног</td>
+                    <td style="text-align: left;padding: 5px;">приложение № 1 к Приказу Минтруда России от 29.10.2021 N 767н, п. 3959</td>
+                    <td style="text-align: left;padding: 5px;">Обувь специальная для защиты от механических воздействий (ударов)</td>
+                    <td style="text-align: left;padding: 5px;">1 пара</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;padding: 5px;">Средства защиты рук</td>
+                    <td style="text-align: left;padding: 5px;">приложение № 1 к Приказу Минтруда России от 29.10.2021 N 767н, п. 3959</td>
+                    <td style="text-align: left;padding: 5px;">Перчатки для защиты от механических воздействий (истирания)</td>
+                    <td style="text-align: left;padding: 5px;">12 пар</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;padding: 5px;">Средства защиты головы</td>
+                    <td style="text-align: left;padding: 5px;">приложение № 1 к Приказу Минтруда России от 29.10.2021 N 767н, п. 3959</td>
+                    <td style="text-align: left;padding: 5px;">Головной убор для защиты от общих производственных загрязнений</td>
+                    <td style="text-align: left;padding: 5px;">1 шт.</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <table cellpadding="5" style="width: 100%; border-collapse: collapse; line-height: 1;font-size: 11px;">
+            <tbody>
+                <tr>
+                    <td style="padding: 5px;width:60%;">О полагающихся мне СИЗ и смывающих средствах, согласно утвержденным Нормам, о способах выдачи, условиях хранения, а также об ответственности за целостность и комплектность СИЗ, в случае хранения СИЗ у работников в нерабочее время, проинформирован.</td>
+                    <td style="padding: 5px;text-align: center;vertical-align: bottom;">___________________________________<br>(подтверждаю, подпись)</td>
+                </tr>
+            </tbody>
+        </table>
+        <br><br>
+        <table style="width: 100%;">
+            <tbody>
+                <tr>
+                    <td style="width:45%;text-align: left;vertical-align:top;" height="70">Ответственное лицо за ведение карточек учета выдачи СИЗ</td>
+                    <td style="text-align: center;vertical-align:middle;">____________________<br><sup>(подпись)</sup></td>
+                    <td style="width:33%;text-align: center;vertical-align:top;">/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

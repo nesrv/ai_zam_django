@@ -172,6 +172,11 @@ class ProtokolyObucheniya(models.Model):
         """Алиас для data_dopuska_k_rabote для совместимости с шаблонами"""
         return self.data_dopuska_k_rabote
     
+    @data_dopuska.setter
+    def data_dopuska(self, value):
+        """Setter для data_dopuska"""
+        self.data_dopuska_k_rabote = value
+    
     def __str__(self):
         return f"{self.shablon_protokola} - {self.registracionnyy_nomer}"
 

@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from .models import Organizaciya, Sotrudnik, ProtokolyObucheniya, Podrazdelenie, Specialnost, ShablonyDokumentovPoSpecialnosti, SotrudnikiShablonyProtokolov, Instruktazhi, ShablonyInstruktazhej
 from django.conf import settings
 from django.template import Template, Context
+from datetime import datetime
 import os
 
 
@@ -204,8 +205,62 @@ def document_edit(request, pk, doc_type):
                 field_name = key.replace('field_', '')
                 updated_data[field_name] = value
         
-        # Здесь можно сохранить изменения в базу данных
-        # Пока просто возвращаем успешный ответ
+        # Проверяем, нужно ли сохранять в базу данных
+        if request.POST.get('save_to_db') == 'true':
+            try:
+                from datetime import datetime
+                
+                # Получаем протокол если он есть (для страниц редактирования протоколов)
+                protokol_obj = None
+                if doc_type == 'protokol':
+                    protokol_id = request.GET.get('id')
+                    if protokol_id:
+                        protokol_obj = get_object_or_404(ProtokolyObucheniya.objects.select_related('shablon_protokola'), 
+                                                       id=protokol_id, sotrudnik=sotrudnik)
+                
+                # Сохраняем изменения в сотрудника
+                for field_name, value in updated_data.items():
+                    if field_name.startswith('sotrudnik_'):
+                        attr_name = field_name.replace('sotrudnik_', '')
+                        if hasattr(sotrudnik, attr_name):
+                            if 'data_' in attr_name and value:
+                                # Преобразуем дату
+                                try:
+                                    date_value = datetime.strptime(value, '%Y-%m-%d').date()
+                                    setattr(sotrudnik, attr_name, date_value)
+                                except ValueError:
+                                    pass
+                            elif attr_name == 'specialnost' and value:
+                                # Находим объект специальности по названию
+                                try:
+                                    specialnost = Specialnost.objects.get(nazvanie=value)
+                                    setattr(sotrudnik, attr_name, specialnost)
+                                except Specialnost.DoesNotExist:
+                                    pass
+                            else:
+                                setattr(sotrudnik, attr_name, value)
+                
+                # Сохраняем изменения в протоколе
+                if protokol_obj:
+                    for field_name, value in updated_data.items():
+                        if field_name.startswith('protokol_'):
+                            attr_name = field_name.replace('protokol_', '')
+                            if hasattr(protokol_obj, attr_name):
+                                if 'data_' in attr_name and value:
+                                    try:
+                                        date_value = datetime.strptime(value, '%Y-%m-%d').date()
+                                        setattr(protokol_obj, attr_name, date_value)
+                                    except ValueError:
+                                        pass
+                                else:
+                                    setattr(protokol_obj, attr_name, value)
+                    protokol_obj.save()
+                
+                sotrudnik.save()
+                return JsonResponse({'success': True, 'message': 'Изменения сохранены в базе данных'})
+            except Exception as e:
+                return JsonResponse({'success': False, 'message': f'Ошибка: {str(e)}'})
+        
         return JsonResponse({'success': True, 'message': 'Изменения сохранены'})
     
     # Получаем HTML содержимое документа
@@ -275,7 +330,24 @@ def document_edit(request, pk, doc_type):
     # Добавляем базовые поля сотрудника
     editable_fields.extend([
         {'name': 'sotrudnik_fio', 'label': 'ФИО', 'value': sotrudnik.fio},
-        {'name': 'sotrudnik_specialnost', 'label': 'Специальность', 'value': str(sotrudnik.specialnost) if sotrudnik.specialnost else ''},
+        {
+            'name': 'sotrudnik_data_rozhdeniya', 
+            'label': 'Дата рождения', 
+            'value': sotrudnik.data_rozhdeniya.strftime('%d.%m.%Y') if sotrudnik.data_rozhdeniya else '',
+            'date_value': sotrudnik.data_rozhdeniya.strftime('%Y-%m-%d') if sotrudnik.data_rozhdeniya else ''
+        },
+        {
+            'name': 'sotrudnik_data_priema', 
+            'label': 'Дата приема', 
+            'value': sotrudnik.data_priema.strftime('%d.%m.%Y') if sotrudnik.data_priema else '',
+            'date_value': sotrudnik.data_priema.strftime('%Y-%m-%d') if sotrudnik.data_priema else ''
+        },
+        {
+            'name': 'sotrudnik_data_nachala_raboty', 
+            'label': 'Дата начала работы', 
+            'value': sotrudnik.data_nachala_raboty.strftime('%d.%m.%Y') if sotrudnik.data_nachala_raboty else '',
+            'date_value': sotrudnik.data_nachala_raboty.strftime('%Y-%m-%d') if sotrudnik.data_nachala_raboty else ''
+        },
     ])
     
     # Добавляем поля протокола если он есть
