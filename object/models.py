@@ -3,6 +3,7 @@ from django.db import models
 # Категория ресурса
 class KategoriyaResursa(models.Model):
     nazvanie = models.CharField(max_length=255, verbose_name="Название")
+    raskhod_dokhod = models.BooleanField(default=True, verbose_name="Расход-доход")
     
     class Meta:
         verbose_name = "Категория ресурса"

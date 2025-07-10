@@ -434,19 +434,35 @@ def object_detail(request, object_id):
 
 
 def create_object(request):
-    from sotrudniki.models import Sotrudnik
+    from sotrudniki.models import Sotrudnik, Podrazdelenie, Organizaciya
     
     if request.method == 'POST':
         # Обработка создания объекта
+        organizaciya_name = request.POST.get('organizaciya')
         nazvanie = request.POST.get('nazvanie')
         data_nachala = request.POST.get('data_nachala')
-        otvetstvennyj_id = request.POST.get('otvetstvennyj')
+        sotrudnik_id = request.POST.get('sotrudnik')
         
         if nazvanie and data_nachala:
-            otvetstvennyj_name = "Иванов Иван Иванович"
-            if otvetstvennyj_id:
+            # Создаем или получаем организацию
+            organizaciya = None
+            if organizaciya_name:
                 try:
-                    sotrudnik = Sotrudnik.objects.get(id=otvetstvennyj_id)
+                    organizaciya = Organizaciya.objects.get(nazvanie=organizaciya_name)
+                except Organizaciya.DoesNotExist:
+                    # Генерируем уникальный ИНН
+                    import random
+                    unique_inn = f"{random.randint(1000000000, 9999999999)}"
+                    organizaciya = Organizaciya.objects.create(
+                        nazvanie=organizaciya_name,
+                        inn=unique_inn,
+                        is_active=True
+                    )
+            
+            otvetstvennyj_name = "Иванов Иван Иванович"
+            if sotrudnik_id:
+                try:
+                    sotrudnik = Sotrudnik.objects.get(id=sotrudnik_id)
                     otvetstvennyj_name = sotrudnik.fio
                 except Sotrudnik.DoesNotExist:
                     pass
@@ -455,6 +471,7 @@ def create_object(request):
             
             obj = Objekt.objects.create(
                 nazvanie=nazvanie,
+                organizaciya=organizaciya,
                 data_nachala=data_nachala,
                 data_plan_zaversheniya=datetime.strptime(data_nachala, '%Y-%m-%d').date() + timedelta(days=365),
                 otvetstvennyj=otvetstvennyj_name
@@ -462,10 +479,23 @@ def create_object(request):
             return redirect('object_detail', object_id=obj.id)
     
     # GET запрос - показываем форму
-    sotrudniki = Sotrudnik.objects.all()
+    sotrudniki = Sotrudnik.objects.select_related('specialnost').all()
+    podrazdeleniya = Podrazdelenie.objects.all()
+    
+    # Получаем категории ресурсов
+    from .models import KategoriyaResursa
+    expense_categories = KategoriyaResursa.objects.filter(raskhod_dokhod=True)
+    income_categories = KategoriyaResursa.objects.filter(raskhod_dokhod=False)
+    
+    # Получаем следующий ID для значений по умолчанию
+    next_id = Objekt.objects.count() + 1
     
     context = {
         'sotrudniki': sotrudniki,
+        'podrazdeleniya': podrazdeleniya,
+        'expense_categories': list(expense_categories),
+        'income_categories': list(income_categories),
+        'next_id': next_id,
     }
     
     return render(request, 'object/create_object.html', context)
@@ -527,6 +557,42 @@ def add_category_to_object(request):
         return JsonResponse({'success': True})
     
     return JsonResponse({'success': False})
+
+@csrf_exempt
+@require_POST
+def add_employee_ajax(request):
+    from sotrudniki.models import Sotrudnik, Podrazdelenie
+    
+    data = json.loads(request.body)
+    fio = data.get('fio')
+    podrazdelenie_id = data.get('podrazdelenie_id')
+    
+    if fio:
+        podrazdelenie = None
+        if podrazdelenie_id:
+            try:
+                podrazdelenie = Podrazdelenie.objects.get(id=podrazdelenie_id)
+            except Podrazdelenie.DoesNotExist:
+                pass
+        
+        # Создаем сотрудника с минимальными данными
+        from datetime import date
+        sotrudnik = Sotrudnik.objects.create(
+            fio=fio,
+            podrazdelenie=podrazdelenie,
+            data_rozhdeniya=date(1990, 1, 1),  # Значение по умолчанию
+            data_priema=date.today()
+        )
+        
+        return JsonResponse({'success': True, 'id': sotrudnik.id})
+    
+    return JsonResponse({'success': False})
+
+def get_resources_by_category(request, category_id):
+    from .models import Resurs
+    
+    resources = Resurs.objects.filter(kategoriya_resursa_id=category_id).values('id', 'naimenovanie', 'edinica_izmereniya')
+    return JsonResponse({'resources': list(resources)})
 
 def object_income_detail(request, object_id):
     # Получаем объект или 404

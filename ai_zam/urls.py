@@ -11,7 +11,7 @@ from django.views.static import serve as staticserve
 def favicon_view(request):
     return HttpResponse(status=204)
 
-from object.views import home, objects_list, object_detail, object_income_detail, create_object, update_expense, update_resource_data, add_category, add_resource, add_category_to_object
+from object.views import home, objects_list, object_detail, object_income_detail, create_object, update_expense, update_resource_data, add_category, add_resource, add_category_to_object, get_resources_by_category
 from object.views_income import update_income
 from object.views_totals import get_income_totals
 from sotrudniki.views import organizations_list
@@ -36,6 +36,7 @@ urlpatterns = [
     path('add-category/', add_category, name='add_category'),
     path('add-resource/', add_resource, name='add_resource'),
     path('add-category-to-object/', add_category_to_object, name='add_category_to_object'),
+    path('get-resources/<int:category_id>/', get_resources_by_category, name='get_resources_by_category'),
     path('favicon.ico', favicon_view),
     path('ai/', include('ai.urls')),
     path('telegram/', include('telegrambot.urls')),

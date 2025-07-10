@@ -5,13 +5,97 @@
 
 {% block extra_styles %}
 .form-container {
-    max-width: 800px;
+    max-width: 1400px;
     margin: 2rem auto;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
     border-radius: 15px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 2rem;
+}
+
+.form-columns {
+    display: flex;
+    gap: 2rem;
+}
+
+.form-column {
+    flex: 1;
+}
+
+.resources-section {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.resources-section h3 {
+    color: white;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.resource-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.resource-item select,
+.resource-item input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    background: white;
+    color: #2c3e50;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.resource-item input[name="expense_quantity[]"],
+.resource-item input[name="expense_price[]"],
+.resource-item input[name="income_quantity[]"],
+.resource-item input[name="income_price[]"] {
+    flex: 0.33;
+    min-width: 80px;
+}
+
+.resource-item input[name="expense_cost[]"],
+.resource-item input[name="income_cost[]"] {
+    flex: 0.33;
+    min-width: 80px;
+    background: #f0f0f0 !important;
+    color: #666 !important;
+}
+
+.resource-item select option {
+    background: white;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.add-resource-btn {
+    background: #3498db;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.remove-resource-btn {
+    background: #e74c3c;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
 }
 
 .form-group {
@@ -76,6 +160,11 @@
 .btn-cancel:hover {
     background: #c0392b;
 }
+
+.form-group select option {
+    background: #2c3e50;
+    color: white;
+}
 {% endblock %}
 
 {% block content %}
@@ -85,24 +174,107 @@
     <form method="post">
         {% csrf_token %}
         
-        <div class="form-group">
-            <label for="nazvanie">Название объекта *</label>
-            <input type="text" id="nazvanie" name="nazvanie" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="data_nachala">Дата начала *</label>
-            <input type="date" id="data_nachala" name="data_nachala" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="otvetstvennyj">Ответственный</label>
-            <select id="otvetstvennyj" name="otvetstvennyj">
-                <option value="">Выберите ответственного</option>
-                {% for sotrudnik in sotrudniki %}
-                <option value="{{ sotrudnik.id }}">{{ sotrudnik.fio }}</option>
-                {% endfor %}
-            </select>
+        <div class="form-columns">
+            <!-- Левая колонка - Основная информация -->
+            <div class="form-column">
+                <div class="form-group">
+                    <label for="organizaciya">Организация *</label>
+                    <input type="text" id="organizaciya" name="organizaciya" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="nazvanie">Название объекта *</label>
+                    <input type="text" id="nazvanie" name="nazvanie" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="data_nachala">Дата начала *</label>
+                    <input type="date" id="data_nachala" name="data_nachala" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="podrazdelenie">Подразделение</label>
+                    <select id="podrazdelenie" name="podrazdelenie">
+                        <option value="">Выберите подразделение</option>
+                        {% for podrazdelenie in podrazdeleniya %}
+                        <option value="{{ podrazdelenie.id }}" {% if podrazdelenie.nazvanie == "Линейные сотрудники" %}selected{% endif %}>{{ podrazdelenie.nazvanie }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+
+            </div>
+            
+            <!-- Правая колонка - Ресурсы -->
+            <div class="form-column">
+                <!-- Расходная часть -->
+                <div class="resources-section">
+                    <h3>Расходная часть</h3>
+                    <div id="expense-resources">
+                        <div class="resource-item">
+                            <select name="expense_category[]" class="expense-category" onchange="loadExpenseResources(this)">
+                                <option value="">Категория</option>
+                                {% for category in expense_categories %}
+                                <option value="{{ category.id }}">{{ category.nazvanie }}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="expense_resource[]" class="expense-resource">
+                                <option value="">Ресурс</option>
+                            </select>
+                            <input type="number" name="expense_quantity[]" placeholder="Кол-во" step="0.01" oninput="calculateCost(this)">
+                            <input type="number" name="expense_price[]" placeholder="Цена" step="0.01" oninput="calculateCost(this)">
+                            <input type="number" name="expense_cost[]" placeholder="Стоимость" readonly style="background: #f0f0f0;">
+                            <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+                        </div>
+                    </div>
+                    <button type="button" class="add-resource-btn" onclick="addExpenseResource()">Добавить расход</button>
+                </div>
+                
+                <!-- Доходная часть -->
+                <div class="resources-section">
+                    <h3>Доходная часть</h3>
+                    <div id="income-resources">
+                        <div class="resource-item">
+                            <select name="income_category[]" class="income-category" onchange="loadIncomeResources(this)">
+                                <option value="">Категория</option>
+                                {% for category in income_categories %}
+                                <option value="{{ category.id }}">{{ category.nazvanie }}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="income_resource[]" class="income-resource">
+                                <option value="">Ресурс</option>
+                            </select>
+                            <input type="number" name="income_quantity[]" placeholder="Кол-во" step="0.01" oninput="calculateCost(this)">
+                            <input type="number" name="income_price[]" placeholder="Цена" step="0.01" oninput="calculateCost(this)">
+                            <input type="number" name="income_cost[]" placeholder="Стоимость" readonly style="background: #f0f0f0;">
+                            <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+                        </div>
+                    </div>
+                    <button type="button" class="add-resource-btn" onclick="addIncomeResource()">Добавить доход</button>
+                </div>
+                
+                <!-- Блок сотрудников -->
+                <div id="employees-section" class="resources-section" style="display: none;">
+                    <h3>Сотрудники</h3>
+                    <div class="form-group">
+                        <select id="sotrudnik" name="sotrudnik">
+                            <option value="">Выберите сотрудника</option>
+                            {% for sotrudnik in sotrudniki %}
+                            <option value="{{ sotrudnik.id }}" data-specialnost="{{ sotrudnik.specialnost.nazvanie|default:'Не указана' }}">{{ sotrudnik.fio }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="button" id="add-employee-to-list" style="margin-top: 10px; padding: 8px 16px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;">Добавить в список</button>
+                        <button type="button" id="add-new-employee" style="margin-top: 10px; padding: 8px 16px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">Добавить нового</button>
+                        
+                        <div id="selected-employees" style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; min-height: 40px;">
+                            <label style="display: block; margin-bottom: 10px; color: #bdc3c7;">Выбранные сотрудники:</label>
+                            <div id="employees-list" style="color: white; font-size: 14px; line-height: 1.6;"></div>
+                        </div>
+                        
+                        <input type="hidden" id="selected-employee-ids" name="selected_employees" value="">
+                    </div>
+                </div>
+            </div>
         </div>
         
         <div style="text-align: center; margin-top: 2rem;">
@@ -111,4 +283,317 @@
         </div>
     </form>
 </div>
+
+<!-- Модальное окно для добавления сотрудника -->
+<div id="employee-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #2c3e50; padding: 30px; border-radius: 10px; width: 400px;">
+        <h3 style="color: white; margin-bottom: 20px;">Добавить нового сотрудника</h3>
+        <form id="employee-form">
+            <div class="form-group">
+                <label for="employee-fio">ФИО *</label>
+                <input type="text" id="employee-fio" name="fio" required>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button type="submit" style="background: #27ae60; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin-right: 10px;">Добавить</button>
+                <button type="button" id="cancel-employee" style="background: #e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 5px;">Отмена</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Устанавливаем значения по умолчанию при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    // Получаем следующий ID для организации
+    const nextId = {{ next_id|default:1 }};
+    
+    // Устанавливаем значения по умолчанию
+    document.getElementById('organizaciya').value = `ООО "Организация-${nextId}"`;
+    document.getElementById('nazvanie').value = `Объект-${nextId}`;
+    
+    // Устанавливаем сегодняшнюю дату
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('data_nachala').value = today;
+    
+    // Массив для хранения выбранных сотрудников
+    let selectedEmployees = [];
+    
+    // Обработчик для добавления сотрудника в список
+    document.getElementById('add-employee-to-list').addEventListener('click', function() {
+        const select = document.getElementById('sotrudnik');
+        const selectedOption = select.options[select.selectedIndex];
+        
+        if (selectedOption.value && selectedOption.value !== '') {
+            const employeeId = selectedOption.value;
+            const employeeName = selectedOption.text;
+            const employeeSpecialty = selectedOption.getAttribute('data-specialnost');
+            
+            // Проверяем, не добавлен ли уже этот сотрудник
+            if (!selectedEmployees.find(emp => emp.id === employeeId)) {
+                selectedEmployees.push({
+                    id: employeeId,
+                    name: employeeName,
+                    specialty: employeeSpecialty
+                });
+                
+                updateEmployeesList();
+                
+                // Сбрасываем выбор в селекте
+                select.selectedIndex = 0;
+            } else {
+                alert('Этот сотрудник уже добавлен в список');
+            }
+        } else {
+            alert('Выберите сотрудника из списка');
+        }
+    });
+    
+    // Функция обновления списка сотрудников
+    function updateEmployeesList() {
+        const listContainer = document.getElementById('employees-list');
+        const hiddenInput = document.getElementById('selected-employee-ids');
+        
+        if (selectedEmployees.length === 0) {
+            listContainer.innerHTML = '<span style="color: #95a5a6; font-style: italic;">Никого не выбрано</span>';
+            hiddenInput.value = '';
+        } else {
+            const employeeItems = selectedEmployees.map((emp, index) => {
+                return `<span style="display: inline-block; margin: 2px 5px 2px 0; padding: 5px 8px; background: rgba(52, 152, 219, 0.3); border-radius: 15px; font-size: 13px;">
+                    ${emp.specialty}, ${emp.name}
+                    <button type="button" onclick="removeEmployee(${index})" style="margin-left: 8px; background: none; border: none; color: #e74c3c; cursor: pointer; font-weight: bold;">×</button>
+                </span>`;
+            }).join('');
+            
+            listContainer.innerHTML = employeeItems;
+            hiddenInput.value = selectedEmployees.map(emp => emp.id).join(',');
+        }
+    }
+    
+    // Глобальная функция для удаления сотрудника
+    window.removeEmployee = function(index) {
+        selectedEmployees.splice(index, 1);
+        updateEmployeesList();
+    };
+    
+    // Обработчик для кнопки добавления нового сотрудника
+    document.getElementById('add-new-employee').addEventListener('click', function() {
+        document.getElementById('employee-modal').style.display = 'block';
+    });
+    
+    // Обработчик для отмены добавления сотрудника
+    document.getElementById('cancel-employee').addEventListener('click', function() {
+        document.getElementById('employee-modal').style.display = 'none';
+        document.getElementById('employee-form').reset();
+    });
+    
+    // Обработчик для формы добавления сотрудника
+    document.getElementById('employee-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const fio = document.getElementById('employee-fio').value;
+        if (!fio) return;
+        
+        // Отправляем AJAX запрос для создания сотрудника
+        fetch('/sotrudniki/add_ajax/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                fio: fio,
+                podrazdelenie_id: document.getElementById('podrazdelenie').value
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Добавляем нового сотрудника в список
+                const select = document.getElementById('sotrudnik');
+                const option = document.createElement('option');
+                option.value = data.id;
+                option.textContent = fio;
+                option.setAttribute('data-specialnost', 'Не указана');
+                select.appendChild(option);
+                
+                // Автоматически добавляем в список выбранных
+                selectedEmployees.push({
+                    id: data.id,
+                    name: fio,
+                    specialty: 'Не указана'
+                });
+                updateEmployeesList();
+                
+                // Закрываем модальное окно
+                document.getElementById('employee-modal').style.display = 'none';
+                document.getElementById('employee-form').reset();
+            } else {
+                alert('Ошибка при добавлении сотрудника');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ошибка при добавлении сотрудника');
+        });
+    });
+    
+    // Инициализация списка сотрудников
+    updateEmployeesList();
+});
+
+// Функции для работы с ресурсами
+function loadExpenseResources(categorySelect) {
+    const categoryId = categorySelect.value;
+    const resourceSelect = categorySelect.parentElement.querySelector('.expense-resource');
+    
+    if (categoryId) {
+        fetch(`/get-resources/${categoryId}/`)
+            .then(response => response.json())
+            .then(data => {
+                resourceSelect.innerHTML = '<option value="">Ресурс</option>';
+                data.resources.forEach(resource => {
+                    resourceSelect.innerHTML += `<option value="${resource.id}">${resource.naimenovanie} (${resource.edinica_izmereniya})</option>`;
+                });
+                checkForHRCategory(categorySelect);
+            });
+    } else {
+        resourceSelect.innerHTML = '<option value="">Ресурс</option>';
+        checkForHRCategory(categorySelect);
+    }
+}
+
+function loadIncomeResources(categorySelect) {
+    const categoryId = categorySelect.value;
+    const resourceSelect = categorySelect.parentElement.querySelector('.income-resource');
+    
+    if (categoryId) {
+        fetch(`/get-resources/${categoryId}/`)
+            .then(response => response.json())
+            .then(data => {
+                resourceSelect.innerHTML = '<option value="">Ресурс</option>';
+                data.resources.forEach(resource => {
+                    resourceSelect.innerHTML += `<option value="${resource.id}">${resource.naimenovanie} (${resource.edinica_izmereniya})</option>`;
+                });
+                checkForHRCategory(categorySelect);
+            });
+    } else {
+        resourceSelect.innerHTML = '<option value="">Ресурс</option>';
+        checkForHRCategory(categorySelect);
+    }
+}
+
+function addExpenseResource() {
+    const container = document.getElementById('expense-resources');
+    const newItem = document.createElement('div');
+    newItem.className = 'resource-item';
+    
+    let categoryOptions = '<option value="">Категория</option>';
+    {% for category in expense_categories %}
+    categoryOptions += '<option value="{{ category.id }}">{{ category.nazvanie }}</option>';
+    {% endfor %}
+    
+    newItem.innerHTML = `
+        <select name="expense_category[]" class="expense-category" onchange="loadExpenseResources(this)">
+            ${categoryOptions}
+        </select>
+        <select name="expense_resource[]" class="expense-resource">
+            <option value="">Ресурс</option>
+        </select>
+        <input type="number" name="expense_quantity[]" placeholder="Кол-во" step="0.01" oninput="calculateCost(this)">
+        <input type="number" name="expense_price[]" placeholder="Цена" step="0.01" oninput="calculateCost(this)">
+        <input type="number" name="expense_cost[]" placeholder="Стоимость" readonly style="background: #f0f0f0;">
+        <button type="button" class="remove-resource-btn" onclick="removeResourceWithCheck(this)">×</button>
+    `;
+    container.appendChild(newItem);
+}
+
+function addIncomeResource() {
+    const container = document.getElementById('income-resources');
+    const newItem = document.createElement('div');
+    newItem.className = 'resource-item';
+    
+    let categoryOptions = '<option value="">Категория</option>';
+    {% for category in income_categories %}
+    categoryOptions += '<option value="{{ category.id }}">{{ category.nazvanie }}</option>';
+    {% endfor %}
+    
+    newItem.innerHTML = `
+        <select name="income_category[]" class="income-category" onchange="loadIncomeResources(this)">
+            ${categoryOptions}
+        </select>
+        <select name="income_resource[]" class="income-resource">
+            <option value="">Ресурс</option>
+        </select>
+        <input type="number" name="income_quantity[]" placeholder="Кол-во" step="0.01" oninput="calculateCost(this)">
+        <input type="number" name="income_price[]" placeholder="Цена" step="0.01" oninput="calculateCost(this)">
+        <input type="number" name="income_cost[]" placeholder="Стоимость" readonly style="background: #f0f0f0;">
+        <button type="button" class="remove-resource-btn" onclick="removeResourceWithCheck(this)">×</button>
+    `;
+    container.appendChild(newItem);
+}
+
+function removeResource(button) {
+    button.parentElement.remove();
+}
+
+function removeResourceWithCheck(button) {
+    button.parentElement.remove();
+    // Проверяем, остались ли категории "Кадровое обеспечение"
+    setTimeout(() => {
+        const allCategories = document.querySelectorAll('select[name*="category"]');
+        let hasHRCategory = false;
+        
+        allCategories.forEach(select => {
+            const selectedOption = select.options[select.selectedIndex];
+            if (selectedOption && selectedOption.text.includes('Кадровое обеспечение')) {
+                hasHRCategory = true;
+            }
+        });
+        
+        const employeesSection = document.getElementById('employees-section');
+        if (hasHRCategory) {
+            employeesSection.style.display = 'block';
+        } else {
+            employeesSection.style.display = 'none';
+        }
+    }, 100);
+}
+
+function calculateCost(input) {
+    const resourceItem = input.parentElement;
+    const quantityInput = resourceItem.querySelector('input[name*="quantity"]');
+    const priceInput = resourceItem.querySelector('input[name*="price"]');
+    const costInput = resourceItem.querySelector('input[name*="cost"]');
+    
+    if (quantityInput && priceInput && costInput) {
+        const quantity = parseFloat(quantityInput.value) || 0;
+        const price = parseFloat(priceInput.value) || 0;
+        const cost = quantity * price;
+        costInput.value = cost.toFixed(2);
+    }
+}
+
+function checkForHRCategory(categorySelect) {
+    const selectedText = categorySelect.options[categorySelect.selectedIndex].text;
+    const employeesSection = document.getElementById('employees-section');
+    
+    // Проверяем, есть ли категория "Кадровое обеспечение" среди выбранных
+    const allCategories = document.querySelectorAll('select[name*="category"]');
+    let hasHRCategory = false;
+    
+    allCategories.forEach(select => {
+        const selectedOption = select.options[select.selectedIndex];
+        if (selectedOption && selectedOption.text.includes('Кадровое обеспечение')) {
+            hasHRCategory = true;
+        }
+    });
+    
+    if (hasHRCategory) {
+        employeesSection.style.display = 'block';
+    } else {
+        employeesSection.style.display = 'none';
+    }
+}
+</script>
+
 {% endblock %}
