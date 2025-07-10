@@ -1,3 +1,17 @@
+удали из всех html в папке media
+блок 
+<div class="row" id="button" style="margin-bottom:15px;margin-top:15px;">
+  <div class="col-sm-12 text-center">
+    <button type="button" title="Печать" onclick="window.print();" class="btn btn-blue"><i class="fa fa-print"></i> Печать</button>
+  </div>
+</div>
+
+удали из всех html-файлов в папке media блок
+  <div class="no-print" style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
+        <button onclick="window.print()" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 5px;">🖨️ Печать</button>
+        <button onclick="window.close()" style="padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">Закрыть</button>
+    </div>
+
 http://127.0.0.1:8000/sotrudniki/28/edit/protokol/?id=26
 
 Уведомление от сайта 127.0.0.1
