@@ -56,6 +56,7 @@ class Objekt(models.Model):
         'sotrudniki.Sotrudnik',
         verbose_name="Сотрудники",
         blank=True,
+        related_name="objekty_work",
         help_text="Сотрудники, работающие на данном объекте"
     )
     

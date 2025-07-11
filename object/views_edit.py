@@ -7,6 +7,8 @@ def edit_object(request, object_id):
     obj = get_object_or_404(Objekt, id=object_id)
     
     if request.method == 'POST':
+        print(f"POST: {dict(request.POST)}")
+        print(f"Employees: {request.POST.getlist('selected_employees[]')}")
         organizaciya_name = request.POST.get('organizaciya')
         nazvanie = request.POST.get('nazvanie')
         data_nachala = request.POST.get('data_nachala')
@@ -109,23 +111,23 @@ def edit_object(request, object_id):
                 if er.id not in updated_resources:
                     er.delete()
             
-            # Обрабатываем сотрудников - обновляем связи в таблице sotrudniki_sotrudnik_objekty
+            # Обрабатываем сотрудников
             selected_employees = request.POST.getlist('selected_employees[]')
-            
-            # Очищаем старые связи и добавляем новые
             obj.sotrudniki.clear()
-            
-            # Добавляем новые связи через ManyToMany поле
             for emp_id in selected_employees:
-                if emp_id and emp_id.strip():
+                if emp_id:
                     try:
                         emp = Sotrudnik.objects.get(id=int(emp_id))
                         obj.sotrudniki.add(emp)
-                    except (Sotrudnik.DoesNotExist, ValueError):
+                    except:
                         pass
             
-            # Перенаправляем на страницу объекта
-            return redirect('object_detail', object_id=obj.id)
+            # Перенаправляем в зависимости от кнопки
+            action = request.POST.get('action', 'save_and_exit')
+            if action == 'save_and_stay':
+                return redirect('edit_object', object_id=obj.id)
+            else:
+                return redirect('object_detail', object_id=obj.id)
     
     sotrudniki = Sotrudnik.objects.select_related('specialnost').all()
     podrazdeleniya = Podrazdelenie.objects.all()
@@ -142,21 +144,45 @@ def edit_object(request, object_id):
     existing_expense_resources = [r for r in existing_resources if r.resurs.kategoriya_resursa.raskhod_dokhod]
     existing_income_resources = [r for r in existing_resources if not r.resurs.kategoriya_resursa.raskhod_dokhod]
     
-    # Получаем сотрудников по объекту из таблицы sotrudniki_sotrudnik через связь sotrudniki_sotrudnik_objekty
     from collections import defaultdict
     from sotrudniki.models import Specialnost
     
-    # Получаем сотрудников, привязанных к объекту через ManyToMany поле
-    current_employees = Sotrudnik.objects.filter(objekty=obj).select_related('specialnost')
+    # Получаем сотрудников объекта
+    current_employees = obj.sotrudniki.select_related('specialnost').all()
     employees_by_specialty = defaultdict(list)
     
-    # Группируем текущих сотрудников по специальностям
+    # Группируем сотрудников
+    employees_category_1 = []
+    employees_category_2_by_specialty = defaultdict(list)
+    
     for emp in current_employees:
-        specialty_name = emp.specialnost.nazvanie if emp.specialnost else 'Без специальности'
-        employees_by_specialty[specialty_name].append(emp)
+        if emp.specialnost and emp.specialnost.kategoriya == '2':
+            specialty_name = emp.specialnost.nazvanie
+            employees_category_2_by_specialty[specialty_name].append(emp)
+        else:
+            employees_category_1.append(emp)
     
     # Получаем все специальности из таблицы sotrudniki_specialnost
     all_specialties = Specialnost.objects.all()
+    
+    # Создаем тестовых сотрудников если их нет
+    if Sotrudnik.objects.count() == 0:
+        from datetime import date
+        test_employees = [
+            {'fio': 'Иванов Иван Иванович', 'specialty': 'Альпинист'},
+            {'fio': 'Петров Петр Петрович', 'specialty': 'Газорезчик'},
+            {'fio': 'Сидоров Сидор Сидорович', 'specialty': 'Производитель работ'},
+        ]
+        
+        for emp_data in test_employees:
+            specialty, _ = Specialnost.objects.get_or_create(nazvanie=emp_data['specialty'])
+            Sotrudnik.objects.create(
+                fio=emp_data['fio'],
+                specialnost=specialty,
+                data_rozhdeniya=date(1990, 1, 1),
+                data_priema=date.today(),
+                data_nachala_raboty=date.today()
+            )
     
     # Добавляем пустые списки для специальностей без сотрудников
     for specialty in all_specialties:
@@ -178,7 +204,8 @@ def edit_object(request, object_id):
         'income_categories': list(income_categories),
         'existing_expense_resources': existing_expense_resources,
         'existing_income_resources': existing_income_resources,
-        'employees_by_specialty': dict(employees_by_specialty),
+        'employees_category_1': employees_category_1,
+        'employees_category_2_by_specialty': dict(employees_category_2_by_specialty),
         'all_employees_by_specialty': dict(all_employees_by_specialty),
         'current_employees': list(current_employees),
         'debug_employees_count': current_employees.count(),
