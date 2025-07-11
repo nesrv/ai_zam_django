@@ -51,6 +51,7 @@ class SotrudnikAdmin(admin.ModelAdmin):
     date_hierarchy = 'data_priema'
     inlines = [ProtokolyObucheniyaInline, InstruktazhiInline]
     readonly_fields = ['get_shablony_dokumentov']
+    filter_horizontal = ['objekty']
     
     def get_shablony_dokumentov(self, obj):
         if obj.specialnost and hasattr(obj.specialnost, 'shablony_dokumentov'):

@@ -108,8 +108,23 @@ def edit_object(request, object_id):
             for er in existing_resources:
                 if er.id not in updated_resources:
                     er.delete()
-
             
+            # Обрабатываем сотрудников - обновляем связи в таблице sotrudniki_sotrudnik_objekty
+            selected_employees = request.POST.getlist('selected_employees[]')
+            
+            # Очищаем старые связи и добавляем новые
+            obj.sotrudniki.clear()
+            
+            # Добавляем новые связи через ManyToMany поле
+            for emp_id in selected_employees:
+                if emp_id and emp_id.strip():
+                    try:
+                        emp = Sotrudnik.objects.get(id=int(emp_id))
+                        obj.sotrudniki.add(emp)
+                    except (Sotrudnik.DoesNotExist, ValueError):
+                        pass
+            
+            # Перенаправляем на страницу объекта
             return redirect('object_detail', object_id=obj.id)
     
     sotrudniki = Sotrudnik.objects.select_related('specialnost').all()
@@ -127,6 +142,34 @@ def edit_object(request, object_id):
     existing_expense_resources = [r for r in existing_resources if r.resurs.kategoriya_resursa.raskhod_dokhod]
     existing_income_resources = [r for r in existing_resources if not r.resurs.kategoriya_resursa.raskhod_dokhod]
     
+    # Получаем сотрудников по объекту из таблицы sotrudniki_sotrudnik через связь sotrudniki_sotrudnik_objekty
+    from collections import defaultdict
+    from sotrudniki.models import Specialnost
+    
+    # Получаем сотрудников, привязанных к объекту через ManyToMany поле
+    current_employees = Sotrudnik.objects.filter(objekty=obj).select_related('specialnost')
+    employees_by_specialty = defaultdict(list)
+    
+    # Группируем текущих сотрудников по специальностям
+    for emp in current_employees:
+        specialty_name = emp.specialnost.nazvanie if emp.specialnost else 'Без специальности'
+        employees_by_specialty[specialty_name].append(emp)
+    
+    # Получаем все специальности из таблицы sotrudniki_specialnost
+    all_specialties = Specialnost.objects.all()
+    
+    # Добавляем пустые списки для специальностей без сотрудников
+    for specialty in all_specialties:
+        if specialty.nazvanie not in employees_by_specialty:
+            employees_by_specialty[specialty.nazvanie] = []
+    
+    # Получаем всех сотрудников по специальностям для выпадающих списков
+    all_employees_by_specialty = defaultdict(list)
+    all_employees_full = Sotrudnik.objects.select_related('specialnost').all()
+    for emp in all_employees_full:
+        specialty_name = emp.specialnost.nazvanie if emp.specialnost else 'Без специальности'
+        all_employees_by_specialty[specialty_name].append(emp)
+    
     context = {
         'object': obj,
         'sotrudniki': sotrudniki,
@@ -135,6 +178,12 @@ def edit_object(request, object_id):
         'income_categories': list(income_categories),
         'existing_expense_resources': existing_expense_resources,
         'existing_income_resources': existing_income_resources,
+        'employees_by_specialty': dict(employees_by_specialty),
+        'all_employees_by_specialty': dict(all_employees_by_specialty),
+        'current_employees': list(current_employees),
+        'debug_employees_count': current_employees.count(),
+        'debug_total_employees': Sotrudnik.objects.count(),
+        'debug_specialties_count': all_specialties.count(),
         'is_edit': True,
     }
     

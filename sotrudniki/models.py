@@ -40,6 +40,7 @@ class Podrazdelenie(models.Model):
 
 class Specialnost(models.Model):
     nazvanie = models.CharField(max_length=200, verbose_name="Название специальности")
+    kategoriya = models.CharField(max_length=200, verbose_name="Категория", null=True, blank=True)
     
     class Meta:
         verbose_name = "Специальность"
@@ -103,6 +104,12 @@ class Sotrudnik(models.Model):
     )
     data_priema = models.DateField(verbose_name="Дата приема")
     data_nachala_raboty = models.DateField(verbose_name="Дата начала работы")
+    objekty = models.ManyToManyField(
+        'object.Objekt',
+        verbose_name="Объекты",
+        blank=True,
+        help_text="Объекты, на которых работает сотрудник"
+    )
     
     class Meta:
         verbose_name = "Сотрудник"

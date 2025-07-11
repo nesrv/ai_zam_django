@@ -19,8 +19,12 @@
     gap: 2rem;
 }
 
-.form-column {
-    flex: 1;
+.form-column:first-child {
+    width: 25%;
+}
+
+.form-column:last-child {
+    width: 80%;
 }
 
 .resources-section {
@@ -153,21 +157,27 @@
                 <div class="resources-section">
                     <h3>Расходная часть</h3>
                     <div id="expense-resources">
-                        {% for resource in existing_expense_resources %}
-                        <div class="resource-item">
-                            <select name="expense_category[]" class="expense-category" onchange="loadExpenseResources(this)">
-                                <option value="">Категория</option>
-                                {% for category in expense_categories %}
-                                <option value="{{ category.id }}" {% if category.id == resource.resurs.kategoriya_resursa.id %}selected{% endif %}>{{ category.nazvanie }}</option>
-                                {% endfor %}
-                            </select>
-                            <select name="expense_resource[]" class="expense-resource">
-                                <option value="{{ resource.resurs.id }}" selected>{{ resource.resurs.naimenovanie }}</option>
-                            </select>
-                            <input type="number" name="expense_quantity[]" value="{{ resource.kolichestvo }}" step="0.01" oninput="calculateCost(this)">
-                            <input type="number" name="expense_price[]" value="{{ resource.cena }}" step="0.01" oninput="calculateCost(this)">
-                            <input type="number" name="expense_cost[]" value="{{ resource.total_cost|floatformat:2 }}" readonly style="background: #f0f0f0;">
-                            <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+                        {% regroup existing_expense_resources by resurs.kategoriya_resursa.nazvanie as expense_categories_grouped %}
+                        {% for category_group in expense_categories_grouped %}
+                        <div class="category-group" style="margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 15px;">
+                            <h4 style="color: #3498db; margin-bottom: 10px; font-size: 16px;">{{ category_group.grouper }}</h4>
+                            {% for resource in category_group.list %}
+                            <div class="resource-item">
+                                <select name="expense_resource[]" class="expense-resource">
+                                    <option value="{{ resource.resurs.id }}" selected>{{ resource.resurs.naimenovanie }}</option>
+                                </select>
+                                <div style="display: flex; align-items: center; gap: 5px;">
+                                    <input type="number" name="expense_quantity[]" value="{{ resource.kolichestvo|floatformat:1 }}" step="1" oninput="calculateCost(this)">
+                                    <span style="color: white; font-size: 12px;">{{ resource.resurs.edinica_izmereniya }}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 5px;">
+                                    <input type="number" name="expense_price[]" value="{{ resource.cena|floatformat:0 }}" step="1" oninput="calculateCost(this)">
+                                    <span style="color: white; font-size: 12px;">руб</span>
+                                </div>
+                                <input type="number" name="expense_cost[]" value="{{ resource.total_cost|floatformat:2 }}" readonly style="background: #f0f0f0;">
+                                <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+                            </div>
+                            {% endfor %}
                         </div>
                         {% endfor %}
                         
@@ -194,21 +204,27 @@
                 <div class="resources-section">
                     <h3>Доходная часть</h3>
                     <div id="income-resources">
-                        {% for resource in existing_income_resources %}
-                        <div class="resource-item">
-                            <select name="income_category[]" class="income-category" onchange="loadIncomeResources(this)">
-                                <option value="">Категория</option>
-                                {% for category in income_categories %}
-                                <option value="{{ category.id }}" {% if category.id == resource.resurs.kategoriya_resursa.id %}selected{% endif %}>{{ category.nazvanie }}</option>
-                                {% endfor %}
-                            </select>
-                            <select name="income_resource[]" class="income-resource">
-                                <option value="{{ resource.resurs.id }}" selected>{{ resource.resurs.naimenovanie }}</option>
-                            </select>
-                            <input type="number" name="income_quantity[]" value="{{ resource.kolichestvo }}" step="0.01" oninput="calculateCost(this)">
-                            <input type="number" name="income_price[]" value="{{ resource.cena }}" step="0.01" oninput="calculateCost(this)">
-                            <input type="number" name="income_cost[]" value="{{ resource.total_cost|floatformat:2 }}" readonly style="background: #f0f0f0;">
-                            <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+                        {% regroup existing_income_resources by resurs.kategoriya_resursa.nazvanie as income_categories_grouped %}
+                        {% for category_group in income_categories_grouped %}
+                        <div class="category-group" style="margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 15px;">
+                            <h4 style="color: #3498db; margin-bottom: 10px; font-size: 16px;">{{ category_group.grouper }}</h4>
+                            {% for resource in category_group.list %}
+                            <div class="resource-item">
+                                <select name="income_resource[]" class="income-resource">
+                                    <option value="{{ resource.resurs.id }}" selected>{{ resource.resurs.naimenovanie }}</option>
+                                </select>
+                                <div style="display: flex; align-items: center; gap: 5px;">
+                                    <input type="number" name="income_quantity[]" value="{{ resource.kolichestvo|floatformat:1 }}" step="1" oninput="calculateCost(this)">
+                                    <span style="color: white; font-size: 12px;">{{ resource.resurs.edinica_izmereniya }}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 5px;">
+                                    <input type="number" name="income_price[]" value="{{ resource.cena|floatformat:0 }}" step="1" oninput="calculateCost(this)">
+                                    <span style="color: white; font-size: 12px;">руб</span>
+                                </div>
+                                <input type="number" name="income_cost[]" value="{{ resource.total_cost|floatformat:2 }}" readonly style="background: #f0f0f0;">
+                                <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+                            </div>
+                            {% endfor %}
                         </div>
                         {% endfor %}
                         
@@ -231,6 +247,36 @@
                     <button type="button" class="add-resource-btn" onclick="addIncomeResource()">Добавить доход</button>
                 </div>
             </div>
+        </div>
+        
+        <!-- Сотрудники по объекту -->
+        <div class="resources-section" style="margin-top: 2rem;">
+            <h3>Сотрудники по объекту</h3>
+            <p style="color: #ccc; font-size: 12px; margin-bottom: 10px;">
+                Привязано: {{ debug_employees_count }} | Всего сотрудников: {{ debug_total_employees }} | Специальностей: {{ debug_specialties_count }}
+            </p>
+            {% for specialty, employees in employees_by_specialty.items %}
+            <div style="margin-bottom: 15px;">
+                <h4 style="color: #3498db; margin-bottom: 8px;">{{ specialty }}</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+                    {% for employee in employees %}
+                    <div style="background: rgba(255, 255, 255, 0.1); padding: 6px 10px; border-radius: 4px; color: white; font-size: 14px;">
+                        {{ employee.fio }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <select style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; background: white; color: #333; font-size: 12px;" onchange="addEmployeeToSpecialty(this, '{{ specialty }}')">
+                    <option value="">Добавить сотрудника</option>
+                    {% for emp in all_employees_by_specialty.items %}
+                    {% if emp.0 == specialty %}
+                    {% for employee in emp.1 %}
+                    <option value="{{ employee.id }}">{{ employee.fio }}</option>
+                    {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            {% endfor %}
         </div>
         
         <div style="text-align: center; margin-top: 2rem;">
@@ -343,6 +389,42 @@ function addIncomeResource() {
 
 function removeResource(button) {
     button.parentElement.remove();
+}
+
+function addEmployeeToSpecialty(select, specialty) {
+    if (select.value) {
+        const employeeId = select.value;
+        const employeeName = select.options[select.selectedIndex].text;
+        
+        // Проверяем, не добавлен ли уже этот сотрудник
+        const existingEmployee = document.querySelector(`[data-employee-id="${employeeId}"]`);
+        if (existingEmployee) {
+            alert('Сотрудник уже добавлен');
+            select.value = '';
+            return;
+        }
+        
+        const employeeDiv = document.createElement('div');
+        employeeDiv.className = 'employee-tag';
+        employeeDiv.setAttribute('data-employee-id', employeeId);
+        employeeDiv.style.cssText = 'background: rgba(255, 255, 255, 0.1); padding: 6px 10px; border-radius: 4px; color: white; font-size: 14px; position: relative; margin-right: 8px; margin-bottom: 4px;';
+        
+        employeeDiv.innerHTML = `
+            ${employeeName}
+            <button type="button" onclick="removeEmployee(this, ${employeeId})" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">×</button>
+            <input type="hidden" name="selected_employees[]" value="${employeeId}">
+        `;
+        
+        const container = select.parentElement.querySelector('div[id*="employees-"]');
+        container.appendChild(employeeDiv);
+        
+        select.value = '';
+    }
+}
+
+function removeEmployee(button, employeeId) {
+    const employeeDiv = button.parentElement;
+    employeeDiv.remove();
 }
 </script>
 

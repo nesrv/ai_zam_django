@@ -52,6 +52,12 @@ class Objekt(models.Model):
     data_fakt_zaversheniya = models.DateField(null=True, blank=True, verbose_name="Дата факт завершения")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='планируется', verbose_name="Статус")
     is_active = models.BooleanField(default=True, verbose_name="Активный")
+    sotrudniki = models.ManyToManyField(
+        'sotrudniki.Sotrudnik',
+        verbose_name="Сотрудники",
+        blank=True,
+        help_text="Сотрудники, работающие на данном объекте"
+    )
     
     class Meta:
         verbose_name = "Объект"

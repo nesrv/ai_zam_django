@@ -173,12 +173,16 @@ class ObjektAdmin(admin.ModelAdmin):
     list_filter = ('status', 'data_nachala', 'otvetstvennyj')
     date_hierarchy = 'data_nachala'
     inlines = [KadrovoeObespechenieInline, MashinyMekhanizmyInline, InstrumentMaterialyInline, ABRInline, SIZInline, PodryadchikiInline]
+    filter_horizontal = ['sotrudniki']
     fieldsets = (
         (None, {
             'fields': ('nazvanie', 'otvetstvennyj', 'status')
         }),
         ('Даты', {
             'fields': ('data_nachala', 'data_plan_zaversheniya', 'data_fakt_zaversheniya')
+        }),
+        ('Сотрудники', {
+            'fields': ('sotrudniki',)
         }),
     )
     
