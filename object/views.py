@@ -68,7 +68,7 @@ def objects_list(request):
         planned_resources = ResursyPoObjektu.objects.filter(objekt=obj).select_related('resurs', 'resurs__kategoriya_resursa')
         
         # Вычисляем общую стоимость точно так же, как в object_detail
-        total_cost = sum(float(r.kolichestvo * r.cena) for r in planned_resources)
+        total_cost = sum(float(r.kolichestvo) * float(r.cena) for r in planned_resources)
         
         # Фактические расходы
         fakticheskij_resursy = FakticheskijResursPoObjektu.objects.filter(
@@ -348,11 +348,11 @@ def object_detail(request, object_id):
     # Получаем объект или 404
     obj = get_object_or_404(Objekt, id=object_id)
     
-    # Получаем ресурсы по объекту
-    resources = ResursyPoObjektu.objects.filter(objekt=obj).select_related('resurs', 'resurs__kategoriya_resursa')
+    # Получаем ресурсы по объекту, сортируем по категориям
+    resources = ResursyPoObjektu.objects.filter(objekt=obj).select_related('resurs', 'resurs__kategoriya_resursa').order_by('resurs__kategoriya_resursa__nazvanie', 'resurs__naimenovanie')
     
     # Суммарная стоимость ресурсов
-    total_cost = sum(float(r.kolichestvo * r.cena) for r in resources)
+    total_cost = sum(float(r.kolichestvo) * float(r.cena) for r in resources)
     
     # Фактические расходы ресурсов
     fakticheskij_resursy = FakticheskijResursPoObjektu.objects.filter(
@@ -414,11 +414,21 @@ def object_detail(request, object_id):
         )
     
     from .models import KategoriyaResursa
+    from collections import OrderedDict
     categories = KategoriyaResursa.objects.all()
+    
+    # Группируем ресурсы по категориям
+    grouped_resources = OrderedDict()
+    for resource in resources:
+        category_name = resource.resurs.kategoriya_resursa.nazvanie
+        if category_name not in grouped_resources:
+            grouped_resources[category_name] = []
+        grouped_resources[category_name].append(resource)
     
     context = {
         'object': obj,
         'resources': resources,
+        'grouped_resources': grouped_resources,
         'total_cost': total_cost,
         'fakticheskij_resursy': fakticheskij_resursy,
         'raskhody': raskhody,
@@ -441,7 +451,6 @@ def create_object(request):
         organizaciya_name = request.POST.get('organizaciya')
         nazvanie = request.POST.get('nazvanie')
         data_nachala = request.POST.get('data_nachala')
-        sotrudnik_id = request.POST.get('sotrudnik')
         
         if nazvanie and data_nachala:
             # Создаем или получаем организацию
@@ -450,7 +459,6 @@ def create_object(request):
                 try:
                     organizaciya = Organizaciya.objects.get(nazvanie=organizaciya_name)
                 except Organizaciya.DoesNotExist:
-                    # Генерируем уникальный ИНН
                     import random
                     unique_inn = f"{random.randint(1000000000, 9999999999)}"
                     organizaciya = Organizaciya.objects.create(
@@ -459,14 +467,6 @@ def create_object(request):
                         is_active=True
                     )
             
-            otvetstvennyj_name = "Иванов Иван Иванович"
-            if sotrudnik_id:
-                try:
-                    sotrudnik = Sotrudnik.objects.get(id=sotrudnik_id)
-                    otvetstvennyj_name = sotrudnik.fio
-                except Sotrudnik.DoesNotExist:
-                    pass
-            
             from datetime import datetime, timedelta
             
             obj = Objekt.objects.create(
@@ -474,8 +474,58 @@ def create_object(request):
                 organizaciya=organizaciya,
                 data_nachala=data_nachala,
                 data_plan_zaversheniya=datetime.strptime(data_nachala, '%Y-%m-%d').date() + timedelta(days=365),
-                otvetstvennyj=otvetstvennyj_name
+                otvetstvennyj="Иванов Иван Иванович"
             )
+            
+            # Обрабатываем расходные ресурсы
+            expense_categories = request.POST.getlist('expense_category[]')
+            expense_resources = request.POST.getlist('expense_resource[]')
+            expense_quantities = request.POST.getlist('expense_quantity[]')
+            expense_prices = request.POST.getlist('expense_price[]')
+            
+            for i in range(len(expense_resources)):
+                if expense_resources[i] and expense_quantities[i] and expense_prices[i]:
+                    resurs = Resurs.objects.get(id=expense_resources[i])
+                    resurs_po_objektu = ResursyPoObjektu.objects.create(
+                        objekt=obj,
+                        resurs=resurs,
+                        kolichestvo=float(expense_quantities[i]),
+                        cena=float(expense_prices[i])
+                    )
+                    # Создаем фактический ресурс
+                    FakticheskijResursPoObjektu.objects.create(
+                        resurs_po_objektu=resurs_po_objektu
+                    )
+            
+            # Обрабатываем доходные ресурсы
+            income_categories = request.POST.getlist('income_category[]')
+            income_resources = request.POST.getlist('income_resource[]')
+            income_quantities = request.POST.getlist('income_quantity[]')
+            income_prices = request.POST.getlist('income_price[]')
+            
+            for i in range(len(income_resources)):
+                if income_resources[i] and income_quantities[i] and income_prices[i]:
+                    resurs = Resurs.objects.get(id=income_resources[i])
+                    resurs_po_objektu = ResursyPoObjektu.objects.create(
+                        objekt=obj,
+                        resurs=resurs,
+                        kolichestvo=float(income_quantities[i]),
+                        cena=float(income_prices[i])
+                    )
+                    # Создаем фактический ресурс
+                    FakticheskijResursPoObjektu.objects.create(
+                        resurs_po_objektu=resurs_po_objektu
+                    )
+            
+            # Создаем начальную запись в сводной таблице
+            SvodnayaRaskhodDokhodPoDnyam.objects.create(
+                objekt=obj,
+                data=datetime.strptime(data_nachala, '%Y-%m-%d').date(),
+                raskhod=0,
+                dokhod=0,
+                balans=0
+            )
+            
             return redirect('object_detail', object_id=obj.id)
     
     # GET запрос - показываем форму
@@ -594,6 +644,26 @@ def get_resources_by_category(request, category_id):
     resources = Resurs.objects.filter(kategoriya_resursa_id=category_id).values('id', 'naimenovanie', 'edinica_izmereniya')
     return JsonResponse({'resources': list(resources)})
 
+def get_employees_by_resource(request, resource_id):
+    from .models import Resurs
+    from sotrudniki.models import Sotrudnik, Specialnost
+    
+    try:
+        # Получаем ресурс
+        resource = Resurs.objects.get(id=resource_id)
+        
+        # Ищем специальность по названию ресурса
+        try:
+            specialnost = Specialnost.objects.get(nazvanie=resource.naimenovanie)
+            # Получаем сотрудников с этой специальностью
+            employees = Sotrudnik.objects.filter(specialnost=specialnost).values('id', 'fio')
+            return JsonResponse({'employees': list(employees)})
+        except Specialnost.DoesNotExist:
+            return JsonResponse({'employees': []})
+            
+    except Resurs.DoesNotExist:
+        return JsonResponse({'employees': []})
+
 def object_income_detail(request, object_id):
     # Получаем объект или 404
     obj = get_object_or_404(Objekt, id=object_id)
@@ -605,7 +675,7 @@ def object_income_detail(request, object_id):
     ).select_related('resurs', 'resurs__kategoriya_resursa')
     
     # Суммарная стоимость ресурсов
-    total_cost = sum(float(r.kolichestvo * r.cena) for r in resources)
+    total_cost = sum(float(r.kolichestvo) * float(r.cena) for r in resources)
     
     # Фактические ресурсы
     fakticheskij_resursy = FakticheskijResursPoObjektu.objects.filter(
@@ -695,7 +765,11 @@ def update_expense(request):
             data = json.loads(request.body)
             resource_id = data.get('resource_id')
             date_str = data.get('date')
-            amount = float(data.get('amount', 0))
+            amount = data.get('amount', 0)
+            
+            # Преобразуем в Decimal для совместимости с моделью
+            from decimal import Decimal
+            amount = Decimal(str(amount))
             
             # Получаем ресурс по объекту
             resource = ResursyPoObjektu.objects.get(id=resource_id)
@@ -718,7 +792,7 @@ def update_expense(request):
             # Пересчитываем общую сумму потраченного для ресурса
             total_spent = RaskhodResursa.objects.filter(
                 fakticheskij_resurs=fakticheskij_resurs
-            ).aggregate(total=Sum('izraskhodovano'))['total'] or 0
+            ).aggregate(total=Sum('izraskhodovano'))['total'] or Decimal('0')
             
             # Обновляем поле potracheno в resursy_po_objektu
             resource.potracheno = total_spent
@@ -755,7 +829,11 @@ def update_resource_data(request):
             data = json.loads(request.body)
             resource_id = data.get('resource_id')
             field_type = data.get('field_type')  # 'kolichestvo' или 'cena'
-            new_value = float(data.get('value', 0))
+            new_value = data.get('value', 0)
+            
+            # Преобразуем в Decimal для совместимости с моделью
+            from decimal import Decimal
+            new_value = Decimal(str(new_value))
             
             # Получаем ресурс по объекту
             resource = ResursyPoObjektu.objects.get(id=resource_id)

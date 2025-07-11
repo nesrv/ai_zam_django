@@ -1,0 +1,349 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Редактировать объект - AI-ZAM{% endblock %}
+
+{% block extra_styles %}
+.form-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+}
+
+.form-columns {
+    display: flex;
+    gap: 2rem;
+}
+
+.form-column {
+    flex: 1;
+}
+
+.resources-section {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.resources-section h3 {
+    color: white;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.resource-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.resource-item select,
+.resource-item input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    background: white;
+    color: #2c3e50;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.resource-item input[name="expense_quantity[]"],
+.resource-item input[name="expense_price[]"],
+.resource-item input[name="income_quantity[]"],
+.resource-item input[name="income_price[]"] {
+    flex: 0.33;
+    min-width: 80px;
+}
+
+.resource-item input[name="expense_cost[]"],
+.resource-item input[name="income_cost[]"] {
+    flex: 0.33;
+    min-width: 80px;
+    background: #f0f0f0 !important;
+    color: #666 !important;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: white;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 16px;
+}
+
+.btn-submit {
+    background: #27ae60;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-cancel {
+    background: #e74c3c;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    margin-left: 10px;
+    transition: background 0.3s;
+}
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h1 style="text-align: center; margin-bottom: 2rem; color: white;">Редактировать объект</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-columns">
+            <!-- Левая колонка - Основная информация -->
+            <div class="form-column">
+                <div class="form-group">
+                    <label for="organizaciya">Организация *</label>
+                    <input type="text" id="organizaciya" name="organizaciya" value="{{ object.organizaciya.nazvanie|default:'' }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="nazvanie">Название объекта *</label>
+                    <input type="text" id="nazvanie" name="nazvanie" value="{{ object.nazvanie }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="data_nachala">Дата начала *</label>
+                    <input type="date" id="data_nachala" name="data_nachala" value="{{ object.data_nachala|date:'Y-m-d' }}" required>
+                </div>
+            </div>
+            
+            <!-- Правая колонка - Ресурсы -->
+            <div class="form-column">
+                <!-- Расходная часть -->
+                <div class="resources-section">
+                    <h3>Расходная часть</h3>
+                    <div id="expense-resources">
+                        {% for resource in existing_expense_resources %}
+                        <div class="resource-item">
+                            <select name="expense_category[]" class="expense-category" onchange="loadExpenseResources(this)">
+                                <option value="">Категория</option>
+                                {% for category in expense_categories %}
+                                <option value="{{ category.id }}" {% if category.id == resource.resurs.kategoriya_resursa.id %}selected{% endif %}>{{ category.nazvanie }}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="expense_resource[]" class="expense-resource">
+                                <option value="{{ resource.resurs.id }}" selected>{{ resource.resurs.naimenovanie }}</option>
+                            </select>
+                            <input type="number" name="expense_quantity[]" value="{{ resource.kolichestvo }}" step="0.01" oninput="calculateCost(this)">
+                            <input type="number" name="expense_price[]" value="{{ resource.cena }}" step="0.01" oninput="calculateCost(this)">
+                            <input type="number" name="expense_cost[]" value="{{ resource.total_cost|floatformat:2 }}" readonly style="background: #f0f0f0;">
+                            <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="resource-item">
+                            <select name="expense_category[]" class="expense-category" onchange="loadExpenseResources(this)">
+                                <option value="">Категория</option>
+                                {% for category in expense_categories %}
+                                <option value="{{ category.id }}">{{ category.nazvanie }}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="expense_resource[]" class="expense-resource">
+                                <option value="">Ресурс</option>
+                            </select>
+                            <input type="number" name="expense_quantity[]" placeholder="Кол-во" step="0.01" oninput="calculateCost(this)">
+                            <input type="number" name="expense_price[]" placeholder="Цена" step="0.01" oninput="calculateCost(this)">
+                            <input type="number" name="expense_cost[]" placeholder="Стоимость" readonly style="background: #f0f0f0;">
+                            <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+                        </div>
+                    </div>
+                    <button type="button" class="add-resource-btn" onclick="addExpenseResource()">Добавить расход</button>
+                </div>
+                
+                <!-- Доходная часть -->
+                <div class="resources-section">
+                    <h3>Доходная часть</h3>
+                    <div id="income-resources">
+                        {% for resource in existing_income_resources %}
+                        <div class="resource-item">
+                            <select name="income_category[]" class="income-category" onchange="loadIncomeResources(this)">
+                                <option value="">Категория</option>
+                                {% for category in income_categories %}
+                                <option value="{{ category.id }}" {% if category.id == resource.resurs.kategoriya_resursa.id %}selected{% endif %}>{{ category.nazvanie }}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="income_resource[]" class="income-resource">
+                                <option value="{{ resource.resurs.id }}" selected>{{ resource.resurs.naimenovanie }}</option>
+                            </select>
+                            <input type="number" name="income_quantity[]" value="{{ resource.kolichestvo }}" step="0.01" oninput="calculateCost(this)">
+                            <input type="number" name="income_price[]" value="{{ resource.cena }}" step="0.01" oninput="calculateCost(this)">
+                            <input type="number" name="income_cost[]" value="{{ resource.total_cost|floatformat:2 }}" readonly style="background: #f0f0f0;">
+                            <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="resource-item">
+                            <select name="income_category[]" class="income-category" onchange="loadIncomeResources(this)">
+                                <option value="">Категория</option>
+                                {% for category in income_categories %}
+                                <option value="{{ category.id }}">{{ category.nazvanie }}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="income_resource[]" class="income-resource">
+                                <option value="">Ресурс</option>
+                            </select>
+                            <input type="number" name="income_quantity[]" placeholder="Кол-во" step="0.01" oninput="calculateCost(this)">
+                            <input type="number" name="income_price[]" placeholder="Цена" step="0.01" oninput="calculateCost(this)">
+                            <input type="number" name="income_cost[]" placeholder="Стоимость" readonly style="background: #f0f0f0;">
+                            <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+                        </div>
+                    </div>
+                    <button type="button" class="add-resource-btn" onclick="addIncomeResource()">Добавить доход</button>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 2rem;">
+            <button type="submit" class="btn-submit">Сохранить изменения</button>
+            <a href="/objects/{{ object.id }}/" class="btn-cancel">Отмена</a>
+        </div>
+    </form>
+</div>
+
+<script>
+function calculateCost(input) {
+    const resourceItem = input.parentElement;
+    const quantityInput = resourceItem.querySelector('input[name*="quantity"]');
+    const priceInput = resourceItem.querySelector('input[name*="price"]');
+    const costInput = resourceItem.querySelector('input[name*="cost"]');
+    
+    if (quantityInput && priceInput && costInput) {
+        const quantity = parseFloat(quantityInput.value) || 0;
+        const price = parseFloat(priceInput.value) || 0;
+        const cost = quantity * price;
+        costInput.value = cost.toFixed(2);
+    }
+}
+
+function loadExpenseResources(categorySelect) {
+    const categoryId = categorySelect.value;
+    const resourceSelect = categorySelect.parentElement.querySelector('.expense-resource');
+    
+    if (categoryId) {
+        fetch(`/get-resources/${categoryId}/`)
+            .then(response => response.json())
+            .then(data => {
+                resourceSelect.innerHTML = '<option value="">Ресурс</option>';
+                data.resources.forEach(resource => {
+                    resourceSelect.innerHTML += `<option value="${resource.id}">${resource.naimenovanie} (${resource.edinica_izmereniya})</option>`;
+                });
+            });
+    } else {
+        resourceSelect.innerHTML = '<option value="">Ресурс</option>';
+    }
+}
+
+function loadIncomeResources(categorySelect) {
+    const categoryId = categorySelect.value;
+    const resourceSelect = categorySelect.parentElement.querySelector('.income-resource');
+    
+    if (categoryId) {
+        fetch(`/get-resources/${categoryId}/`)
+            .then(response => response.json())
+            .then(data => {
+                resourceSelect.innerHTML = '<option value="">Ресурс</option>';
+                data.resources.forEach(resource => {
+                    resourceSelect.innerHTML += `<option value="${resource.id}">${resource.naimenovanie} (${resource.edinica_izmereniya})</option>`;
+                });
+            });
+    } else {
+        resourceSelect.innerHTML = '<option value="">Ресурс</option>';
+    }
+}
+
+function addExpenseResource() {
+    const container = document.getElementById('expense-resources');
+    const newItem = document.createElement('div');
+    newItem.className = 'resource-item';
+    
+    let categoryOptions = '<option value="">Категория</option>';
+    {% for category in expense_categories %}
+    categoryOptions += '<option value="{{ category.id }}">{{ category.nazvanie }}</option>';
+    {% endfor %}
+    
+    newItem.innerHTML = `
+        <select name="expense_category[]" class="expense-category" onchange="loadExpenseResources(this)">
+            ${categoryOptions}
+        </select>
+        <select name="expense_resource[]" class="expense-resource">
+            <option value="">Ресурс</option>
+        </select>
+        <input type="number" name="expense_quantity[]" placeholder="Кол-во" step="0.01" oninput="calculateCost(this)">
+        <input type="number" name="expense_price[]" placeholder="Цена" step="0.01" oninput="calculateCost(this)">
+        <input type="number" name="expense_cost[]" placeholder="Стоимость" readonly style="background: #f0f0f0;">
+        <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+    `;
+    container.appendChild(newItem);
+}
+
+function addIncomeResource() {
+    const container = document.getElementById('income-resources');
+    const newItem = document.createElement('div');
+    newItem.className = 'resource-item';
+    
+    let categoryOptions = '<option value="">Категория</option>';
+    {% for category in income_categories %}
+    categoryOptions += '<option value="{{ category.id }}">{{ category.nazvanie }}</option>';
+    {% endfor %}
+    
+    newItem.innerHTML = `
+        <select name="income_category[]" class="income-category" onchange="loadIncomeResources(this)">
+            ${categoryOptions}
+        </select>
+        <select name="income_resource[]" class="income-resource">
+            <option value="">Ресурс</option>
+        </select>
+        <input type="number" name="income_quantity[]" placeholder="Кол-во" step="0.01" oninput="calculateCost(this)">
+        <input type="number" name="income_price[]" placeholder="Цена" step="0.01" oninput="calculateCost(this)">
+        <input type="number" name="income_cost[]" placeholder="Стоимость" readonly style="background: #f0f0f0;">
+        <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+    `;
+    container.appendChild(newItem);
+}
+
+function removeResource(button) {
+    button.parentElement.remove();
+}
+</script>
+
+{% endblock %}

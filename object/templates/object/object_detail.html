@@ -264,11 +264,7 @@
                 <a href="/objects/{{ object.id }}/income/" class="main-btn">Доходная часть</a>
             </div>
             
-            <!-- Кнопки для добавления ресурсов -->
-            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
-                <button onclick="showAddCategoryModal()" style="background: #f39c12; color: white; padding: 8px 16px; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">+ Категория</button>
-                <button onclick="showAddResourceModal()" style="background: #9b59b6; color: white; padding: 8px 16px; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">+ Ресурс</button>
-            </div>
+
         </div>
         
         <div class="table-container">
@@ -293,15 +289,13 @@
                         <td colspan="{{ days|length }}">Фактические расходы</td>
                     </tr>
                     
-                    {% regroup resources by resurs.kategoriya_resursa.nazvanie as category_list %}
-                    
-                    {% for category in category_list %}
-                    {% if category.grouper|lower != 'подрядные организации' %}
+                    {% for category_name, category_resources in grouped_resources.items %}
+                    {% if category_name|lower != 'подрядные организации' %}
                     <tr class="category-header">
-                        <td colspan="{{ 7|add:days|length }}">{{ category.grouper|title }}</td>
+                        <td colspan="{{ 7|add:days|length }}">{{ category_name|title }}</td>
                     </tr>
                     
-                    {% for resource in category.list %}
+                    {% for resource in category_resources %}
                     <tr class="category-{{ category.grouper|lower }}">
                         <td>{{ resource.resurs.naimenovanie }}</td>
                         <td>{{ resource.resurs.edinica_izmereniya }}</td>
@@ -345,12 +339,12 @@
                     
                     <tr class="total-row">
                         <td colspan="4">ИТОГО:</td>
-                        <td class="number category-total">{{ category.grouper|get_category_sum:resources|floatformat:0 }}</td>
+                        <td class="number category-total">{{ category_name|get_category_sum:resources|floatformat:0 }}</td>
                         <td class="number category-potracheno">0</td>
                         <td></td>
                         {% for day in days %}
                         <td class="number category-daily-total">
-                        {% with category_totals=category_daily_totals|get_item:category.grouper %}
+                        {% with category_totals=category_daily_totals|get_item:category_name %}
                             {% with day_key=day|date:'Y-m-d' %}
                                 {{ category_totals|get_item:day_key|floatformat:0 }}
                             {% endwith %}
@@ -378,7 +372,7 @@
     </div>
     
     <a href="/objects/" class="back-btn">← Назад к списку объектов</a>
-    <a href="/admin/object/objekt/{{ object.id }}/change/" class="edit-btn">✎ Редактировать объект</a>
+    <a href="/objects/{{ object.id }}/edit/" class="edit-btn">✎ Редактировать</a>
     
     <script>
     function formatNumber(num) {
@@ -481,7 +475,7 @@
                         body: JSON.stringify({
                             resource_id: resourceId,
                             date: date,
-                            amount: newValue
+                            amount: parseFloat(newValue) || 0
                         })
                     })
                     .then(response => {
@@ -634,7 +628,7 @@
             }
             
             // Пересчитываем сумму в реальном времени
-            const newSum = kolichestvo * cena;
+            const newSum = parseFloat(kolichestvo) * parseFloat(cena);
             
             // Обновляем ячейку суммы по идентификатору
             const sumCell = row.querySelector('.sum-cell');
@@ -644,7 +638,7 @@
             
             // Пересчитываем остаток
             const potracheno = parseFloat(cells[5].textContent.trim().replace(/\s/g, '')) || 0;
-            const ostatok = kolichestvo - potracheno;
+            const ostatok = parseFloat(kolichestvo) - parseFloat(potracheno);
             
             // Обновляем ячейку остатка по идентификатору
             const ostatokCell = row.querySelector('.ostatok-cell');
@@ -667,7 +661,7 @@
                 body: JSON.stringify({
                     resource_id: resourceId,
                     field_type: fieldType,
-                    value: newValue
+                    value: parseFloat(newValue) || 0
                 })
             })
             .then(response => response.json())
@@ -724,7 +718,7 @@
             }
             
             // Пересчитываем сумму в реальном времени
-            const newSum = kolichestvo * cena;
+            const newSum = parseFloat(kolichestvo) * parseFloat(cena);
             
             // Обновляем ячейку суммы по идентификатору
             const sumCell = row.querySelector('.sum-cell');
@@ -734,7 +728,7 @@
             
             // Пересчитываем остаток
             const potracheno = parseFloat(cells[5].textContent.trim().replace(/\s/g, '')) || 0;
-            const ostatok = kolichestvo - potracheno;
+            const ostatok = parseFloat(kolichestvo) - parseFloat(potracheno);
             
             // Обновляем ячейку остатка по идентификатору
             const ostatokCell = row.querySelector('.ostatok-cell');

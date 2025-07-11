@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from .views_income import update_income
 from .views_totals import get_income_totals
+from .views_edit import edit_object
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -16,4 +17,6 @@ urlpatterns = [
     path('update-resource-data/', views.update_resource_data, name='update_resource_data'),
     path('add-employee-ajax/', views.add_employee_ajax, name='add_employee_ajax'),
     path('get-resources/<int:category_id>/', views.get_resources_by_category, name='get_resources_by_category'),
+    path('get-employees/<int:resource_id>/', views.get_employees_by_resource, name='get_employees_by_resource'),
+    path('objects/<int:object_id>/edit/', edit_object, name='edit_object'),
 ]

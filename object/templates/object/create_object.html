@@ -218,7 +218,7 @@
                                 <option value="{{ category.id }}">{{ category.nazvanie }}</option>
                                 {% endfor %}
                             </select>
-                            <select name="expense_resource[]" class="expense-resource">
+                            <select name="expense_resource[]" class="expense-resource" onchange="loadEmployeesByResource(this.value)">
                                 <option value="">Ресурс</option>
                             </select>
                             <input type="number" name="expense_quantity[]" placeholder="Кол-во" step="0.01" oninput="calculateCost(this)">
@@ -241,7 +241,7 @@
                                 <option value="{{ category.id }}">{{ category.nazvanie }}</option>
                                 {% endfor %}
                             </select>
-                            <select name="income_resource[]" class="income-resource">
+                            <select name="income_resource[]" class="income-resource" onchange="loadEmployeesByResource(this.value)">
                                 <option value="">Ресурс</option>
                             </select>
                             <input type="number" name="income_quantity[]" placeholder="Кол-во" step="0.01" oninput="calculateCost(this)">
@@ -255,26 +255,17 @@
                 
                 <!-- Блок сотрудников -->
                 <div id="employees-section" class="resources-section" style="display: none;">
-                    <h3>Сотрудники</h3>
-                    <div class="form-group">
-                        <select id="sotrudnik" name="sotrudnik">
-                            <option value="">Выберите сотрудника</option>
-                            {% for sotrudnik in sotrudniki %}
-                            <option value="{{ sotrudnik.id }}" data-specialnost="{{ sotrudnik.specialnost.nazvanie|default:'Не указана' }}">{{ sotrudnik.fio }}</option>
-                            {% endfor %}
-                        </select>
-                        <button type="button" id="add-employee-to-list" style="margin-top: 10px; padding: 8px 16px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;">Добавить в список</button>
-                        <button type="button" id="add-new-employee" style="margin-top: 10px; padding: 8px 16px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">Добавить нового</button>
-                        
-                        <div id="selected-employees" style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; min-height: 40px;">
-                            <label style="display: block; margin-bottom: 10px; color: #bdc3c7;">Выбранные сотрудники:</label>
-                            <div id="employees-list" style="color: white; font-size: 14px; line-height: 1.6;"></div>
-                        </div>
-                        
-                        <input type="hidden" id="selected-employee-ids" name="selected_employees" value="">
-                    </div>
+                    <h3>Сотрудники по специальности</h3>
+                    <div id="employees-by-specialty"></div>
                 </div>
             </div>
+        </div>
+        
+        <!-- Блок выбранных сотрудников -->
+        <div id="selected-employees-summary" style="margin-top: 2rem; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); display: none;">
+            <h3 style="color: #3498db; margin-bottom: 15px; text-align: center;">Выбранные сотрудники для объекта</h3>
+            <div id="selected-employees-list" style="color: white; font-size: 14px; line-height: 1.8;"></div>
+            <input type="hidden" id="selected-employees-data" name="selected_employees_data" value="">
         </div>
         
         <div style="text-align: center; margin-top: 2rem;">
@@ -454,6 +445,12 @@ function loadExpenseResources(categorySelect) {
                 data.resources.forEach(resource => {
                     resourceSelect.innerHTML += `<option value="${resource.id}">${resource.naimenovanie} (${resource.edinica_izmereniya})</option>`;
                 });
+                
+                // Добавляем обработчик для выбора ресурса
+                resourceSelect.addEventListener('change', function() {
+                    loadEmployeesByResource(this.value);
+                });
+                
                 checkForHRCategory(categorySelect);
             });
     } else {
@@ -474,6 +471,12 @@ function loadIncomeResources(categorySelect) {
                 data.resources.forEach(resource => {
                     resourceSelect.innerHTML += `<option value="${resource.id}">${resource.naimenovanie} (${resource.edinica_izmereniya})</option>`;
                 });
+                
+                // Добавляем обработчик для выбора ресурса
+                resourceSelect.addEventListener('change', function() {
+                    loadEmployeesByResource(this.value);
+                });
+                
                 checkForHRCategory(categorySelect);
             });
     } else {
@@ -496,7 +499,7 @@ function addExpenseResource() {
         <select name="expense_category[]" class="expense-category" onchange="loadExpenseResources(this)">
             ${categoryOptions}
         </select>
-        <select name="expense_resource[]" class="expense-resource">
+        <select name="expense_resource[]" class="expense-resource" onchange="loadEmployeesByResource(this.value)">
             <option value="">Ресурс</option>
         </select>
         <input type="number" name="expense_quantity[]" placeholder="Кол-во" step="0.01" oninput="calculateCost(this)">
@@ -521,7 +524,7 @@ function addIncomeResource() {
         <select name="income_category[]" class="income-category" onchange="loadIncomeResources(this)">
             ${categoryOptions}
         </select>
-        <select name="income_resource[]" class="income-resource">
+        <select name="income_resource[]" class="income-resource" onchange="loadEmployeesByResource(this.value)">
             <option value="">Ресурс</option>
         </select>
         <input type="number" name="income_quantity[]" placeholder="Кол-во" step="0.01" oninput="calculateCost(this)">
@@ -592,7 +595,127 @@ function checkForHRCategory(categorySelect) {
         employeesSection.style.display = 'block';
     } else {
         employeesSection.style.display = 'none';
+        // Очищаем список сотрудников
+        document.getElementById('employees-by-specialty').innerHTML = '';
     }
+}
+
+function loadEmployeesByResource(resourceId) {
+    if (!resourceId) {
+        document.getElementById('employees-by-specialty').innerHTML = '';
+        return;
+    }
+    
+    // Получаем название ресурса для отображения специальности
+    const resourceSelect = document.querySelector(`select option[value="${resourceId}"]`);
+    const resourceName = resourceSelect ? resourceSelect.textContent.split(' (')[0] : 'Неизвестная';
+    
+    fetch(`/get-employees/${resourceId}/`)
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('employees-by-specialty');
+            
+            if (data.employees && data.employees.length > 0) {
+                let html = `<div style="margin-bottom: 15px; color: #3498db; font-weight: bold; font-size: 16px;">Доступные сотрудники по специальности "${resourceName}":</div>`;
+                
+                data.employees.forEach(employee => {
+                    html += `
+                        <div class="employee-card" style="
+                            background: rgba(255,255,255,0.1); 
+                            border-radius: 8px; 
+                            padding: 10px; 
+                            margin-bottom: 10px;
+                            border: 1px solid rgba(255,255,255,0.2);
+                            cursor: pointer;
+                            transition: all 0.3s;
+                        " 
+                        onclick="selectEmployee(${employee.id}, '${employee.fio}', '${resourceName}')" 
+                        onmouseover="this.style.background='rgba(52,152,219,0.3)'" 
+                        onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                            <div style="color: white; font-weight: bold;">${employee.fio}</div>
+                            <div style="color: #bdc3c7; font-size: 12px; margin-top: 5px;">Кликните для выбора</div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<div style="color: #e74c3c; font-style: italic;">Нет сотрудников с специальностью "${resourceName}"</div>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error loading employees:', error);
+            document.getElementById('employees-by-specialty').innerHTML = '<div style="color: #e74c3c;">Ошибка загрузки сотрудников</div>';
+        });
+}
+
+// Массив для хранения выбранных сотрудников
+let selectedEmployeesForProject = [];
+
+function selectEmployee(employeeId, employeeName, specialtyName) {
+    // Проверяем, не добавлен ли уже этот сотрудник
+    if (selectedEmployeesForProject.find(emp => emp.id === employeeId)) {
+        alert('Этот сотрудник уже добавлен в список');
+        return;
+    }
+    
+    // Подсвечиваем выбранного сотрудника
+    const clickedCard = event.target.closest('.employee-card');
+    clickedCard.style.background = 'rgba(46,204,113,0.3)';
+    clickedCard.style.border = '1px solid #2ecc71';
+    
+    // Добавляем сотрудника в список
+    selectedEmployeesForProject.push({
+        id: employeeId,
+        name: employeeName,
+        specialty: specialtyName
+    });
+    
+    // Обновляем отображение списка
+    updateSelectedEmployeesList();
+    
+    console.log(`Добавлен сотрудник: ${employeeName} (${specialtyName})`);
+}
+
+function updateSelectedEmployeesList() {
+    const summaryBlock = document.getElementById('selected-employees-summary');
+    const listContainer = document.getElementById('selected-employees-list');
+    const hiddenInput = document.getElementById('selected-employees-data');
+    
+    if (selectedEmployeesForProject.length === 0) {
+        summaryBlock.style.display = 'none';
+        hiddenInput.value = '';
+        return;
+    }
+    
+    summaryBlock.style.display = 'block';
+    
+    const employeeItems = selectedEmployeesForProject.map((emp, index) => {
+        return `
+            <div style="display: inline-block; margin: 5px 10px 5px 0; padding: 8px 12px; background: rgba(52, 152, 219, 0.3); border-radius: 20px; font-size: 14px; border: 1px solid #3498db;">
+                <span style="color: #3498db; font-weight: bold;">${emp.specialty}</span>, 
+                <span style="color: white;">${emp.name}</span>
+                <button type="button" onclick="removeSelectedEmployee(${index})" style="margin-left: 10px; background: none; border: none; color: #e74c3c; cursor: pointer; font-weight: bold; font-size: 16px;">×</button>
+            </div>
+        `;
+    }).join('');
+    
+    listContainer.innerHTML = employeeItems;
+    hiddenInput.value = JSON.stringify(selectedEmployeesForProject);
+}
+
+function removeSelectedEmployee(index) {
+    selectedEmployeesForProject.splice(index, 1);
+    updateSelectedEmployeesList();
+    
+    // Убираем подсветку с карточки (если она еще видна)
+    const cards = document.querySelectorAll('.employee-card');
+    cards.forEach(card => {
+        if (card.style.background === 'rgba(46, 204, 113, 0.3)') {
+            card.style.background = 'rgba(255,255,255,0.1)';
+            card.style.border = '1px solid rgba(255,255,255,0.2)';
+        }
+    });
 }
 </script>
 
