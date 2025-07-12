@@ -15,6 +15,7 @@ from object.views import home, objects_list, object_detail, object_income_detail
 from object.views_edit import edit_object
 from object.views_income import update_income
 from object.views_totals import get_income_totals
+from object.export_views import export_object_json
 from sotrudniki.views import organizations_list
 
 # Изменяем заголовки админки
@@ -40,6 +41,7 @@ urlpatterns = [
     path('get-resources/<int:category_id>/', get_resources_by_category, name='get_resources_by_category'),
     path('get-employees/<int:resource_id>/', get_employees_by_resource, name='get_employees_by_resource'),
     path('objects/<int:object_id>/edit/', edit_object, name='edit_object'),
+    path('objects/<int:object_id>/export/', export_object_json, name='export_object_json'),
     path('favicon.ico', favicon_view),
     path('ai/', include('ai.urls')),
     path('telegram/', include('telegrambot.urls')),

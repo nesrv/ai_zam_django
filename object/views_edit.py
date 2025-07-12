@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from collections import defaultdict
 from .models import Objekt, ResursyPoObjektu, Resurs, FakticheskijResursPoObjektu, KategoriyaResursa
 
 def edit_object(request, object_id):
@@ -80,31 +81,35 @@ def edit_object(request, object_id):
             for i, resource_id in enumerate(income_resources):
                 if resource_id and i < len(income_quantities) and i < len(income_prices):
                     if income_quantities[i] and income_prices[i]:
-                        resurs = Resurs.objects.get(id=resource_id)
-                        
-                        # Ищем существующий ресурс
-                        existing = None
-                        for er in existing_resources:
-                            if er.resurs.id == int(resource_id):
-                                existing = er
-                                break
-                        
-                        if existing:
-                            # Обновляем существующий
-                            existing.kolichestvo = float(income_quantities[i])
-                            existing.cena = float(income_prices[i])
-                            existing.save()
-                            updated_resources.add(existing.id)
-                        else:
-                            # Создаем новый
-                            new_resource = ResursyPoObjektu.objects.create(
-                                objekt=obj,
-                                resurs=resurs,
-                                kolichestvo=float(income_quantities[i]),
-                                cena=float(income_prices[i])
-                            )
-                            FakticheskijResursPoObjektu.objects.create(resurs_po_objektu=new_resource)
-                            updated_resources.add(new_resource.id)
+                        try:
+                            resurs = Resurs.objects.get(id=resource_id)
+                            
+                            # Ищем существующий ресурс
+                            existing = None
+                            for er in existing_resources:
+                                if er.resurs.id == int(resource_id):
+                                    existing = er
+                                    break
+                            
+                            if existing:
+                                # Обновляем существующий
+                                existing.kolichestvo = float(income_quantities[i])
+                                existing.cena = float(income_prices[i])
+                                existing.save()
+                                updated_resources.add(existing.id)
+                            else:
+                                # Создаем новый
+                                new_resource = ResursyPoObjektu.objects.create(
+                                    objekt=obj,
+                                    resurs=resurs,
+                                    kolichestvo=float(income_quantities[i]),
+                                    cena=float(income_prices[i])
+                                )
+                                FakticheskijResursPoObjektu.objects.create(resurs_po_objektu=new_resource)
+                                updated_resources.add(new_resource.id)
+                        except Resurs.DoesNotExist:
+                            print(f"Ресурс с ID {resource_id} не найден")
+                            continue
             
             # Удаляем неиспользуемые ресурсы
             for er in existing_resources:
@@ -141,10 +146,20 @@ def edit_object(request, object_id):
     for resource in existing_resources:
         resource.total_cost = float(resource.kolichestvo) * float(resource.cena)
     
-    existing_expense_resources = [r for r in existing_resources if r.resurs.kategoriya_resursa.raskhod_dokhod]
-    existing_income_resources = [r for r in existing_resources if not r.resurs.kategoriya_resursa.raskhod_dokhod]
+    # Группируем ресурсы по категориям
+    expense_resources_by_category = defaultdict(list)
+    income_resources_by_category = defaultdict(list)
     
-    from collections import defaultdict
+    for resource in existing_resources:
+        category_name = resource.resurs.kategoriya_resursa.nazvanie
+        if resource.resurs.kategoriya_resursa.raskhod_dokhod:
+            expense_resources_by_category[category_name].append(resource)
+        else:
+            income_resources_by_category[category_name].append(resource)
+    
+    existing_expense_resources = dict(expense_resources_by_category)
+    existing_income_resources = dict(income_resources_by_category)
+    
     from sotrudniki.models import Specialnost
     
     # Получаем сотрудников объекта

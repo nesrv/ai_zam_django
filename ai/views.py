@@ -14,6 +14,8 @@ from .services import (
 import os
 from datetime import datetime
 import markdown
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
 # Create your views here.
 
@@ -429,3 +431,57 @@ def generate_document(request):
     except Exception as e:
         print(f"DEBUG: Exception in generate_document: {e}")
         return JsonResponse({'error': f'Ошибка сервера: {str(e)}'}, status=500)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def save_telegram_message(request):
+    """Сохранение сообщений и файлов из Telegram в таблицу ai_chatmessage"""
+    try:
+        # Получаем данные из формы или JSON
+        if request.content_type == 'application/json':
+            data = json.loads(request.body)
+            message = data.get('message', '').strip()
+            message_type = data.get('type', 'user')
+            session_id = data.get('session_id')
+        else:
+            message = request.POST.get('message', '').strip()
+            message_type = request.POST.get('type', 'user')
+            session_id = request.POST.get('session_id')
+        
+        # Получаем или создаем сессию
+        session = None
+        if session_id:
+            try:
+                session = ChatSession.objects.get(session_id=session_id, is_active=True)
+            except ChatSession.DoesNotExist:
+                session = None
+        
+        if not session:
+            session = ChatSession.objects.create(session_id=str(uuid.uuid4())[:8])
+        
+        # Создаем сообщение
+        chat_message = ChatMessage(
+            session=session,
+            message_type=message_type,
+            content=message or 'Файл'
+        )
+        
+        # Обрабатываем файл, если есть
+        if 'file' in request.FILES:
+            uploaded_file = request.FILES['file']
+            # Сохраняем файл в media/documents_ai/
+            file_name = f"{uuid.uuid4()}_{uploaded_file.name}"
+            file_path = default_storage.save(f'documents_ai/{file_name}', ContentFile(uploaded_file.read()))
+            chat_message.file = file_path
+        
+        chat_message.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message_id': chat_message.id,
+            'session_id': session.session_id,
+            'file_url': chat_message.file.url if chat_message.file else None
+        })
+        
+    except Exception as e:
+        return JsonResponse({'error': f'Ошибка сохранения: {str(e)}'}, status=500)

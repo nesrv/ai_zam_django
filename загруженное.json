@@ -1,0 +1,331 @@
+{
+  "objekt": {
+    "id": 2,
+    "nazvanie": "Снежком",
+    "data_nachala": "2025-06-25",
+    "data_plan_zaversheniya": "2025-12-31",
+    "data_fakt_zaversheniya": null,
+    "status": "в работе",
+    "otvetstvennyj": "1",
+    "is_active": true,
+    "organizaciya": {
+      "id": 1,
+      "nazvanie": "ООО \"Развитие\"",
+      "inn": "7842187225",
+      "ogrn": "1207800162371",
+      "adres": "191144,  г. Санкт-Петербург, вн.тер.г. Муниципальный Округ Смольнинское, ул Мытнинская, д. 12/44, литера А",
+      "is_active": false
+    }
+  },
+  "resursy_po_objektu": [
+    {
+      "id": 9,
+      "kolichestvo": 700.0,
+      "cena": 900.0,
+      "potracheno": 508.0,
+      "resurs": {
+        "id": 1,
+        "naimenovanie": "ИТР",
+        "edinica_izmereniya": "час",
+        "kategoriya_resursa": {
+          "id": 1,
+          "nazvanie": "Кадровое обеспечение",
+          "raskhod_dokhod": true
+        }
+      },
+      "fakticheskij_resurs": {
+        "id": 7,
+        "raskhody": [
+          {
+            "id": 8,
+            "data": "2025-06-09",
+            "izraskhodovano": 100.0
+          }          
+        ],
+        "dokhody": []
+      }
+    },
+    {
+      "id": 10,
+      "kolichestvo": 700.0,
+      "cena": 800.0,
+      "potracheno": 374.0,
+      "resurs": {
+        "id": 2,
+        "naimenovanie": "Каменщик",
+        "edinica_izmereniya": "час",
+        "kategoriya_resursa": {
+          "id": 1,
+          "nazvanie": "Кадровое обеспечение",
+          "raskhod_dokhod": true
+        }
+      },
+      "fakticheskij_resurs": {
+        "id": 4,
+        "raskhody": [
+          {
+            "id": 5,
+            "data": "2025-06-08",
+            "izraskhodovano": 10.0
+          }        
+        ],
+        "dokhody": []
+      }
+    },
+    {
+      "id": 11,
+      "kolichestvo": 1200.0,
+      "cena": 400.0,
+      "potracheno": 235.0,
+      "resurs": {
+        "id": 3,
+        "naimenovanie": "Подсобный рабочий",
+        "edinica_izmereniya": "час",
+        "kategoriya_resursa": {
+          "id": 1,
+          "nazvanie": "Кадровое обеспечение",
+          "raskhod_dokhod": true
+        }
+      },
+      "fakticheskij_resurs": {
+        "id": 10,
+        "raskhody": [
+          {
+            "id": 74,
+            "data": "2025-06-16",
+            "izraskhodovano": 1.0
+          }         
+        ],
+        "dokhody": []
+      }
+    },
+    {
+      "id": 12,
+      "kolichestvo": 120.0,
+      "cena": 2500.0,
+      "potracheno": 94.0,
+      "resurs": {
+        "id": 4,
+        "naimenovanie": "Минипогрузчик",
+        "edinica_izmereniya": "час",
+        "kategoriya_resursa": {
+          "id": 2,
+          "nazvanie": "Машины и механизмы",
+          "raskhod_dokhod": true
+        }
+      },
+      "fakticheskij_resurs": {
+        "id": 11,
+        "raskhody": [
+          {
+            "id": 54,
+            "data": "2025-06-17",
+            "izraskhodovano": 10.0
+          }       
+        ]
+  },
+  "sotrudniki": [
+    {
+      "id": 26,
+      "fio": "Эшпулотов Улугбек Ганишер Угли",
+      "data_rozhdeniya": "1990-01-01",
+      "pol": null,
+      "data_priema": "2025-05-03",
+      "data_nachala_raboty": "2025-05-03",
+      "specialnost": {
+        "id": 3,
+        "nazvanie": "Газорезчик",
+        "kategoriya": "2"
+      },
+      "podrazdelenie": {
+        "id": 2,
+        "kod": "791",
+        "nazvanie": "Строительное управление"
+      },
+      "organizaciya": {
+        "id": 1,
+        "nazvanie": "ООО \"Развитие\"",
+        "inn": "7842187225"
+      }
+    },
+    {
+      "id": 20,
+      "fio": "Симонян Игорь Шотаевич",
+      "data_rozhdeniya": "1990-01-01",
+      "pol": null,
+      "data_priema": "2022-02-09",
+      "data_nachala_raboty": "2022-02-09",
+      "specialnost": {
+        "id": 4,
+        "nazvanie": "Производитель работ",
+        "kategoriya": "2"
+      },
+      "podrazdelenie": {
+        "id": 2,
+        "kod": "791",
+        "nazvanie": "Строительное управление"
+      },
+      "organizaciya": {
+        "id": 1,
+        "nazvanie": "ООО \"Развитие\"",
+        "inn": "7842187225"
+      }
+    }   
+  ],
+  "svodnaya_raskhod_dokhod_po_dnyam": [
+    {
+      "id": 32,
+      "data": "2025-07-03",
+      "raskhod": 91600.0,
+      "dokhod": 50000.0,
+      "balans": -41600.0
+    },
+    {
+      "id": 33,
+      "data": "2025-07-02",
+      "raskhod": 17400.0,
+      "dokhod": 220000.0,
+      "balans": 202600.0
+    },
+    {
+      "id": 34,
+      "data": "2025-07-01",
+      "raskhod": 44000.0,
+      "dokhod": 170000.0,
+      "balans": 126000.0
+    },
+    {
+      "id": 35,
+      "data": "2025-06-30",
+      "raskhod": 89000.0,
+      "dokhod": 50000.0,
+      "balans": -39000.0
+    },
+    {
+      "id": 36,
+      "data": "2025-06-29",
+      "raskhod": 31950.0,
+      "dokhod": 50000.0,
+      "balans": 18050.0
+    },
+    {
+      "id": 37,
+      "data": "2025-06-28",
+      "raskhod": 24100.0,
+      "dokhod": 110000.0,
+      "balans": 85900.0
+    },
+    {
+      "id": 38,
+      "data": "2025-06-27",
+      "raskhod": 10600.0,
+      "dokhod": 110000.0,
+      "balans": 99400.0
+    },
+    {
+      "id": 39,
+      "data": "2025-06-26",
+      "raskhod": 172100.0,
+      "dokhod": 50000.0,
+      "balans": -122100.0
+    },
+    {
+      "id": 40,
+      "data": "2025-06-25",
+      "raskhod": 167750.0,
+      "dokhod": 1000000.0,
+      "balans": 832250.0
+    },
+    {
+      "id": 41,
+      "data": "2025-06-24",
+      "raskhod": 158500.0,
+      "dokhod": 0.0,
+      "balans": -158500.0
+    },
+    {
+      "id": 42,
+      "data": "2025-06-23",
+      "raskhod": 68200.0,
+      "dokhod": 0.0,
+      "balans": -68200.0
+    },
+    {
+      "id": 43,
+      "data": "2025-06-22",
+      "raskhod": 107500.0,
+      "dokhod": 0.0,
+      "balans": -107500.0
+    },
+    {
+      "id": 44,
+      "data": "2025-06-21",
+      "raskhod": 117900.0,
+      "dokhod": 0.0,
+      "balans": -117900.0
+    },
+    {
+      "id": 45,
+      "data": "2025-06-20",
+      "raskhod": 152200.0,
+      "dokhod": 0.0,
+      "balans": -152200.0
+    },
+    {
+      "id": 46,
+      "data": "2025-06-19",
+      "raskhod": 52900.0,
+      "dokhod": 0.0,
+      "balans": -52900.0
+    },
+    {
+      "id": 47,
+      "data": "2025-06-18",
+      "raskhod": 72600.0,
+      "dokhod": 0.0,
+      "balans": -72600.0
+    },
+    {
+      "id": 48,
+      "data": "2025-06-17",
+      "raskhod": 88300.0,
+      "dokhod": 0.0,
+      "balans": -88300.0
+    },
+    {
+      "id": 49,
+      "data": "2025-06-16",
+      "raskhod": 19200.0,
+      "dokhod": 0.0,
+      "balans": -19200.0
+    },
+    {
+      "id": 50,
+      "data": "2025-07-04",
+      "raskhod": 900.0,
+      "dokhod": 650000.0,
+      "balans": 649100.0
+    },
+    {
+      "id": 65,
+      "data": "2025-07-11",
+      "raskhod": 43500.0,
+      "dokhod": 0.0,
+      "balans": -43500.0
+    },
+    {
+      "id": 66,
+      "data": "2025-07-09",
+      "raskhod": 10000.0,
+      "dokhod": 0.0,
+      "balans": -10000.0
+    },
+    {
+      "id": 67,
+      "data": "2025-07-10",
+      "raskhod": 10000.0,
+      "dokhod": 0.0,
+      "balans": -10000.0
+    }
+  ]
+}

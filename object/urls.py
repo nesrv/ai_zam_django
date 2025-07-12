@@ -3,6 +3,7 @@ from . import views
 from .views_income import update_income
 from .views_totals import get_income_totals
 from .views_edit import edit_object
+from .export_views import export_object_json
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -19,4 +20,5 @@ urlpatterns = [
     path('get-resources/<int:category_id>/', views.get_resources_by_category, name='get_resources_by_category'),
     path('get-employees/<int:resource_id>/', views.get_employees_by_resource, name='get_employees_by_resource'),
     path('objects/<int:object_id>/edit/', edit_object, name='edit_object'),
+    path('objects/<int:object_id>/export/', export_object_json, name='export_object_json'),
 ]

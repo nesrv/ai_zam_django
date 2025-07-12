@@ -40,6 +40,7 @@ class ChatMessage(models.Model):
     session = models.ForeignKey(ChatSession, on_delete=models.CASCADE, related_name='messages', verbose_name="Сессия")
     message_type = models.CharField(max_length=10, choices=MESSAGE_TYPES, verbose_name="Тип сообщения")
     content = models.TextField(verbose_name="Содержание")
+    file = models.FileField(upload_to='documents_ai/', null=True, blank=True, verbose_name="Файл")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     
     class Meta:

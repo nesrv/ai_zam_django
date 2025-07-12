@@ -11,4 +11,5 @@ urlpatterns = [
     path('api/home-chat/', views.home_chat_api, name='home_chat_api'),
     path('api/generate-document/', views.generate_document, name='generate_document'),
     path('api/history/', views.chat_history, name='chat_history'),
+    path('api/save-telegram-message/', views.save_telegram_message, name='save_telegram_message'),
 ] 

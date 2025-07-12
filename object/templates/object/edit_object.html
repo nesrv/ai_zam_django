@@ -157,11 +157,10 @@
                 <div class="resources-section">
                     <h3>Расходная часть</h3>
                     <div id="expense-resources">
-                        {% regroup existing_expense_resources by resurs.kategoriya_resursa.nazvanie as expense_categories_grouped %}
-                        {% for category_group in expense_categories_grouped %}
+                        {% for category_name, resources in existing_expense_resources.items %}
                         <div class="category-group" style="margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 15px;">
-                            <h4 style="color: #3498db; margin-bottom: 10px; font-size: 16px;">{{ category_group.grouper }}</h4>
-                            {% for resource in category_group.list %}
+                            <h4 style="color: #3498db; margin-bottom: 10px; font-size: 16px;">{{ category_name }}</h4>
+                            {% for resource in resources %}
                             <div class="resource-item">
                                 <select name="expense_resource[]" class="expense-resource">
                                     <option value="{{ resource.resurs.id }}" selected>{{ resource.resurs.naimenovanie }}</option>
@@ -178,6 +177,7 @@
                                 <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
                             </div>
                             {% endfor %}
+                            <button type="button" onclick="addResourceToCategory('{{ category_name }}', 'expense')" style="background: #27ae60; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-top: 5px; cursor: pointer;">➕</button>
                         </div>
                         {% endfor %}
                         
@@ -204,11 +204,10 @@
                 <div class="resources-section">
                     <h3>Доходная часть</h3>
                     <div id="income-resources">
-                        {% regroup existing_income_resources by resurs.kategoriya_resursa.nazvanie as income_categories_grouped %}
-                        {% for category_group in income_categories_grouped %}
+                        {% for category_name, resources in existing_income_resources.items %}
                         <div class="category-group" style="margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 15px;">
-                            <h4 style="color: #3498db; margin-bottom: 10px; font-size: 16px;">{{ category_group.grouper }}</h4>
-                            {% for resource in category_group.list %}
+                            <h4 style="color: #3498db; margin-bottom: 10px; font-size: 16px;">{{ category_name }}</h4>
+                            {% for resource in resources %}
                             <div class="resource-item">
                                 <select name="income_resource[]" class="income-resource">
                                     <option value="{{ resource.resurs.id }}" selected>{{ resource.resurs.naimenovanie }}</option>
@@ -225,6 +224,7 @@
                                 <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
                             </div>
                             {% endfor %}
+                            <button type="button" onclick="addResourceToCategory('{{ category_name }}', 'income')" style="background: #27ae60; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-top: 5px; cursor: pointer;">➤</button>
                         </div>
                         {% endfor %}
                         
@@ -490,6 +490,81 @@ document.querySelector('form').addEventListener('submit', function(e) {
     const employees = formData.getAll('selected_employees[]');
     console.log('Выбранные сотрудники:', employees);
 });
+
+function addResourceToCategory(categoryName, type) {
+    const button = event.target;
+    const categoryGroup = button.parentElement;
+    
+    // Находим ID категории по названию
+    let categoryId = null;
+    
+    if (type === 'expense') {
+        {% for category in expense_categories %}
+        if ('{{ category.nazvanie }}' === categoryName) {
+            categoryId = '{{ category.id }}';
+        }
+        {% endfor %}
+    } else if (type === 'income') {
+        {% for category in income_categories %}
+        if ('{{ category.nazvanie }}' === categoryName) {
+            categoryId = '{{ category.id }}';
+        }
+        {% endfor %}
+    }
+    
+    const newItem = document.createElement('div');
+    newItem.className = 'resource-item';
+    
+    if (type === 'expense') {
+        newItem.innerHTML = `
+            <select name="expense_resource[]" class="expense-resource">
+                <option value="">Ресурс</option>
+            </select>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <input type="number" name="expense_quantity[]" step="1" oninput="calculateCost(this)">
+                <span style="color: white; font-size: 12px;">шт</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <input type="number" name="expense_price[]" step="1" oninput="calculateCost(this)">
+                <span style="color: white; font-size: 12px;">руб</span>
+            </div>
+            <input type="number" name="expense_cost[]" readonly style="background: #f0f0f0;">
+            <button type="button" onclick="this.parentElement.remove()">×</button>
+        `;
+    } else {
+        newItem.innerHTML = `
+            <select name="income_resource[]" class="income-resource">
+                <option value="">Ресурс</option>
+            </select>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <input type="number" name="income_quantity[]" step="1" oninput="calculateCost(this)">
+                <span style="color: white; font-size: 12px;">шт</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <input type="number" name="income_price[]" step="1" oninput="calculateCost(this)">
+                <span style="color: white; font-size: 12px;">руб</span>
+            </div>
+            <input type="number" name="income_cost[]" readonly style="background: #f0f0f0;">
+            <button type="button" onclick="this.parentElement.remove()">×</button>
+        `;
+    }
+    
+    categoryGroup.insertBefore(newItem, button);
+    
+    // Загружаем ресурсы для данной категории
+    if (categoryId) {
+        const resourceSelect = newItem.querySelector(type === 'expense' ? '.expense-resource' : '.income-resource');
+        fetch(`/get-resources/${categoryId}/`)
+            .then(response => response.json())
+            .then(data => {
+                resourceSelect.innerHTML = '<option value="">Ресурс</option>';
+                data.resources.forEach(resource => {
+                    resourceSelect.innerHTML += `<option value="${resource.id}">${resource.naimenovanie} (${resource.edinica_izmereniya})</option>`;
+                });
+            })
+            .catch(error => console.error('Error loading resources:', error));
+    }
+}
 </script>
 
 {% endblock %}

@@ -676,4 +676,60 @@ def generate_document_with_deepseek(prompt):
     except Exception as e:
         error_msg = f"Ошибка при генерации документа: {str(e)}"
         logger.error(error_msg)
-        return error_msg 
+        return error_msg
+
+def analyze_message_for_object_creation(message_content):
+    """
+    Анализирует сообщение и извлекает данные для создания объекта
+    """
+    try:
+        logger.info(f"Анализ сообщения для создания объекта: {message_content[:100]}...")
+        
+        # Простой анализ ключевых слов для извлечения данных
+        analysis_result = {
+            'organizaciya': 'ООО "Строительная компания"',
+            'nazvanie': 'Объект из чата',
+            'expense_resources': [],
+            'income_resources': [],
+            'employees': []
+        }
+        
+        # Анализируем тип объекта
+        if any(word in message_content.lower() for word in ['дом', 'жилой', 'квартира', 'здание']):
+            analysis_result['nazvanie'] = 'Жилой объект'
+            analysis_result['expense_resources'] = [
+                {'category': 'Материалы', 'resource': 'Бетон', 'quantity': 100, 'price': 5000},
+                {'category': 'Кадровое обеспечение', 'resource': 'Альпинист', 'quantity': 2, 'price': 3000}
+            ]
+        elif any(word in message_content.lower() for word in ['офис', 'торговый', 'коммерческий']):
+            analysis_result['nazvanie'] = 'Коммерческий объект'
+            analysis_result['expense_resources'] = [
+                {'category': 'Материалы', 'resource': 'Кирпич', 'quantity': 1000, 'price': 15},
+                {'category': 'Кадровое обеспечение', 'resource': 'Производитель работ', 'quantity': 1, 'price': 5000}
+            ]
+        elif any(word in message_content.lower() for word in ['завод', 'склад', 'производство']):
+            analysis_result['nazvanie'] = 'Промышленный объект'
+            analysis_result['expense_resources'] = [
+                {'category': 'Материалы', 'resource': 'Металлоконструкции', 'quantity': 50, 'price': 25000},
+                {'category': 'Кадровое обеспечение', 'resource': 'Газорезчик', 'quantity': 3, 'price': 4000}
+            ]
+        else:
+            # Пользовательский объект по умолчанию
+            analysis_result['nazvanie'] = 'Пользовательский объект'
+            analysis_result['expense_resources'] = [
+                {'category': 'Материалы', 'resource': 'Универсальные материалы', 'quantity': 1, 'price': 10000},
+                {'category': 'Кадровое обеспечение', 'resource': 'Альпинист', 'quantity': 1, 'price': 3000}
+            ]
+        
+        # Добавляем доходные ресурсы
+        analysis_result['income_resources'] = [
+            {'category': 'Подрядные организации', 'resource': 'Основные работы', 'quantity': 1, 'price': 500000}
+        ]
+        
+        logger.info(f"Анализ завершен: {analysis_result}")
+        return analysis_result
+        
+    except Exception as e:
+        error_msg = f"Ошибка анализа сообщения: {str(e)}"
+        logger.error(error_msg)
+        return {'error': error_msg} 

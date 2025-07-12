@@ -107,8 +107,35 @@ def bot_status(request):
         active_users = TelegramUser.objects.filter(is_active=True).count()
         total_messages = TelegramMessage.objects.count()
         
+        # Получаем последние 5 сообщений из AI чата
+        try:
+            from ai.models import ChatMessage
+            ai_messages = list(ChatMessage.objects.select_related('session').order_by('created_at')[-5:])
+        except:
+            ai_messages = []
+        
         # Получаем все сообщения для чата, отсортированные по времени
-        all_messages = TelegramMessage.objects.select_related('user').order_by('created_at')
+        all_messages = list(TelegramMessage.objects.select_related('user').order_by('created_at'))
+        
+        # Добавляем AI сообщения в правильном порядке (от старых к новым)
+        for msg in ai_messages:
+            # Создаем объект похожий на TelegramMessage
+            class AIMessageWrapper:
+                def __init__(self, ai_msg):
+                    # Обрезаем длинные сообщения
+                    content = ai_msg.content
+                    if len(content) > 200:
+                        content = content[:200] + '...'
+                    
+                    self.content = content
+                    self.created_at = ai_msg.created_at
+                    self.is_from_user = ai_msg.message_type == 'user'
+                    if ai_msg.message_type == 'user':
+                        self.user = type('User', (), {'first_name': 'AI User'})()
+                    else:
+                        self.user = type('User', (), {'first_name': 'DeepSeek'})()
+            
+            all_messages.insert(0, AIMessageWrapper(msg))
         
         # Последние сообщения для статистики (первые 10)
         recent_messages = all_messages[:10]
@@ -578,3 +605,213 @@ def safe_multicell(pdf, width, height, text, max_len=80):
         # Если возникла ошибка, просто добавляем текст как обычную строку
         pdf.ln(height)
         pdf.cell(0, height, text[:50] + '...' if len(text) > 50 else text)
+
+@csrf_exempt
+@require_POST
+def create_object_ai(request):
+    """Создание объекта с AI анализом последнего сообщения"""
+    try:
+        # Получаем последнее сообщение из чата
+        last_message = TelegramMessage.objects.order_by('-created_at').first()
+        
+        if not last_message:
+            return JsonResponse({
+                'ok': False,
+                'error': 'Нет сообщений в чате для анализа'
+            })
+        
+        # Анализируем сообщение с помощью AI
+        from .services import analyze_message_for_object_creation
+        
+        analysis_result = analyze_message_for_object_creation(last_message.content)
+        
+        if analysis_result.get('error'):
+            return JsonResponse({
+                'ok': False,
+                'error': analysis_result['error']
+            })
+        
+        # Возвращаем данные для создания объекта
+        return JsonResponse({
+            'ok': True,
+            'object_data': analysis_result,
+            'redirect_url': '/objects/create/',
+            'message': 'Данные извлечены из последнего сообщения'
+        })
+        
+    except Exception as e:
+        logger.error(f"Ошибка создания объекта с AI: {e}")
+        return JsonResponse({'error': str(e)}, status=500)
+
+@csrf_exempt
+@require_POST
+def send_file_to_deepseek(request):
+    """Отправка файла и сообщения в DeepSeek для анализа"""
+    try:
+        message = request.POST.get('message', '').strip()
+        uploaded_file = request.FILES.get('file')
+        
+        if not message and not uploaded_file:
+            return JsonResponse({'error': 'Необходимо указать сообщение или прикрепить файл'}, status=400)
+        
+        # Формируем промпт для DeepSeek
+        prompt = message or 'Проанализируй прикрепленный файл'
+        
+        if uploaded_file:
+            prompt += f"\n\nПрикреплен файл: {uploaded_file.name} ({uploaded_file.size} байт)"
+            
+            # Извлекаем текст из файла в зависимости от типа
+            if uploaded_file.content_type.startswith('text/') or uploaded_file.name.endswith(('.txt', '.md', '.py', '.js', '.html', '.css')):
+                try:
+                    file_content = uploaded_file.read().decode('utf-8')
+                    prompt += f"\n\nСодержимое файла:\n{file_content[:2000]}"
+                    if len(file_content) > 2000:
+                        prompt += "\n\n[Файл обрезан для экономии токенов]"
+                except UnicodeDecodeError:
+                    prompt += "\n\n[Не удалось прочитать содержимое файла]"
+            elif uploaded_file.name.endswith('.docx'):
+                try:
+                    from docx import Document
+                    doc = Document(uploaded_file)
+                    text_content = '\n'.join([paragraph.text for paragraph in doc.paragraphs if paragraph.text.strip()])
+                    prompt += f"\n\nСодержимое DOCX файла:\n{text_content[:2000]}"
+                    if len(text_content) > 2000:
+                        prompt += "\n\n[Файл обрезан для экономии токенов]"
+                except Exception as e:
+                    prompt += f"\n\n[Ошибка чтения DOCX файла: {str(e)}]"
+            elif uploaded_file.name.endswith('.pdf'):
+                try:
+                    import PyPDF2
+                    from io import BytesIO
+                    pdf_reader = PyPDF2.PdfReader(BytesIO(uploaded_file.read()))
+                    text_content = ''
+                    for page in pdf_reader.pages[:5]:  # Читаем только первые 5 страниц
+                        text_content += page.extract_text() + '\n'
+                    prompt += f"\n\nСодержимое PDF файла:\n{text_content[:2000]}"
+                    if len(text_content) > 2000:
+                        prompt += "\n\n[Файл обрезан для экономии токенов]"
+                except Exception as e:
+                    prompt += f"\n\n[Ошибка чтения PDF файла: {str(e)}]"
+            elif uploaded_file.name.endswith(('.xlsx', '.xls')):
+                try:
+                    import pandas as pd
+                    df = pd.read_excel(uploaded_file, nrows=100)  # Ограничиваем 100 строками
+                    text_content = df.to_string(max_rows=50, max_cols=10)
+                    prompt += f"\n\nСодержимое Excel файла:\n{text_content[:2000]}"
+                    if len(text_content) > 2000:
+                        prompt += "\n\n[Файл обрезан для экономии токенов]"
+                except Exception as e:
+                    prompt += f"\n\n[Ошибка чтения Excel файла: {str(e)}]"
+            else:
+                prompt += "\n\n[Прикреплен файл - анализ содержимого недоступен для данного формата]"
+        
+        logger.info(f"Отправляю в DeepSeek промпт: {prompt[:200]}...")
+        
+        # Отправляем в DeepSeek
+        from .services import generate_document_with_deepseek
+        
+        generated_content = generate_document_with_deepseek(prompt)
+        
+        if generated_content.startswith('Ошибка'):
+            logger.error(f"Ошибка DeepSeek API: {generated_content}")
+            return JsonResponse({
+                'ok': False,
+                'error': generated_content
+            })
+        
+        logger.info(f"Получен ответ от DeepSeek: {generated_content[:200]}...")
+        
+        return JsonResponse({
+            'ok': True,
+            'generated_content': generated_content,
+            'message': 'Файл успешно проанализирован DeepSeek AI'
+        })
+        
+    except Exception as e:
+        logger.error(f"Ошибка отправки файла в DeepSeek: {e}")
+        return JsonResponse({'error': str(e)}, status=500)
+
+@csrf_exempt
+@require_POST
+def download_and_save_document(request):
+    """Скачивание документа и сохранение в ai_chatmessage"""
+    try:
+        data = json.loads(request.body)
+        content = data.get('content', '').strip()
+        file_format = data.get('format', '').lower()
+        
+        if not content or file_format not in ['docx', 'pdf', 'xls']:
+            return JsonResponse({'error': 'Некорректные параметры'}, status=400)
+        
+        # Создаем файл
+        filename = f"document_{timezone.now().strftime('%Y%m%d_%H%M%S')}.{file_format}"
+        
+        if file_format == 'docx':
+            doc = Document()
+            for line in content.split('\n'):
+                if line.strip():
+                    doc.add_paragraph(line)
+            buf = io.BytesIO()
+            doc.save(buf)
+            file_content = buf.getvalue()
+        elif file_format == 'pdf':
+            pdf = FPDF()
+            pdf.add_page()
+            font_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'fonts', 'DejaVuSans.ttf')
+            if os.path.exists(font_path):
+                pdf.add_font('DejaVu', '', font_path, uni=True)
+                pdf.set_font('DejaVu', '', 10)
+            else:
+                pdf.set_font('Arial', '', 10)
+            
+            for line in content.split('\n'):
+                if line.strip():
+                    try:
+                        pdf.multi_cell(0, 8, line)
+                    except:
+                        pdf.cell(0, 8, line[:50] + '...' if len(line) > 50 else line)
+                        pdf.ln()
+            
+            buf = io.BytesIO()
+            pdf.output(buf)
+            file_content = buf.getvalue()
+        else:  # xls
+            lines = [l for l in content.split('\n') if l.strip()]
+            df = pd.DataFrame({'Документ': lines})
+            buf = io.BytesIO()
+            with pd.ExcelWriter(buf, engine='xlsxwriter') as writer:
+                df.to_excel(writer, index=False)
+            file_content = buf.getvalue()
+        
+        # Сохраняем файл в media/documents_ai/
+        from django.core.files.base import ContentFile
+        from django.core.files.storage import default_storage
+        
+        file_path = default_storage.save(f'documents_ai/{filename}', ContentFile(file_content))
+        
+        # Сохраняем в ai_chatmessage
+        from ai.models import ChatSession, ChatMessage
+        
+        # Получаем или создаем сессию
+        session, created = ChatSession.objects.get_or_create(
+            session_id='telegram_downloads',
+            defaults={'session_id': 'telegram_downloads'}
+        )
+        
+        # Создаем запись о скачанном документе
+        ChatMessage.objects.create(
+            session=session,
+            message_type='system',
+            content=f'Скачан документ: {filename}',
+            file=file_path
+        )
+        
+        # Возвращаем файл для скачивания
+        response = HttpResponse(file_content, content_type='application/octet-stream')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        
+        return response
+        
+    except Exception as e:
+        logger.error(f'Ошибка скачивания и сохранения: {e}')
+        return JsonResponse({'error': str(e)}, status=500)

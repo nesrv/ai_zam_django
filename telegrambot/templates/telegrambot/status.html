@@ -16,7 +16,6 @@
     .ipad-screen .dropdown-menu {
         position: absolute;
         top: 20px;
-        left: 20px;
         z-index: 1001;
     }
     
@@ -55,14 +54,13 @@
     .dropdown-content {
         position: absolute;
         top: 100%;
-        left: 0;
         background: rgba(255,255,255,0.95);
         backdrop-filter: blur(10px);
         border-radius: 15px;
         padding: 15px;
         border: 1px solid rgba(255,255,255,0.2);
         box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        min-width: 300px;
+        min-width: 360px;
         max-height: 0;
         overflow: hidden;
         opacity: 0;
@@ -92,11 +90,21 @@
         text-align: left;
         cursor: pointer;
         transition: all 0.3s ease;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
+        display: block;
         min-height: 70px;
-        justify-content: center;
+    }
+    
+    .menu-btn .btn-icon {
+        display: inline;
+        margin-right: 5px;
+        font-size: 1.3rem;
+    }
+    
+    .menu-btn .btn-text {
+        display: inline;
+        font-weight: bold;
+        font-size: 0.9rem;
+        line-height: 1.2;
     }
     
     .menu-btn:hover {
@@ -243,6 +251,15 @@
         line-height: 1.4;
     }
     
+    .message-content .file-attachment {
+        background: rgba(255,255,255,0.1);
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin: 5px 0;
+        font-size: 13px;
+        display: inline-block;
+    }
+    
     .message.user .message-content {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
@@ -327,6 +344,73 @@
         opacity: 0.7;
         cursor: not-allowed;
         transform: none;
+    }
+    
+    .file-btn {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 1.2rem;
+        margin-right: 10px;
+    }
+    
+    .file-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+    }
+    
+    .file-preview {
+        padding: 15px 20px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        border: 1px solid rgba(102, 126, 234, 0.3);
+        border-radius: 12px;
+        margin: 10px 20px;
+        backdrop-filter: blur(5px);
+        animation: slideDown 0.3s ease-out;
+    }
+    
+    .file-preview-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #333;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    
+    .file-preview-item button {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(231, 76, 60, 0.3);
+    }
+    
+    .file-preview-item button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 10px rgba(231, 76, 60, 0.4);
+    }
+    
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
     
     .stats-section {
@@ -573,13 +657,13 @@
 <div class="ipad-container">
     <div class="ipad-frame">
         <div class="ipad-screen">
-            <!-- Выпадающее меню в левом верхнем углу экрана iPad -->
-            <div class="dropdown-menu">
-                <button class="dropdown-toggle" onclick="toggleDropdown()">
+            <!-- Выпадающие меню в верхних углах экрана iPad -->
+            <div class="dropdown-menu" style="left: 20px;">
+                <button class="dropdown-toggle" onclick="toggleDropdown('documents')">
                     📋 Генерация документов
                     <span class="dropdown-arrow">▼</span>
                 </button>
-                <div class="dropdown-content" id="dropdownContent">
+                <div class="dropdown-content" id="documentsDropdown">
                     <button class="menu-btn" onclick="generateDocument('lzk')">
                         <span class="btn-icon">📄</span>
                         <span class="btn-text">Составь лимитно-заборную карту (ЛЗК)</span>
@@ -617,6 +701,52 @@
                     </button>
                 </div>
             </div>
+            
+            <!-- Выпадающее меню для генерации объектов справа -->
+            <div class="dropdown-menu" style="right: 20px; left: auto;">
+                <button class="dropdown-toggle" onclick="toggleDropdown('objects')">
+                    🏗️ Генерация объектов
+                    <span class="dropdown-arrow">▼</span>
+                </button>
+                <div class="dropdown-content" id="objectsDropdown" style="right: 0; left: auto;">
+                    <button class="menu-btn" onclick="generateObject('custom')">
+                        <span class="btn-icon">⚙️</span>
+                        <span class="btn-text">Создать пользовательский объект</span>
+                        <span class="btn-desc">Объект по индивидуальным параметрам</span>
+                    </button>
+                    
+                    <button class="menu-btn" onclick="generateObject('residential')">
+                        <span class="btn-icon">🏠</span>
+                        <span class="btn-text">Создать жилой объект</span>
+                        <span class="btn-desc">Многоквартирный дом, коттедж</span>
+                    </button>
+                    
+                    <button class="menu-btn" onclick="generateObject('commercial')">
+                        <span class="btn-icon">🏢</span>
+                        <span class="btn-text">Создать коммерческий объект</span>
+                        <span class="btn-desc">Офисное здание, торговый центр</span>
+                    </button>
+                    
+                    <button class="menu-btn" onclick="generateObject('industrial')">
+                        <span class="btn-icon">🏭</span>
+                        <span class="btn-text">Создать промышленный объект</span>
+                        <span class="btn-desc">Завод, склад, производство</span>
+                    </button>
+                    
+                    <button class="menu-btn" onclick="generateObject('infrastructure')">
+                        <span class="btn-icon">🛣️</span>
+                        <span class="btn-text">Создать инфраструктурный объект</span>
+                        <span class="btn-desc">Дорога, мост, коммуникации</span>
+                    </button>
+                    
+                    <button class="menu-btn" onclick="generateObject('renovation')">
+                        <span class="btn-icon">🔧</span>
+                        <span class="btn-text">Создать объект реконструкции</span>
+                        <span class="btn-desc">Капитальный ремонт, модернизация</span>
+                    </button>
+                </div>
+            </div>
+            
             <!-- Заголовок чата -->
             <div class="chat-header">
                 <h2>🤖 AI-ZAM Telegram Bot</h2>
@@ -641,6 +771,11 @@
                                     <strong>{{ message.user.first_name|default:"Пользователь" }}</strong><br>
                                 {% endif %}
                                 {{ message.content|linebreaksbr }}
+                                {% if message.file %}
+                                    <div class="file-attachment">
+                                        <a href="{{ message.file.url }}" target="_blank">📎 Скачать файл</a>
+                                    </div>
+                                {% endif %}
                             </div>
                             <div class="message-time">{{ message.created_at|date:"d.m.Y H:i" }}</div>
                         </div>
@@ -651,7 +786,7 @@
                     <div class="message bot">
                         <div class="message-avatar">🤖</div>
                         <div class="message-content">
-                            <div>Привет! Я AI-ZAM бот. Я помогу вам с управлением строительными объектами, генерацией меню и многим другим.</div>
+                            <div>Привет! Я твой ИИ-заместитель. Я помогу тебе в управлении, заменю рутинные операции, сокращу штат сотрудников и сэкономлю кучу бабла.</div>
                             <div class="message-time">Сейчас</div>
                         </div>
                     </div>
@@ -683,10 +818,22 @@
             
             <!-- Поле ввода -->
             <div class="chat-input">
-                <input type="text" id="messageInput" placeholder="Введите сообщение для всех пользователей..." maxlength="1000">
-                <button class="send-btn" onclick="sendBroadcastMessage()" id="sendBtn">
+                <input type="text" id="messageInput" placeholder="Введите сообщение для DeepSeek AI..." maxlength="1000">
+                <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt,.jpg,.png,.xlsx,.xls" style="display: none;" onchange="handleFileSelect(event)">
+                <button class="file-btn" onclick="document.getElementById('fileInput').click()" title="Прикрепить документ">
+                    📎
+                </button>
+                <button class="send-btn" onclick="sendMessageWithFile()" id="sendBtn">
                     ➤
                 </button>
+            </div>
+            
+            <!-- Предварительный просмотр файла -->
+            <div id="filePreview" class="file-preview" style="display: none;">
+                <div class="file-preview-item">
+                    <span id="fileName"></span>
+                    <button type="button" onclick="removeFile()">×</button>
+                </div>
             </div>
         </div>
     </div>
@@ -737,14 +884,51 @@
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-// Функция для отправки сообщения всем пользователям
-function sendBroadcastMessage() {
+// Переменная для хранения выбранного файла
+let selectedFile = null;
+
+// Функция для обработки выбора файла
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) {
+        selectedFile = file;
+        showFilePreview(file);
+    }
+}
+
+// Функция для показа предварительного просмотра файла
+function showFilePreview(file) {
+    const preview = document.getElementById('filePreview');
+    const fileName = document.getElementById('fileName');
+    
+    fileName.textContent = `📎 ${file.name} (${formatFileSize(file.size)})`;
+    preview.style.display = 'block';
+}
+
+// Функция для удаления файла
+function removeFile() {
+    selectedFile = null;
+    document.getElementById('fileInput').value = '';
+    document.getElementById('filePreview').style.display = 'none';
+}
+
+// Функция для форматирования размера файла
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Функция для отправки сообщения с файлом в DeepSeek
+function sendMessageWithFile() {
     const input = document.getElementById('messageInput');
     const sendBtn = document.getElementById('sendBtn');
     const message = input.value.trim();
     
-    if (!message) {
-        alert('Введите сообщение!');
+    if (!message && !selectedFile) {
+        alert('Введите сообщение или прикрепите файл!');
         return;
     }
     
@@ -758,53 +942,160 @@ function sendBroadcastMessage() {
     input.disabled = true;
     sendBtn.innerHTML = '⏳';
     
-    // Отправляем AJAX запрос
-    fetch('{% url "telegrambot:broadcast" %}', {
+    // Создаем FormData для отправки файла
+    const formData = new FormData();
+    formData.append('message', message || 'Файл для анализа');
+    formData.append('type', 'user');
+    
+    if (selectedFile) {
+        formData.append('file', selectedFile);
+    }
+    
+    // Добавляем сообщение пользователя в чат
+    const userMessage = message || `📎 Отправлен файл: ${selectedFile.name}`;
+    addMessageToChat('👤', userMessage, true);
+    
+    // Сохраняем сообщение и файл в базу данных
+    fetch('/ai/api/save-telegram-message/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Сообщение сохранено:', data);
+        
+        // Отправляем в DeepSeek для анализа
+        return sendToDeepSeek(message, selectedFile, data.file_url);
+    })
+    .catch(error => {
+        console.error('Ошибка сохранения:', error);
+        // Все равно пытаемся отправить в DeepSeek
+        return sendToDeepSeek(message, selectedFile, null);
+    })
+    .finally(() => {
+        // Очищаем форму
+        input.value = '';
+        removeFile();
+        
+        // Разблокируем кнопку и поле ввода
+        sendBtn.disabled = false;
+        input.disabled = false;
+        sendBtn.innerHTML = '➤';
+    });
+}
+
+// Функция для отправки в DeepSeek
+function sendToDeepSeek(message, file, fileUrl) {
+    let prompt = message || 'Проанализируй прикрепленный файл';
+    
+    if (file) {
+        prompt += `\n\nПрикреплен файл: ${file.name} (${formatFileSize(file.size)})`;
+        
+        // Для всех файлов отправляем на сервер для обработки
+        // Сервер сам определит тип файла и извлечет текст
+    }
+    
+    sendPromptToDeepSeek(prompt, file);
+}
+
+// Функция для отправки промпта с файлом в DeepSeek
+function sendPromptToDeepSeek(prompt, file = null) {
+    showNotification('🤖 Отправляю запрос в DeepSeek для анализа...', 'info');
+    
+    // Если есть файл, отправляем через send_file_to_deepseek
+    if (file) {
+        const formData = new FormData();
+        formData.append('message', prompt);
+        formData.append('file', file);
+        
+        fetch('{% url "telegrambot:send_file_to_deepseek" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                addMessageToChat('🤖', data.generated_content, false);
+                
+                // Сохраняем ответ AI в базу данных
+                fetch('/ai/api/save-telegram-message/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        message: data.generated_content,
+                        type: 'assistant'
+                    })
+                });
+                
+                showNotification('✅ Файл проанализирован DeepSeek AI', 'success');
+            } else {
+                addMessageToChat('🤖', `❌ Ошибка анализа: ${data.error}`, false);
+                showNotification(`❌ Ошибка DeepSeek: ${data.error}`, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка DeepSeek:', error);
+            addMessageToChat('🤖', '❌ Ошибка при обращении к DeepSeek AI. Попробуйте позже.', false);
+            showNotification('❌ Ошибка DeepSeek API', 'error');
+        });
+        return;
+    }
+    
+    // Для обычных сообщений без файлов
+    fetch('{% url "telegrambot:generate_document" %}', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCookie('csrftoken')
         },
         body: JSON.stringify({
-            message: message
+            prompt: prompt
         })
     })
     .then(response => response.json())
     .then(data => {
         if (data.ok) {
-            // Добавляем сообщение в чат
-            addMessageToChat('🤖', message, false);
-            input.value = '';
+            // Добавляем ответ DeepSeek в чат
+            addMessageToChat('🤖', data.generated_content, false);
             
-            // Показываем уведомление об успехе
-            let successMsg = `✅ Сообщение отправлено ${data.sent_count} пользователям из ${data.total_users}`;
-            if (data.failed_count > 0) {
-                successMsg += ` (${data.failed_count} ошибок)`;
-            }
-            showNotification(successMsg, 'success');
+            // Сохраняем ответ AI в базу данных
+            fetch('/ai/api/save-telegram-message/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    message: data.generated_content,
+                    type: 'assistant'
+                })
+            });
             
-            // Если есть ошибки, показываем их
-            if (data.errors && data.errors.length > 0) {
-                console.log('Ошибки отправки:', data.errors);
-            }
+            showNotification('✅ Ответ получен от DeepSeek AI', 'success');
         } else {
-            if (data.error && 'нет активных пользователей' in data.error.toLowerCase()) {
-                showNotification('⚠️ Нет активных пользователей. Добавьте пользователей через Telegram бота @NeSrv2Bot', 'error');
-            } else {
-                showNotification(`❌ Ошибка: ${data.error}`, 'error');
-            }
+            addMessageToChat('🤖', `❌ Ошибка анализа: ${data.error}`, false);
+            showNotification(`❌ Ошибка DeepSeek: ${data.error}`, 'error');
         }
     })
     .catch(error => {
-        console.error('Ошибка:', error);
-        showNotification('❌ Ошибка отправки сообщения', 'error');
-    })
-    .finally(() => {
-        // Разблокируем кнопку и поле ввода
-        sendBtn.disabled = false;
-        input.disabled = false;
-        sendBtn.innerHTML = '➤';
+        console.error('Ошибка DeepSeek:', error);
+        addMessageToChat('🤖', '❌ Ошибка при обращении к DeepSeek AI. Попробуйте позже.', false);
+        showNotification('❌ Ошибка DeepSeek API', 'error');
     });
+}
+
+// Функция для отправки сообщения всем пользователям (оставляем для совместимости)
+function sendBroadcastMessage() {
+    sendMessageWithFile();
 }
 
 // Обновленная функция для добавления сообщений в чат с поддержкой Markdown
@@ -819,21 +1110,41 @@ function addMessageToChat(avatar, message, isUser) {
     
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
+    
     if (!isUser) {
-        contentDiv.innerHTML = marked.parse(message);
-        // Добавляем кнопки скачивания только для последнего сгенерированного документа
-        const downloadDiv = document.createElement('div');
-        downloadDiv.className = 'download-buttons';
-        downloadDiv.style.marginTop = '15px';
-        downloadDiv.innerHTML = `
-            <button class="btn-primary" onclick="downloadGeneratedDocument(` +
-                '`' + message.replace(/`/g, '\`') + '`' + `, 'docx')">Скачать DOCX</button>
-            <button class="btn-primary" onclick="downloadGeneratedDocument(` +
-                '`' + message.replace(/`/g, '\`') + '`' + `, 'pdf')">Скачать PDF</button>
-            <button class="btn-primary" onclick="downloadGeneratedDocument(` +
-                '`' + message.replace(/`/g, '\`') + '`' + `, 'xls')">Скачать XLS</button>
-        `;
-        contentDiv.appendChild(downloadDiv);
+        // Для сообщений от бота используем Markdown
+        if (typeof marked !== 'undefined') {
+            contentDiv.innerHTML = marked.parse(message);
+        } else {
+            contentDiv.innerHTML = message.replace(/\n/g, '<br>');
+        }
+        
+        // Добавляем кнопки скачивания для ответов AI
+        if (message.length > 100) { // Только для длинных ответов
+            const downloadDiv = document.createElement('div');
+            downloadDiv.className = 'download-buttons';
+            downloadDiv.style.cssText = 'margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;';
+            
+            const docxBtn = document.createElement('button');
+            docxBtn.className = 'btn-primary';
+            docxBtn.textContent = 'Скачать DOCX';
+            docxBtn.onclick = () => downloadGeneratedDocument(message, 'docx');
+            
+            const pdfBtn = document.createElement('button');
+            pdfBtn.className = 'btn-primary';
+            pdfBtn.textContent = 'Скачать PDF';
+            pdfBtn.onclick = () => downloadGeneratedDocument(message, 'pdf');
+            
+            const xlsBtn = document.createElement('button');
+            xlsBtn.className = 'btn-primary';
+            xlsBtn.textContent = 'Скачать XLS';
+            xlsBtn.onclick = () => downloadGeneratedDocument(message, 'xls');
+            
+            downloadDiv.appendChild(docxBtn);
+            downloadDiv.appendChild(pdfBtn);
+            downloadDiv.appendChild(xlsBtn);
+            contentDiv.appendChild(downloadDiv);
+        }
     } else {
         contentDiv.innerText = message;
     }
@@ -927,7 +1238,7 @@ document.addEventListener('DOMContentLoaded', function() {
     messageInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            sendBroadcastMessage();
+            sendMessageWithFile();
         }
     });
     
@@ -1115,6 +1426,19 @@ function generateDocumentWithDeepSeek(prompt) {
             console.log('Добавляю ответ DeepSeek в чат:', data.generated_content);
             addMessageToChat('🤖', data.generated_content, false);
             
+            // Сохраняем ответ AI в базу данных
+            fetch('/ai/api/save-telegram-message/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    message: data.generated_content,
+                    type: 'assistant'
+                })
+            });
+            
             // Показываем уведомление об успехе
             let successMsg = `✅ Документ сгенерирован и отправлен ${data.sent_count} пользователям из ${data.total_users}`;
             if (data.failed_count > 0) {
@@ -1151,10 +1475,20 @@ function generateDocumentWithDeepSeek(prompt) {
 }
 
 // Функция для переключения выпадающего меню
-function toggleDropdown() {
-    const dropdown = document.getElementById('dropdownContent');
-    const toggle = document.querySelector('.dropdown-toggle');
+function toggleDropdown(type) {
+    const dropdownId = type === 'documents' ? 'documentsDropdown' : 'objectsDropdown';
+    const dropdown = document.getElementById(dropdownId);
+    const toggle = dropdown.parentElement.querySelector('.dropdown-toggle');
     
+    // Закрываем другое меню
+    const otherDropdownId = type === 'documents' ? 'objectsDropdown' : 'documentsDropdown';
+    const otherDropdown = document.getElementById(otherDropdownId);
+    const otherToggle = otherDropdown.parentElement.querySelector('.dropdown-toggle');
+    
+    otherDropdown.classList.remove('show');
+    otherToggle.classList.remove('active');
+    
+    // Переключаем текущее меню
     if (dropdown.classList.contains('show')) {
         dropdown.classList.remove('show');
         toggle.classList.remove('active');
@@ -1166,18 +1500,80 @@ function toggleDropdown() {
 
 // Закрытие меню при клике вне его
 document.addEventListener('click', function(event) {
-    const dropdown = document.querySelector('.dropdown-menu');
-    const toggle = document.querySelector('.dropdown-toggle');
+    const dropdownMenus = document.querySelectorAll('.dropdown-menu');
     
-    if (!dropdown.contains(event.target)) {
-        document.getElementById('dropdownContent').classList.remove('show');
-        toggle.classList.remove('active');
-    }
+    dropdownMenus.forEach(menu => {
+        if (!menu.contains(event.target)) {
+            const dropdown = menu.querySelector('.dropdown-content');
+            const toggle = menu.querySelector('.dropdown-toggle');
+            dropdown.classList.remove('show');
+            toggle.classList.remove('active');
+        }
+    });
 });
 
-// Добавить функцию для скачивания документа
+// Функции для генерации объектов
+function generateObject(type) {
+    const message = `Создать строительный объект типа: ${type}`;
+    addMessageToChat('👤', message, true);
+    
+    if (type === 'custom') {
+        // Для пользовательского объекта используем AI анализ
+        showNotification('🤖 Анализирую последнее сообщение для создания объекта...', 'info');
+        
+        fetch('/telegram/create-object-ai/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                // Открываем страницу создания объекта с данными
+                const objectData = data.object_data;
+                const url = new URL('/objects/create/', window.location.origin);
+                
+                // Передаем данные через URL параметры
+                url.searchParams.set('ai_data', JSON.stringify(objectData));
+                
+                window.open(url.toString(), '_blank');
+                
+                addMessageToChat('🤖', `✅ Данные извлечены из чата: ${objectData.nazvanie}. Открываю страницу создания объекта...`, false);
+                showNotification('✅ Объект создается на основе данных из чата', 'success');
+            } else {
+                addMessageToChat('🤖', `❌ Ошибка анализа: ${data.error}`, false);
+                showNotification('❌ Ошибка анализа сообщения', 'error');
+                // Открываем обычную страницу создания
+                window.open('/objects/create/', '_blank');
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка AI анализа:', error);
+            addMessageToChat('🤖', '❌ Ошибка при анализе сообщения. Открываю обычную страницу создания объекта.', false);
+            showNotification('❌ Ошибка AI анализа', 'error');
+            // Открываем обычную страницу создания
+            window.open('/objects/create/', '_blank');
+        });
+    } else {
+        // Для остальных типов объектов просто открываем страницу
+        window.open('/objects/create/', '_blank');
+        
+        setTimeout(() => {
+            addMessageToChat('🤖', `✅ Открыта страница создания объекта типа: ${type}`, false);
+        }, 1000);
+        
+        showNotification('🏗️ Открываю страницу создания объекта...', 'info');
+    }
+}
+
+// Функция для скачивания документа с сохранением в базу
 function downloadGeneratedDocument(content, format) {
-    fetch('/telegram/export-document/', {
+    showNotification('📥 Подготавливаю файл для скачивания...', 'info');
+    
+    fetch('/telegram/download-and-save/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -1189,22 +1585,26 @@ function downloadGeneratedDocument(content, format) {
         })
     })
     .then(response => {
-        if (!response.ok) throw new Error('Ошибка скачивания файла');
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
         return response.blob();
     })
     .then(blob => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'document.' + format;
+        a.download = `document_${new Date().getTime()}.${format}`;
         document.body.appendChild(a);
         a.click();
         a.remove();
         window.URL.revokeObjectURL(url);
+        showNotification(`✅ Файл ${format.toUpperCase()} скачан и сохранен в базу!`, 'success');
     })
     .catch(error => {
-        showNotification('❌ Ошибка скачивания файла: ' + error.message, 'error');
+        console.error('Ошибка скачивания:', error);
+        showNotification(`❌ Ошибка скачивания файла: ${error.message}`, 'error');
     });
 }
 </script>
-{% endblock %} 
+{% endblock %}
