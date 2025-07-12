@@ -44,3 +44,4 @@ python-docx
 pandas
 xlsxwriter
 PyPDF2
+openpyxl

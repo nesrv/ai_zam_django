@@ -819,7 +819,7 @@
             <!-- Поле ввода -->
             <div class="chat-input">
                 <input type="text" id="messageInput" placeholder="Введите сообщение для DeepSeek AI..." maxlength="1000">
-                <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt,.jpg,.png,.xlsx,.xls" style="display: none;" onchange="handleFileSelect(event)">
+                <input type="file" id="fileInput" accept=".xlsx,.xls,.pdf,.doc,.docx,.txt,.csv" style="display: none;" onchange="handleFileSelect(event)">
                 <button class="file-btn" onclick="document.getElementById('fileInput').click()" title="Прикрепить документ">
                     📎
                 </button>
@@ -893,6 +893,11 @@ function handleFileSelect(event) {
     if (file) {
         selectedFile = file;
         showFilePreview(file);
+        
+        // Специальное уведомление для Excel файлов
+        if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+            showNotification('📈 Excel файл выбран! DeepSeek проанализирует данные и структуру таблицы.', 'info');
+        }
     }
 }
 
@@ -952,7 +957,12 @@ function sendMessageWithFile() {
     }
     
     // Добавляем сообщение пользователя в чат
-    const userMessage = message || `📎 Отправлен файл: ${selectedFile.name}`;
+    let userMessage = message || `📎 Отправлен файл: ${selectedFile.name}`;
+    
+    if (selectedFile && (selectedFile.name.endsWith('.xlsx') || selectedFile.name.endsWith('.xls'))) {
+        userMessage = message || `📈 Отправлен Excel файл: ${selectedFile.name} для анализа`;
+    }
+    
     addMessageToChat('👤', userMessage, true);
     
     // Сохраняем сообщение и файл в базу данных
@@ -992,10 +1002,17 @@ function sendToDeepSeek(message, file, fileUrl) {
     let prompt = message || 'Проанализируй прикрепленный файл';
     
     if (file) {
+        const isExcel = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
+        
+        if (isExcel) {
+            prompt = message || 'Проанализируй данные из электронной таблицы Excel. Выдели основные показатели, тренды и закономерности.';
+        }
+        
         prompt += `\n\nПрикреплен файл: ${file.name} (${formatFileSize(file.size)})`;
         
-        // Для всех файлов отправляем на сервер для обработки
-        // Сервер сам определит тип файла и извлечет текст
+        if (isExcel) {
+            prompt += '\n\nЭто Excel файл - проанализируй структуру данных, найди ключевые метрики и предложи выводы.';
+        }
     }
     
     sendPromptToDeepSeek(prompt, file);
@@ -1130,18 +1147,12 @@ function addMessageToChat(avatar, message, isUser) {
             docxBtn.textContent = 'Скачать DOCX';
             docxBtn.onclick = () => downloadGeneratedDocument(message, 'docx');
             
-            const pdfBtn = document.createElement('button');
-            pdfBtn.className = 'btn-primary';
-            pdfBtn.textContent = 'Скачать PDF';
-            pdfBtn.onclick = () => downloadGeneratedDocument(message, 'pdf');
-            
             const xlsBtn = document.createElement('button');
             xlsBtn.className = 'btn-primary';
             xlsBtn.textContent = 'Скачать XLS';
             xlsBtn.onclick = () => downloadGeneratedDocument(message, 'xls');
             
             downloadDiv.appendChild(docxBtn);
-            downloadDiv.appendChild(pdfBtn);
             downloadDiv.appendChild(xlsBtn);
             contentDiv.appendChild(downloadDiv);
         }

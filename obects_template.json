@@ -1,0 +1,113 @@
+{
+  "objekt": {
+    "id": 2,
+    "nazvanie": "Объект",
+    "data_nachala": "2025-06-25",
+    "data_plan_zaversheniya": "2025-12-31",
+    "data_fakt_zaversheniya": null,
+    "organizaciya": {      
+      "nazvanie": "ООО \"Развитие\"",
+      "inn": "7842187225",
+      "ogrn": "1207800162371",
+      "adres": "191144,  г. Санкт-Петербург, вн.тер.г. Муниципальный Округ Смольнинское, ул Мытнинская, д. 12/44, литера А",
+    }
+  },
+  "resursy_po_objektu": [
+    {
+      "id": 9,
+      "kolichestvo": 700.0,
+      "cena": 900.0,
+      "potracheno": 508.0,
+      "resurs": {
+        "id": 1,
+        "naimenovanie": "ИТР",
+        "edinica_izmereniya": "час",
+        "kategoriya_resursa": {
+          "id": 1,
+          "nazvanie": "Кадровое обеспечение",
+          "raskhod_dokhod": true
+        }
+      },
+      "fakticheskij_resurs": {
+        "id": 7,
+        "raskhody": [
+          {
+            "id": 8,
+            "data": "2025-06-09",
+            "izraskhodovano": 100.0
+          }          
+        ],
+        "dokhody": []
+      }
+    },
+    {
+      "id": 10,
+      "kolichestvo": 700.0,
+      "cena": 800.0,
+      "potracheno": 374.0,
+      "resurs": {
+        "id": 2,
+        "naimenovanie": "Каменщик",
+        "edinica_izmereniya": "час",
+        "kategoriya_resursa": {
+          "id": 1,
+          "nazvanie": "Кадровое обеспечение",
+          "raskhod_dokhod": true
+        }
+      },
+      "fakticheskij_resurs": {
+        "id": 4,
+        "raskhody": [
+          {
+            "id": 5,
+            "data": "2025-06-08",
+            "izraskhodovano": 10.0
+          }        
+        ],
+        "dokhody": []
+      }
+    },
+    {
+      "id": 11,
+      "kolichestvo": 1200.0,
+      "cena": 400.0,
+      "potracheno": 235.0,
+      "resurs": {
+        "id": 3,
+        "naimenovanie": "Подсобный рабочий",
+        "edinica_izmereniya": "час",
+        "kategoriya_resursa": {
+          "id": 1,
+          "nazvanie": "Кадровое обеспечение",
+          "raskhod_dokhod": true
+        }
+      },
+      "fakticheskij_resurs": {
+        "id": 10,
+        "raskhody": [
+          {
+            "id": 74,
+            "data": "2025-06-16",
+            "izraskhodovano": 1.0
+          }         
+        ],
+        "dokhody": []
+      }
+    },
+    {
+      "id": 12,
+      "kolichestvo": 120.0,
+      "cena": 2500.0,
+      "potracheno": 94.0,
+      "resurs": {
+        "id": 4,
+        "naimenovanie": "Минипогрузчик",
+        "edinica_izmereniya": "час",
+        "kategoriya_resursa": {
+          "id": 2,
+          "nazvanie": "Машины и механизмы",
+          "raskhod_dokhod": true
+        }
+      },
+    
+}

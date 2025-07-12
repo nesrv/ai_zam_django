@@ -107,38 +107,39 @@ def bot_status(request):
         active_users = TelegramUser.objects.filter(is_active=True).count()
         total_messages = TelegramMessage.objects.count()
         
-        # Получаем последние 5 сообщений из AI чата
-        try:
-            from ai.models import ChatMessage
-            ai_messages = list(ChatMessage.objects.select_related('session').order_by('created_at')[-5:])
-        except:
-            ai_messages = []
-        
         # Получаем все сообщения для чата, отсортированные по времени
         all_messages = list(TelegramMessage.objects.select_related('user').order_by('created_at'))
         
-        # Добавляем AI сообщения в правильном порядке (от старых к новым)
-        for msg in ai_messages:
-            # Создаем объект похожий на TelegramMessage
-            class AIMessageWrapper:
-                def __init__(self, ai_msg):
-                    # Обрезаем длинные сообщения
-                    content = ai_msg.content
-                    if len(content) > 200:
-                        content = content[:200] + '...'
-                    
-                    self.content = content
-                    self.created_at = ai_msg.created_at
-                    self.is_from_user = ai_msg.message_type == 'user'
-                    if ai_msg.message_type == 'user':
-                        self.user = type('User', (), {'first_name': 'AI User'})()
-                    else:
-                        self.user = type('User', (), {'first_name': 'DeepSeek'})()
+        # Получаем последние 5 сообщений из AI чата
+        try:
+            from ai.models import ChatMessage
+            ai_messages = ChatMessage.objects.select_related('session').order_by('-created_at')[:5]
             
-            all_messages.insert(0, AIMessageWrapper(msg))
+            # Добавляем AI сообщения в правильном порядке
+            for msg in reversed(ai_messages):
+                # Обрезаем длинные сообщения
+                content = msg.content
+                if len(content) > 200:
+                    content = content[:200] + '...'
+                
+                # Создаем объект похожий на TelegramMessage
+                ai_wrapper = type('AIMessage', (), {
+                    'content': content,
+                    'created_at': msg.created_at,
+                    'is_from_user': msg.message_type == 'user',
+                    'file': getattr(msg, 'file', None),
+                    'user': type('User', (), {
+                        'first_name': 'AI User' if msg.message_type == 'user' else 'DeepSeek'
+                    })()
+                })()
+                
+                all_messages.insert(0, ai_wrapper)
+                
+        except Exception as e:
+            logger.error(f"Ошибка получения AI сообщений: {e}")
         
         # Последние сообщения для статистики (первые 10)
-        recent_messages = all_messages[:10]
+        recent_messages = all_messages[-10:] if all_messages else []
         
         context = {
             'total_users': total_users,
@@ -695,12 +696,98 @@ def send_file_to_deepseek(request):
             elif uploaded_file.name.endswith(('.xlsx', '.xls')):
                 try:
                     import pandas as pd
-                    df = pd.read_excel(uploaded_file, nrows=100)  # Ограничиваем 100 строками
-                    text_content = df.to_string(max_rows=50, max_cols=10)
-                    prompt += f"\n\nСодержимое Excel файла:\n{text_content[:2000]}"
-                    if len(text_content) > 2000:
-                        prompt += "\n\n[Файл обрезан для экономии токенов]"
+                    # Сохраняем файл в media/documents_ai/
+                    from django.core.files.storage import default_storage
+                    from django.core.files.base import ContentFile
+                    import uuid
+                    
+                    # Сохраняем копию файла для чтения
+                    file_content = uploaded_file.read()
+                    file_name = f"{uuid.uuid4()}_{uploaded_file.name}"
+                    file_path = default_storage.save(f'documents_ai/{file_name}', ContentFile(file_content))
+                    
+                    # Читаем Excel файл из байтов
+                    from io import BytesIO
+                    excel_buffer = BytesIO(file_content)
+                    
+                    engine = 'openpyxl' if uploaded_file.name.endswith('.xlsx') else 'xlrd'
+                    
+                    # Пытаемся прочитать все листы
+                    try:
+                        # Сначала получаем список листов
+                        excel_file = pd.ExcelFile(excel_buffer, engine=engine)
+                        sheet_names = excel_file.sheet_names
+                        
+                        text_content = f"📈 Анализ Excel файла: {uploaded_file.name}\n"
+                        text_content += f"📄 Количество листов: {len(sheet_names)}\n"
+                        text_content += f"📝 Названия листов: {', '.join(sheet_names)}\n\n"
+                        
+                        # Читаем первые 2 листа (или все, если их меньше)
+                        sheets_to_read = sheet_names[:2]
+                        
+                        for sheet_name in sheets_to_read:
+                            try:
+                                df = pd.read_excel(excel_buffer, sheet_name=sheet_name, engine=engine, nrows=50)
+                                
+                                text_content += f"📉 Лист: '{sheet_name}'\n"
+                                text_content += f"• Размер: {len(df)} строк × {len(df.columns)} столбцов\n"
+                                text_content += f"• Столбцы: {', '.join(df.columns.astype(str))}\n"
+                                
+                                # Добавляем первые несколько строк данных
+                                if not df.empty:
+                                    # Показываем первые 5 строк
+                                    sample_data = df.head(5).to_string(max_cols=8, max_colwidth=20)
+                                    text_content += f"• Пример данных:\n{sample_data}\n"
+                                    
+                                    # Анализируем числовые столбцы
+                                    numeric_cols = df.select_dtypes(include=['number']).columns
+                                    if len(numeric_cols) > 0:
+                                        text_content += f"• Числовые столбцы: {', '.join(numeric_cols)}\n"
+                                        
+                                        # Показываем статистику по первому числовому столбцу
+                                        first_numeric = numeric_cols[0]
+                                        stats = df[first_numeric].describe()
+                                        text_content += f"• Статистика '{first_numeric}': мин={stats['min']:.2f}, макс={stats['max']:.2f}, среднее={stats['mean']:.2f}\n"
+                                
+                                text_content += "\n"
+                                
+                                # Пересоздаем buffer для следующего листа
+                                excel_buffer = BytesIO(file_content)
+                                
+                            except Exception as sheet_error:
+                                text_content += f"• Ошибка чтения листа '{sheet_name}': {str(sheet_error)}\n\n"
+                                continue
+                        
+                    except Exception as e:
+                        # Если не удалось прочитать как Excel файл, пробуем простое чтение
+                        excel_buffer = BytesIO(file_content)
+                        df = pd.read_excel(excel_buffer, engine=engine, nrows=50)
+                        
+                        text_content = f"📈 Анализ Excel файла: {uploaded_file.name}\n"
+                        text_content += f"• Размер: {len(df)} строк × {len(df.columns)} столбцов\n"
+                        text_content += f"• Столбцы: {', '.join(df.columns.astype(str))}\n\n"
+                        text_content += df.to_string(max_rows=20, max_cols=8)
+                    
+                    prompt += f"\n\n{text_content[:3000]}"
+                    if len(text_content) > 3000:
+                        prompt += "\n\n[Данные обрезаны для экономии токенов]"
+                        
+                    # Сохраняем информацию о файле в ai_chatmessage
+                    from ai.models import ChatSession, ChatMessage
+                    session, created = ChatSession.objects.get_or_create(
+                        session_id='telegram_excel',
+                        defaults={'session_id': 'telegram_excel'}
+                    )
+                    
+                    ChatMessage.objects.create(
+                        session=session,
+                        message_type='user',
+                        content=f'Загружен Excel файл: {uploaded_file.name}',
+                        file=file_path
+                    )
+                    
                 except Exception as e:
+                    logger.error(f"Ошибка обработки Excel файла: {str(e)}")
                     prompt += f"\n\n[Ошибка чтения Excel файла: {str(e)}]"
             else:
                 prompt += "\n\n[Прикреплен файл - анализ содержимого недоступен для данного формата]"
@@ -720,6 +807,22 @@ def send_file_to_deepseek(request):
             })
         
         logger.info(f"Получен ответ от DeepSeek: {generated_content[:200]}...")
+        
+        # Сохраняем ответ AI в базу данных
+        try:
+            from ai.models import ChatSession, ChatMessage
+            session, created = ChatSession.objects.get_or_create(
+                session_id='telegram_excel',
+                defaults={'session_id': 'telegram_excel'}
+            )
+            
+            ChatMessage.objects.create(
+                session=session,
+                message_type='assistant',
+                content=generated_content
+            )
+        except Exception as e:
+            logger.error(f"Ошибка сохранения ответа AI: {e}")
         
         return JsonResponse({
             'ok': True,

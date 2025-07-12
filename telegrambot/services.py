@@ -599,6 +599,13 @@ def generate_document_with_deepseek(prompt):
     try:
         logger.info(f"Отправляю запрос к DeepSeek API с промптом: {prompt[:100]}...")
         
+        # Получаем API ключ из переменных окружения
+        api_key = os.getenv('DEEPSEEK_API_KEY')
+        if not api_key:
+            error_msg = "DEEPSEEK_API_KEY не найден в переменных окружения"
+            logger.error(error_msg)
+            return f"Ошибка: {error_msg}"
+        
         # Для тестирования интерфейса используем заглушку
         if "test_mode" in prompt.lower():
             fake_response = f"""
@@ -619,31 +626,38 @@ def generate_document_with_deepseek(prompt):
             return fake_response.strip()
         
         headers = {
-            'Authorization': f'Bearer {settings.DEEPSEEK_API_KEY}',
+            'Authorization': f'Bearer {api_key}',
             'Content-Type': 'application/json'
         }
+        
+        # Определяем системный промпт в зависимости от содержимого
+        if 'Excel' in prompt or 'xlsx' in prompt or 'таблиц' in prompt:
+            system_content = 'Ты опытный аналитик данных и эксперт по Excel. Анализируй данные из таблиц, выделяй ключевые показатели, тренды и делай выводы на русском языке.'
+        else:
+            system_content = 'Ты опытный инженер-строитель и технический писатель. Твоя задача - создавать качественные строительные документы на русском языке.'
         
         data = {
             'model': 'deepseek-chat',
             'messages': [
                 {
                     'role': 'system',
-                    'content': 'Ты опытный инженер-строитель и технический писатель. Твоя задача - создавать качественные строительные документы на русском языке.'
+                    'content': system_content
                 },
                 {
                     'role': 'user',
                     'content': prompt
                 }
             ],
-            'max_tokens': 2000,
+            'max_tokens': 3000,  # Увеличиваем для анализа таблиц
             'temperature': 0.7
         }
         
-        logger.info(f"Отправляю POST запрос к {settings.DEEPSEEK_BASE_URL}/v1/chat/completions")
+        api_url = 'https://api.deepseek.com/v1/chat/completions'
+        logger.info(f"Отправляю POST запрос к {api_url}")
         
         try:
             response = requests.post(
-                f'{settings.DEEPSEEK_BASE_URL}/v1/chat/completions',
+                api_url,
                 headers=headers,
                 json=data,
                 timeout=60  # Увеличиваем таймаут до 60 секунд
@@ -651,32 +665,46 @@ def generate_document_with_deepseek(prompt):
         except requests.exceptions.Timeout:
             error_msg = "Таймаут подключения к DeepSeek API. Попробуйте позже."
             logger.error(error_msg)
-            return error_msg
+            return f"Ошибка: {error_msg}"
         except requests.exceptions.ConnectionError:
             error_msg = "Ошибка подключения к DeepSeek API. Проверьте интернет-соединение."
             logger.error(error_msg)
-            return error_msg
+            return f"Ошибка: {error_msg}"
         except requests.exceptions.RequestException as e:
             error_msg = f"Ошибка сетевого запроса к DeepSeek API: {str(e)}"
             logger.error(error_msg)
-            return error_msg
+            return f"Ошибка: {error_msg}"
         
         logger.info(f"Получен ответ от DeepSeek API: статус {response.status_code}")
         
         if response.status_code == 200:
-            result = response.json()
-            generated_content = result['choices'][0]['message']['content']
-            logger.info(f"Успешно сгенерирован документ длиной {len(generated_content)} символов")
-            return generated_content
+            try:
+                result = response.json()
+                if 'choices' in result and len(result['choices']) > 0:
+                    generated_content = result['choices'][0]['message']['content']
+                    logger.info(f"Успешно сгенерирован документ длиной {len(generated_content)} символов")
+                    return generated_content
+                else:
+                    error_msg = f"Неожиданная структура ответа API: {result}"
+                    logger.error(error_msg)
+                    return f"Ошибка: {error_msg}"
+            except json.JSONDecodeError as e:
+                error_msg = f"Ошибка декодирования JSON ответа: {str(e)}"
+                logger.error(error_msg)
+                return f"Ошибка: {error_msg}"
         else:
-            error_msg = f"Ошибка API: {response.status_code} - {response.text}"
+            try:
+                error_response = response.json()
+                error_msg = f"Ошибка API {response.status_code}: {error_response.get('error', {}).get('message', response.text)}"
+            except:
+                error_msg = f"Ошибка API {response.status_code}: {response.text}"
             logger.error(error_msg)
-            return error_msg
+            return f"Ошибка: {error_msg}"
             
     except Exception as e:
         error_msg = f"Ошибка при генерации документа: {str(e)}"
         logger.error(error_msg)
-        return error_msg
+        return f"Ошибка: {error_msg}"
 
 def analyze_message_for_object_creation(message_content):
     """

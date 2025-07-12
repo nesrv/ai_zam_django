@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import AIModel, ChatSession, ChatMessage
+from .models import AIModel, ChatSession, ChatMessage, AIPrompt
 
 @admin.register(AIModel)
 class AIModelAdmin(admin.ModelAdmin):
@@ -25,3 +25,25 @@ class ChatMessageAdmin(admin.ModelAdmin):
     def content_preview(self, obj):
         return obj.content[:100] + "..." if len(obj.content) > 100 else obj.content
     content_preview.short_description = "Содержание"
+
+@admin.register(AIPrompt)
+class AIPromptAdmin(admin.ModelAdmin):
+    list_display = ['nazvanie', 'is_active', 'created_at', 'updated_at']
+    list_filter = ['is_active', 'created_at', 'updated_at']
+    search_fields = ['nazvanie', 'zapros']
+    readonly_fields = ['created_at', 'updated_at']
+    fieldsets = (
+        (None, {
+            'fields': ('nazvanie', 'is_active')
+        }),
+        ('Запрос', {
+            'fields': ('zapros',)
+        }),
+        ('Структура ответа', {
+            'fields': ('struktura_otveta',)
+        }),
+        ('Даты', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        })
+    )

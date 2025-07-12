@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import json
 
 # Create your models here.
 
@@ -50,3 +51,19 @@ class ChatMessage(models.Model):
     
     def __str__(self):
         return f"{self.get_message_type_display()}: {self.content[:50]}..."
+
+class AIPrompt(models.Model):
+    nazvanie = models.CharField(max_length=200, verbose_name="Название")
+    zapros = models.TextField(verbose_name="Запрос")
+    struktura_otveta = models.JSONField(verbose_name="Структура ответа", help_text="JSON структура ожидаемого ответа")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+    is_active = models.BooleanField(default=True, verbose_name="Активен")
+    
+    class Meta:
+        verbose_name = "AI Промпт"
+        verbose_name_plural = "AI Промпты"
+        ordering = ['nazvanie']
+    
+    def __str__(self):
+        return self.nazvanie
