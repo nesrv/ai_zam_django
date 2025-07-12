@@ -836,6 +836,43 @@ def send_file_to_deepseek(request):
 
 @csrf_exempt
 @require_POST
+def create_object_from_message(request):
+    """Создание объекта из содержимого сообщения"""
+    try:
+        data = json.loads(request.body)
+        content = data.get('content', '').strip()
+        
+        if not content:
+            return JsonResponse({
+                'ok': False,
+                'error': 'Содержимое сообщения не может быть пустым'
+            })
+        
+        # Анализируем содержимое с помощью AI
+        from .services import analyze_message_for_object_creation
+        
+        analysis_result = analyze_message_for_object_creation(content)
+        
+        if analysis_result.get('error'):
+            return JsonResponse({
+                'ok': False,
+                'error': analysis_result['error']
+            })
+        
+        # Возвращаем данные для создания объекта
+        return JsonResponse({
+            'ok': True,
+            'object_data': analysis_result,
+            'redirect_url': '/objects/create/',
+            'message': 'Данные извлечены из сообщения для создания объекта'
+        })
+        
+    except Exception as e:
+        logger.error(f"Ошибка создания объекта из сообщения: {e}")
+        return JsonResponse({'error': str(e)}, status=500)
+
+@csrf_exempt
+@require_POST
 def download_and_save_document(request):
     """Скачивание документа и сохранение в ai_chatmessage"""
     try:
@@ -843,7 +880,7 @@ def download_and_save_document(request):
         content = data.get('content', '').strip()
         file_format = data.get('format', '').lower()
         
-        if not content or file_format not in ['docx', 'pdf', 'xls']:
+        if not content or file_format not in ['docx', 'pdf', 'xls', 'json']:
             return JsonResponse({'error': 'Некорректные параметры'}, status=400)
         
         # Создаем файл
@@ -878,6 +915,9 @@ def download_and_save_document(request):
             buf = io.BytesIO()
             pdf.output(buf)
             file_content = buf.getvalue()
+        elif file_format == 'json':
+            # Для JSON формата сохраняем как есть
+            file_content = content.encode('utf-8')
         else:  # xls
             lines = [l for l in content.split('\n') if l.strip()]
             df = pd.DataFrame({'Документ': lines})

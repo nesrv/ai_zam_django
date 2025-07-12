@@ -298,9 +298,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Получаем следующий ID для организации
     const nextId = {{ next_id|default:1 }};
     
-    // Устанавливаем значения по умолчанию
-    document.getElementById('organizaciya').value = `ООО "Организация-${nextId}"`;
-    document.getElementById('nazvanie').value = `Объект-${nextId}`;
+    // Проверяем наличие AI данных в URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const aiDataParam = urlParams.get('ai_data');
+    
+    if (aiDataParam) {
+        try {
+            const aiData = JSON.parse(aiDataParam);
+            fillFormWithAIData(aiData);
+        } catch (error) {
+            console.error('Ошибка парсинга AI данных:', error);
+        }
+    } else {
+        // Устанавливаем значения по умолчанию
+        document.getElementById('organizaciya').value = `ООО "Организация-${nextId}"`;
+        document.getElementById('nazvanie').value = `Объект-${nextId}`;
+    }
     
     // Устанавливаем сегодняшнюю дату
     const today = new Date().toISOString().split('T')[0];
@@ -716,6 +729,61 @@ function removeSelectedEmployee(index) {
             card.style.border = '1px solid rgba(255,255,255,0.2)';
         }
     });
+}
+
+// Функция для заполнения формы данными из AI
+function fillFormWithAIData(aiData) {
+    // Заполняем основные поля
+    if (aiData.nazvanie) {
+        document.getElementById('nazvanie').value = aiData.nazvanie;
+    }
+    
+    // Обрабатываем расходы
+    if (aiData.expenses) {
+        const expenseContainer = document.getElementById('expense-resources');
+        expenseContainer.innerHTML = ''; // Очищаем контейнер
+        
+        Object.keys(aiData.expenses).forEach(categoryName => {
+            const items = aiData.expenses[categoryName];
+            if (Array.isArray(items)) {
+                items.forEach(item => {
+                    addExpenseResourceFromAI(categoryName, item);
+                });
+            }
+        });
+    }
+}
+
+// Функция для добавления расходного ресурса из AI данных
+function addExpenseResourceFromAI(categoryName, item) {
+    const container = document.getElementById('expense-resources');
+    const newItem = document.createElement('div');
+    newItem.className = 'resource-item';
+    
+    let categoryOptions = '<option value="">Категория</option>';
+    {% for category in expense_categories %}
+    const isSelected = '{{ category.nazvanie }}' === categoryName ? 'selected' : '';
+    categoryOptions += `<option value="{{ category.id }}" ${isSelected}>{{ category.nazvanie }}</option>`;
+    {% endfor %}
+    
+    const resourceName = item.наименование || item.специальность || 'Не указано';
+    const quantity = item.количество || item.часов || 1;
+    const price = item.цена_за_ед || item.стоимость_часа || 0;
+    const cost = quantity * price;
+    
+    newItem.innerHTML = `
+        <select name="expense_category[]" class="expense-category" onchange="loadExpenseResources(this)">
+            ${categoryOptions}
+        </select>
+        <select name="expense_resource[]" class="expense-resource">
+            <option value="" selected>${resourceName}</option>
+        </select>
+        <input type="number" name="expense_quantity[]" placeholder="Кол-во" step="0.01" value="${quantity}" oninput="calculateCost(this)">
+        <input type="number" name="expense_price[]" placeholder="Цена" step="0.01" value="${price}" oninput="calculateCost(this)">
+        <input type="number" name="expense_cost[]" placeholder="Стоимость" value="${cost.toFixed(2)}" readonly style="background: #f0f0f0;">
+        <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+    `;
+    container.appendChild(newItem);
 }
 </script>
 
