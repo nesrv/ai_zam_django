@@ -15,6 +15,8 @@ urlpatterns = [
     path('export-document/', views.export_document, name='export_document'),
     path('create-object-ai/', views.create_object_ai, name='create_object_ai'),
     path('create-object-from-message/', views.create_object_from_message, name='create_object_from_message'),
+    path('create-object-from-json/', views.create_object_from_json, name='create_object_from_json'),
     path('send-file-to-deepseek/', views.send_file_to_deepseek, name='send_file_to_deepseek'),
     path('download-and-save/', views.download_and_save_document, name='download_and_save_document'),
+    path('save-json-response/', views.save_json_response, name='save_json_response'),
 ] 

@@ -11,8 +11,29 @@ def format_number(value):
 
 @admin.register(KategoriyaResursa)
 class KategoriyaResursaAdmin(admin.ModelAdmin):
-    list_display = ('nazvanie',)
+    list_display = ('nazvanie', 'raskhod_dokhod', 'order')
+    list_editable = ('raskhod_dokhod', 'order')
     search_fields = ('nazvanie',)
+    ordering = ('order',)
+    
+    def delete_model(self, request, obj):
+        # Удаляем все связанные записи
+        from django.db import transaction
+        with transaction.atomic():
+            resursy = Resurs.objects.filter(kategoriya_resursa=obj)
+            for resurs in resursy:
+                # Удаляем фактические ресурсы
+                FakticheskijResursPoObjektu.objects.filter(resurs_po_objektu__resurs=resurs).delete()
+                # Удаляем ресурсы по объекту
+                ResursyPoObjektu.objects.filter(resurs=resurs).delete()
+            # Удаляем ресурсы
+            resursy.delete()
+            # Удаляем категорию
+            obj.delete()
+    
+    def delete_queryset(self, request, queryset):
+        for obj in queryset:
+            self.delete_model(request, obj)
 
 @admin.register(Resurs)
 class ResursAdmin(admin.ModelAdmin):
@@ -168,15 +189,16 @@ class PodryadchikiInline(admin.TabularInline):
 
 @admin.register(Objekt)
 class ObjektAdmin(admin.ModelAdmin):
-    list_display = ('nazvanie', 'otvetstvennyj', 'data_nachala', 'data_plan_zaversheniya', 'status')
+    list_display = ('nazvanie', 'otvetstvennyj', 'data_nachala', 'data_plan_zaversheniya', 'status', 'is_active')
     search_fields = ('nazvanie',)
-    list_filter = ('status', 'data_nachala', 'otvetstvennyj')
+    list_filter = ('status', 'data_nachala', 'otvetstvennyj', 'is_active')
     date_hierarchy = 'data_nachala'
     inlines = [KadrovoeObespechenieInline, MashinyMekhanizmyInline, InstrumentMaterialyInline, ABRInline, SIZInline, PodryadchikiInline]
     filter_horizontal = ['sotrudniki']
+    actions = ['deactivate_objects', 'activate_objects']
     fieldsets = (
         (None, {
-            'fields': ('nazvanie', 'otvetstvennyj', 'status')
+            'fields': ('nazvanie', 'otvetstvennyj', 'status', 'is_active')
         }),
         ('Даты', {
             'fields': ('data_nachala', 'data_plan_zaversheniya', 'data_fakt_zaversheniya')
@@ -185,6 +207,29 @@ class ObjektAdmin(admin.ModelAdmin):
             'fields': ('sotrudniki',)
         }),
     )
+    
+    def deactivate_objects(self, request, queryset):
+        updated = queryset.update(is_active=False)
+        self.message_user(request, f'{updated} объект(ов) деактивировано.')
+    deactivate_objects.short_description = "Деактивировать выбранные объекты"
+    
+    def activate_objects(self, request, queryset):
+        updated = queryset.update(is_active=True)
+        self.message_user(request, f'{updated} объект(ов) активировано.')
+    activate_objects.short_description = "Активировать выбранные объекты"
+    
+    def has_delete_permission(self, request, obj=None):
+        # Разрешаем полное удаление объектов через админку
+        return True
+    
+    def delete_queryset(self, request, queryset):
+        # Переопределяем удаление для корректной обработки связанных записей
+        for obj in queryset:
+            # Удаляем связанные записи
+            ResursyPoObjektu.objects.filter(objekt=obj).delete()
+            SvodnayaRaskhodDokhodPoDnyam.objects.filter(objekt=obj).delete()
+        # Удаляем сами объекты
+        queryset.delete()
     
     def fakticheskiye_raskhody_display(self, obj):
         if not obj.id:

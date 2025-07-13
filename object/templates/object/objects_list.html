@@ -199,10 +199,9 @@
 
 {% block content %}
 <section class="page-title">
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto;">
-        <a href="/objects/create/" class="btn-create" style="background: #27ae60; color: white; padding: 12px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; height: 48px; display: flex; align-items: center;">Создать объект</a>
+    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; position: relative;">
+        <a href="/objects/create/" class="btn-create" style="background: #27ae60; color: white; padding: 12px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; height: 48px; display: flex; align-items: center; position: absolute; left: 0;">Создать объект</a>
         <h1 style="margin: 0; font-size: 2.5rem; line-height: 48px; text-align: center;">Строительные объекты</h1>
-        <a href="#" class="btn-generate" style="background: #e74c3c; color: white; padding: 12px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; height: 48px; display: flex; align-items: center;">Сгенерировать объект</a>
     </div>
     <p>Сводная таблица по объектам</p>
 </section>
@@ -229,6 +228,7 @@
                     <a href="/objects/{{ item.object.id }}/" class="object-link">
                         {{ item.object.nazvanie }}
                     </a>
+                    <button onclick="deleteObject({{ item.object.id }})" style="background: #e74c3c; color: white; border: none; padding: 2px 6px; border-radius: 50%; margin-left: 10px; cursor: pointer; font-size: 12px; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center;" title="Удалить объект">×</button>
                 </td>
                 <td class="number-cell">{{ item.total_cost|floatformat:0 }}</td>
                 <td class="number-cell">{{ item.completed_cost|floatformat:0 }}</td>
@@ -300,4 +300,44 @@
 <section class="back-link">
     <a href="/" class="btn-back">Вернуться на главную</a>
 </section>
+
+<script>
+function deleteObject(objectId) {
+    if (confirm('Вы уверены, что хотите удалить этот объект?')) {
+        fetch(`/objects/${objectId}/delete/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Ошибка при удалении: ' + data.error);
+            }
+        })
+        .catch(error => {
+            alert('Ошибка: ' + error);
+        });
+    }
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
 {% endblock %}

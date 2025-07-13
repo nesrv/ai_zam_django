@@ -120,7 +120,7 @@ def generate_daily_menu(preferences):
 
 def _generate_menu(client, prompt):
     """Общая функция генерации меню"""
-    logger.info("Отправляю запрос к DeepSeek...")
+    logger.info("Отправляю запрос к AI...")
 
     # Пробуем разные модели
     models_to_try = ["deepseek-chat", "deepseek-coder"]

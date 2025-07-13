@@ -30,6 +30,27 @@
             overflow-x: auto;
         }
         
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 12px;
+        }
+        
+        .page-title h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .page-title p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
         .header {
             background: #2c3e50;
             color: white;
@@ -237,7 +258,8 @@
         }
     </style>
 </head>
-<body>
+<body> 
+    
     <div class="container">
         <div class="header">
             <h1>{{ object.nazvanie }} (смета ресурсов по объекту) </h1>
@@ -292,7 +314,15 @@
                     {% for category_name, category_resources in grouped_resources.items %}
                     {% if category_name|lower != 'подрядные организации' %}
                     <tr class="category-header">
-                        <td colspan="{{ 7|add:days|length }}">{{ category_name|title }}</td>
+                        <td colspan="{{ 7|add:days|length }}">
+                            {{ category_name|upper }}
+                            {% for category in categories %}
+                                {% if category.nazvanie == category_name %}
+                                    <button onclick="addResourceToCategory({{ category.id }})" 
+                                            style="float: right; background: #27ae60; color: white; border: none; border-radius: 3px; padding: 4px 8px; cursor: pointer; font-size: 12px; margin-left: 10px;">+</button>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
                     </tr>
                     
                     {% for resource in category_resources %}
@@ -1041,6 +1071,68 @@
             }
         });
     }
+    
+    function addResourceToCategory(categoryId) {
+        const modal = document.getElementById('resourceModal');
+        const resourceSelect = document.getElementById('resourceSelect');
+        
+        // Очищаем список ресурсов
+        resourceSelect.innerHTML = '<option value="">Выберите ресурс</option>';
+        
+        // Загружаем ресурсы для этой категории
+        fetch(`/get-resources-by-category/${categoryId}/`)
+            .then(response => response.json())
+            .then(data => {
+                data.resources.forEach(resource => {
+                    const option = document.createElement('option');
+                    option.value = resource.id;
+                    option.textContent = `${resource.naimenovanie} (${resource.edinica_izmereniya})`;
+                    resourceSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading resources:', error);
+                alert('Ошибка загрузки ресурсов');
+            });
+        
+        modal.style.display = 'block';
+    }
+    
+    function addResourceToObject() {
+        const resourceId = document.getElementById('resourceSelect').value;
+        const quantity = document.getElementById('resourceQuantity').value;
+        const price = document.getElementById('resourcePrice').value;
+        
+        if (!resourceId || !quantity || !price) {
+            alert('Заполните все поля');
+            return;
+        }
+        
+        fetch('/add-resource-to-object/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                object_id: {{ object.id }},
+                resource_id: resourceId,
+                quantity: parseFloat(quantity),
+                price: parseFloat(price)
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Ошибка: ' + (data.error || 'Неизвестная ошибка'));
+            }
+        })
+        .catch(error => {
+            alert('Ошибка соединения: ' + error.message);
+        });
+    }
     </script>
 <!-- Модальное окно для добавления категории -->
 <div id="categoryModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
@@ -1074,19 +1166,16 @@
 
 <!-- Модальное окно для добавления ресурса -->
 <div id="resourceModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
-    <div style="background-color: #2c3e50; margin: 10% auto; padding: 20px; border-radius: 8px; width: 400px; color: white;">
-        <h3>Добавить ресурс</h3>
-        <input type="text" id="resourceName" placeholder="Название ресурса" style="width: 100%; padding: 8px; margin: 10px 0; border: none; border-radius: 4px;">
-        <input type="text" id="resourceUnit" placeholder="Единица измерения" style="width: 100%; padding: 8px; margin: 10px 0; border: none; border-radius: 4px;">
-        <select id="resourceCategory" style="width: 100%; padding: 8px; margin: 10px 0; border: none; border-radius: 4px;">
-            <option value="">Выберите категорию</option>
-            {% for category in categories %}
-            <option value="{{ category.id }}">{{ category.nazvanie }}</option>
-            {% endfor %}
+    <div style="background-color: #2c3e50; margin: 10% auto; padding: 20px; border-radius: 8px; width: 500px; color: white;">
+        <h3>Добавить ресурс к объекту</h3>
+        <select id="resourceSelect" style="width: 100%; padding: 8px; margin: 10px 0; border: none; border-radius: 4px;">
+            <option value="">Выберите ресурс</option>
         </select>
+        <input type="number" id="resourceQuantity" placeholder="Количество" style="width: 100%; padding: 8px; margin: 10px 0; border: none; border-radius: 4px;">
+        <input type="number" id="resourcePrice" placeholder="Цена за единицу" style="width: 100%; padding: 8px; margin: 10px 0; border: none; border-radius: 4px;">
         <div style="text-align: right; margin-top: 15px;">
             <button onclick="closeModal('resourceModal')" style="background: #e74c3c; color: white; padding: 8px 16px; border: none; border-radius: 4px; margin-right: 10px; cursor: pointer;">Отмена</button>
-            <button onclick="addResource()" style="background: #27ae60; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">Добавить</button>
+            <button onclick="addResourceToObject()" style="background: #27ae60; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">Добавить</button>
         </div>
     </div>
 </div>

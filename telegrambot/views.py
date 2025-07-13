@@ -873,6 +873,174 @@ def create_object_from_message(request):
 
 @csrf_exempt
 @require_POST
+def create_object_from_json(request):
+    """Создание объекта в базе данных на основе JSON из последнего файла"""
+    try:
+        from object.models import Objekt, KategoriyaResursa, Resurs, ResursyPoObjektu, FakticheskijResursPoObjektu
+        from sotrudniki.models import Specialnost, Podrazdelenie
+        from datetime import date
+        import os
+        import glob
+        from django.conf import settings
+        
+        # Находим последний JSON файл в папке media/documents_ai
+        json_dir = os.path.join(settings.MEDIA_ROOT, 'documents_ai')
+        json_files = glob.glob(os.path.join(json_dir, '*.json'))
+        
+        if not json_files:
+            return JsonResponse({'ok': False, 'error': 'Нет JSON файлов в папке documents_ai'})
+        
+        # Берем последний файл по времени модификации
+        latest_json_file = max(json_files, key=os.path.getmtime)
+        
+        # Читаем JSON данные
+        with open(latest_json_file, 'r', encoding='utf-8') as f:
+            content = f.read()
+            
+        # Извлекаем JSON из содержимого
+        import re
+        
+        # Ищем JSON в markdown блоке
+        json_match = re.search(r'```json\s*\n(.*?)\n```', content, re.DOTALL)
+        if json_match:
+            json_str = json_match.group(1).strip()
+        else:
+            # Ищем JSON объект по фигурным скобкам
+            start = content.find('{')
+            if start == -1:
+                raise ValueError('JSON объект не найден в файле')
+            
+            brace_count = 0
+            end = start
+            for i, char in enumerate(content[start:], start):
+                if char == '{':
+                    brace_count += 1
+                elif char == '}':
+                    brace_count -= 1
+                    if brace_count == 0:
+                        end = i + 1
+                        break
+            
+            json_str = content[start:end].strip()
+        
+        json_data = json.loads(json_str)
+        
+        # Создаем объект
+        obj = Objekt.objects.create(
+            nazvanie='Объект из AI',
+            data_nachala=date.today(),
+            data_plan_zaversheniya=date.today(),
+            otvetstvennyj='Администратор'
+        )
+        
+        # Получаем подразделение с кодом 792
+        podrazdelenie, _ = Podrazdelenie.objects.get_or_create(
+            kod='792',
+            defaults={'nazvanie': 'Линейные сотрудники'}
+        )
+        
+        # Обрабатываем kategoriya_resursa (расходы)
+        if 'kategoriya_resursa' in json_data:
+            for category_name, items in json_data['kategoriya_resursa'].items():
+                # Создаем категорию расходов
+                category, _ = KategoriyaResursa.objects.get_or_create(
+                    nazvanie=category_name,
+                    defaults={'raskhod_dokhod': True}
+                )
+                
+                for item in items:
+                    if category_name in ['Кадры', 'Кадровое обеспечение']:
+                        resource_name = item.get('sotrudniki_specialnost') or item.get('name', 'Не указано')
+                        quantity = item.get('hours') or item.get('часов', 1)
+                        price = item.get('price') or item.get('стоимость_часа', 0)
+                        unit = 'час'
+                        
+                        Specialnost.objects.get_or_create(
+                            nazvanie=resource_name,
+                            defaults={'kategoriya': 'Строительство'}
+                        )
+                    else:
+                        resource_name = item.get('name') or item.get('наименование', 'Не указано')
+                        quantity = item.get('count') or item.get('hours') or item.get('количество') or item.get('часов', 1)
+                        price = item.get('price') or item.get('цена_за_ед') or item.get('стоимость_часа', 0)
+                        unit = item.get('unit') or item.get('ед_изм', 'шт')
+                    
+                    # Создаем ресурс
+                    resource, _ = Resurs.objects.get_or_create(
+                        naimenovanie=resource_name,
+                        kategoriya_resursa=category,
+                        defaults={'edinica_izmereniya': unit}
+                    )
+                    
+                    # Добавляем ресурс к объекту
+                    resurs_po_objektu = ResursyPoObjektu.objects.create(
+                        objekt=obj,
+                        resurs=resource,
+                        kolichestvo=quantity,
+                        cena=price
+                    )
+                    
+                    # Создаем фактический ресурс
+                    FakticheskijResursPoObjektu.objects.create(
+                        resurs_po_objektu=resurs_po_objektu
+                    )
+        
+        # Обрабатываем works (доходы)
+        if 'works' in json_data:
+            for work_section in json_data['works']:
+                section_name = work_section.get('section', 'Работы')
+                
+                # Создаем категорию доходов
+                category, _ = KategoriyaResursa.objects.get_or_create(
+                    nazvanie=section_name,
+                    defaults={'raskhod_dokhod': False}
+                )
+                
+                for item in work_section.get('items', []):
+                    resource_name = item.get('name') or item.get('наименование', 'Не указано')
+                    quantity = item.get('count') or item.get('количество', 1)
+                    unit = item.get('unit') or item.get('ед_изм', 'шт')
+                    price = item.get('price') or item.get('цена_за_ед', 0)
+                    
+                    # Создаем ресурс
+                    resource, _ = Resurs.objects.get_or_create(
+                        naimenovanie=resource_name,
+                        kategoriya_resursa=category,
+                        defaults={'edinica_izmereniya': unit}
+                    )
+                    
+                    # Добавляем ресурс к объекту с ценой из JSON (доходы)
+                    resurs_po_objektu = ResursyPoObjektu.objects.create(
+                        objekt=obj,
+                        resurs=resource,
+                        kolichestvo=quantity,
+                        cena=price
+                    )
+                    
+                    # Создаем фактический ресурс
+                    FakticheskijResursPoObjektu.objects.create(
+                        resurs_po_objektu=resurs_po_objektu
+                    )
+        
+        # Добавляем всех сотрудников в подразделение 792
+        from sotrudniki.models import Sotrudnik
+        sotrudniki_792 = Sotrudnik.objects.filter(podrazdelenie__kod='792')
+        obj.sotrudniki.set(sotrudniki_792)
+        
+        return JsonResponse({
+            'ok': True,
+            'object_id': obj.id,
+            'object_name': obj.nazvanie,
+            'json_file': os.path.basename(latest_json_file),
+            'message': f'Объект успешно создан из файла {os.path.basename(latest_json_file)}'
+        })
+        
+    except Exception as e:
+        logger.error(f'Ошибка создания объекта из JSON: {e}')
+        return JsonResponse({'ok': False, 'error': str(e)})
+
+@csrf_exempt
+@require_POST
 def download_and_save_document(request):
     """Скачивание документа и сохранение в ai_chatmessage"""
     try:
@@ -958,3 +1126,58 @@ def download_and_save_document(request):
     except Exception as e:
         logger.error(f'Ошибка скачивания и сохранения: {e}')
         return JsonResponse({'error': str(e)}, status=500)
+
+@csrf_exempt
+@require_POST
+def save_json_response(request):
+    """Сохранение JSON ответа в файл и базу данных"""
+    try:
+        data = json.loads(request.body)
+        content = data.get('content', '')
+        json_data = data.get('json_data', '')
+        
+        if not json_data:
+            return JsonResponse({'ok': False, 'error': 'JSON данные не найдены'})
+        
+        from django.core.files.base import ContentFile
+        from django.core.files.storage import default_storage
+        import uuid
+        from django.utils import timezone
+        
+        # Создаем уникальное имя файла
+        filename = f"ai_response_{timezone.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}.json"
+        file_path = f'documents_ai/{filename}'
+        
+        # Создаем папку если не существует
+        import os
+        media_dir = os.path.join(settings.MEDIA_ROOT, 'documents_ai')
+        os.makedirs(media_dir, exist_ok=True)
+        
+        # Сохраняем JSON в файл
+        saved_path = default_storage.save(file_path, ContentFile(json_data.encode('utf-8')))
+        logger.info(f'JSON файл сохранен: {saved_path}')
+        
+        # Сохраняем в таблицу ai_chatmessage
+        from ai.models import ChatSession, ChatMessage
+        
+        session, created = ChatSession.objects.get_or_create(
+            session_id='telegram_json_responses',
+            defaults={'session_id': 'telegram_json_responses'}
+        )
+        
+        ChatMessage.objects.create(
+            session=session,
+            message_type='assistant',
+            content=content,
+            file=saved_path
+        )
+        
+        return JsonResponse({
+            'ok': True,
+            'file_path': saved_path,
+            'message': 'JSON ответ сохранен в файл и базу данных'
+        })
+        
+    except Exception as e:
+        logger.error(f'Ошибка сохранения JSON ответа: {e}')
+        return JsonResponse({'ok': False, 'error': str(e)})

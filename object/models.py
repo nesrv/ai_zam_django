@@ -4,6 +4,7 @@ from django.db import models
 class KategoriyaResursa(models.Model):
     nazvanie = models.CharField(max_length=255, verbose_name="Название")
     raskhod_dokhod = models.BooleanField(default=True, verbose_name="Расход-доход")
+    order = models.IntegerField(default=0, verbose_name="Порядок")
     
     class Meta:
         verbose_name = "Категория ресурса"
@@ -71,7 +72,7 @@ class Objekt(models.Model):
 # Ресурсы по объекту
 class ResursyPoObjektu(models.Model):
     objekt = models.ForeignKey(Objekt, on_delete=models.CASCADE, verbose_name="Объект")
-    resurs = models.ForeignKey(Resurs, on_delete=models.CASCADE, verbose_name="Ресурс")
+    resurs = models.ForeignKey(Resurs, on_delete=models.PROTECT, verbose_name="Ресурс")
     kolichestvo = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Количество")
     cena = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Цена")
     potracheno = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Потрачено лимитов")
@@ -139,15 +140,15 @@ class SvodnayaRaskhodDokhodPoDnyam(models.Model):
     def __str__(self):
         return f"{self.objekt.nazvanie} - {self.data} (Баланс: {self.balans})"
 
-class KategoriyaPoObjektu(models.Model):
-    objekt = models.ForeignKey(Objekt, on_delete=models.CASCADE, verbose_name="Объект")
-    kategoriya = models.ForeignKey(KategoriyaResursa, on_delete=models.CASCADE, verbose_name="Категория")
+class ObjectJson(models.Model):
+    nazvanie = models.CharField(max_length=255, verbose_name="Название")
+    json_struktura = models.JSONField(verbose_name="JSON структура")
+    data_sozdaniya = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     
     class Meta:
-        verbose_name = "Категория по объекту"
-        verbose_name_plural = "Категории по объектам"
-        db_table = 'kategoriya_po_objektu'
-        unique_together = ['objekt', 'kategoriya']
+        verbose_name = "JSON объект"
+        verbose_name_plural = "JSON объекты"
+        db_table = 'object_json'
     
     def __str__(self):
-        return f"{self.objekt.nazvanie} - {self.kategoriya.nazvanie}"
+        return self.nazvanie

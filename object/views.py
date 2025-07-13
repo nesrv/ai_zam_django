@@ -45,7 +45,7 @@ def objects_list(request):
     # Отладочная информация
     print("\n\n*** objects_list view called ***\n\n")
     
-    objects = Objekt.objects.all()
+    objects = Objekt.objects.filter(is_active=True)
     
     # Создаем дни точно так же, как в object_detail
     today = datetime.now().date()
@@ -348,8 +348,8 @@ def object_detail(request, object_id):
     # Получаем объект или 404
     obj = get_object_or_404(Objekt, id=object_id)
     
-    # Получаем ресурсы по объекту, сортируем по категориям
-    resources = ResursyPoObjektu.objects.filter(objekt=obj).select_related('resurs', 'resurs__kategoriya_resursa').order_by('resurs__kategoriya_resursa__nazvanie', 'resurs__naimenovanie')
+    # Получаем ресурсы по объекту, сортируем по категориям с учетом поля order
+    resources = ResursyPoObjektu.objects.filter(objekt=obj).select_related('resurs', 'resurs__kategoriya_resursa').order_by('resurs__kategoriya_resursa__order', 'resurs__kategoriya_resursa__nazvanie', 'resurs__naimenovanie')
     
     # Суммарная стоимость ресурсов
     total_cost = sum(float(r.kolichestvo) * float(r.cena) for r in resources)
@@ -415,7 +415,7 @@ def object_detail(request, object_id):
     
     from .models import KategoriyaResursa
     from collections import OrderedDict
-    categories = KategoriyaResursa.objects.all()
+    categories = KategoriyaResursa.objects.all().order_by('order')
     
     # Группируем ресурсы по категориям
     grouped_resources = OrderedDict()
@@ -871,3 +871,46 @@ def update_resource_data(request):
     # Если все попытки исчерпаны
     return JsonResponse({'success': False, 'error': 'Database is locked after multiple attempts'})
 
+@csrf_exempt
+@require_POST
+def delete_object(request, object_id):
+    try:
+        obj = get_object_or_404(Objekt, id=object_id)
+        obj.is_active = False
+        obj.save()
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+@csrf_exempt
+@require_POST
+def add_resource_to_object(request):
+    try:
+        data = json.loads(request.body)
+        object_id = data.get('object_id')
+        resource_id = data.get('resource_id')
+        quantity = data.get('quantity')
+        price = data.get('price')
+        
+        if not all([object_id, resource_id, quantity, price]):
+            return JsonResponse({'success': False, 'error': 'Не все поля заполнены'})
+        
+        obj = get_object_or_404(Objekt, id=object_id)
+        resurs = get_object_or_404(Resurs, id=resource_id)
+        
+        # Создаем ресурс по объекту
+        resurs_po_objektu = ResursyPoObjektu.objects.create(
+            objekt=obj,
+            resurs=resurs,
+            kolichestvo=quantity,
+            cena=price
+        )
+        
+        # Создаем фактический ресурс
+        FakticheskijResursPoObjektu.objects.create(
+            resurs_po_objektu=resurs_po_objektu
+        )
+        
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
