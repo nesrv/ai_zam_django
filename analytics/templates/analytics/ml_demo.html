@@ -1,0 +1,189 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - AI-ZAM{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .demo-container {
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 15px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .demo-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #00d4ff;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+    
+    .demo-description {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .tech-badges {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .tech-badge {
+        background: #00d4ff;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: bold;
+    }
+    
+    .code-section {
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        border: 1px solid rgba(0, 212, 255, 0.3);
+    }
+    
+    .code-title {
+        color: #00d4ff;
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+    
+    .code-block {
+        background: #1a1a1a;
+        color: #f8f8f2;
+        padding: 1rem;
+        border-radius: 5px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        overflow-x: auto;
+        white-space: pre;
+    }
+    
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+    
+    .feature-card {
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 0, 255, 0.1));
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        border-radius: 12px;
+        padding: 1.5rem;
+        color: white;
+    }
+    
+    .feature-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: #00d4ff;
+    }
+    
+    .feature-title {
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    
+    .feature-desc {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+    
+    .back-btn {
+        background: #00d4ff;
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 25px;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 2rem;
+        font-weight: bold;
+        transition: transform 0.3s;
+    }
+    
+    .back-btn:hover {
+        transform: translateY(-2px);
+        color: white;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<a href="{% url 'analytics:home' %}" class="back-btn">← Назад к аналитике</a>
+
+<div class="demo-container">
+    <h1 class="demo-header">{{ title }}</h1>
+    <p class="demo-description">{{ description }}</p>
+    
+    <div class="tech-badges">
+        {% for tech in technologies %}
+        <span class="tech-badge">{{ tech }}</span>
+        {% endfor %}
+    </div>
+    
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">🤖</div>
+            <div class="feature-title">Машинное обучение</div>
+            <div class="feature-desc">Использование современных алгоритмов ML для анализа данных</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <div class="feature-title">Анализ данных</div>
+            <div class="feature-desc">Глубокий анализ строительных процессов и метрик</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔮</div>
+            <div class="feature-title">Прогнозирование</div>
+            <div class="feature-desc">Предсказание трендов и потенциальных проблем</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <div class="feature-title">Автоматизация</div>
+            <div class="feature-desc">Автоматическая обработка и анализ больших объемов данных</div>
+        </div>
+    </div>
+    
+    <div class="code-section">
+        <div class="code-title">🐍 Пример Python кода</div>
+        <div class="code-block">{{ demo_code }}</div>
+    </div>
+    
+    <div class="code-section">
+        <div class="code-title">📈 Результаты анализа</div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-title">Точность модели: 94.2%</div>
+                <div class="feature-desc">Высокая точность предсказаний на тестовых данных</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-title">Время обработки: 0.3 сек</div>
+                <div class="feature-desc">Быстрая обработка данных в реальном времени</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-title">Объем данных: 10K+ записей</div>
+                <div class="feature-desc">Анализ больших массивов строительных данных</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

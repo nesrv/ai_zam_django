@@ -15,5 +15,6 @@ urlpatterns = [
     path('<int:pk>/editor/<str:doc_type>/', views.document_editor, name='document_editor'),
     path('<int:pk>/edit/<str:doc_type>/', views.document_edit, name='document_edit'),
     path('<int:pk>/', views.sotrudnik_detail, name='detail'),
+    path('salary/<int:sotrudnik_id>/', views.sotrudnik_salary, name='sotrudnik_salary'),
     path('', views.sotrudniki_list, name='list'),
 ]

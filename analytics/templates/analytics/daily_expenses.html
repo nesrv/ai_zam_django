@@ -1,0 +1,232 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Ежедневный учет расходов - AI-ZAM{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .analytics-wrapper {
+        position: relative;
+    }
+    
+    .neural-network-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        background: linear-gradient(135deg, #000000 0%, #434343 100%);
+    }
+    
+    #canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+    
+    .analytics-container {
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 15px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        z-index: 1;
+    }
+    
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #00d4ff;
+        font-size: 2rem;
+        font-weight: bold;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 0, 255, 0.1));
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        color: white;
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #00d4ff;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+    
+    .chart-container {
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-top: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .chart-title {
+        color: #00d4ff;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    
+    .back-btn {
+        background: #00d4ff;
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 25px;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 2rem;
+        font-weight: bold;
+        transition: transform 0.3s;
+    }
+    
+    .back-btn:hover {
+        transform: translateY(-2px);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .tech-badge {
+        background: #00d4ff;
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        margin: 0.2rem;
+        display: inline-block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<a href="{% url 'analytics:home' %}" class="back-btn">← Назад к аналитике</a>
+
+<h1 class="page-header">Ежедневный учет расходов и доходов</h1>
+
+<div class="analytics-container">
+        <div class="tech-badge">Pandas</div>
+        <div class="tech-badge">Statsmodels</div>
+        <div class="tech-badge">Time Series Analysis</div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">{{ analytics.total_expenses|floatformat:0 }} ₽</div>
+                <div class="stat-label">Общие расходы</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ analytics.total_income|floatformat:0 }} ₽</div>
+                <div class="stat-label">Общие доходы</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ analytics.avg_daily_expense|floatformat:0 }} ₽</div>
+                <div class="stat-label">Средний дневной расход</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ analytics.records_count }}</div>
+                <div class="stat-label">Записей в анализе</div>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <div class="chart-title">📊 Динамика расходов и доходов</div>
+            <canvas id="expenseChart" width="800" height="400"></canvas>
+        </div>
+</div>
+
+<script>
+// Данные для графика
+const chartData = {{ chart_data|safe }};
+
+// Создание графика
+const canvas = document.getElementById('expenseChart');
+const ctx = canvas.getContext('2d');
+
+if (chartData.length > 0) {
+    const maxValue = Math.max(...chartData.map(d => Math.max(d.expense, d.income)));
+    const padding = 50;
+    const chartWidth = canvas.width - padding * 2;
+    const chartHeight = canvas.height - padding * 2;
+    
+    // Очистка canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Настройка стилей
+    ctx.strokeStyle = '#00d4ff';
+    ctx.fillStyle = '#00d4ff';
+    ctx.lineWidth = 2;
+    
+    // Рисование осей
+    ctx.beginPath();
+    ctx.moveTo(padding, padding);
+    ctx.lineTo(padding, canvas.height - padding);
+    ctx.lineTo(canvas.width - padding, canvas.height - padding);
+    ctx.stroke();
+    
+    // Рисование линий расходов и доходов
+    if (chartData.length > 1) {
+        // Линия расходов (красная)
+        ctx.strokeStyle = '#ff4444';
+        ctx.beginPath();
+        chartData.forEach((point, index) => {
+            const x = padding + (index / (chartData.length - 1)) * chartWidth;
+            const y = canvas.height - padding - (point.expense / maxValue) * chartHeight;
+            if (index === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+        
+        // Линия доходов (зеленая)
+        ctx.strokeStyle = '#44ff44';
+        ctx.beginPath();
+        chartData.forEach((point, index) => {
+            const x = padding + (index / (chartData.length - 1)) * chartWidth;
+            const y = canvas.height - padding - (point.income / maxValue) * chartHeight;
+            if (index === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+    }
+    
+    // Подписи
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '12px Arial';
+    ctx.fillText('Расходы', padding + 10, padding - 10);
+    ctx.fillStyle = '#ff4444';
+    ctx.fillRect(padding - 5, padding - 15, 10, 3);
+    
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('Доходы', padding + 80, padding - 10);
+    ctx.fillStyle = '#44ff44';
+    ctx.fillRect(padding + 65, padding - 15, 10, 3);
+} else {
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '16px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Нет данных для отображения', canvas.width / 2, canvas.height / 2);
+}
+</script>
+{% endblock %}
+

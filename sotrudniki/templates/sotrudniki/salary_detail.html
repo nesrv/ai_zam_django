@@ -1,0 +1,159 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Зарплата сотрудника - {{ sotrudnik.fio }}{% endblock %}
+
+{% block extra_styles %}
+<style>
+.salary-container {
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 15px;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.salary-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #00d4ff;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.employee-info {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    color: white;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.info-label {
+    font-weight: bold;
+    color: #00d4ff;
+}
+
+.salary-table {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.salary-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.salary-table th {
+    background: rgba(0, 212, 255, 0.2);
+    color: white;
+    padding: 15px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.salary-table td {
+    padding: 12px 15px;
+    color: white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.salary-table tr:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.back-btn {
+    background: #00d4ff;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 2rem;
+    font-weight: bold;
+    transition: transform 0.3s;
+}
+
+.back-btn:hover {
+    transform: translateY(-2px);
+    color: white;
+    text-decoration: none;
+}
+
+.no-data {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 2rem;
+    font-style: italic;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<a href="/sotrudniki/?podrazdelenie=3" class="back-btn">← Назад к списку сотрудников</a>
+
+<div class="salary-container">
+    <h1 class="salary-header">💰 Зарплата сотрудника</h1>
+    
+    <div class="employee-info">
+        <div class="info-row">
+            <span class="info-label">ФИО:</span>
+            <span>{{ sotrudnik.fio }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Должность:</span>
+            <span>{{ sotrudnik.specialnost|default:"Не указана" }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Подразделение:</span>
+            <span>{{ sotrudnik.podrazdelenie|default:"Не указано" }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Период:</span>
+            <span>{{ start_date|date:"d.m.Y" }} - {{ end_date|date:"d.m.Y" }} (последние 30 дней)</span>
+        </div>
+    </div>
+    
+    <div class="salary-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Объект</th>
+                    <th>Количество часов</th>
+                    <th>KPI</th>
+                    <th>Сумма (руб.)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for zp in zarplaty %}
+                <tr>
+                    <td>{{ zp.data|date:"d.m.Y" }}</td>
+                    <td>{{ zp.objekt.nazvanie }}</td>
+                    <td>{{ zp.kolichestvo_chasov }}</td>
+                    <td>{{ zp.kpi }}</td>
+                    <td>{% widthratio zp.kolichestvo_chasov 1 zp.kpi %}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="no-data">
+                        Нет данных о зарплате за указанный период
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -33,6 +33,15 @@
             padding: 1rem 0;
             margin-bottom: 2rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
         }
         
         .header-content {
@@ -49,6 +58,21 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            background: linear-gradient(45deg, #00d4ff, #ff00ff, #ffff00, #00d4ff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
         }
         
         .logo img {
@@ -67,6 +91,16 @@
             padding: 0.5rem 1rem;
             border-radius: 5px;
             transition: background 0.3s;
+        }
+        
+        .nav-links a[href="/analytics/"] {
+            background: linear-gradient(45deg, #00d4ff, #ff00ff, #ffff00, #00d4ff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+            font-weight: bold;
         }
         
         .nav-links a:hover {
@@ -89,6 +123,7 @@
 </head>
 <body>
     <header>
+
         <div class="container">
             <div class="header-content">
                 <a href="/" class="logo">
@@ -100,6 +135,7 @@
                     <a href="/objects/">Объекты</a>
                     <a href="/kadry/">Кадры</a>
                     <a href="/telegram/">ИИ-агент</a>
+                    <a href="/analytics/">ИИ-аналитика</a>
                     <a href="/admin/">Админка</a>
                 </nav>
             </div>
@@ -117,5 +153,8 @@
     </footer>
     
     {% block extra_scripts %}{% endblock %}
+    <script>
+
+    </script>
 </body>
 </html>

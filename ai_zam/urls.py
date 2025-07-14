@@ -50,6 +50,7 @@ urlpatterns = [
     path('telegram/', include('telegrambot.urls')),
     path('sotrudniki/', include('sotrudniki.urls')),
     path('kadry/', organizations_list, name='organizations_main'),
+    path('analytics/', include('analytics.urls')),
 ]
 
 # Обслуживание статических файлов

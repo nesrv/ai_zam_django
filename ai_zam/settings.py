@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'ai',
     'telegrambot',
     'sotrudniki',
+    'analytics',
 ]
 
 MIDDLEWARE = [

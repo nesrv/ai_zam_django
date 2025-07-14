@@ -1,4 +1,7 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
+from datetime import datetime, timedelta
+from .models import SotrudnikiZarplaty
+from django.shortcuts import redirect
 from django.http import JsonResponse
 from .models import Organizaciya, Sotrudnik, ProtokolyObucheniya, Podrazdelenie, Specialnost, ShablonyDokumentovPoSpecialnosti, SotrudnikiShablonyProtokolov, Instruktazhi, ShablonyInstruktazhej
 from django.conf import settings
@@ -775,3 +778,25 @@ def sotrudnik_add(request):
         'specialnosti': specialnosti,
         'selected_podrazdelenie': podrazdelenie
     })
+
+def sotrudnik_salary(request, sotrudnik_id):
+    sotrudnik = get_object_or_404(Sotrudnik, id=sotrudnik_id)
+    
+    # Получаем данные за последние 30 дней
+    end_date = datetime.now().date()
+    start_date = end_date - timedelta(days=30)
+    
+    zarplaty = SotrudnikiZarplaty.objects.filter(
+        sotrudnik=sotrudnik,
+        data__gte=start_date,
+        data__lte=end_date
+    ).order_by('-data')
+    
+    context = {
+        'sotrudnik': sotrudnik,
+        'zarplaty': zarplaty,
+        'start_date': start_date,
+        'end_date': end_date,
+    }
+    
+    return render(request, 'sotrudniki/salary_detail.html', context)

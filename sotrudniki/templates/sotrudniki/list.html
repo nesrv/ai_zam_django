@@ -78,6 +78,7 @@
                 <th>Дата начала работы</th>
                 <th>Перевод/увольнение</th>
                 <th>Управление</th>
+                <th>Зарплаты</th>
                 <th>Действия</th>
             </tr>
         </thead>
@@ -94,12 +95,15 @@
                     <a href="{% url 'sotrudniki:documents' sotrudnik.pk %}" class="btn-detail">💼</a>
                 </td>
                 <td>
+                    <a href="{% url 'sotrudniki:sotrudnik_salary' sotrudnik.pk %}" class="btn-detail">💰</a>
+                </td>
+                <td>
                     <a href="{% url 'sotrudniki:detail' sotrudnik.pk %}" class="btn-detail">Документы</a>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="8" style="text-align: center; color: rgba(255, 255, 255, 0.7);">Нет сотрудников</td>
+                <td colspan="9" style="text-align: center; color: rgba(255, 255, 255, 0.7);">Нет сотрудников</td>
             </tr>
             {% endfor %}
         </tbody>

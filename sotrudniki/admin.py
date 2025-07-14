@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (
-    Organizaciya, Podrazdelenie, Specialnost, Sotrudnik,
+    Organizaciya, Podrazdelenie, Specialnost, Sotrudnik, SotrudnikiZarplaty,
     ProtokolyObucheniya, ShablonyDokumentovPoSpecialnosti, SotrudnikiShablonyProtokolov, Instruktazhi, DokumentySotrudnika, ShablonyInstruktazhej
 )
 
@@ -125,3 +125,11 @@ class ShablonyInstruktazhejAdmin(admin.ModelAdmin):
     list_display = ['specialnost', 'tip_instruktazha', 'html_file']
     list_filter = ['specialnost', 'tip_instruktazha']
     search_fields = ['specialnost__nazvanie']
+
+
+@admin.register(SotrudnikiZarplaty)
+class SotrudnikiZarplatyAdmin(admin.ModelAdmin):
+    list_display = ['sotrudnik', 'objekt', 'data', 'kolichestvo_chasov', 'kpi']
+    list_filter = ['data', 'objekt', 'sotrudnik__specialnost']
+    search_fields = ['sotrudnik__fio', 'objekt__nazvanie']
+    date_hierarchy = 'data'
