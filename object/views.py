@@ -914,3 +914,21 @@ def add_resource_to_object(request):
         return JsonResponse({'success': True})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
+
+@csrf_exempt
+@require_POST
+def delete_resource_from_object(request):
+    try:
+        data = json.loads(request.body)
+        resource_id = data.get('resource_id')
+        
+        if not resource_id:
+            return JsonResponse({'success': False, 'error': 'Не указан ID ресурса'})
+        
+        resurs_po_objektu = get_object_or_404(ResursyPoObjektu, id=resource_id)
+        FakticheskijResursPoObjektu.objects.filter(resurs_po_objektu=resurs_po_objektu).delete()
+        resurs_po_objektu.delete()
+        
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})

@@ -23,4 +23,5 @@ urlpatterns = [
     path('objects/<int:object_id>/export/', export_object_json, name='export_object_json'),
     path('objects/<int:object_id>/delete/', views.delete_object, name='delete_object'),
     path('add-resource-to-object/', views.add_resource_to_object, name='add_resource_to_object'),
+    path('delete-resource-from-object/', views.delete_resource_from_object, name='delete_resource_from_object'),
 ]

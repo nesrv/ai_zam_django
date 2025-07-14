@@ -4,7 +4,7 @@ from django.db import models
 class KategoriyaResursa(models.Model):
     nazvanie = models.CharField(max_length=255, verbose_name="Название")
     raskhod_dokhod = models.BooleanField(default=True, verbose_name="Расход-доход")
-    order = models.IntegerField(default=0, verbose_name="Порядок")
+    order = models.IntegerField(default=100, verbose_name="Порядок")
     
     class Meta:
         verbose_name = "Категория ресурса"
