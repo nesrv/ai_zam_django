@@ -23,5 +23,6 @@ urlpatterns = [
     path('salaries/', views.salaries_list, name='salaries_list'),
     path('control/', views.control_list, name='control'),
     path('update-control-status/', views.update_control_status, name='update_control_status'),
+    path('daily-salaries/', views.daily_salaries, name='daily_salaries'),
     path('', views.sotrudniki_list, name='list'),
 ]

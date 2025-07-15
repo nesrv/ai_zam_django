@@ -105,13 +105,16 @@
 {% endblock %}
 
 {% block content %}
-<a href="/sotrudniki/?podrazdelenie=3" class="back-btn">← Назад к списку сотрудников</a>
+<div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+    <a href="/sotrudniki/?podrazdelenie=3" class="back-btn">← Назад к списку сотрудников</a>
+    <a href="{% url 'sotrudniki:daily_salaries' %}" style="background: rgba(0, 150, 100, 0.8); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Зарплаты по дням</a>
+</div>
 
 <div class="page-title">
     <form method="get" style="display: inline-block;">
         <input type="hidden" name="sort" value="{{ request.GET.sort }}">
         <input type="hidden" name="order" value="{{ request.GET.order }}">
-        Зарплаты за 
+        Зарплаты по сотрудникам за 
         <select name="month" style="padding: 5px; margin: 0 5px; background: rgba(0, 0, 0, 0.5); color: white; border: 1px solid rgba(255, 255, 255, 0.3); font-size: 2rem;">
             <option value="1" {% if month == '1' %}selected{% endif %}>Январь</option>
             <option value="2" {% if month == '2' %}selected{% endif %}>Февраль</option>

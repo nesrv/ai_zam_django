@@ -1114,3 +1114,95 @@ def update_control_status(request):
             return JsonResponse({'success': False, 'error': str(e)})
     
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
+def daily_salaries(request):
+    from datetime import datetime
+    from object.models import ResursyPoObjektu, Resurs
+    from django.db.models import Sum
+    
+    current_date = datetime.now()
+    year = request.GET.get('year', str(current_date.year))
+    month = request.GET.get('month', str(current_date.month))
+    
+    # Русские названия месяцев
+    month_names_ru = {
+        1: 'Январь', 2: 'Февраль', 3: 'Март', 4: 'Апрель',
+        5: 'Май', 6: 'Июнь', 7: 'Июль', 8: 'Август',
+        9: 'Сентябрь', 10: 'Октябрь', 11: 'Ноябрь', 12: 'Декабрь'
+    }
+    
+    month_int = int(month)
+    month_name_ru = month_names_ru.get(month_int, '')
+    
+    # Получаем все записи зарплат за период
+    zarplaty = SotrudnikiZarplaty.objects.filter(
+        data__year=year,
+        data__month=month
+    ).select_related('sotrudnik', 'objekt').order_by('data', 'sotrudnik__fio')
+    
+    # Группируем по датам
+    grouped_data = {}
+    daily_totals = {}
+    
+    for zp in zarplaty:
+        # Получаем ставку
+        stavka = 0
+        if zp.sotrudnik.specialnost:
+            resurs = Resurs.objects.filter(
+                naimenovanie__icontains=zp.sotrudnik.specialnost.nazvanie,
+                edinica_izmereniya='час'
+            ).first()
+            
+            if resurs:
+                resurs_po_objektu = ResursyPoObjektu.objects.filter(
+                    objekt=zp.objekt,
+                    resurs=resurs
+                ).first()
+                
+                if resurs_po_objektu:
+                    stavka = float(resurs_po_objektu.cena)
+        
+        summa = float(zp.kolichestvo_chasov) * float(zp.kpi) * stavka
+        
+        # Группируем по датам
+        if zp.data not in grouped_data:
+            grouped_data[zp.data] = []
+            daily_totals[zp.data] = 0
+        
+        grouped_data[zp.data].append({
+            'sotrudnik': zp.sotrudnik.fio,
+            'objekt': zp.objekt.nazvanie if zp.objekt else '-',
+            'specialnost': zp.sotrudnik.specialnost.nazvanie if zp.sotrudnik.specialnost else '-',
+            'kolichestvo_chasov': zp.kolichestvo_chasov,
+            'stavka': int(stavka),
+            'kpi': zp.kpi,
+            'summa': int(summa)
+        })
+        
+        daily_totals[zp.data] += int(summa)
+    
+    # Преобразуем в список для шаблона
+    daily_data = []
+    for date in sorted(grouped_data.keys(), reverse=True):
+        for i, item in enumerate(grouped_data[date]):
+            daily_data.append({
+                'data': date,
+                'is_first_in_group': i == 0,
+                'group_size': len(grouped_data[date]),
+                'sotrudnik': item['sotrudnik'],
+                'objekt': item['objekt'],
+                'specialnost': item['specialnost'],
+                'kolichestvo_chasov': item['kolichestvo_chasov'],
+                'stavka': item['stavka'],
+                'kpi': item['kpi'],
+                'summa': item['summa'],
+                'daily_total': daily_totals[date]
+            })
+    
+    context = {
+        'daily_data': daily_data,
+        'year': year,
+        'month': month,
+        'month_name': f"{month_name_ru} {year}"
+    }
+    
+    return render(request, 'sotrudniki/daily_salaries.html', context)
