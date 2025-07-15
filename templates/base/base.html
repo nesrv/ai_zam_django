@@ -139,37 +139,67 @@
             transition: 0.3s;
         }
         
+        .mobile-menu {
+            display: none;
+        }
+        
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: rgba(0, 0, 0, 0.95);
-                flex-direction: column;
-                padding: 1rem;
-                gap: 1rem;
             }
             
-            .nav-links.active {
-                display: flex;
+            .mobile-menu {
+                display: block;
             }
             
             .burger-menu {
                 display: flex;
+                flex-direction: column;
+                cursor: pointer;
+                padding: 5px;
             }
             
-            .burger-menu.active span:nth-child(1) {
-                transform: rotate(-45deg) translate(-5px, 6px);
+            .burger-menu span {
+                width: 25px;
+                height: 3px;
+                background: white;
+                margin: 3px 0;
+                transition: 0.3s;
             }
             
-            .burger-menu.active span:nth-child(2) {
-                opacity: 0;
+            .mobile-nav {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.95);
+                z-index: 1000;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 2rem;
             }
             
-            .burger-menu.active span:nth-child(3) {
-                transform: rotate(45deg) translate(-5px, -6px);
+            .mobile-nav.active {
+                display: flex;
+            }
+            
+            .mobile-nav a {
+                color: white;
+                text-decoration: none;
+                font-size: 1.5rem;
+                padding: 0.5rem 1rem;
+            }
+            
+            .close-menu {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                font-size: 2rem;
+                color: white;
+                cursor: pointer;
             }
         }
         
@@ -195,11 +225,6 @@
                     <img src="{% static 'images/logo-ai.png' %}" alt="AI-Зам">
                     AI-Зам
                 </a>
-                <div class="burger-menu" onclick="toggleMenu()">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
                 <nav class="nav-links">
                     <a href="/">Главная</a>
                     <a href="/objects/">Объекты</a>
@@ -208,6 +233,13 @@
                     <a href="/analytics/">ИИ-аналитика</a>
                     <a href="/admin/">Админка</a>
                 </nav>
+                <div class="mobile-menu">
+                    <div class="burger-menu" onclick="toggleMenu()">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -222,15 +254,39 @@
         </div>
     </footer>
     
+    <!-- Мобильное меню -->
+    <div class="mobile-nav" id="mobileNav">
+        <span class="close-menu" onclick="toggleMenu()">&times;</span>
+        <a href="/">Главная</a>
+        <a href="/objects/">Объекты</a>
+        <a href="/kadry/">Кадры</a>
+        <a href="/telegram/">ИИ-агент</a>
+        <a href="/analytics/">ИИ-аналитика</a>
+        <a href="/admin/">Админка</a>
+    </div>
+    
     {% block extra_scripts %}{% endblock %}
     <script>
         function toggleMenu() {
-            const navLinks = document.querySelector('.nav-links');
-            const burgerMenu = document.querySelector('.burger-menu');
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('active');
             
-            navLinks.classList.toggle('active');
-            burgerMenu.classList.toggle('active');
+            // Блокируем прокрутку страницы при открытом меню
+            if (mobileNav.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
         }
+        
+        // Закрывать меню при клике на пункт меню
+        document.querySelectorAll('.mobile-nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                const mobileNav = document.getElementById('mobileNav');
+                mobileNav.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
     </script>
 </body>
 </html>
