@@ -1,0 +1,158 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Контроль сотрудников{% endblock %}
+
+{% block extra_styles %}
+.page-title {
+    text-align: center;
+    color: white;
+    font-size: 3rem;
+    margin-bottom: 3rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+.control-table {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.control-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.control-table th {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 15px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+}
+.control-table td {
+    padding: 12px 15px;
+    color: white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+.control-table tr:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+.back-btn {
+    background: rgba(150, 150, 150, 0.8);
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+.back-btn:hover {
+    color: white;
+    text-decoration: none;
+}
+.status-true {
+    color: #00ff00;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+.status-false {
+    color: #ff0000;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+{% endblock %}
+
+{% block content %}
+<a href="/sotrudniki/?podrazdelenie=3" class="back-btn">← Назад к списку сотрудников</a>
+
+<div class="page-title">Контроль сотрудников</div>
+
+<div class="control-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Код</th>
+                <th>ФИО</th>
+                <th>Должность</th>
+                <th>Базовое<br>обучение</th>
+                <th>Мед<br>освид</th>
+                <th>СИЗ</th>
+                <th>Стажировка</th>
+                <th>Допуск к<br>работе</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sotrudnik in sotrudniki %}
+            <tr>
+                <td>{{ sotrudnik.id }}</td>
+                <td style="text-align: left;">{{ sotrudnik.fio }}</td>
+                <td style="text-align: left;">{{ sotrudnik.specialnost|default:"-" }}</td>
+                <td><span class="{% if sotrudnik.bazovoe_obuchenie %}status-true{% else %}status-false{% endif %}" onclick="toggleStatus(this, {{ sotrudnik.id }}, 'bazovoe_obuchenie')" style="cursor: pointer;">{% if sotrudnik.bazovoe_obuchenie %}✓{% else %}✗{% endif %}</span></td>
+                <td><span class="{% if sotrudnik.med_osvidetelstvovanie %}status-true{% else %}status-false{% endif %}" onclick="toggleStatus(this, {{ sotrudnik.id }}, 'med_osvidetelstvovanie')" style="cursor: pointer;">{% if sotrudnik.med_osvidetelstvovanie %}✓{% else %}✗{% endif %}</span></td>
+                <td><span class="{% if sotrudnik.siz %}status-true{% else %}status-false{% endif %}" onclick="toggleStatus(this, {{ sotrudnik.id }}, 'siz')" style="cursor: pointer;">{% if sotrudnik.siz %}✓{% else %}✗{% endif %}</span></td>
+                <td><span class="{% if sotrudnik.stazhirovka %}status-true{% else %}status-false{% endif %}" onclick="toggleStatus(this, {{ sotrudnik.id }}, 'stazhirovka')" style="cursor: pointer;">{% if sotrudnik.stazhirovka %}✓{% else %}✗{% endif %}</span></td>
+                <td><span class="{% if sotrudnik.dopusk_k_rabote %}status-true{% else %}status-false{% endif %}" onclick="toggleStatus(this, {{ sotrudnik.id }}, 'dopusk_k_rabote')" style="cursor: pointer;">{% if sotrudnik.dopusk_k_rabote %}✓{% else %}✗{% endif %}</span></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" style="text-align: center; color: rgba(255, 255, 255, 0.7);">Нет сотрудников</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function toggleStatus(element, sotrudnikId, field) {
+    const isCurrentlyTrue = element.classList.contains('status-true');
+    const newValue = !isCurrentlyTrue;
+    
+    fetch('/sotrudniki/update-control-status/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            sotrudnik_id: sotrudnikId,
+            field: field,
+            value: newValue
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (newValue) {
+                element.textContent = '✓';
+                element.className = 'status-true';
+            } else {
+                element.textContent = '✗';
+                element.className = 'status-false';
+            }
+        } else {
+            console.error('Ошибка обновления:', data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+    });
+}
+</script>
+{% endblock %}

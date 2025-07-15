@@ -45,13 +45,35 @@ class InstruktazhiInline(admin.TabularInline):
 
 @admin.register(Sotrudnik)
 class SotrudnikAdmin(admin.ModelAdmin):
-    list_display = ['fio', 'organizaciya', 'specialnost', 'podrazdelenie', 'data_priema', 'data_nachala_raboty']
-    list_filter = ['organizaciya', 'specialnost', 'podrazdelenie', 'data_priema']
+    list_display = ['fio', 'organizaciya', 'specialnost', 'podrazdelenie', 'data_priema', 'data_nachala_raboty', 
+                   'bazovoe_obuchenie', 'obuchenie_na_predpriyatii', 'med_osvidetelstvovanie', 'dopusk_k_rabote', 'stazhirovka', 'siz']
+    list_filter = ['organizaciya', 'specialnost', 'podrazdelenie', 'data_priema', 
+                  'bazovoe_obuchenie', 'obuchenie_na_predpriyatii', 'med_osvidetelstvovanie', 'dopusk_k_rabote', 'stazhirovka', 'siz']
     search_fields = ['fio']
     date_hierarchy = 'data_priema'
     inlines = [ProtokolyObucheniyaInline, InstruktazhiInline]
     readonly_fields = ['get_shablony_dokumentov']
     filter_horizontal = ['objekty']
+    fieldsets = [
+        ('Основная информация', {
+            'fields': ['fio', 'organizaciya', 'specialnost', 'podrazdelenie', 'data_rozhdeniya', 'pol']
+        }),
+        ('Даты', {
+            'fields': ['data_priema', 'data_nachala_raboty']
+        }),
+        ('Размеры', {
+            'fields': ['razmer_odezhdy', 'razmer_obuvi', 'razmer_golovnogo_ubora']
+        }),
+        ('Статусы', {
+            'fields': ['bazovoe_obuchenie', 'obuchenie_na_predpriyatii', 'med_osvidetelstvovanie', 'dopusk_k_rabote', 'stazhirovka', 'siz']
+        }),
+        ('Объекты', {
+            'fields': ['objekty']
+        }),
+        ('Документы', {
+            'fields': ['get_shablony_dokumentov']
+        }),
+    ]
     
     def get_shablony_dokumentov(self, obj):
         if obj.specialnost and hasattr(obj.specialnost, 'shablony_dokumentov'):

@@ -45,6 +45,24 @@
     margin-bottom: 3rem;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
+.delete-btn {
+    background: rgba(231, 76, 60, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s;
+}
+.delete-btn:hover {
+    background: rgba(231, 76, 60, 1);
+    transform: scale(1.1);
+}
 {% endblock %}
 
 {% block content %}
@@ -53,9 +71,12 @@
 <ul class="organization-list">
     {% for organizaciya in organizacii %}
     <li class="organization-item">
-        <a href="{% url 'sotrudniki:organization_detail' organizaciya.pk %}" class="organization-link">
-            {{ organizaciya.nazvanie }}
-        </a>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="{% url 'sotrudniki:organization_detail' organizaciya.pk %}" class="organization-link">
+                {{ organizaciya.nazvanie }}
+            </a>
+            <button onclick="deleteOrganization({{ organizaciya.id }})" class="delete-btn" title="Удалить организацию">✗</button>
+        </div>
         <div class="organization-inn">ИНН: {{ organizaciya.inn }}</div>
     </li>
     {% empty %}
@@ -64,4 +85,45 @@
     </li>
     {% endfor %}
 </ul>
+
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function deleteOrganization(organizationId) {
+    if (confirm('Вы уверены, что хотите удалить эту организацию?')) {
+        fetch(`/sotrudniki/organization/${organizationId}/delete/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Ошибка при удалении: ' + data.error);
+            }
+        })
+        .catch(error => {
+            alert('Ошибка: ' + error);
+        });
+    }
+}
+</script>
+
 {% endblock %}

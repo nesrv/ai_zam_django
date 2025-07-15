@@ -94,18 +94,83 @@
         }
         
         .nav-links a[href="/analytics/"] {
+            position: relative;
+            font-weight: bold;
+            color: transparent;
+        }
+        
+        .nav-links a[href="/analytics/"]::before {
+            content: 'ИИ-аналитика';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: linear-gradient(45deg, #00d4ff, #ff00ff, #ffff00, #00d4ff);
             background-size: 300% 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: gradientShift 3s ease-in-out infinite;
-            font-weight: bold;
         }
         
         .nav-links a:hover {
             background: rgba(255, 255, 255, 0.1);
             border-bottom: 2px solid #fff;
+        }
+        
+
+        
+        .burger-menu {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .burger-menu span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(0, 0, 0, 0.95);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .burger-menu {
+                display: flex;
+            }
+            
+            .burger-menu.active span:nth-child(1) {
+                transform: rotate(-45deg) translate(-5px, 6px);
+            }
+            
+            .burger-menu.active span:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .burger-menu.active span:nth-child(3) {
+                transform: rotate(45deg) translate(-5px, -6px);
+            }
         }
         
         footer {
@@ -130,6 +195,11 @@
                     <img src="{% static 'images/logo-ai.png' %}" alt="AI-Зам">
                     AI-Зам
                 </a>
+                <div class="burger-menu" onclick="toggleMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
                 <nav class="nav-links">
                     <a href="/">Главная</a>
                     <a href="/objects/">Объекты</a>
@@ -154,7 +224,13 @@
     
     {% block extra_scripts %}{% endblock %}
     <script>
-
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            const burgerMenu = document.querySelector('.burger-menu');
+            
+            navLinks.classList.toggle('active');
+            burgerMenu.classList.toggle('active');
+        }
     </script>
 </body>
 </html>

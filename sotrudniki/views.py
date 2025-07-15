@@ -722,6 +722,22 @@ def organizations_list(request):
     return render(request, 'sotrudniki/organizations.html', {'organizacii': organizacii})
 
 
+def delete_organization(request, pk):
+    from django.http import JsonResponse
+    import json
+    
+    if request.method == 'POST':
+        try:
+            organizaciya = get_object_or_404(Organizaciya, pk=pk)
+            organizaciya.is_active = False
+            organizaciya.save()
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
 def organization_detail(request, pk):
     organizaciya = get_object_or_404(Organizaciya, pk=pk)
     sotrudniki = Sotrudnik.objects.filter(organizaciya=organizaciya).select_related('specialnost', 'podrazdelenie')
@@ -782,21 +798,319 @@ def sotrudnik_add(request):
 def sotrudnik_salary(request, sotrudnik_id):
     sotrudnik = get_object_or_404(Sotrudnik, id=sotrudnik_id)
     
-    # Получаем данные за последние 30 дней
+    # Генерируем 30 дней от сегодня до минус 30 дней
     end_date = datetime.now().date()
-    start_date = end_date - timedelta(days=30)
+    start_date = end_date - timedelta(days=29)
     
+    # Получаем существующие данные о зарплате
+    zarplaty_dict = {}
     zarplaty = SotrudnikiZarplaty.objects.filter(
         sotrudnik=sotrudnik,
         data__gte=start_date,
         data__lte=end_date
-    ).order_by('-data')
+    ).select_related('objekt')
+    
+    for zp in zarplaty:
+        zarplaty_dict[zp.data] = zp
+    
+    # Генерируем 30 дней данных (от сегодня к прошлому)
+    days_data = []
+    for i in range(30):
+        current_date = end_date - timedelta(days=i)
+        
+        if current_date in zarplaty_dict:
+            zp = zarplaty_dict[current_date]
+            
+            # Получаем ставку из базы данных
+            from object.models import ResursyPoObjektu, Resurs
+            stavka = None
+            
+            if sotrudnik.specialnost and zp.objekt:
+                resurs = Resurs.objects.filter(
+                    naimenovanie__icontains=sotrudnik.specialnost.nazvanie,
+                    edinica_izmereniya='час'
+                ).first()
+                
+                if resurs:
+                    resurs_po_objektu = ResursyPoObjektu.objects.filter(
+                        objekt=zp.objekt,
+                        resurs=resurs
+                    ).first()
+                    
+                    if resurs_po_objektu:
+                        stavka = int(resurs_po_objektu.cena)
+            
+            # Рассчитываем сумму
+            summa = 0
+            if stavka and zp.kolichestvo_chasov:
+                summa = float(zp.kolichestvo_chasov) * float(zp.kpi) * stavka
+            
+            days_data.append({
+                'date': current_date,
+                'objekt_name': zp.objekt.nazvanie,
+                'objekt_id': zp.objekt.id,
+                'kolichestvo_chasov': zp.kolichestvo_chasov,
+                'stavka': stavka,
+                'kpi': zp.kpi,
+                'summa': int(summa),
+                'vydano': zp.vydano
+            })
+        else:
+            days_data.append({
+                'date': current_date,
+                'objekt_name': None,
+                'kolichestvo_chasov': 0,
+                'stavka': None,
+                'kpi': 1.0,
+                'summa': 0,
+                'vydano': False
+            })
+    
+    # Получаем список объектов
+    from object.models import Objekt
+    objekty = Objekt.objects.filter(is_active=True)
+    
+    # Рассчитываем выданную сумму
+    vydano_sum = 0
+    for day_data in days_data:
+        if day_data.get('vydano') and day_data.get('summa'):
+            vydano_sum += day_data['summa']
     
     context = {
         'sotrudnik': sotrudnik,
-        'zarplaty': zarplaty,
+        'days_data': days_data,
+        'objekty': objekty,
         'start_date': start_date,
         'end_date': end_date,
+        'vydano_sum': vydano_sum,
     }
     
     return render(request, 'sotrudniki/salary_detail.html', context)
+
+
+def get_stavka(request, objekt_id, sotrudnik_id):
+    from object.models import ResursyPoObjektu, Resurs
+    from django.http import JsonResponse
+    
+    try:
+        sotrudnik = get_object_or_404(Sotrudnik, id=sotrudnik_id)
+        
+        # Получаем ставку по специальности сотрудника
+        if sotrudnik.specialnost:
+            resurs = Resurs.objects.filter(
+                naimenovanie__icontains=sotrudnik.specialnost.nazvanie,
+                edinica_izmereniya='час'
+            ).first()
+            
+            if resurs:
+                resurs_po_objektu = ResursyPoObjektu.objects.filter(
+                    objekt_id=objekt_id,
+                    resurs=resurs
+                ).first()
+                
+                if resurs_po_objektu:
+                    return JsonResponse({'stavka': int(resurs_po_objektu.cena)})
+        
+        return JsonResponse({'stavka': 1000})
+    except Exception as e:
+        return JsonResponse({'stavka': 1000, 'error': str(e)})
+
+
+def save_salary(request):
+    from django.http import JsonResponse
+    import json
+    from datetime import datetime
+    
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            
+            sotrudnik_id = data.get('sotrudnik_id')
+            objekt_id = data.get('objekt_id')
+            date_str = data.get('date')
+            hours = data.get('hours')
+            kpi = data.get('kpi')
+            
+            # Преобразуем дату
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
+            
+            # Обновляем или создаем запись
+            from object.models import Objekt
+            
+            zarplata, created = SotrudnikiZarplaty.objects.update_or_create(
+                sotrudnik_id=sotrudnik_id,
+                objekt_id=objekt_id,
+                data=date_obj,
+                defaults={
+                    'kolichestvo_chasov': hours,
+                    'kpi': kpi
+                }
+            )
+            
+            return JsonResponse({'success': True})
+            
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+def update_vydano(request):
+    from django.http import JsonResponse
+    import json
+    from datetime import datetime
+    
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            
+            sotrudnik_id = data.get('sotrudnik_id')
+            objekt_id = data.get('objekt_id')
+            date_str = data.get('date')
+            vydano = data.get('vydano')
+            
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
+            
+            zarplata = SotrudnikiZarplaty.objects.filter(
+                sotrudnik_id=sotrudnik_id,
+                objekt_id=objekt_id,
+                data=date_obj
+            ).first()
+            
+            if zarplata:
+                zarplata.vydano = vydano
+                zarplata.save()
+                return JsonResponse({'success': True})
+            else:
+                return JsonResponse({'success': False, 'error': 'Запись не найдена'})
+            
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+def salaries_list(request):
+    from datetime import datetime
+    from object.models import ResursyPoObjektu, Resurs
+    
+    current_date = datetime.now()
+    year = request.GET.get('year', str(current_date.year))
+    month = request.GET.get('month', str(current_date.month))
+    sort_by = request.GET.get('sort', '')
+    order = request.GET.get('order', 'desc')
+    
+    sotrudniki_with_salary = Sotrudnik.objects.filter(
+        sotrudnikizarplaty__data__year=year,
+        sotrudnikizarplaty__data__month=month
+    ).select_related('specialnost').distinct()
+    
+    salaries_data = []
+    for sotrudnik in sotrudniki_with_salary:
+        zarplaty = SotrudnikiZarplaty.objects.filter(
+            sotrudnik=sotrudnik,
+            data__year=year,
+            data__month=month
+        ).select_related('objekt')
+        
+        zarabotano = 0
+        vyplacheno = 0
+        avg_kpi = 0
+        objekty_list = []
+        
+        for zp in zarplaty:
+            stavka = 0
+            if sotrudnik.specialnost:
+                resurs = Resurs.objects.filter(
+                    naimenovanie__icontains=sotrudnik.specialnost.nazvanie,
+                    edinica_izmereniya='час'
+                ).first()
+                
+                if resurs:
+                    resurs_po_objektu = ResursyPoObjektu.objects.filter(
+                        objekt=zp.objekt,
+                        resurs=resurs
+                    ).first()
+                    
+                    if resurs_po_objektu:
+                        stavka = float(resurs_po_objektu.cena)
+            
+            summa = float(zp.kolichestvo_chasov) * float(zp.kpi) * stavka
+            zarabotano += summa
+            avg_kpi += float(zp.kpi)
+            
+            if zp.objekt.nazvanie not in objekty_list:
+                objekty_list.append(zp.objekt.nazvanie)
+            
+            if zp.vydano:
+                vyplacheno += summa
+        
+        avg_kpi = avg_kpi / len(zarplaty) if zarplaty else 0
+        
+        salaries_data.append({
+            'sotrudnik': sotrudnik,
+            'zarabotano': int(zarabotano),
+            'vyplacheno': int(vyplacheno),
+            'avg_kpi': round(avg_kpi, 1),
+            'objekty': ', '.join(objekty_list)
+        })
+    
+    # Сортировка
+    if sort_by == 'zarabotano':
+        salaries_data.sort(key=lambda x: x['zarabotano'], reverse=(order == 'desc'))
+    elif sort_by == 'vyplacheno':
+        salaries_data.sort(key=lambda x: x['vyplacheno'], reverse=(order == 'desc'))
+    
+    # Русские названия месяцев
+    month_names_ru = {
+        1: 'Январь', 2: 'Февраль', 3: 'Март', 4: 'Апрель',
+        5: 'Май', 6: 'Июнь', 7: 'Июль', 8: 'Август',
+        9: 'Сентябрь', 10: 'Октябрь', 11: 'Ноябрь', 12: 'Декабрь'
+    }
+    
+    month_int = int(month)
+    month_name_ru = month_names_ru.get(month_int, '')
+    
+    context = {
+        'salaries_data': salaries_data,
+        'year': year,
+        'month': month,
+        'month_name': f"{month_name_ru} {year}"
+    }
+    
+    return render(request, 'sotrudniki/salaries_list.html', context)
+
+def control_list(request):
+    sotrudniki = Sotrudnik.objects.select_related('specialnost').filter(organizaciya__is_active=True)
+    
+    context = {
+        'sotrudniki': sotrudniki
+    }
+    
+    return render(request, 'sotrudniki/control_list.html', context)
+
+def update_control_status(request):
+    from django.http import JsonResponse
+    import json
+    
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            
+            sotrudnik_id = data.get('sotrudnik_id')
+            field = data.get('field')
+            value = data.get('value')
+            
+            sotrudnik = get_object_or_404(Sotrudnik, id=sotrudnik_id)
+            
+            if hasattr(sotrudnik, field):
+                setattr(sotrudnik, field, value)
+                sotrudnik.save()
+                return JsonResponse({'success': True})
+            else:
+                return JsonResponse({'success': False, 'error': 'Поле не найдено'})
+            
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})

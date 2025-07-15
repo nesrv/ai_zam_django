@@ -8,6 +8,7 @@ class SotrudnikiZarplaty(models.Model):
     data = models.DateField(verbose_name="Дата")
     kolichestvo_chasov = models.DecimalField(max_digits=8, decimal_places=2, verbose_name="Количество часов")
     kpi = models.DecimalField(max_digits=5, decimal_places=2, default=1.0, verbose_name="KPI")
+    vydano = models.BooleanField(default=False, verbose_name="Выдано")
     
     class Meta:
         verbose_name = "Зарплата сотрудника"

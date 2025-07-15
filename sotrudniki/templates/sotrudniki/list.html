@@ -65,6 +65,14 @@
        style="background: rgba(0, 150, 0, 0.8); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
         + Добавить сотрудника
     </a>
+    <a href="{% url 'sotrudniki:control' %}" 
+       style="background: rgba(200, 100, 0, 0.8); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+        Контроль
+    </a>
+    <a href="{% url 'sotrudniki:salaries_list' %}" 
+       style="background: rgba(0, 150, 200, 0.8); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+        Зарплаты
+    </a>
 </div>
 
 <div class="employees-table">
@@ -72,11 +80,11 @@
         <thead>
             <tr>
                 <th>Код</th>
-                <th>Фамилия имя отчество</th>
+                <th>ФИО</th>
                 <th>Должность</th>
-                <th>Дата приема</th>
-                <th>Дата начала работы</th>
-                <th>Перевод/увольнение</th>
+                <th>Дата<br>приема</th>
+                <th>Дата начала<br>работы</th>
+                <th>Перевод<br>увольн</th>
                 <th>Управление</th>
                 <th>Зарплаты</th>
                 <th>Действия</th>

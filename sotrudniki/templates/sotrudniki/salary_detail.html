@@ -60,12 +60,21 @@
     padding: 15px;
     font-weight: bold;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-right: 1px dotted rgba(255, 255, 255, 0.2);
+    text-align: center;
 }
 
 .salary-table td {
     padding: 12px 15px;
     color: white;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-right: 1px dotted rgba(255, 255, 255, 0.2);
+    text-align: center;
+}
+
+.salary-table th:last-child,
+.salary-table td:last-child {
+    border-right: none;
 }
 
 .salary-table tr:hover {
@@ -97,6 +106,50 @@
     padding: 2rem;
     font-style: italic;
 }
+
+.editable {
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.editable:hover {
+    background: rgba(0, 212, 255, 0.1);
+}
+
+.editing {
+    background: rgba(0, 212, 255, 0.2) !important;
+}
+
+.edit-input, .edit-select {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.edit-select option {
+    background: #2c3e50;
+    color: white;
+}
+
+.stavka-cell, .summa-cell {
+    font-weight: bold;
+    color: #00d4ff;
+}
+
+.vydano-cell {
+    text-align: center;
+}
+
+.status-true {
+    color: #00ff00;
+}
+
+.status-false {
+    color: #ff0000;
+}
 </style>
 {% endblock %}
 
@@ -123,6 +176,10 @@
             <span class="info-label">Период:</span>
             <span>{{ start_date|date:"d.m.Y" }} - {{ end_date|date:"d.m.Y" }} (последние 30 дней)</span>
         </div>
+        <div class="info-row">
+            <span class="info-label">Выдано за {{ start_date|date:"d.m.Y" }} - {{ end_date|date:"d.m.Y" }}:</span>
+            <span class="vydano-sum" style="color: #00d4ff; font-weight: bold;">{{ vydano_sum|default:"0" }} руб</span>
+        </div>
     </div>
     
     <div class="salary-table">
@@ -131,29 +188,254 @@
                 <tr>
                     <th>Дата</th>
                     <th>Объект</th>
-                    <th>Количество часов</th>
-                    <th>KPI</th>
-                    <th>Сумма (руб.)</th>
+                    <th>Кол-во<br>часов</th>
+                    <th>Ставка<br>руб/час</th>
+                    <th>KPI<br>%</th>
+                    <th>Сумма<br>руб</th>
+                    <th>Выдано</th>
                 </tr>
             </thead>
             <tbody>
-                {% for zp in zarplaty %}
-                <tr>
-                    <td>{{ zp.data|date:"d.m.Y" }}</td>
-                    <td>{{ zp.objekt.nazvanie }}</td>
-                    <td>{{ zp.kolichestvo_chasov }}</td>
-                    <td>{{ zp.kpi }}</td>
-                    <td>{% widthratio zp.kolichestvo_chasov 1 zp.kpi %}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" class="no-data">
-                        Нет данных о зарплате за указанный период
-                    </td>
+                {% for day_data in days_data %}
+                <tr data-date="{{ day_data.date|date:'Y-m-d' }}">
+                    <td>{{ day_data.date|date:"d.m.Y" }}</td>
+                    <td class="objekt-cell editable" onclick="editCell(this, 'objekt')">{{ day_data.objekt_name|default:"-" }}</td>
+                    <td class="hours-cell editable" onclick="editCell(this, 'hours')">{% if day_data.kolichestvo_chasov and day_data.kolichestvo_chasov != 0 %}{{ day_data.kolichestvo_chasov|floatformat:1 }}{% else %}-{% endif %}</td>
+                    <td class="stavka-cell">{% if day_data.stavka %}{{ day_data.stavka }}{% else %}-{% endif %}</td>
+                    <td class="kpi-cell editable" onclick="editCell(this, 'kpi')">{% if day_data.kpi and day_data.kpi != 1.0 %}{{ day_data.kpi|floatformat:1 }}{% else %}-{% endif %}</td>
+                    <td class="summa-cell">{% if day_data.summa and day_data.summa != 0 %}{{ day_data.summa }}{% else %}-{% endif %}</td>
+                    <td class="vydano-cell">{% if day_data.objekt_id %}<span class="{% if day_data.vydano %}status-true{% else %}status-false{% endif %}" onclick="toggleVydano(this, '{{ day_data.date|date:'Y-m-d' }}', {{ day_data.objekt_id }})" style="cursor: pointer; font-size: 1.2rem; font-weight: bold;">{% if day_data.vydano %}✓{% else %}✗{% endif %}</span>{% else %}-{% endif %}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function editCell(cell, type) {
+    if (cell.classList.contains('editing')) return;
+    
+    const currentValue = cell.textContent.trim();
+    cell.classList.add('editing');
+    
+    if (type === 'objekt') {
+        const select = document.createElement('select');
+        select.className = 'edit-select';
+        select.innerHTML = '<option value="">-</option>';
+        
+        {% for obj in objekty %}
+        const option{{ obj.id }} = document.createElement('option');
+        option{{ obj.id }}.value = '{{ obj.id }}';
+        option{{ obj.id }}.textContent = '{{ obj.nazvanie }}';
+        if (currentValue === '{{ obj.nazvanie }}') option{{ obj.id }}.selected = true;
+        select.appendChild(option{{ obj.id }});
+        {% endfor %}
+        
+        cell.innerHTML = '';
+        cell.appendChild(select);
+        select.focus();
+        
+        select.onblur = select.onchange = function() {
+            const selectedText = select.options[select.selectedIndex].text;
+            cell.textContent = selectedText === '-' ? '-' : selectedText;
+            cell.classList.remove('editing');
+            updateRowCalculation(cell.closest('tr'));
+        };
+    } else if (type === 'hours') {
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.className = 'edit-input';
+        input.min = '2';
+        input.max = '14';
+        input.step = '0.1';
+        input.value = parseFloat(currentValue) || 0;
+        
+        cell.innerHTML = '';
+        cell.appendChild(input);
+        input.focus();
+        input.select();
+        
+        input.onblur = input.onchange = function() {
+            const value = parseFloat(input.value) || 0;
+            cell.textContent = value.toFixed(1);
+            cell.classList.remove('editing');
+            updateRowCalculation(cell.closest('tr'));
+        };
+    } else if (type === 'kpi') {
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.className = 'edit-input';
+        input.min = '0.8';
+        input.max = '2';
+        input.step = '0.1';
+        input.value = parseFloat(currentValue) || 1.0;
+        
+        cell.innerHTML = '';
+        cell.appendChild(input);
+        input.focus();
+        input.select();
+        
+        input.onblur = input.onchange = function() {
+            const value = parseFloat(input.value) || 1.0;
+            cell.textContent = value.toFixed(1);
+            cell.classList.remove('editing');
+            updateRowCalculation(cell.closest('tr'));
+        };
+    }
+}
+
+function updateRowCalculation(row) {
+    const date = row.dataset.date;
+    const objektCell = row.querySelector('.objekt-cell');
+    const hoursCell = row.querySelector('.hours-cell');
+    const kpiCell = row.querySelector('.kpi-cell');
+    const stavkaCell = row.querySelector('.stavka-cell');
+    const summaCell = row.querySelector('.summa-cell');
+    
+    const objektText = objektCell.textContent.trim();
+    const hours = parseFloat(hoursCell.textContent) || 0;
+    const kpi = parseFloat(kpiCell.textContent) || 1.0;
+    
+    // Находим ID объекта
+    let objektId = null;
+    {% for obj in objekty %}
+    if (objektText === '{{ obj.nazvanie }}') objektId = '{{ obj.id }}';
+    {% endfor %}
+    
+    if (objektId && hours > 0) {
+        fetch(`/sotrudniki/get-stavka/${objektId}/{{ sotrudnik.id }}/`)
+            .then(response => response.json())
+            .then(data => {
+                const stavka = data.stavka || 0;
+                stavkaCell.textContent = stavka > 0 ? stavka : '-';
+                
+                const summa = hours * kpi * (stavka || 0);
+                summaCell.textContent = stavka > 0 ? Math.round(summa) : '0';
+                
+                // Обновляем ячейку "Выдано" если была "-"
+                const vydanoCell = row.querySelector('.vydano-cell');
+                if (vydanoCell && vydanoCell.textContent.trim() === '-' && stavka > 0) {
+                    vydanoCell.innerHTML = '<span class="status-false" onclick="toggleVydano(this, \'' + date + '\', ' + objektId + ')" style="cursor: pointer; font-size: 1.2rem; font-weight: bold;">✗</span>';
+                }
+                
+                saveSalaryData(date, objektId, hours, kpi, stavka);
+            });
+    } else {
+        stavkaCell.textContent = '-';
+        summaCell.textContent = '0';
+        
+        // Возвращаем "-" в ячейку "Выдано" если нет данных
+        const vydanoCell = row.querySelector('.vydano-cell');
+        if (vydanoCell && objektText === '-') {
+            vydanoCell.textContent = '-';
+        }
+    }
+}
+
+function saveSalaryData(date, objektId, hours, kpi, stavka) {
+    if (!objektId || hours <= 0) return;
+    
+    fetch('/sotrudniki/save-salary/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            sotrudnik_id: {{ sotrudnik.id }},
+            objekt_id: objektId,
+            date: date,
+            hours: hours,
+            kpi: kpi
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success) {
+            console.error('Ошибка сохранения:', data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+    });
+}
+
+function toggleVydano(element, date, objektId) {
+    if (!objektId) return;
+    
+    const isCurrentlyTrue = element.classList.contains('status-true');
+    const newValue = !isCurrentlyTrue;
+    
+    fetch('/sotrudniki/update-vydano/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            sotrudnik_id: {{ sotrudnik.id }},
+            objekt_id: objektId,
+            date: date,
+            vydano: newValue
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success) {
+            console.error('Ошибка обновления:', data.error);
+        } else {
+            if (newValue) {
+                element.textContent = '✓';
+                element.className = 'status-true';
+            } else {
+                element.textContent = '✗';
+                element.className = 'status-false';
+            }
+            updateVydanoSum();
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+    });
+}
+
+function updateVydanoSum() {
+    let totalVydano = 0;
+    const rows = document.querySelectorAll('tbody tr');
+    
+    rows.forEach(row => {
+        const statusElement = row.querySelector('.vydano-cell span');
+        const summaCell = row.querySelector('.summa-cell');
+        
+        if (statusElement && statusElement.classList.contains('status-true') && summaCell) {
+            const summaText = summaCell.textContent.trim();
+            if (summaText !== '-' && summaText !== '0') {
+                const summa = parseInt(summaText) || 0;
+                totalVydano += summa;
+            }
+        }
+    });
+    
+    const vydanoSpan = document.querySelector('.vydano-sum');
+    if (vydanoSpan) {
+        vydanoSpan.textContent = totalVydano + ' руб';
+    }
+}
+</script>
 {% endblock %}

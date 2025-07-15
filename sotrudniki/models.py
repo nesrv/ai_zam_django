@@ -110,6 +110,12 @@ class Sotrudnik(models.Model):
         blank=True,
         help_text="Объекты, на которых работает сотрудник"
     )
+    bazovoe_obuchenie = models.BooleanField(default=True, verbose_name="Базовое обучение")
+    obuchenie_na_predpriyatii = models.BooleanField(default=True, verbose_name="Обучение на предприятии")
+    med_osvidetelstvovanie = models.BooleanField(default=True, verbose_name="Мед.освидетельствование")
+    dopusk_k_rabote = models.BooleanField(default=True, verbose_name="Допуск к работе")
+    stazhirovka = models.BooleanField(default=True, verbose_name="Стажировка")
+    siz = models.BooleanField(default=True, verbose_name="СИЗ")
     
     class Meta:
         verbose_name = "Сотрудник"
@@ -124,6 +130,7 @@ class SotrudnikiZarplaty(models.Model):
     data = models.DateField(verbose_name="Дата")
     kolichestvo_chasov = models.DecimalField(max_digits=8, decimal_places=2, verbose_name="Количество часов")
     kpi = models.DecimalField(max_digits=5, decimal_places=2, default=1.0, verbose_name="KPI")
+    vydano = models.BooleanField(default=False, verbose_name="Выдано")
     
     class Meta:
         verbose_name = "Зарплата сотрудника"

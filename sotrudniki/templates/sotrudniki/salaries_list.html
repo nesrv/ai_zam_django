@@ -1,0 +1,170 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Зарплаты сотрудников{% endblock %}
+
+{% block extra_styles %}
+.page-title {
+    text-align: center;
+    color: white;
+    font-size: 3rem;
+    margin-bottom: 3rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(255, 0, 255, 0.2));
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    border-radius: 20px;
+    padding: 2rem;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0, 212, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.page-title::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 3s infinite;
+    pointer-events: none;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.page-title select {
+    background: rgba(0, 0, 0, 0.7) !important;
+    border: 2px solid rgba(0, 212, 255, 0.5) !important;
+    border-radius: 10px !important;
+    transition: all 0.3s ease !important;
+}
+
+.page-title select:hover {
+    border-color: rgba(0, 212, 255, 0.8) !important;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4) !important;
+}
+
+.page-title button {
+    background: linear-gradient(45deg, #00d4ff, #ff00ff) !important;
+    border: none !important;
+    border-radius: 15px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3) !important;
+}
+
+.page-title button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.5) !important;
+}
+.salaries-table {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.salaries-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.salaries-table th {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 15px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+}
+.salaries-table td {
+    padding: 12px 15px;
+    color: white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+.salaries-table tr:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+.back-btn {
+    background: rgba(150, 150, 150, 0.8);
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+.back-btn:hover {
+    color: white;
+    text-decoration: none;
+}
+{% endblock %}
+
+{% block content %}
+<a href="/sotrudniki/?podrazdelenie=3" class="back-btn">← Назад к списку сотрудников</a>
+
+<div class="page-title">
+    <form method="get" style="display: inline-block;">
+        <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+        <input type="hidden" name="order" value="{{ request.GET.order }}">
+        Зарплаты за 
+        <select name="month" style="padding: 5px; margin: 0 5px; background: rgba(0, 0, 0, 0.5); color: white; border: 1px solid rgba(255, 255, 255, 0.3); font-size: 2rem;">
+            <option value="1" {% if month == '1' %}selected{% endif %}>Январь</option>
+            <option value="2" {% if month == '2' %}selected{% endif %}>Февраль</option>
+            <option value="3" {% if month == '3' %}selected{% endif %}>Март</option>
+            <option value="4" {% if month == '4' %}selected{% endif %}>Апрель</option>
+            <option value="5" {% if month == '5' %}selected{% endif %}>Май</option>
+            <option value="6" {% if month == '6' %}selected{% endif %}>Июнь</option>
+            <option value="7" {% if month == '7' %}selected{% endif %}>Июль</option>
+            <option value="8" {% if month == '8' %}selected{% endif %}>Август</option>
+            <option value="9" {% if month == '9' %}selected{% endif %}>Сентябрь</option>
+            <option value="10" {% if month == '10' %}selected{% endif %}>Октябрь</option>
+            <option value="11" {% if month == '11' %}selected{% endif %}>Ноябрь</option>
+            <option value="12" {% if month == '12' %}selected{% endif %}>Декабрь</option>
+        </select>
+        <select name="year" style="padding: 5px; margin-right: 10px; background: rgba(0, 0, 0, 0.5); color: white; border: 1px solid rgba(255, 255, 255, 0.3); font-size: 2rem;">
+            <option value="2024" {% if year == '2024' %}selected{% endif %}>2024</option>
+            <option value="2025" {% if year == '2025' %}selected{% endif %}>2025</option>
+            <option value="2026" {% if year == '2026' %}selected{% endif %}>2026</option>
+        </select>
+        <button type="submit" style="padding: 5px 15px; background: rgba(0, 150, 200, 0.8); color: white; border: none; border-radius: 3px; vertical-align: middle; font-size: 1.2rem;">Показать</button>
+    </form>
+</div>
+
+<div class="salaries-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Код</th>
+                <th>ФИО</th>
+                <th>Должность</th>
+                <th>KPI</th>
+                <th><a href="?sort=zarabotano&order={% if request.GET.sort == 'zarabotano' and request.GET.order == 'desc' %}asc{% else %}desc{% endif %}" style="color: white; text-decoration: none;">Заработано {% if request.GET.sort == 'zarabotano' %}{% if request.GET.order == 'desc' %}↓{% else %}↑{% endif %}{% endif %}</a></th>
+                <th><a href="?sort=vyplacheno&order={% if request.GET.sort == 'vyplacheno' and request.GET.order == 'desc' %}asc{% else %}desc{% endif %}" style="color: white; text-decoration: none;">Выплачено {% if request.GET.sort == 'vyplacheno' %}{% if request.GET.order == 'desc' %}↓{% else %}↑{% endif %}{% endif %}</a></th>
+                <th>Объект</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in salaries_data %}
+            <tr>
+                <td>{{ data.sotrudnik.id }}</td>
+                <td style="text-align: left;"><a href="/sotrudniki/salary/{{ data.sotrudnik.id }}/" style="color: white; text-decoration: none; border-bottom: 1px dotted white;">{{ data.sotrudnik.fio }}</a></td>
+                <td style="text-align: left;">{{ data.sotrudnik.specialnost|default:"-" }}</td>
+                <td>{{ data.avg_kpi }}</td>
+                <td>{{ data.zarabotano }} ₽</td>
+                <td>{{ data.vyplacheno }} ₽</td>
+                <td style="text-align: left;">{{ data.objekty|default:"-" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align: center; color: rgba(255, 255, 255, 0.7);">Нет данных о зарплатах</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
