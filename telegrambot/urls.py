@@ -1,10 +1,13 @@
 from django.urls import path
 from . import views
+from .views_chatbots import chatbots_page, update_chat_id
 
 app_name = 'telegrambot'
 
 urlpatterns = [
-    path('', views.bot_status, name='status'),  # Главная страница - статус
+    
+    path('', chatbots_page, name='chatbots_page'),  # Главная страница - чат-боты
+    path('status/', views.bot_status, name='status'),  # Статус бота
     path('dashboard/', views.bot_dashboard, name='dashboard'),  # Dashboard на отдельной странице
     path('webhook/', views.telegram_webhook, name='webhook'),
     path('webhook/status/', views.webhook_status, name='webhook_status'),
@@ -19,4 +22,5 @@ urlpatterns = [
     path('send-file-to-deepseek/', views.send_file_to_deepseek, name='send_file_to_deepseek'),
     path('download-and-save/', views.download_and_save_document, name='download_and_save_document'),
     path('save-json-response/', views.save_json_response, name='save_json_response'),
+    path('update-chat-id/', update_chat_id, name='update_chat_id'),
 ] 

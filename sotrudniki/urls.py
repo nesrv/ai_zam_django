@@ -5,7 +5,7 @@ app_name = 'sotrudniki'
 
 urlpatterns = [
     path('organizations/', views.organizations_list, name='organizations'),
-    path('organization/<int:pk>/', views.organization_detail, name='organization_detail'),
+
     path('organization/<int:pk>/delete/', views.delete_organization, name='delete_organization'),
     path('add/', views.sotrudnik_add, name='add'),
     path('update-status/', views.update_document_status, name='update_status'),

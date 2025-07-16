@@ -56,3 +56,17 @@ class TemporaryDocument(models.Model):
 
     def __str__(self):
         return f"Документ {self.id} для {self.user}";
+
+class ChatMessage(models.Model):
+    chat_id = models.CharField(max_length=255, verbose_name="ID чата")
+    message_text = models.TextField(verbose_name="Текст сообщения")
+    from_user = models.CharField(max_length=255, verbose_name="От пользователя")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    
+    class Meta:
+        verbose_name = "Сообщение чата"
+        verbose_name_plural = "Сообщения чатов"
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.from_user}: {self.message_text[:50]}"

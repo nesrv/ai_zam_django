@@ -738,15 +738,7 @@ def delete_organization(request, pk):
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 
-def organization_detail(request, pk):
-    organizaciya = get_object_or_404(Organizaciya, pk=pk)
-    sotrudniki = Sotrudnik.objects.filter(organizaciya=organizaciya).select_related('specialnost', 'podrazdelenie')
-    podrazdeleniya = organizaciya.podrazdeleniya.all()
-    return render(request, 'sotrudniki/organization_detail.html', {
-        'organizaciya': organizaciya,
-        'sotrudniki': sotrudniki,
-        'podrazdeleniya': podrazdeleniya
-    })
+
 
 
 def sotrudnik_add(request):

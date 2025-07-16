@@ -1,49 +1,108 @@
 {% extends 'base/base.html' %}
 
-{% block title %}Мои организации{% endblock %}
+{% block title %}Кадры{% endblock %}
 
 {% block extra_styles %}
-.organization-list { 
-    list-style: none; 
-    padding: 0; 
-    max-width: 800px;
-    margin: 0 auto;
-}
-.organization-item { 
-    padding: 20px; 
-    margin-bottom: 15px; 
-    border: 1px solid rgba(255, 255, 255, 0.2); 
-    border-radius: 10px; 
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    transition: all 0.3s;
-}
-.organization-item:hover { 
-    background: rgba(255, 255, 255, 0.2); 
-    transform: translateY(-2px);
-}
-.organization-link { 
-    text-decoration: none; 
-    color: white; 
-    font-weight: bold; 
-    font-size: 24px;
-    display: block;
-}
-.organization-link:hover { 
-    color: #e3f2fd; 
-    text-decoration: none;
-}
-.organization-inn { 
-    color: rgba(255, 255, 255, 0.8); 
-    font-size: 16px; 
-    margin-top: 8px;
-}
 .page-title {
     text-align: center;
     color: white;
     font-size: 3rem;
     margin-bottom: 3rem;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+.tree-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.tree ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+.tree li {
+    position: relative;
+    padding: 8px 0;
+    margin-left: 20px;
+}
+.tree li:before {
+    content: '';
+    position: absolute;
+    left: -20px;
+    top: 20px;
+    width: 15px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.4);
+}
+.tree li:after {
+    content: '';
+    position: absolute;
+    left: -20px;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.4);
+}
+.tree li:last-child:after {
+    height: 20px;
+}
+.tree > ul > li {
+    margin-left: 0;
+}
+.tree > ul > li:before,
+.tree > ul > li:after {
+    display: none;
+}
+.org-node {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    background: rgba(76, 175, 80, 0.2);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(76, 175, 80, 0.4);
+    transition: all 0.3s ease;
+}
+.org-node:hover {
+    background: rgba(76, 175, 80, 0.3);
+    transform: translateY(-2px);
+}
+.dept-node {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    background: rgba(33, 150, 243, 0.15);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border: 1px solid rgba(33, 150, 243, 0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.dept-node:hover {
+    background: rgba(33, 150, 243, 0.25);
+    transform: translateX(5px);
+}
+.node-icon {
+    margin-right: 12px;
+    font-size: 18px;
+}
+.node-info {
+    flex: 1;
+}
+.node-title {
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+.node-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
 }
 .delete-btn {
     background: rgba(231, 76, 60, 0.8);
@@ -66,25 +125,46 @@
 {% endblock %}
 
 {% block content %}
-<div class="page-title">Мои организации</div>
+<div class="page-title">Кадры</div>
 
-<ul class="organization-list">
-    {% for organizaciya in organizacii %}
-    <li class="organization-item">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <a href="{% url 'sotrudniki:organization_detail' organizaciya.pk %}" class="organization-link">
-                {{ organizaciya.nazvanie }}
-            </a>
-            <button onclick="deleteOrganization({{ organizaciya.id }})" class="delete-btn" title="Удалить организацию">✗</button>
-        </div>
-        <div class="organization-inn">ИНН: {{ organizaciya.inn }}</div>
-    </li>
-    {% empty %}
-    <li class="organization-item">
-        <div style="text-align: center; color: rgba(255, 255, 255, 0.7);">Нет организаций</div>
-    </li>
-    {% endfor %}
-</ul>
+<div class="tree-container">
+    <div class="tree">
+        <ul>
+            {% for organizaciya in organizacii %}
+            <li>
+                <div class="org-node">
+                    <div style="display: flex; align-items: center;">
+                        <div class="node-icon">🏢</div>
+                        <div class="node-info">
+                            <div class="node-title">{{ organizaciya.nazvanie }}</div>
+                            <div class="node-subtitle">ИНН: {{ organizaciya.inn }}</div>
+                        </div>
+                    </div>
+                    <button onclick="deleteOrganization({{ organizaciya.id }})" class="delete-btn" title="Удалить организацию">✗</button>
+                </div>
+                
+                <ul>
+                    {% for podrazdelenie in organizaciya.podrazdeleniya.all %}
+                    <li>
+                        <div class="dept-node" onclick="location.href='{% url 'sotrudniki:list' %}?podrazdelenie={{ podrazdelenie.id }}'">
+                            <div class="node-icon">📋</div>
+                            <div class="node-info">
+                                <div class="node-title">{{ podrazdelenie.kod }}</div>
+                                <div class="node-subtitle">{{ podrazdelenie.nazvanie }}</div>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% empty %}
+            <li>
+                <div style="text-align: center; color: rgba(255, 255, 255, 0.7); padding: 20px;">Нет организаций</div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 
 <script>
 function getCookie(name) {

@@ -195,6 +195,113 @@
     margin: 20px auto;
     display: block;
 }
+
+.chat-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.chat-toggle {
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+    transition: all 0.3s ease;
+}
+
+.chat-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.6);
+}
+
+.chat-dropdown {
+    position: absolute;
+    bottom: 60px;
+    right: 0;
+    width: 300px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    display: none;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.chat-dropdown.show {
+    display: block;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chat-header {
+    padding: 15px 20px;
+    background: linear-gradient(45deg, #34495e, #2c3e50);
+    color: white;
+    border-radius: 15px 15px 0 0;
+    font-weight: bold;
+    text-align: center;
+}
+
+.chat-list {
+    padding: 10px 0;
+}
+
+.chat-item {
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background 0.3s;
+    display: flex;
+    align-items: center;
+}
+
+.chat-item:hover {
+    background: rgba(52, 152, 219, 0.1);
+}
+
+.chat-item:last-child {
+    border-bottom: none;
+}
+
+.chat-icon {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.chat-info {
+    flex: 1;
+}
+
+.chat-name {
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 2px;
+}
+
+.chat-status {
+    font-size: 12px;
+    color: #7f8c8d;
+}
+
 {% endblock %}
 
 {% block content %}
@@ -301,7 +408,54 @@
     <a href="/" class="btn-back">Вернуться на главную</a>
 </section>
 
+<!-- Чаты объектов -->
+<div class="chat-widget">
+    <button class="chat-toggle" onclick="toggleChat()">💬 Чаты объектов</button>
+    <div class="chat-dropdown" id="chatDropdown">
+        <div class="chat-header">
+            Чаты объектов
+        </div>
+        <div class="chat-list">
+            {% for item in objects_with_info %}
+            <div class="chat-item" onclick="openObjectChat('{{ item.object.nazvanie }}', {{ item.object.id }})">
+                <div class="chat-icon">🏗️</div>
+                <div class="chat-info">
+                    <div class="chat-name">{{ item.object.nazvanie }}</div>
+                    <div class="chat-status">Онлайн</div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="chat-item">
+                <div class="chat-info">
+                    <div class="chat-name">Нет доступных чатов</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
 <script>
+function toggleChat() {
+    const dropdown = document.getElementById('chatDropdown');
+    dropdown.classList.toggle('show');
+}
+
+function openObjectChat(objectName, objectId) {
+    alert(`Открытие чата для объекта: ${objectName}`);
+    // Здесь можно добавить логику открытия чата
+}
+
+// Закрытие чата при клике вне его
+document.addEventListener('click', function(event) {
+    const chatWidget = document.querySelector('.chat-widget');
+    const dropdown = document.getElementById('chatDropdown');
+    
+    if (!chatWidget.contains(event.target)) {
+        dropdown.classList.remove('show');
+    }
+});
+
 function deleteObject(objectId) {
     if (confirm('Вы уверены, что хотите удалить этот объект?')) {
         fetch(`/objects/${objectId}/delete/`, {

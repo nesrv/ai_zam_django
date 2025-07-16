@@ -17,6 +17,7 @@ from object.views_income import update_income
 from object.views_totals import get_income_totals
 from object.export_views import export_object_json
 from sotrudniki.views import organizations_list
+from telegrambot import views
 
 # Изменяем заголовки админки
 # admin.site.site_header = "Ruslan administration"
@@ -48,6 +49,7 @@ urlpatterns = [
     path('favicon.ico', favicon_view),
     path('ai/', include('ai.urls')),
     path('telegram/', include('telegrambot.urls')),
+    path('ai-agent/', views.bot_status, name='ai_agent'),
     path('sotrudniki/', include('sotrudniki.urls')),
     path('kadry/', organizations_list, name='organizations_main'),
     path('analytics/', include('analytics.urls')),
