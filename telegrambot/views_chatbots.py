@@ -158,7 +158,7 @@ def update_chat_id(request):
             
             return JsonResponse({
                 'success': True,
-                'message': f'Chat ID {'подключен' if chat_id else 'отключен'} для объекта {objekt.nazvanie}'
+                'message': f'Chat ID {"подключен" if chat_id else "отключен"} для объекта {objekt.nazvanie}'
             })
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})

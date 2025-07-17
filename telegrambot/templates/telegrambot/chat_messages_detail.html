@@ -1,0 +1,218 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Чат {{ chat_id }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    .message {
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 10px;
+    }
+    .message-from-user {
+        background-color: #e9ecef;
+        margin-right: 20%;
+    }
+    .message-from-bot {
+        background-color: #d1e7dd;
+        margin-left: 20%;
+    }
+    .message-header {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .message-time {
+        font-size: 0.8em;
+        color: #6c757d;
+    }
+    .message-reply {
+        border-left: 3px solid #0d6efd;
+        padding-left: 10px;
+    }
+    .message-forwarded {
+        border-left: 3px solid #6f42c1;
+        padding-left: 10px;
+    }
+    #chat-container {
+        height: 500px;
+        overflow-y: auto;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Чат {{ chat_id }}</h1>
+        <a href="{% url 'telegrambot:chat_messages_list' %}" class="btn btn-secondary">
+            Назад к списку чатов
+        </a>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Информация о чате</h5>
+                    <p class="card-text">ID чата: <strong>{{ chat_id }}</strong></p>
+                    <p class="card-text">Всего сообщений: <strong>{{ stats.message_count }}</strong></p>
+                    <p class="card-text">Уникальных пользователей: <strong>{{ stats.unique_users }}</strong></p>
+                    {% if stats.first_message %}
+                    <p class="card-text">Первое сообщение: <strong>{{ stats.first_message.created_at|date:"d.m.Y H:i" }}</strong></p>
+                    {% endif %}
+                    {% if stats.last_message %}
+                    <p class="card-text">Последнее сообщение: <strong>{{ stats.last_message.created_at|date:"d.m.Y H:i" }}</strong></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Связанный объект</h5>
+                    {% if objekt %}
+                    <p class="card-text">Название: <strong><a href="{% url 'object:detail' objekt.id %}">{{ objekt.nazvanie }}</a></strong></p>
+                    <p class="card-text">Дата начала: <strong>{{ objekt.data_nachala|date:"d.m.Y" }}</strong></p>
+                    <p class="card-text">Ответственный: <strong>{{ objekt.otvetstvennyj }}</strong></p>
+                    {% else %}
+                    <p class="card-text">Чат не связан с объектом</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Отправить сообщение в чат</h5>
+                    <form id="send-message-form">
+                        <div class="mb-3">
+                            <textarea class="form-control" id="message-text" rows="3" placeholder="Введите сообщение..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Отправить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>История сообщений</h5>
+                </div>
+                <div class="card-body">
+                    <div id="chat-container">
+                        {% for message in messages %}
+                        <div class="message {% if 'бот' in message.from_user|lower %}message-from-bot{% else %}message-from-user{% endif %} {% if message.is_reply %}message-reply{% endif %} {% if message.is_forwarded %}message-forwarded{% endif %}">
+                            <div class="message-header">
+                                {{ message.from_user }}
+                                <span class="message-time">{{ message.created_at|date:"H:i d.m.Y" }}</span>
+                            </div>
+                            <div class="message-content">
+                                {{ message.message_text|linebreaks }}
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center">
+                            <p>Нет сообщений в этом чате</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // Прокрутка чата вниз при загрузке страницы
+        var chatContainer = document.getElementById('chat-container');
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        
+        // Отправка сообщения
+        $('#send-message-form').submit(function(e) {
+            e.preventDefault();
+            
+            var messageText = $('#message-text').val().trim();
+            if (!messageText) {
+                alert('Введите текст сообщения');
+                return;
+            }
+            
+            $.ajax({
+                url: '{% url "telegrambot:send_message_to_chat" chat_id %}',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    message: messageText
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        $('#message-text').val('');
+                        alert('Сообщение успешно отправлено');
+                        // Перезагрузка страницы для отображения нового сообщения
+                        location.reload();
+                    } else {
+                        alert('Ошибка: ' + response.error);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Ошибка отправки сообщения: ' + error);
+                }
+            });
+        });
+        
+        // Обновление сообщений каждые 30 секунд
+        function updateMessages() {
+            $.ajax({
+                url: '{% url "telegrambot:get_chat_messages_ajax" chat_id %}',
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        // Обновление сообщений
+                        var chatContainer = $('#chat-container');
+                        chatContainer.empty();
+                        
+                        if (response.messages.length === 0) {
+                            chatContainer.html('<div class="text-center"><p>Нет сообщений в этом чате</p></div>');
+                        } else {
+                            $.each(response.messages, function(index, message) {
+                                var messageClass = message.from_user.toLowerCase().includes('бот') ? 'message-from-bot' : 'message-from-user';
+                                if (message.is_reply) messageClass += ' message-reply';
+                                if (message.is_forwarded) messageClass += ' message-forwarded';
+                                
+                                var messageHtml = '<div class="message ' + messageClass + '">' +
+                                    '<div class="message-header">' +
+                                    message.from_user +
+                                    '<span class="message-time">' + message.date + '</span>' +
+                                    '</div>' +
+                                    '<div class="message-content">' +
+                                    message.text.replace(/\n/g, '<br>') +
+                                    '</div>' +
+                                    '</div>';
+                                
+                                chatContainer.append(messageHtml);
+                            });
+                            
+                            // Прокрутка вниз
+                            chatContainer.scrollTop(chatContainer[0].scrollHeight);
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Запуск обновления каждые 30 секунд
+        setInterval(updateMessages, 30000);
+    });
+</script>
+{% endblock %}

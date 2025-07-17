@@ -62,11 +62,26 @@ class ChatMessage(models.Model):
     message_text = models.TextField(verbose_name="Текст сообщения")
     from_user = models.CharField(max_length=255, verbose_name="От пользователя")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    message_id = models.BigIntegerField(null=True, blank=True, verbose_name="ID сообщения")
+    reply_to_message_id = models.BigIntegerField(null=True, blank=True, verbose_name="ID сообщения, на которое отвечают")
+    forward_from = models.JSONField(null=True, blank=True, verbose_name="Информация о пересланном сообщении")
     
     class Meta:
         verbose_name = "Сообщение чата"
         verbose_name_plural = "Сообщения чатов"
         ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['chat_id']),
+            models.Index(fields=['message_id']),
+        ]
     
     def __str__(self):
         return f"{self.from_user}: {self.message_text[:50]}"
+        
+    def is_reply(self):
+        """Проверяет, является ли сообщение ответом на другое"""
+        return self.reply_to_message_id is not None
+        
+    def is_forwarded(self):
+        """Проверяет, является ли сообщение пересланным"""
+        return self.forward_from is not None

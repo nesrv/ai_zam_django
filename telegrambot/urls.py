@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
-from .views_chatbots import chatbots_page, update_chat_id, get_chat_messages_ajax, send_message_to_chat, get_chat_messages_ajax, send_message_to_chat
+from .views_chatbots import chatbots_page, update_chat_id, get_chat_messages_ajax as get_chatbot_messages_ajax, send_message_to_chat as send_chatbot_message
+from .views_chat_messages import chat_messages_list, chat_messages_detail, send_message_to_chat, get_chat_messages_ajax
+from .views_stats import messages_stats
 
 app_name = 'telegrambot'
 
@@ -23,8 +25,17 @@ urlpatterns = [
     path('download-and-save/', views.download_and_save_document, name='download_and_save_document'),
     path('save-json-response/', views.save_json_response, name='save_json_response'),
     path('update-chat-id/', update_chat_id, name='update_chat_id'),
-    path('get-chat-messages/', get_chat_messages_ajax, name='get_chat_messages'),
-    path('send-message/', send_message_to_chat, name='send_message'),
-    path('get-chat-messages/', get_chat_messages_ajax, name='get_chat_messages'),
-    path('send-message/', send_message_to_chat, name='send_message'),
+    
+    # Старые URL для совместимости
+    path('get-chat-messages/', get_chatbot_messages_ajax, name='get_chatbot_messages'),
+    path('send-message/', send_chatbot_message, name='send_chatbot_message'),
+    
+    # Новые URL для работы с сообщениями из чатов
+    path('chats/', chat_messages_list, name='chat_messages_list'),
+    path('chats/<str:chat_id>/', chat_messages_detail, name='chat_messages_detail'),
+    path('chats/<str:chat_id>/send/', send_message_to_chat, name='send_message_to_chat'),
+    path('chats/<str:chat_id>/messages/', get_chat_messages_ajax, name='get_chat_messages_ajax'),
+    
+    # Статистика сообщений
+    path('stats/', messages_stats, name='messages_stats'),
 ] 

@@ -1,0 +1,110 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Статистика сообщений Telegram{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Статистика сообщений Telegram</h1>
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Общая статистика</h5>
+                    <p class="card-text">Всего сообщений в групповых чатах: <strong>{{ chat_messages_count }}</strong></p>
+                    <p class="card-text">Всего сообщений в личных чатах: <strong>{{ telegram_messages_count }}</strong></p>
+                    <p class="card-text">Всего пользователей: <strong>{{ users_count }}</strong></p>
+                    <p class="card-text">Всего групповых чатов: <strong>{{ chats_count }}</strong></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Активность</h5>
+                    <p class="card-text">Сообщений за последние 24 часа: <strong>{{ messages_today }}</strong></p>
+                    <p class="card-text">Сообщений за последнюю неделю: <strong>{{ messages_week }}</strong></p>
+                    <p class="card-text">Новых пользователей за последнюю неделю: <strong>{{ new_users_week }}</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Последние сообщения из групповых чатов</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Чат</th>
+                                    <th>От кого</th>
+                                    <th>Сообщение</th>
+                                    <th>Дата</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for message in recent_chat_messages %}
+                                <tr>
+                                    <td>{{ message.chat_id }}</td>
+                                    <td>{{ message.from_user }}</td>
+                                    <td>{{ message.message_text|truncatechars:50 }}</td>
+                                    <td>{{ message.created_at|date:"d.m.Y H:i" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">Нет сообщений</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Последние сообщения из личных чатов</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Пользователь</th>
+                                    <th>Направление</th>
+                                    <th>Сообщение</th>
+                                    <th>Дата</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for message in recent_telegram_messages %}
+                                <tr>
+                                    <td>{{ message.user.first_name }} {% if message.user.username %}(@{{ message.user.username }}){% endif %}</td>
+                                    <td>{% if message.is_from_user %}От пользователя{% else %}От бота{% endif %}</td>
+                                    <td>{{ message.content|truncatechars:50 }}</td>
+                                    <td>{{ message.created_at|date:"d.m.Y H:i" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">Нет сообщений</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

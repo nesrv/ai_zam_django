@@ -22,7 +22,7 @@ from fpdf.errors import FPDFException
 logger = logging.getLogger(__name__)
 
 @csrf_exempt
-# @require_POST  # временно убираем для теста
+@require_POST
 def telegram_webhook(request):
     print('=== ВЫЗВАН telegram_webhook ===')
     import logging
@@ -82,6 +82,14 @@ def telegram_webhook(request):
         if 'update_id' not in update_data:
             logger.error("Отсутствует update_id в update")
             return JsonResponse({'error': 'Missing update_id'}, status=400)
+        
+        # Обрабатываем сообщения из всех типов чатов
+        message = update_data.get('message', {})
+        if message:
+            # Используем новую функцию для обработки сообщений
+            from .services import process_telegram_message
+            process_telegram_message(message)
+            logger.info(f"Сообщение обработано и сохранено в базу данных")
         
         # Обрабатываем update
         try:

@@ -99,7 +99,7 @@ def check_bot_token(token):
         logger.error(f"Ошибка проверки токена бота: {e}")
         return False, str(e)
 
-def send_telegram_message(chat_id, text, reply_markup=None):
+def send_telegram_message(chat_id, text, reply_markup=None, save_to_db=True):
     """Отправка сообщения в Telegram"""
     try:
         # Используем BOT_TOKEN
@@ -162,6 +162,52 @@ def send_telegram_message(chat_id, text, reply_markup=None):
         
         result = response.json()
         logger.info(f"Успешный ответ от Telegram API: {result}")
+        
+        # Сохраняем сообщение в базу данных, если отправка успешна
+        if save_to_db and result.get('ok'):
+            try:
+                # Проверяем, является ли чат групповым или личным
+                # Для групповых чатов используем ChatMessage
+                # Для личных чатов используем TelegramMessage
+                
+                # Проверяем, есть ли объект с таким chat_id
+                from object.models import Objekt
+                objekt = Objekt.objects.filter(chat_id=str(chat_id)).first()
+                
+                # Если есть объект или chat_id начинается с минуса (групповой чат),
+                # то сохраняем в ChatMessage
+                if objekt or str(chat_id).startswith('-'):
+                    from .models import ChatMessage
+                    from django.utils import timezone
+                    
+                    # Получаем данные о сообщении из ответа Telegram API
+                    message_data = result.get('result', {})
+                    message_id = message_data.get('message_id')
+                    
+                    # Сохраняем сообщение в базу
+                    ChatMessage.objects.create(
+                        chat_id=str(chat_id),
+                        message_text=text,
+                        from_user="AI-ZAM Bot",
+                        message_id=message_id
+                    )
+                    logger.info(f"Сообщение сохранено в ChatMessage: chat_id={chat_id}, message_id={message_id}")
+                else:
+                    # Для личных чатов сохраняем в TelegramMessage
+                    from .models import TelegramUser, TelegramMessage
+                    
+                    # Пытаемся найти пользователя по telegram_id
+                    user = TelegramUser.objects.filter(telegram_id=chat_id).first()
+                    if user:
+                        TelegramMessage.objects.create(
+                            user=user,
+                            content=text,
+                            message_type='text',
+                            is_from_user=False  # Сообщение от бота
+                        )
+                        logger.info(f"Сообщение сохранено в TelegramMessage: user_id={user.id}")
+            except Exception as e:
+                logger.error(f"Ошибка сохранения сообщения в базу данных: {e}")
         
         return result
     except requests.exceptions.RequestException as e:
@@ -343,11 +389,37 @@ def process_telegram_update(update_data):
         
         # Сохраняем сообщения из групповых чатов
         if chat_type in ['group', 'supergroup'] and text:
+            # Формируем имя пользователя
             from_user_name = from_user.get('first_name', '') + ' ' + (from_user.get('last_name', '') or '')
+            username = from_user.get('username', '')
+            if username:
+                from_user_name += f" (@{username})"
+            
+            # Получаем дополнительные данные сообщения
+            message_id = message.get('message_id')
+            message_date = message.get('date')
+            reply_to_message = message.get('reply_to_message')
+            reply_to_message_id = reply_to_message.get('message_id') if reply_to_message else None
+            forward_from = message.get('forward_from')
+            
+            # Преобразуем timestamp в datetime если есть
+            from datetime import datetime
+            message_datetime = None
+            if message_date:
+                try:
+                    message_datetime = datetime.fromtimestamp(message_date)
+                except Exception as e:
+                    logger.error(f"Ошибка преобразования даты: {e}")
+            
+            # Сохраняем сообщение в базу
             save_chat_message_to_db(
                 chat_id=chat_id,
                 message_text=text,
-                from_user=from_user_name.strip() or 'Неизвестно'
+                from_user=from_user_name.strip() or 'Неизвестно',
+                message_date=message_datetime,
+                message_id=message_id,
+                reply_to_message_id=reply_to_message_id,
+                forward_from=forward_from
             )
         
         logger.info(f"Извлеченные данные: chat_id={chat_id}, chat_type={chat_type}, text='{text}', from_user={from_user}")
@@ -776,22 +848,125 @@ def analyze_message_for_object_creation(message_content):
         logger.error(error_msg)
         return {'error': error_msg}
 
-def save_chat_message_to_db(chat_id, message_text, from_user, message_date=None):
+def save_chat_message_to_db(chat_id, message_text, from_user, message_date=None, message_id=None, reply_to_message_id=None, forward_from=None):
     """Сохранение сообщения из чата в базу данных"""
     try:
         from .models import ChatMessage
         from django.utils import timezone
         
-        ChatMessage.objects.create(
+        # Создаем запись в базе данных с дополнительными полями
+        message = ChatMessage.objects.create(
             chat_id=str(chat_id),
             message_text=message_text,
             from_user=from_user,
-            created_at=message_date or timezone.now()
+            created_at=message_date or timezone.now(),
+            message_id=message_id,
+            reply_to_message_id=reply_to_message_id,
+            forward_from=forward_from
         )
+        
+        # Обновляем объект, если есть дополнительные данные
+        from object.models import Objekt
+        
+        # Проверяем, есть ли объект с таким chat_id
+        try:
+            objekt = Objekt.objects.filter(chat_id=str(chat_id)).first()
+            if objekt:
+                logger.info(f"Найден объект для чата {chat_id}: {objekt.nazvanie}")
+        except Exception as obj_err:
+            logger.error(f"Ошибка поиска объекта по chat_id: {obj_err}")
+        
         logger.info(f"Сообщение сохранено в базу: {chat_id} - {from_user}: {message_text[:50]}...")
         return True
     except Exception as e:
         logger.error(f"Ошибка сохранения сообщения в базу: {e}")
+        return False
+
+
+def process_telegram_message(message_data):
+    """Обработка сообщения из Telegram"""
+    try:
+        if not message_data:
+            logger.warning("Пустые данные сообщения")
+            return False
+        
+        # Получаем данные из сообщения
+        chat = message_data.get('chat', {})
+        chat_id = chat.get('id')
+        chat_type = chat.get('type', 'private')
+        text = message_data.get('text', '')
+        from_user = message_data.get('from', {})
+        message_id = message_data.get('message_id')
+        message_date = message_data.get('date')
+        reply_to_message = message_data.get('reply_to_message')
+        reply_to_message_id = reply_to_message.get('message_id') if reply_to_message else None
+        forward_from = message_data.get('forward_from')
+        
+        if not chat_id or not text:
+            logger.warning(f"Пропуск сообщения: chat_id={chat_id}, text='{text}'")
+            return False
+        
+        # Преобразуем timestamp в datetime если есть
+        from datetime import datetime
+        message_datetime = None
+        if message_date:
+            try:
+                message_datetime = datetime.fromtimestamp(message_date)
+            except Exception as e:
+                logger.error(f"Ошибка преобразования даты: {e}")
+        
+        # Формируем имя пользователя
+        from_user_name = from_user.get('first_name', '') + ' ' + (from_user.get('last_name', '') or '')
+        username = from_user.get('username', '')
+        if username:
+            from_user_name += f" (@{username})"
+        
+        # Если это групповой чат, сохраняем в ChatMessage
+        if chat_type in ['group', 'supergroup']:
+            save_chat_message_to_db(
+                chat_id=chat_id,
+                message_text=text,
+                from_user=from_user_name.strip() or 'Неизвестно',
+                message_date=message_datetime,
+                message_id=message_id,
+                reply_to_message_id=reply_to_message_id,
+                forward_from=forward_from
+            )
+            logger.info(f"Сообщение из группового чата {chat_id} сохранено в ChatMessage")
+        # Если это личный чат, сохраняем в TelegramMessage
+        else:
+            # Получаем или создаем пользователя
+            from .models import TelegramUser, TelegramMessage
+            
+            user, created = TelegramUser.objects.get_or_create(
+                telegram_id=from_user.get('id'),
+                defaults={
+                    'username': from_user.get('username'),
+                    'first_name': from_user.get('first_name'),
+                    'last_name': from_user.get('last_name'),
+                }
+            )
+            
+            # Обновляем данные пользователя
+            if not created:
+                user.username = from_user.get('username')
+                user.first_name = from_user.get('first_name')
+                user.last_name = from_user.get('last_name')
+                user.is_active = True
+                user.save()
+            
+            # Сохраняем сообщение
+            TelegramMessage.objects.create(
+                user=user,
+                content=text,
+                message_type='text',
+                is_from_user=True
+            )
+            logger.info(f"Сообщение из личного чата {chat_id} сохранено в TelegramMessage")
+        
+        return True
+    except Exception as e:
+        logger.error(f"Ошибка обработки сообщения: {e}")
         return False
 
 def get_chat_info(chat_id):

@@ -1,0 +1,75 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Список чатов Telegram{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Список чатов Telegram</h1>
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Статистика</h5>
+                    <p class="card-text">Всего чатов: <strong>{{ total_chats }}</strong></p>
+                    <p class="card-text">Всего сообщений: <strong>{{ total_messages }}</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>ID чата</th>
+                    <th>Объект</th>
+                    <th>Сообщений</th>
+                    <th>Последнее сообщение</th>
+                    <th>Последняя активность</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for chat in chats %}
+                <tr>
+                    <td>{{ chat.chat_id }}</td>
+                    <td>
+                        {% if chat.objekt %}
+                            <a href="{% url 'object:detail' chat.objekt.id %}">{{ chat.objekt.nazvanie }}</a>
+                        {% else %}
+                            <span class="text-muted">Не связан с объектом</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ chat.message_count }}</td>
+                    <td>
+                        {% if chat.last_message %}
+                            <strong>{{ chat.last_message.from_user }}</strong>: 
+                            {{ chat.last_message.message_text|truncatechars:50 }}
+                        {% else %}
+                            <span class="text-muted">Нет сообщений</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if chat.last_activity %}
+                            {{ chat.last_activity|date:"d.m.Y H:i" }}
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'telegrambot:chat_messages_detail' chat.chat_id %}" class="btn btn-sm btn-primary">
+                            Просмотр
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">Нет доступных чатов</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
