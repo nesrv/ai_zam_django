@@ -16,8 +16,9 @@ django.setup()
 from .models import TelegramUser, TelegramMessage
 from .services import generate_document_with_deepseek, handle_documents_command
 
-load_dotenv()
-TELEGRAM_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '..', '.env'))
+TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
+print(f"DEBUG: Loaded token: {TELEGRAM_TOKEN}")
 SESSION_ID = str(uuid.uuid4())[:8]
 BOT_START_TIME = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 

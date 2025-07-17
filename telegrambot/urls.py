@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views_chatbots import chatbots_page, update_chat_id
+from .views_chatbots import chatbots_page, update_chat_id, get_chat_messages_ajax, send_message_to_chat, get_chat_messages_ajax, send_message_to_chat
 
 app_name = 'telegrambot'
 
@@ -23,4 +23,8 @@ urlpatterns = [
     path('download-and-save/', views.download_and_save_document, name='download_and_save_document'),
     path('save-json-response/', views.save_json_response, name='save_json_response'),
     path('update-chat-id/', update_chat_id, name='update_chat_id'),
+    path('get-chat-messages/', get_chat_messages_ajax, name='get_chat_messages'),
+    path('send-message/', send_message_to_chat, name='send_message'),
+    path('get-chat-messages/', get_chat_messages_ajax, name='get_chat_messages'),
+    path('send-message/', send_message_to_chat, name='send_message'),
 ] 

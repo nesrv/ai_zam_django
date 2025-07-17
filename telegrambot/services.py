@@ -37,8 +37,12 @@ if not TELEGRAM_TOKEN:
     logger.error("TELEGRAM_TOKEN не найден в переменных окружения!")
     logger.error("Убедитесь, что файл .env содержит строку: TELEGRAM_TOKEN=ваш_токен")
 
-# Токен бота
-BOT_TOKEN = "7836693206:AAE_wRnOiWm0xhRlP7cr8Q0AvaPEgZCgTFw"
+# Токен бота - используем из переменных окружения
+BOT_TOKEN = os.getenv('TELEGRAM_TOKEN')
+
+if not BOT_TOKEN:
+    logger.error("TELEGRAM_TOKEN не найден в переменных окружения!")
+    logger.error("Убедитесь, что файл .env содержит строку: TELEGRAM_TOKEN=ваш_токен")
 
 # Глобальные переменные для хранения экземпляров ботов
 ne_srv_bot_app = None
@@ -98,10 +102,10 @@ def check_bot_token(token):
 def send_telegram_message(chat_id, text, reply_markup=None):
     """Отправка сообщения в Telegram"""
     try:
-        # Используем BOT_TOKEN вместо TELEGRAM_TOKEN
-        token = BOT_TOKEN or TELEGRAM_TOKEN
+        # Используем BOT_TOKEN
+        token = BOT_TOKEN
         if not token:
-            logger.error("Токен бота не установлен")
+            logger.error("Токен бота не установлен в переменных окружения")
             return None
         
         # Проверяем токен при первой отправке
@@ -333,10 +337,20 @@ def process_telegram_update(update_data):
         
         message = update_data.get('message', {})
         chat_id = message.get('chat', {}).get('id')
+        chat_type = message.get('chat', {}).get('type', 'private')
         text = message.get('text', '')
         from_user = message.get('from', {})
         
-        logger.info(f"Извлеченные данные: chat_id={chat_id}, text='{text}', from_user={from_user}")
+        # Сохраняем сообщения из групповых чатов
+        if chat_type in ['group', 'supergroup'] and text:
+            from_user_name = from_user.get('first_name', '') + ' ' + (from_user.get('last_name', '') or '')
+            save_chat_message_to_db(
+                chat_id=chat_id,
+                message_text=text,
+                from_user=from_user_name.strip() or 'Неизвестно'
+            )
+        
+        logger.info(f"Извлеченные данные: chat_id={chat_id}, chat_type={chat_type}, text='{text}', from_user={from_user}")
         
         if not chat_id or not text:
             logger.warning(f"Пропуск обновления: chat_id={chat_id}, text='{text}'")
@@ -760,4 +774,52 @@ def analyze_message_for_object_creation(message_content):
     except Exception as e:
         error_msg = f"Ошибка анализа сообщения: {str(e)}"
         logger.error(error_msg)
-        return {'error': error_msg} 
+        return {'error': error_msg}
+
+def save_chat_message_to_db(chat_id, message_text, from_user, message_date=None):
+    """Сохранение сообщения из чата в базу данных"""
+    try:
+        from .models import ChatMessage
+        from django.utils import timezone
+        
+        ChatMessage.objects.create(
+            chat_id=str(chat_id),
+            message_text=message_text,
+            from_user=from_user,
+            created_at=message_date or timezone.now()
+        )
+        logger.info(f"Сообщение сохранено в базу: {chat_id} - {from_user}: {message_text[:50]}...")
+        return True
+    except Exception as e:
+        logger.error(f"Ошибка сохранения сообщения в базу: {e}")
+        return False
+
+def get_chat_info(chat_id):
+    """Получение информации о чате"""
+    try:
+        import asyncio
+        from telegram import Bot
+        
+        async def _get_chat_info():
+            bot = Bot(token=BOT_TOKEN)
+            try:
+                chat = await bot.get_chat(chat_id)
+                return {
+                    'id': chat.id,
+                    'title': chat.title,
+                    'type': chat.type,
+                    'member_count': getattr(chat, 'member_count', None)
+                }
+            finally:
+                await bot.session.close()
+        
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            return loop.run_until_complete(_get_chat_info())
+        finally:
+            loop.close()
+            
+    except Exception as e:
+        logger.error(f"Ошибка получения информации о чате {chat_id}: {e}")
+        return None 

@@ -158,6 +158,17 @@
     padding: 8px;
     margin-bottom: 5px;
     font-size: 0.8rem;
+    border-left: 3px solid #dee2e6;
+}
+
+.user-message {
+    border-left-color: #007AFF;
+    background: #e3f2fd;
+}
+
+.bot-message {
+    border-left-color: #28a745;
+    background: #f1f8e9;
 }
 
 .message-text {
@@ -176,6 +187,10 @@
     font-size: 0.8rem;
     font-style: italic;
     margin: 10px 0;
+    text-align: center;
+    padding: 20px;
+    background: rgba(108, 117, 125, 0.1);
+    border-radius: 10px;
 }
 
 @media (max-width: 768px) {
@@ -198,6 +213,21 @@
 {% block content %}
 <div class="page-title">Рабочие чаты</div>
 
+{% if not bot_token_configured %}
+<div style="background: #dc3545; color: white; padding: 15px; border-radius: 10px; margin: 20px auto; max-width: 800px; text-align: center;">
+    ⚠️ <strong>Предупреждение:</strong> Токен бота не настроен в .env файле. Получение сообщений недоступно.
+</div>
+{% endif %}
+
+<div style="text-align: center; margin-bottom: 30px; color: rgba(255, 255, 255, 0.8);">
+    <div style="display: inline-block; margin: 0 20px;">
+        <strong>{{ total_connected }}</strong> подключенных чатов
+    </div>
+    <div style="display: inline-block; margin: 0 20px;">
+        <strong>{{ total_messages }}</strong> сообщений в базе
+    </div>
+</div>
+
 <div class="chatbots-grid">
     {% for objekt in objekty %}
     <div class="iphone-frame">
@@ -209,18 +239,29 @@
                     <div class="status-text">Чат-бот подключен</div>
                     <div class="chat-id-display">ID: {{ objekt.chat_id }}</div>
                     
-                    {% if objekt.recent_messages %}
-                        <div class="messages-container">
+                    <div class="messages-container" id="messages-{{ objekt.id }}">
+                        {% if objekt.recent_messages %}
                             {% for message in objekt.recent_messages %}
-                            <div class="message-item">
-                                <div class="message-text">{{ message.text|truncatechars:30 }}</div>
+                            <div class="message-item {% if message.is_from_user %}user-message{% else %}bot-message{% endif %}">
+                                <div class="message-text">{{ message.text|truncatechars:40 }}</div>
                                 <div class="message-meta">{{ message.from_user }} • {{ message.date }}</div>
                             </div>
                             {% endfor %}
-                        </div>
-                    {% else %}
-                        <div class="no-messages">Нет сообщений</div>
-                    {% endif %}
+                        {% else %}
+                            <div class="no-messages">Нет сообщений</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div style="margin-top: 10px;">
+                        <button class="connect-btn" onclick="refreshMessages({{ objekt.id }}, '{{ objekt.chat_id }}')"
+                                style="padding: 5px 10px; font-size: 0.7rem; margin-right: 5px;">
+                            🔄 Обновить
+                        </button>
+                        <button class="connect-btn" onclick="showSendMessage({{ objekt.id }}, '{{ objekt.chat_id }}')"
+                                style="padding: 5px 10px; font-size: 0.7rem; background: #28a745;">
+                            💬 Отправить
+                        </button>
+                    </div>
                     
                     <button class="disconnect-btn" onclick="disconnectBot({{ objekt.id }})">
                         Отключить
@@ -232,8 +273,10 @@
                         <input type="text" 
                                class="chat-id-input" 
                                id="chat-id-{{ objekt.id }}"
-                               placeholder="Введите Chat ID"
-                               maxlength="50">
+                               placeholder="Например: -1001234567890"
+                               maxlength="20"
+                               pattern="-?\d+"
+                               title="Введите числовой Chat ID">
                         <button class="connect-btn" onclick="connectBot({{ objekt.id }})">
                             Подключить бота
                         </button>
@@ -329,6 +372,12 @@ function connectBot(objektId) {
         return;
     }
     
+    // Проверяем, что chat_id является числом
+    if (!/^-?\d+$/.test(chatId)) {
+        alert('Chat ID должен быть числом');
+        return;
+    }
+    
     fetch('/telegram/update-chat-id/', {
         method: 'POST',
         headers: {
@@ -343,6 +392,7 @@ function connectBot(objektId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            alert(data.message || 'Чат-бот подключен!');
             location.reload();
         } else {
             alert('Ошибка: ' + data.error);
@@ -369,6 +419,7 @@ function disconnectBot(objektId) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                alert(data.message || 'Чат-бот отключен!');
                 location.reload();
             } else {
                 alert('Ошибка: ' + data.error);
@@ -378,6 +429,65 @@ function disconnectBot(objektId) {
             alert('Ошибка: ' + error);
         });
     }
+}
+
+function refreshMessages(objektId, chatId) {
+    if (!chatId) return;
+    
+    fetch(`/telegram/get-chat-messages/?chat_id=${chatId}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const container = document.getElementById(`messages-${objektId}`);
+            if (data.messages.length > 0) {
+                container.innerHTML = data.messages.map(msg => `
+                    <div class="message-item ${msg.is_from_user ? 'user-message' : 'bot-message'}">
+                        <div class="message-text">${msg.text.substring(0, 40)}${msg.text.length > 40 ? '...' : ''}</div>
+                        <div class="message-meta">${msg.from_user} • ${msg.date}</div>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = '<div class="no-messages">Нет сообщений</div>';
+            }
+        } else {
+            alert('Ошибка обновления: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert('Ошибка: ' + error);
+    });
+}
+
+function showSendMessage(objektId, chatId) {
+    if (!chatId) return;
+    
+    const message = prompt('Введите сообщение для отправки в чат:');
+    if (!message || !message.trim()) return;
+    
+    fetch('/telegram/send-message/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            chat_id: chatId,
+            message: message.trim()
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Сообщение отправлено!');
+            // Обновляем сообщения через 2 секунды
+            setTimeout(() => refreshMessages(objektId, chatId), 2000);
+        } else {
+            alert('Ошибка отправки: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert('Ошибка: ' + error);
+    });
 }
 </script>
 {% endblock %}

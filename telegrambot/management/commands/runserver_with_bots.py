@@ -43,29 +43,17 @@ class Command(BaseCommand):
             self._start_django_with_bots()
 
     def _start_bots(self):
-        """Запускает только ne_srv_bot"""
+        """Запускает только интегрированный бот"""
         try:
-            from telegrambot.services import start_all_bots
+            from telegrambot.bot_integrated import main
             
             self.stdout.write(
-                self.style.SUCCESS('Инициализация Telegram бота...')
+                self.style.SUCCESS('Инициализация интегрированного Telegram бота...')
             )
             
-            bot_thread = start_all_bots()
+            # Запускаем интегрированный бот
+            main()
             
-            self.stdout.write(
-                self.style.SUCCESS('✅ NE_SRV_BOT запущен')
-            )
-            
-            # Держим бота запущенным
-            try:
-                while True:
-                    time.sleep(1)
-            except KeyboardInterrupt:
-                self.stdout.write(
-                    self.style.WARNING('Остановка бота...')
-                )
-                
         except Exception as e:
             self.stdout.write(
                 self.style.ERROR(f'Ошибка запуска бота: {e}')
@@ -81,19 +69,22 @@ class Command(BaseCommand):
             )
 
     def _start_django_with_bots(self):
-        """Запускает Django сервер и ne_srv_bot одновременно"""
+        """Запускает Django сервер и интегрированный бот одновременно"""
         try:
             # Запускаем бота в отдельном потоке
-            from telegrambot.services import start_all_bots
+            def run_bot():
+                from telegrambot.bot_integrated import main
+                main()
             
             self.stdout.write(
-                self.style.SUCCESS('Инициализация Telegram бота...')
+                self.style.SUCCESS('Инициализация интегрированного Telegram бота...')
             )
             
-            bot_thread = start_all_bots()
+            bot_thread = threading.Thread(target=run_bot, daemon=True)
+            bot_thread.start()
             
             self.stdout.write(
-                self.style.SUCCESS('✅ NE_SRV_BOT запущен')
+                self.style.SUCCESS('✅ Интегрированный бот запущен')
             )
             
             # Небольшая задержка для инициализации бота

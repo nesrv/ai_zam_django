@@ -43,8 +43,8 @@ class Command(BaseCommand):
             def run_bots_thread():
                 try:
                     # Импортируем и запускаем ботов
-                    from telegrambot.bot_integrated import start_bots
-                    start_bots()
+                    from telegrambot.services import start_all_bots
+                    start_all_bots()
                 except Exception as e:
                     self.stdout.write(
                         self.style.ERROR(f'❌ Ошибка запуска ботов: {e}')
