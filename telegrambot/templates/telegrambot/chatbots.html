@@ -390,8 +390,6 @@
                 <span onclick="refreshMessages({{ objekt.id }}, '{{ objekt.chat_id }}')" style="cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);" title="Обновить" class="refresh-button">🔄</span>
             </div>
             <div class="chat-content">
-                <!-- Удалена надпись "Чат-бот подключен" -->
-
                     
                     <div class="messages-container" id="messages-{{ objekt.id }}" style="height: 400px; max-height: 400px; display: flex; flex-direction: column; justify-content: flex-end;">
                         {% if objekt.recent_messages %}
@@ -454,11 +452,11 @@
                     </div>
                 </div>
                 Рабочая группа
-                <span onclick="refreshMessages('work-group', 'work-group-chat')" style="cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);" title="Обновить" class="refresh-button">🔄</span>
+                <span onclick="refreshFakeMessages('work-group')" style="cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);" title="Обновить" class="refresh-button">🔄</span>
             </div>
             <div class="chat-content">
-                <div class="connected-status" data-chat-id="work-group-chat">✅</div>
-                <div class="status-text">Активная группа</div>
+                <div class="connected-status" data-chat-id="-9000000001">✅</div>
+                <!-- Удалена надпись "Активная группа" -->
                 
                 <div class="messages-container" id="messages-work-group" style="height: 400px; max-height: 400px; display: flex; flex-direction: column; justify-content: flex-end;">
                     <div class="message-item">
@@ -478,7 +476,7 @@
             <div class="chat-footer">
                 <div class="message-input-container">
                     <textarea id="message-input-work-group" class="message-input" placeholder="Введите сообщение..."></textarea>
-                    <button class="send-btn" onclick="sendMessage('work-group', 'work-group-chat')" title="Отправить сообщение">
+                    <button class="send-btn" onclick="sendFakeMessage('work-group')" title="Отправить сообщение">
                         ➞
                     </button>
                 </div>
@@ -498,11 +496,11 @@
                     </div>
                 </div>
                 Информационный чат
-                <span onclick="refreshMessages('info-channel', 'info-channel-chat')" style="cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);" title="Обновить" class="refresh-button">🔄</span>
+                <span onclick="refreshFakeMessages('info-channel')" style="cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);" title="Обновить" class="refresh-button">🔄</span>
             </div>
             <div class="chat-content">
-                <div class="connected-status" data-chat-id="info-channel-chat">✅</div>
-                <div class="status-text">Информационный канал</div>
+                <div class="connected-status" data-chat-id="-9000000002">✅</div>
+                <!-- Удалена надпись "Информационный канал" -->
                 
                 <div class="messages-container" id="messages-info-channel" style="height: 400px; max-height: 400px; display: flex; flex-direction: column; justify-content: flex-end;">
                     <div class="message-item">
@@ -522,7 +520,7 @@
             <div class="chat-footer">
                 <div class="message-input-container">
                     <textarea id="message-input-info-channel" class="message-input" placeholder="Введите сообщение..."></textarea>
-                    <button class="send-btn" onclick="sendMessage('info-channel', 'info-channel-chat')" title="Отправить сообщение">
+                    <button class="send-btn" onclick="sendFakeMessage('info-channel')" title="Отправить сообщение">
                         ➞
                     </button>
                 </div>
@@ -760,12 +758,115 @@ function autoRefreshAllChats() {
     
     connectedStatuses.forEach(status => {
         const chatId = status.getAttribute('data-chat-id');
-        const objektId = status.closest('.iphone-frame').querySelector('.messages-container').id.split('-')[1];
+        const container = status.closest('.iphone-frame').querySelector('.messages-container');
+        if (!container || !container.id) return;
+        
+        const objektId = container.id.split('-')[1];
         
         if (chatId && objektId) {
-            refreshMessages(objektId, chatId);
+            // Проверяем, является ли это фейковый чат
+            if (objektId === 'work-group' || objektId === 'info-channel') {
+                // Для фейковых чатов используем фейковое обновление
+                refreshFakeMessages(objektId);
+            } else {
+                // Для реальных чатов используем обычное обновление
+                refreshMessages(objektId, chatId);
+            }
         }
     });
+}
+
+// Функция для обновления фейковых сообщений
+function refreshFakeMessages(chatId) {
+    // Находим кнопку обновления и добавляем анимацию вращения
+    const refreshButton = document.querySelector(`.chat-header [onclick*="refreshFakeMessages('${chatId}')"]`);
+    if (refreshButton) {
+        refreshButton.classList.add('refreshing');
+        if (!refreshButton.style.animation) {
+            refreshButton.style.animation = 'spin 1s linear infinite';
+        }
+    }
+    
+    // Имитируем загрузку
+    setTimeout(() => {
+        // Убираем анимацию вращения
+        if (refreshButton) {
+            refreshButton.classList.remove('refreshing');
+            refreshButton.style.animation = '';
+        }
+    }, 500);
+}
+
+// Функция для отправки фейковых сообщений
+function sendFakeMessage(chatId) {
+    const messageInput = document.getElementById(`message-input-${chatId}`);
+    const message = messageInput.value.trim();
+    
+    if (!message) return;
+    
+    // Получаем контейнер сообщений
+    const container = document.getElementById(`messages-${chatId}`);
+    if (!container) return;
+    
+    // Создаем новое сообщение
+    const now = new Date();
+    const timeString = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')} ${now.getDate()}.${(now.getMonth() + 1).toString().padStart(2, '0')}`;
+    
+    // Удаляем сообщение "Нет сообщений", если оно есть
+    const noMessages = container.querySelector('.no-messages');
+    if (noMessages) {
+        noMessages.remove();
+    }
+    
+    // Добавляем новое сообщение
+    const newMessage = document.createElement('div');
+    newMessage.className = 'message-item user-message';
+    newMessage.innerHTML = `
+        <div class="message-text">${message}</div>
+        <div class="message-meta">Вы • ${timeString}</div>
+    `;
+    container.appendChild(newMessage);
+    
+    // Прокручиваем к последнему сообщению
+    container.scrollTop = container.scrollHeight;
+    
+    // Очищаем поле ввода
+    messageInput.value = '';
+    
+    // Имитируем ответ бота через некоторое время
+    setTimeout(() => {
+        // Генерируем ответ в зависимости от типа чата
+        let botResponse = 'Сообщение получено.';
+        let botName = 'Бот';
+        
+        if (chatId === 'work-group') {
+            botName = 'Прораб';
+            if (message.toLowerCase().includes('статус')) {
+                botResponse = 'Статус принят. Будет обработан в течение дня.';
+            } else if (message.toLowerCase().includes('запрос')) {
+                botResponse = 'Запрос принят. Ответ будет предоставлен в ближайшее время.';
+            }
+        } else if (chatId === 'info-channel') {
+            botName = 'Администратор';
+            if (message.toLowerCase().includes('объявление')) {
+                botResponse = 'Объявление опубликовано и разослано всем сотрудникам.';
+            } else if (message.toLowerCase().includes('график')) {
+                botResponse = 'График работ обновлен и доступен в системе.';
+            }
+        }
+        
+        // Добавляем ответ бота
+        const botMessage = document.createElement('div');
+        botMessage.className = 'message-item bot-message';
+        botMessage.innerHTML = `
+            <div class="message-text">${botResponse}</div>
+            <div class="message-meta">${botName} • ${timeString}</div>
+        `;
+        container.appendChild(botMessage);
+        
+        // Прокручиваем к последнему сообщению
+        container.scrollTop = container.scrollHeight;
+    }, 1500);
 }
 
 // Закрываем выпадающее меню при клике вне его
@@ -779,20 +880,22 @@ document.addEventListener('click', function(event) {
 
 // Добавляем обработчики событий для полей ввода после загрузки страницы
 // Функция для обработки прокрутки колесом мыши
-function setupWheelScrolling() {
-    document.querySelectorAll('.messages-container').forEach(container => {
-        // Добавляем обработчик события wheel
-        container.addEventListener('wheel', function(e) {
-            // Предотвращаем распространение события
-            e.stopPropagation();
-            
-            // Предотвращаем стандартное поведение прокрутки
-            e.preventDefault();
-            
-            // Вручную прокручиваем контейнер
-            container.scrollTop += e.deltaY;
-        }, { passive: false });
-    });
+function setupScrolling() {
+    // Просто добавляем стили для прокрутки
+    const style = document.createElement('style');
+    style.textContent = `
+        .messages-container {
+            overflow-y: scroll !important;
+            height: 400px !important;
+            max-height: 400px !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+        
+        .message-item {
+            margin-bottom: 10px !important;
+        }
+    `;
+    document.head.appendChild(style);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -818,31 +921,9 @@ document.addEventListener('DOMContentLoaded', function() {
         container.style.position = 'relative';
         container.style.zIndex = '10';
         
-        // Добавляем обработчик события wheel
-        container.addEventListener('wheel', function(e) {
-            // Предотвращаем распространение события
-            e.stopPropagation();
-            
-            // Предотвращаем стандартное поведение прокрутки
-            e.preventDefault();
-            
-            // Вручную прокручиваем контейнер
-            container.scrollTop += (e.deltaY);
-        }, { passive: false });
+        // Удаляем обработчик wheel, чтобы использовать стандартную прокрутку
         
-        // Добавляем обработчик события колеса мыши
-        container.addEventListener('wheel', function(e) {
-            // Предотвращаем прокрутку страницы
-            e.stopPropagation();
-            
-            // Предотвращаем стандартное поведение прокрутки, если контейнер уже прокручен до конца
-            const isAtTop = container.scrollTop === 0;
-            const isAtBottom = container.scrollHeight - container.scrollTop === container.clientHeight;
-            
-            if ((isAtTop && e.deltaY < 0) || (isAtBottom && e.deltaY > 0)) {
-                e.preventDefault();
-            }
-        }, { passive: false });
+        // Удаляем обработчик wheel, чтобы использовать стандартную прокрутку
     });
     // Настраиваем все контейнеры сообщений для отображения последних 10 сообщений
     document.querySelectorAll('.messages-container').forEach(container => {
@@ -865,7 +946,12 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault(); // Предотвращаем перенос строки
-                sendMessage(objektId, chatId);
+                // Проверяем, является ли это фейковый чат
+                if (objektId === 'work-group' || objektId === 'info-channel') {
+                    sendFakeMessage(objektId);
+                } else {
+                    sendMessage(objektId, chatId);
+                }
             }
         });
     });
@@ -875,8 +961,27 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Автообновление работает в фоновом режиме без индикатора
     
-    // Настраиваем прокрутку колесом мыши
-    setupWheelScrolling();
+    // Настраиваем прокрутку
+    setupScrolling();
+    
+    // Добавляем тестовые сообщения для проверки прокрутки
+    document.querySelectorAll('.messages-container').forEach(container => {
+        // Добавляем тестовые сообщения
+        for (let i = 1; i <= 30; i++) {
+            const testMessage = document.createElement('div');
+            testMessage.className = 'message-item';
+            testMessage.innerHTML = `
+                <div class="message-text">Тестовое сообщение #${i} для проверки прокрутки</div>
+                <div class="message-meta">Тест • ${new Date().toLocaleTimeString()}</div>
+            `;
+            container.appendChild(testMessage);
+        }
+        
+        // Прокручиваем вниз
+        setTimeout(() => {
+            container.scrollTop = container.scrollHeight;
+        }, 100);
+    });
     
     // Функция для ограничения количества сообщений до 10 последних
     function setupScrollableMessages() {
