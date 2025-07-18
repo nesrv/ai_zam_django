@@ -60,11 +60,35 @@ class TelegramPoller:
             self.thread.join(timeout=5)
         logger.info("Поллер Telegram остановлен")
     
+    def _cleanup_processed_updates(self):
+        """Очистка старых записей из таблицы ProcessedUpdate"""
+        try:
+            from .models import ProcessedUpdate
+            from django.utils import timezone
+            import datetime
+            
+            # Удаляем записи старше 1 дня
+            one_day_ago = timezone.now() - datetime.timedelta(days=1)
+            deleted_count = ProcessedUpdate.objects.filter(processed_at__lt=one_day_ago).delete()[0]
+            
+            if deleted_count > 0:
+                logger.info(f"Удалено {deleted_count} старых записей из таблицы ProcessedUpdate")
+        except Exception as e:
+            logger.error(f"Ошибка при очистке таблицы ProcessedUpdate: {e}")
+    
     def _polling_loop(self):
         """Основной цикл опроса API Telegram"""
+        cleanup_counter = 0
         while self.is_running:
             try:
                 self._get_updates()
+                
+                # Очищаем старые записи каждые 100 циклов
+                cleanup_counter += 1
+                if cleanup_counter >= 100:
+                    self._cleanup_processed_updates()
+                    cleanup_counter = 0
+                
                 time.sleep(self.interval)
             except Exception as e:
                 logger.error(f"Ошибка в цикле опроса: {e}")
@@ -73,39 +97,69 @@ class TelegramPoller:
     def _get_updates(self):
         """Получение обновлений от API Telegram"""
         try:
+            # Проверяем, что мы единственный экземпляр поллера
+            if is_another_instance_running():
+                logger.warning("Обнаружен другой экземпляр поллера, пропускаем получение обновлений")
+                return
+            
+            # Сначала пробуем сбросить вебхук, чтобы избежать конфликтов
+            try:
+                reset_url = f"https://api.telegram.org/bot{self.token}/deleteWebhook?drop_pending_updates=false"
+                reset_response = requests.get(reset_url, timeout=5)
+                if reset_response.status_code == 200:
+                    logger.info("Вебхук успешно сброшен перед получением обновлений")
+            except Exception as e:
+                logger.warning(f"Ошибка при сбросе вебхука: {e}")
+            
+            # Добавляем небольшую задержку после сброса вебхука
+            time.sleep(1)
+            
             url = f"https://api.telegram.org/bot{self.token}/getUpdates"
             params = {
                 'offset': self.last_update_id + 1,
-                'timeout': 30,
+                'timeout': 10,  # Уменьшаем таймаут для более частых проверок
                 'allowed_updates': json.dumps(['message', 'edited_message', 'channel_post'])
             }
             
-            response = requests.get(url, params=params, timeout=35)
-            
-            if response.status_code != 200:
-                logger.error(f"Ошибка API Telegram: {response.status_code} - {response.text}")
-                return
-            
-            data = response.json()
-            
-            if not data.get('ok'):
-                logger.error(f"API вернул ошибку: {data}")
-                return
-            
-            updates = data.get('result', [])
-            
-            if not updates:
-                return
-            
-            # Обрабатываем каждое обновление
-            for update in updates:
-                self._process_update(update)
+            # Используем новую сессию для каждого запроса
+            with requests.Session() as session:
+                response = session.get(url, params=params, timeout=15)
                 
-                # Обновляем last_update_id
-                if update['update_id'] > self.last_update_id:
-                    self.last_update_id = update['update_id']
-            
-            logger.info(f"Получено {len(updates)} обновлений, последний ID: {self.last_update_id}")
+                if response.status_code != 200:
+                    logger.error(f"Ошибка API Telegram: {response.status_code} - {response.text}")
+                    return
+                
+                data = response.json()
+                
+                if not data.get('ok'):
+                    logger.error(f"API вернул ошибку: {data}")
+                    return
+                
+                updates = data.get('result', [])
+                
+                if not updates:
+                    return
+                
+                # Обрабатываем каждое обновление
+                for update in updates:
+                    # Проверяем, не обрабатывали ли мы уже это обновление
+                    from .models import ProcessedUpdate
+                    update_id = str(update.get('update_id'))
+                    if ProcessedUpdate.objects.filter(update_id=update_id).exists():
+                        logger.info(f"Обновление {update_id} уже было обработано ранее, пропускаем")
+                        continue
+                    
+                    # Сохраняем информацию об обработанном обновлении
+                    ProcessedUpdate.objects.create(update_id=update_id)
+                    
+                    # Обрабатываем обновление
+                    self._process_update(update)
+                    
+                    # Обновляем last_update_id
+                    if int(update_id) > self.last_update_id:
+                        self.last_update_id = int(update_id)
+                
+                logger.info(f"Получено {len(updates)} обновлений, последний ID: {self.last_update_id}")
             
         except requests.exceptions.RequestException as e:
             logger.error(f"Ошибка запроса к API Telegram: {e}")
@@ -142,15 +196,32 @@ poller = None
 
 # Файл блокировки для предотвращения конфликтов
 import tempfile
+import socket
 
-# Используем текущую директорию для файла блокировки
-LOCK_FILE = 'telegram_poller.lock'
+# Используем абсолютный путь для файла блокировки
+LOCK_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'telegram_poller.lock')
+
+# Добавляем сокет для блокировки процесса
+LOCK_SOCKET = None
+LOCK_SOCKET_PORT = 12345  # Уникальный порт для блокировки
 
 def is_another_instance_running():
     """Проверка, запущен ли уже другой экземпляр поллера"""
+    global LOCK_SOCKET
     try:
+        # Пытаемся создать сокет на указанном порту
+        LOCK_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        LOCK_SOCKET.bind(('localhost', LOCK_SOCKET_PORT))
+        LOCK_SOCKET.setblocking(False)
+        logger.info(f"Успешно получена блокировка на порту {LOCK_SOCKET_PORT}")
+        return False
+    except socket.error:
+        logger.warning(f"Порт {LOCK_SOCKET_PORT} уже занят, другой экземпляр поллера уже запущен")
+        return True
+    except Exception as e:
+        logger.error(f"Ошибка при проверке блокировки сокета: {e}")
+        # При ошибке проверяем файл блокировки как запасной вариант
         if os.path.exists(LOCK_FILE):
-            # Проверяем время создания файла блокировки
             try:
                 file_time = os.path.getmtime(LOCK_FILE)
                 current_time = time.time()
@@ -162,17 +233,11 @@ def is_another_instance_running():
                         return False
                     except Exception as e:
                         logger.error(f"Не удалось удалить устаревший файл блокировки: {e}")
-                        # Игнорируем ошибку и разрешаем запуск нового экземпляра
                         return False
                 return True
             except Exception as e:
                 logger.error(f"Ошибка при проверке времени файла блокировки: {e}")
-                # При ошибке доступа к файлу разрешаем запуск нового экземпляра
                 return False
-        return False
-    except Exception as e:
-        logger.error(f"Общая ошибка при проверке файла блокировки: {e}")
-        # При любой ошибке разрешаем запуск нового экземпляра
         return False
 
 def create_lock_file():
@@ -188,24 +253,22 @@ def create_lock_file():
         return False
 
 def remove_lock_file():
-    """Удаление файла блокировки"""
+    """Удаление файла блокировки и освобождение сокета"""
+    global LOCK_SOCKET
     try:
-        # Проверяем существование файла в текущей директории
+        # Закрываем сокет, если он был создан
+        if LOCK_SOCKET:
+            try:
+                LOCK_SOCKET.close()
+                LOCK_SOCKET = None
+                logger.info(f"Сокет на порту {LOCK_SOCKET_PORT} освобожден")
+            except Exception as e:
+                logger.error(f"Ошибка при закрытии сокета: {e}")
+        
+        # Удаляем файл блокировки
         if os.path.exists(LOCK_FILE):
             os.remove(LOCK_FILE)
             logger.info(f"Файл блокировки удален: {LOCK_FILE}")
-        
-        # Также проверяем во временной директории
-        temp_lock_file = os.path.join(tempfile.gettempdir(), 'telegram_poller.lock')
-        if os.path.exists(temp_lock_file):
-            os.remove(temp_lock_file)
-            logger.info(f"Файл блокировки удален из временной директории: {temp_lock_file}")
-        
-        # Также проверяем в директории модуля
-        module_lock_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'telegram_poller.lock')
-        if os.path.exists(module_lock_file):
-            os.remove(module_lock_file)
-            logger.info(f"Файл блокировки удален из директории модуля: {module_lock_file}")
         
         return True
     except Exception as e:
@@ -217,27 +280,31 @@ def start_polling():
     global poller
     
     try:
-        # Удаляем все файлы блокировки
-        remove_lock_file()
+        # Проверяем, запущен ли уже другой экземпляр поллера
+        if is_another_instance_running():
+            logger.warning("Обнаружен другой запущенный экземпляр поллера. Новый экземпляр не будет запущен.")
+            return False
+        
+        # Создаем файл блокировки
+        create_lock_file()
         
         # Создаем и запускаем поллер
         if poller is None:
             poller = TelegramPoller()
         
         success = poller.start()
+        
+        # Если не удалось запустить поллер, удаляем файл блокировки
+        if not success:
+            remove_lock_file()
+            
         return success
     except Exception as e:
         logger.error(f"Ошибка при запуске поллера: {e}")
         
-        # Последняя попытка запустить поллер
-        try:
-            if poller is None:
-                poller = TelegramPoller()
-            
-            return poller.start()
-        except Exception as e2:
-            logger.error(f"Критическая ошибка при запуске поллера: {e2}")
-            return False
+        # Удаляем файл блокировки при ошибке
+        remove_lock_file()
+        return False
 
 def stop_polling():
     """Остановка поллера"""

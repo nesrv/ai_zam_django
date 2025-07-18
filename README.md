@@ -34,8 +34,22 @@ python manage.py runserver_with_poller --poller-only
 # Запуск поллера отдельным скриптом
 python run_telegram_poller.py
 
+# Запуск Django с поллером в одном процессе
+python run_django_with_poller.py
+
 # Статус бота и управление
 http://127.0.0.1:8000/ai-agent/
+```
+
+### Устранение проблем
+Если вы видите ошибку `Conflict: terminated by other getUpdates request`, выполните одну из следующих команд:
+
+```bash
+# Сброс состояния поллера через команду Django
+python manage.py reset_telegram_poller
+
+# Или используйте отдельный скрипт
+python clear_telegram_poller.py
 ```
 
 Подробная информация о получении сообщений из Telegram находится в файле [TELEGRAM_POLLER.md](TELEGRAM_POLLER.md).

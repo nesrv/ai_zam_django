@@ -1,6 +1,13 @@
 {% extends 'base/base.html' %}
+{% load static %}
 
 {% block title %}Чат-боты объектов{% endblock %}
+
+{% block extra_head %}
+<script src="{% static 'js/message-scroll.js' %}"></script>
+<script src="{% static 'js/employees-data.js' %}"></script>
+<script src="{% static 'js/modal-handler.js' %}"></script>
+{% endblock %}
 
 {% block extra_styles %}
 /* Стили для контейнера сообщений с полосой прокрутки */
@@ -14,20 +21,27 @@
     scrollbar-width: thin !important;
     scrollbar-color: #007AFF #f0f0f0 !important;
     padding-right: 5px !important;
+    -webkit-overflow-scrolling: touch !important;
+    position: relative !important;
+    z-index: 100 !important;
+    touch-action: pan-y !important; /* Разрешаем только вертикальную прокрутку */
 }
 
 .messages-container::-webkit-scrollbar {
     width: 6px !important;
+    display: block !important;
 }
 
 .messages-container::-webkit-scrollbar-track {
     background: #f0f0f0 !important;
     border-radius: 10px !important;
+    display: block !important;
 }
 
 .messages-container::-webkit-scrollbar-thumb {
     background-color: #007AFF !important;
     border-radius: 10px !important;
+    display: block !important;
 }
 .page-title {
     text-align: center;
@@ -101,6 +115,7 @@
     left: 10px;
     top: 50%;
     transform: translateY(-50%);
+    z-index: 10000;
 }
 
 .dropdown-toggle {
@@ -125,7 +140,7 @@
     border-radius: 5px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     min-width: 200px;
-    z-index: 1000;
+    z-index: 10000;
     display: none;
     margin-top: 5px;
 }
@@ -245,9 +260,15 @@
 
 .messages-container {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: scroll !important; /* Используем scroll вместо auto */
     margin: 10px 0;
     width: 100%;
+    scrollbar-width: thin !important;
+    scrollbar-color: #007AFF #f0f0f0 !important;
+    -webkit-overflow-scrolling: touch !important;
+    position: relative !important;
+    z-index: 100 !important;
+    touch-action: pan-y !important; /* Разрешаем только вертикальную прокрутку */
 }
 
 .message-item {
@@ -342,6 +363,170 @@
     background: #218838;
 }
 
+/* Стили для модального окна добавления часов в табель */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    animation: slideIn 0.3s;
+    color: #333; /* Более темный цвет текста для контраста */
+    font-weight: 500; /* Немного жирнее шрифт */
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #212529;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+}
+
+.close-modal {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: #333;
+}
+
+.hours-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+.hours-table th, .hours-table td {
+    border: 1px solid #adb5bd;
+    padding: 10px;
+    text-align: left;
+    color: #212529;
+    font-size: 0.95rem;
+}
+
+.hours-table th {
+    background-color: #e9ecef;
+    font-weight: bold;
+    color: #212529;
+    font-size: 1rem;
+    padding: 10px 8px;
+    border: 1px solid #adb5bd;
+}
+
+.hours-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.hours-table input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    color: #212529;
+    background-color: #fff;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.hours-table input:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+}
+
+.modal-btn {
+    padding: 10px 18px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.save-btn {
+    background-color: #007AFF;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.save-btn:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.cancel-btn {
+    background-color: #f2f2f2;
+    color: #333;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.cancel-btn:hover {
+    background-color: #e2e6ea;
+    color: #212529;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Делаем сообщения пользователя кликабельными */
+.user-message {
+    border-left-color: #007AFF;
+    background: #e3f2fd;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.user-message:hover {
+    background: #d0e8fc;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
 @media (max-width: 768px) {
     .chatbots-grid {
         grid-template-columns: 1fr;
@@ -356,10 +541,88 @@
     .iphone-frame:hover {
         transform: scale(1.02);
     }
+    
+    .modal-content {
+        width: 95%;
+        margin: 5% auto;
+    }
 }
 {% endblock %}
 
 {% block content %}
+<!-- Встроенный скрипт для исправления прокрутки -->
+<!-- Скрипт прокрутки перенесен в отдельный файл message-scroll.js -->
+
+<!-- Модальное окно для добавления часов в табель -->
+<div id="hoursModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Добавить часы в табель за <span id="message-date">дату</span></h2>
+            <span class="close-modal" onclick="closeHoursModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <table class="hours-table">
+                <thead>
+                    <tr>
+                        <th>Должность</th>
+                        <th>Сотрудник</th>
+                        <th>Часы</th>
+                        <th>Объект</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="text" id="position" value="Прораб">
+                        </td>
+                        <td>
+                            <input type="text" id="employee" value="Иванов И.И.">
+                        </td>
+                        <td>
+                            <input type="number" id="hours" value="8" min="1" max="24">
+                        </td>
+                        <td>
+                            <input type="text" id="object" value="Строительство ЖК">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" value="Монтажник">
+                        </td>
+                        <td>
+                            <input type="text" value="Петров П.П.">
+                        </td>
+                        <td>
+                            <input type="number" value="6" min="1" max="24">
+                        </td>
+                        <td>
+                            <input type="text" value="Строительство ЖК">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" value="Сварщик">
+                        </td>
+                        <td>
+                            <input type="text" value="Сидоров С.С.">
+                        </td>
+                        <td>
+                            <input type="number" value="7" min="1" max="24">
+                        </td>
+                        <td>
+                            <input type="text" value="Строительство ЖК">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn cancel-btn" onclick="closeHoursModal()">Отмена</button>
+            <button class="modal-btn save-btn" onclick="saveHours()">Сохранить</button>
+        </div>
+    </div>
+</div>
+
 <div class="page-title">Рабочие чаты</div>
 
 {% if not bot_token_configured %}
@@ -715,6 +978,11 @@ window.refreshMessages = function(objektId, chatId, limit = 50) {
                 
                 // Прокручиваем к последнему сообщению
                 container.scrollTop = container.scrollHeight;
+                
+                // Повторно настраиваем прокрутку
+                if (window.setupMessageScrolling) {
+                    setTimeout(window.setupMessageScrolling, 100);
+                }
             }
         } else {
             console.error('Ошибка обновления: ' + data.error);
@@ -765,7 +1033,13 @@ window.sendMessage = function(objektId, chatId) {
         if (data.success) {
             messageInput.value = ''; // Очищаем поле ввода
             // Обновляем сообщения через 1 секунду
-            setTimeout(() => window.refreshMessages(objektId, chatId), 1000);
+            setTimeout(() => {
+                window.refreshMessages(objektId, chatId);
+                // Повторно настраиваем прокрутку
+                if (window.setupMessageScrolling) {
+                    setTimeout(window.setupMessageScrolling, 100);
+                }
+            }, 1000);
         } else {
             alert('Ошибка отправки: ' + data.error);
         }
@@ -897,6 +1171,11 @@ window.sendFakeMessage = function(chatId) {
         
         // Прокручиваем к последнему сообщению
         container.scrollTop = container.scrollHeight;
+        
+        // Повторно настраиваем прокрутку
+        if (window.setupMessageScrolling) {
+            setTimeout(window.setupMessageScrolling, 100);
+        }
     }, 1500);
 };
 
@@ -909,17 +1188,36 @@ document.addEventListener('click', function(event) {
     }
 });
 
+// Удаляем глобальный обработчик, так как он может конфликтовать с нашим новым обработчиком
+
 // Добавляем обработчики событий для полей ввода после загрузки страницы
 // Функция для обработки прокрутки колесом мыши
 function setupScrolling() {
-    // Просто добавляем стили для прокрутки
+    // Добавляем стили для прокрутки
     const style = document.createElement('style');
     style.textContent = `
         .messages-container {
-            overflow-y: scroll !important;
+            overflow-y: scroll !important; /* Всегда показываем полосу прокрутки */
             height: 400px !important;
             max-height: 400px !important;
             -webkit-overflow-scrolling: touch !important;
+            scrollbar-width: thin !important;
+            scrollbar-color: #007AFF #f0f0f0 !important;
+            padding-right: 5px !important;
+        }
+        
+        .messages-container::-webkit-scrollbar {
+            width: 6px !important;
+        }
+        
+        .messages-container::-webkit-scrollbar-track {
+            background: #f0f0f0 !important;
+            border-radius: 10px !important;
+        }
+        
+        .messages-container::-webkit-scrollbar-thumb {
+            background-color: #007AFF !important;
+            border-radius: 10px !important;
         }
         
         .message-item {
@@ -927,10 +1225,98 @@ function setupScrolling() {
         }
     `;
     document.head.appendChild(style);
+    
+    // Добавляем обработчики событий колеса мыши
+    document.querySelectorAll('.messages-container').forEach(container => {
+        // Убеждаемся, что контейнер может прокручиваться
+        container.style.overflowY = 'scroll'; // Всегда показываем полосу прокрутки
+        container.style.webkitOverflowScrolling = 'touch';
+        
+        // Добавляем обработчик события wheel с захватом события
+        container.addEventListener('wheel', function(e) {
+            // Останавливаем распространение события, чтобы страница не прокручивалась
+            e.stopPropagation();
+        }, { passive: false, capture: true });
+    });
 }
 
+// Функция для прокрутки сообщений вниз
+function enableMessagesScrolling() {
+    document.querySelectorAll('.messages-container').forEach(container => {
+        container.scrollTop = container.scrollHeight;
+    });
+}
+
+// Используем функции из modal-handler.js
+// Дополнительная функция для отображения сотрудников по объекту
+function showEmployeesData(modalBody) {
+    // Удаляем предыдущий список сотрудников, если он есть
+    const oldEmployeesList = modalBody.querySelector('.employees-list');
+    if (oldEmployeesList) {
+        oldEmployeesList.remove();
+    }
+    
+    // Добавляем список сотрудников по объекту
+    const employeesList = document.createElement('div');
+    employeesList.className = 'employees-list';
+    employeesList.style.padding = '12px';
+    employeesList.style.marginBottom = '15px';
+    employeesList.style.backgroundColor = '#f5f5f5';
+    employeesList.style.border = '1px solid #ddd';
+    employeesList.style.borderRadius = '5px';
+    employeesList.style.fontSize = '0.9rem';
+    employeesList.style.color = '#333';
+    
+    // Заголовок списка сотрудников
+    const employeesTitle = document.createElement('h4');
+    employeesTitle.style.marginTop = '0';
+    employeesTitle.style.marginBottom = '10px';
+    employeesTitle.style.color = '#333';
+    employeesTitle.textContent = 'Сотрудники по объекту:';
+    employeesList.appendChild(employeesTitle);
+    
+    // Добавляем сотрудников в формате JSON
+    const employeesData = [
+        {"fio": "Иванов Иван Иванович", "specialnost": "альпинист"},
+        {"fio": "Петров Петр Петрович", "specialnost": "монтажник"},
+        {"fio": "Сидоров Сидор Сидорович", "specialnost": "сварщик"}
+    ];
+    
+    // Создаем пре-форматированный блок с JSON
+    const preElement = document.createElement('pre');
+    preElement.style.backgroundColor = '#f8f9fa';
+    preElement.style.padding = '10px';
+    preElement.style.borderRadius = '4px';
+    preElement.style.border = '1px solid #e9ecef';
+    preElement.style.fontSize = '0.85rem';
+    preElement.style.overflow = 'auto';
+    preElement.style.maxHeight = '150px';
+    preElement.style.color = '#212529';
+    preElement.textContent = JSON.stringify(employeesData, null, 2);
+    employeesList.appendChild(preElement);
+    
+    // Добавляем список сотрудников после текста сообщения
+    modalBody.insertBefore(employeesList, modalBody.querySelector('table'));
+}
+
+// Расширяем функцию openHoursModal из modal-handler.js
+const originalOpenHoursModal = window.openHoursModal || openHoursModal;
+window.openHoursModal = function(messageText, messageDate) {
+    // Вызываем оригинальную функцию
+    originalOpenHoursModal(messageText, messageDate);
+    
+    // Добавляем список сотрудников
+    const modal = document.getElementById('hoursModal');
+    if (modal) {
+        const modalBody = modal.querySelector('.modal-body');
+        if (modalBody) {
+            showEmployeesData(modalBody);
+        }
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Настраиваем все контейнеры сообщений для отображения последних 10 сообщений
+    // Настраиваем все контейнеры сообщений для отображения последних сообщений
     document.querySelectorAll('.messages-container').forEach(container => {
         // Добавляем стили для отображения последних сообщений
         container.style.height = '400px';
@@ -940,7 +1326,7 @@ document.addEventListener('DOMContentLoaded', function() {
         container.style.justifyContent = 'flex-end';
         
         // Добавляем стили для полосы прокрутки
-        container.style.overflowY = 'scroll';
+        container.style.overflowY = 'auto';
         container.style.paddingRight = '5px';
         
         // Стили для полосы прокрутки в WebKit
@@ -952,19 +1338,88 @@ document.addEventListener('DOMContentLoaded', function() {
         container.style.position = 'relative';
         container.style.zIndex = '10';
         
-        // Удаляем обработчик wheel, чтобы использовать стандартную прокрутку
-        
-        // Удаляем обработчик wheel, чтобы использовать стандартную прокрутку
+        // Добавляем обработчик клика для сообщений пользователя
+        container.querySelectorAll('.user-message').forEach(message => {
+            message.addEventListener('click', function() {
+                // Получаем текст сообщения
+                const messageText = message.querySelector('.message-text').textContent;
+                openHoursModal(messageText);
+            });
+        });
     });
-    // Настраиваем все контейнеры сообщений для отображения последних 10 сообщений
+    
+    // Закрытие модального окна при клике вне его
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('hoursModal');
+        if (event.target === modal) {
+            closeHoursModal();
+        }
+    });
+    
+    // Добавляем обработчик для новых сообщений, которые могут появиться позже
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === 1 && node.classList.contains('user-message')) {
+                        node.addEventListener('click', function() {
+                            // Получаем текст сообщения
+                            const messageText = this.querySelector('.message-text').textContent;
+                            openHoursModal(messageText);
+                        });
+                    }
+                });
+            }
+        });
+    });
+    
+    // Наблюдаем за всеми контейнерами сообщений
     document.querySelectorAll('.messages-container').forEach(container => {
-        // Добавляем стили для отображения последних сообщений
-        container.style.height = '400px';
-        container.style.maxHeight = '400px';
-        container.style.display = 'flex';
-        container.style.flexDirection = 'column';
-        container.style.justifyContent = 'flex-end';
+        observer.observe(container, { childList: true, subtree: true });
     });
+    
+    // Добавляем обработчик для динамически созданных сообщений
+    // Переопределяем функцию refreshMessages для добавления обработчиков клика
+    const originalRefreshMessages = window.refreshMessages;
+    window.refreshMessages = function(objektId, chatId, limit = 50) {
+        originalRefreshMessages(objektId, chatId, limit);
+        
+        // Добавляем обработчики клика после обновления сообщений
+        setTimeout(() => {
+            const container = document.getElementById(`messages-${objektId}`);
+            if (container) {
+                container.querySelectorAll('.user-message').forEach(message => {
+                    message.addEventListener('click', function() {
+                        // Получаем текст сообщения
+                        const messageText = this.querySelector('.message-text').textContent;
+                        openHoursModal(messageText);
+                    });
+                });
+            }
+        }, 500);
+    };
+    
+    // То же самое для фейковых сообщений
+    const originalSendFakeMessage = window.sendFakeMessage;
+    if (originalSendFakeMessage) {
+        window.sendFakeMessage = function(chatId) {
+            originalSendFakeMessage(chatId);
+            
+            // Добавляем обработчики клика после отправки сообщения
+            setTimeout(() => {
+                const container = document.getElementById(`messages-${chatId}`);
+                if (container) {
+                    container.querySelectorAll('.user-message').forEach(message => {
+                        message.addEventListener('click', function() {
+                            // Получаем текст сообщения
+                            const messageText = this.querySelector('.message-text').textContent;
+                            openHoursModal(messageText);
+                        });
+                    });
+                }
+            }, 500);
+        };
+    }
     // Находим все поля ввода сообщений
     const messageInputs = document.querySelectorAll('.message-input');
     
@@ -998,8 +1453,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Автообновление работает в фоновом режиме без индикатора
     
-    // Настраиваем прокрутку
+    // Настраиваем прокрутку с помощью обеих функций
     setupScrolling();
+    enableMessagesScrolling(); // Вызываем новую функцию для обработки прокрутки мышью
     
     // Прокручиваем все контейнеры сообщений вниз
     document.querySelectorAll('.messages-container').forEach(container => {
@@ -1011,40 +1467,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Функция для ограничения количества сообщений до 10 последних
+    // Удаляем переопределение функции refreshMessages, так как она может конфликтовать с нашим новым кодом
+    
+    // Функция для прокрутки сообщений вниз
     function setupScrollableMessages() {
         document.querySelectorAll('.messages-container').forEach(container => {
-            // Проверяем, что контейнер существует и имеет ID
-            if (!container || !container.id) return;
-            
-            // Добавляем стили для принудительного отображения полосы прокрутки
-            container.style.overflowY = 'scroll';
-            container.style.paddingRight = '5px';
-            
-            // Добавляем стили для WebKit браузеров
-            const styleSheet = document.createElement('style');
-            styleSheet.textContent = `
-                #${container.id}::-webkit-scrollbar {
-                    width: 6px;
-                }
-                #${container.id}::-webkit-scrollbar-track {
-                    background: #f0f0f0;
-                    border-radius: 10px;
-                }
-                #${container.id}::-webkit-scrollbar-thumb {
-                    background-color: #007AFF;
-                    border-radius: 10px;
-                }
-            `;
-            document.head.appendChild(styleSheet);
-            
-            // Прокручиваем вниз
             container.scrollTop = container.scrollHeight;
         });
     }
     
     // Вызываем функцию при загрузке страницы
     setupScrollableMessages();
+    
+    // Добавляем MutationObserver для прокрутки при добавлении новых сообщений
+    document.querySelectorAll('.messages-container').forEach(container => {
+        // Создаем наблюдатель за изменениями в DOM
+        const observer = new MutationObserver(function() {
+            // Прокручиваем вниз
+            container.scrollTop = container.scrollHeight;
+        });
+        
+        // Начинаем наблюдение за изменениями в контейнере
+        observer.observe(container, { childList: true, subtree: true });
+    });
     
     // Обновляем все чаты с большим количеством сообщений
     document.querySelectorAll('.connected-status[data-chat-id]').forEach(status => {

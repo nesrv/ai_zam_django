@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import TelegramUser, TelegramMessage
+from .models import TelegramUser, TelegramMessage, ChatMessage, ProcessedUpdate
 
 @admin.register(TelegramUser)
 class TelegramUserAdmin(admin.ModelAdmin):
@@ -20,3 +20,23 @@ class TelegramMessageAdmin(admin.ModelAdmin):
     def content_preview(self, obj):
         return obj.content[:100] + "..." if len(obj.content) > 100 else obj.content
     content_preview.short_description = "Содержание"
+
+@admin.register(ChatMessage)
+class ChatMessageAdmin(admin.ModelAdmin):
+    list_display = ['chat_id', 'from_user', 'message_text_preview', 'created_at']
+    list_filter = ['chat_id', 'created_at']
+    search_fields = ['message_text', 'from_user', 'chat_id']
+    readonly_fields = ['created_at']
+    ordering = ['-created_at']
+    
+    def message_text_preview(self, obj):
+        return obj.message_text[:100] + "..." if len(obj.message_text) > 100 else obj.message_text
+    message_text_preview.short_description = "Текст сообщения"
+
+@admin.register(ProcessedUpdate)
+class ProcessedUpdateAdmin(admin.ModelAdmin):
+    list_display = ['update_id', 'processed_at']
+    list_filter = ['processed_at']
+    search_fields = ['update_id']
+    readonly_fields = ['processed_at']
+    ordering = ['-processed_at']

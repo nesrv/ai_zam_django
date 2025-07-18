@@ -85,3 +85,21 @@ class ChatMessage(models.Model):
     def is_forwarded(self):
         """Проверяет, является ли сообщение пересланным"""
         return self.forward_from is not None
+
+
+class ProcessedUpdate(models.Model):
+    """Модель для отслеживания обработанных обновлений Telegram"""
+    update_id = models.CharField(max_length=50, unique=True, verbose_name="ID обновления")
+    processed_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата обработки")
+    
+    class Meta:
+        verbose_name = "Обработанное обновление"
+        verbose_name_plural = "Обработанные обновления"
+        ordering = ['-processed_at']
+        indexes = [
+            models.Index(fields=['update_id']),
+            models.Index(fields=['processed_at']),
+        ]
+    
+    def __str__(self):
+        return f"Обновление {self.update_id} обработано {self.processed_at}"

@@ -52,11 +52,11 @@ def start_telegram_poller():
     try:
         logger.info("Запуск поллера Telegram из WSGI...")
         
-        # Принудительно удаляем файл блокировки, если он существует
-        from telegrambot.telegram_poller import remove_lock_file
-        # Удаляем файл блокировки
-        remove_lock_file()
-        logger.info("Файл блокировки удален")
+        # Проверяем, запущен ли уже другой экземпляр поллера
+        from telegrambot.telegram_poller import is_another_instance_running
+        if is_another_instance_running():
+            logger.warning("Обнаружен другой запущенный экземпляр поллера. Новый экземпляр не будет запущен.")
+            return
         
         # Запускаем поллер
         from telegrambot.telegram_poller import start_polling
@@ -69,7 +69,6 @@ def start_telegram_poller():
     except Exception as e:
         logger.error(f"Ошибка при запуске поллера Telegram из WSGI: {e}")
 
-# Запускаем поллер в отдельном потоке
-poller_thread = threading.Thread(target=start_telegram_poller, daemon=True)
-poller_thread.start()
-logger.info("Поток поллера Telegram запущен из WSGI")
+# Отключаем автоматический запуск поллера в WSGI, чтобы избежать конфликтов
+# Для получения сообщений используйте отдельный скрипт: python run_telegram_poller.py
+logger.info("Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов")

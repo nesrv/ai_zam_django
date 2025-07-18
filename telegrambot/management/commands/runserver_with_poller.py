@@ -44,14 +44,26 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.ERROR('Не найден токен Telegram! Проверьте .env файл'))
                 return
             
-            poller = TelegramPoller(token=token, interval=interval)
-            poller_started = poller.start()
-            
-            if poller_started:
-                self.stdout.write(self.style.SUCCESS(f'Поллер Telegram запущен с интервалом {interval} сек.'))
+            # Проверяем, запущен ли уже другой экземпляр поллера
+            from telegrambot.telegram_poller import is_another_instance_running
+            if is_another_instance_running():
+                self.stdout.write(self.style.WARNING('Обнаружен другой запущенный экземпляр поллера.'))
+                self.stdout.write(self.style.WARNING('Если вы уверены, что это ошибка, выполните команду: python manage.py reset_telegram_poller'))
+                
+                # Если запускаем только поллер, то выходим
+                if poller_only:
+                    return
             else:
-                self.stdout.write(self.style.ERROR('Не удалось запустить поллер Telegram'))
-                return
+                poller = TelegramPoller(token=token, interval=interval)
+                poller_started = poller.start()
+                
+                if poller_started:
+                    self.stdout.write(self.style.SUCCESS(f'Поллер Telegram запущен с интервалом {interval} сек.'))
+                else:
+                    self.stdout.write(self.style.ERROR('Не удалось запустить поллер Telegram'))
+                    # Если запускаем только поллер, то выходим
+                    if poller_only:
+                        return
         
         # Запускаем Django сервер, если не указан флаг poller-only
         if not poller_only:
