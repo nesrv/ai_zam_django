@@ -1,0 +1,197 @@
+2025-07-18 11:05:18,385 - ai_zam.wsgi - INFO - Запуск поллера Telegram из WSGI...
+2025-07-18 11:05:18,385 - ai_zam.wsgi - INFO - Поток поллера Telegram запущен из WSGI
+2025-07-18 11:05:18,387 - telegrambot.telegram_poller - INFO - Поллер Telegram запущен с интервалом 20 сек.
+2025-07-18 11:05:18,392 - ai_zam.wsgi - INFO - Поллер Telegram успешно запущен из WSGI
+2025-07-18 11:05:21,637 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:05:22,258 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:05:37,093 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:05:44,985 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:05:51,913 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:06:05,190 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:06:08,796 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:06:20,804 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:06:33,991 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:06:35,632 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:06:48,888 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:06:55,989 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:07:02,497 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:07:16,213 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:07:20,555 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:07:32,597 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:07:45,820 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:07:46,214 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:07:59,901 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:08:09,560 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:08:14,290 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:08:29,385 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:08:33,472 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:08:42,899 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:08:56,696 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:08:57,963 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:09:13,154 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:09:23,362 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:09:26,629 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:09:40,406 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:09:47,535 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:09:53,693 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:10:07,335 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:10:10,980 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:10:20,866 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:10:34,195 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:10:34,366 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:10:48,029 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:10:58,280 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:11:01,576 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:11:14,906 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:11:23,940 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:11:28,646 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:11:43,285 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:11:48,486 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:11:56,494 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:12:11,699 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:12:12,374 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:12:26,991 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:12:37,008 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:12:42,245 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:12:55,939 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:13:06,195 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:13:07,237 - telegrambot.telegram_poller - INFO - Получено новое сообщение: -12...
+2025-07-18 11:13:07,257 - telegrambot.services - INFO - Найден объект для чата -1002700562903: Дом-3
+2025-07-18 11:13:07,257 - telegrambot.services - INFO - Сообщение сохранено в базу: -1002700562903 - Николай  (@nesrv): -12...
+2025-07-18 11:13:07,257 - telegrambot.services - INFO - Сообщение из группового чата -1002700562903 сохранено в ChatMessage
+2025-07-18 11:13:07,258 - telegrambot.telegram_poller - INFO - Получено 1 обновлений, последний ID: 9675583
+2025-07-18 11:13:20,664 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:13:30,902 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:13:33,503 - telegrambot.telegram_poller - INFO - Получено новое сообщение: -12...
+2025-07-18 11:13:33,521 - telegrambot.services - INFO - Найден объект для чата -4916602123: Снос дома
+2025-07-18 11:13:33,522 - telegrambot.services - INFO - Сообщение сохранено в базу: -4916602123 - Николай  (@nesrv): -12...
+2025-07-18 11:13:33,522 - telegrambot.services - INFO - Сообщение из группового чата -4916602123 сохранено в ChatMessage
+2025-07-18 11:13:33,522 - telegrambot.telegram_poller - INFO - Получено 1 обновлений, последний ID: 9675584
+2025-07-18 11:13:46,856 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:13:57,074 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:14:01,327 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:14:11,539 - telegrambot.telegram_poller - INFO - Получено новое сообщение: -12...
+2025-07-18 11:14:11,555 - telegrambot.services - INFO - Найден объект для чата -4916602123: Снос дома
+2025-07-18 11:14:11,555 - telegrambot.services - INFO - Сообщение сохранено в базу: -4916602123 - Николай  (@nesrv): -12...
+2025-07-18 11:14:11,556 - telegrambot.services - INFO - Сообщение из группового чата -4916602123 сохранено в ChatMessage
+2025-07-18 11:14:11,556 - telegrambot.telegram_poller - INFO - Получено 1 обновлений, последний ID: 9675585
+2025-07-18 11:14:17,274 - telegrambot.telegram_poller - INFO - Получено новое сообщение: -12...
+2025-07-18 11:14:17,291 - telegrambot.services - INFO - Найден объект для чата -4916602123: Снос дома
+2025-07-18 11:14:17,292 - telegrambot.services - INFO - Сообщение сохранено в базу: -4916602123 - Николай  (@nesrv): -12...
+2025-07-18 11:14:17,292 - telegrambot.services - INFO - Сообщение из группового чата -4916602123 сохранено в ChatMessage
+2025-07-18 11:14:17,293 - telegrambot.telegram_poller - INFO - Получено 1 обновлений, последний ID: 9675585
+2025-07-18 11:14:24,831 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:14:35,034 - telegrambot.telegram_poller - INFO - Получено новое сообщение: -23...
+2025-07-18 11:14:35,051 - telegrambot.services - INFO - Найден объект для чата -1002700562903: Дом-3
+2025-07-18 11:14:35,051 - telegrambot.services - INFO - Сообщение сохранено в базу: -1002700562903 - Николай  (@nesrv): -23...
+2025-07-18 11:14:35,051 - telegrambot.services - INFO - Сообщение из группового чата -1002700562903 сохранено в ChatMessage
+2025-07-18 11:14:35,052 - telegrambot.telegram_poller - INFO - Получено 1 обновлений, последний ID: 9675586
+2025-07-18 11:14:37,477 - telegrambot.telegram_poller - INFO - Получено новое сообщение: -23...
+2025-07-18 11:14:37,492 - telegrambot.services - INFO - Найден объект для чата -1002700562903: Дом-3
+2025-07-18 11:14:37,492 - telegrambot.services - INFO - Сообщение сохранено в базу: -1002700562903 - Николай  (@nesrv): -23...
+2025-07-18 11:14:37,493 - telegrambot.services - INFO - Сообщение из группового чата -1002700562903 сохранено в ChatMessage
+2025-07-18 11:14:37,493 - telegrambot.telegram_poller - INFO - Получено 1 обновлений, последний ID: 9675586
+2025-07-18 11:14:49,398 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:14:59,607 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:15:05,416 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:15:18,744 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:15:23,999 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:15:33,033 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:15:47,202 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:15:49,117 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:16:02,471 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:16:12,690 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:16:16,748 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:16:30,918 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:16:38,976 - telegrambot.telegram_poller - INFO - Получено новое сообщение: +45...
+2025-07-18 11:16:38,994 - telegrambot.services - INFO - Найден объект для чата -1002700562903: Дом-3
+2025-07-18 11:16:38,994 - telegrambot.services - INFO - Сообщение сохранено в базу: -1002700562903 - Николай  (@nesrv): +45...
+2025-07-18 11:16:38,995 - telegrambot.services - INFO - Сообщение из группового чата -1002700562903 сохранено в ChatMessage
+2025-07-18 11:16:38,995 - telegrambot.telegram_poller - INFO - Получено 1 обновлений, последний ID: 9675587
+2025-07-18 11:16:41,133 - telegrambot.telegram_poller - INFO - Получено новое сообщение: +45...
+2025-07-18 11:16:41,150 - telegrambot.services - INFO - Найден объект для чата -1002700562903: Дом-3
+2025-07-18 11:16:41,150 - telegrambot.services - INFO - Сообщение сохранено в базу: -1002700562903 - Николай  (@nesrv): +45...
+2025-07-18 11:16:41,150 - telegrambot.services - INFO - Сообщение из группового чата -1002700562903 сохранено в ChatMessage
+2025-07-18 11:16:41,151 - telegrambot.telegram_poller - INFO - Получено 1 обновлений, последний ID: 9675587
+2025-07-18 11:16:56,369 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:16:59,197 - telegrambot.telegram_poller - INFO - Получено новое сообщение: -23...
+2025-07-18 11:16:59,638 - telegrambot.services - INFO - Найден объект для чата -4916602123: Снос дома
+2025-07-18 11:16:59,638 - telegrambot.services - INFO - Сообщение сохранено в базу: -4916602123 - Николай  (@nesrv): -23...
+2025-07-18 11:16:59,639 - telegrambot.services - INFO - Сообщение из группового чата -4916602123 сохранено в ChatMessage
+2025-07-18 11:16:59,639 - telegrambot.telegram_poller - INFO - Получено 1 обновлений, последний ID: 9675588
+2025-07-18 11:17:06,584 - telegrambot.telegram_poller - INFO - Получено новое сообщение: -23...
+2025-07-18 11:17:06,608 - telegrambot.services - INFO - Найден объект для чата -4916602123: Снос дома
+2025-07-18 11:17:06,609 - telegrambot.services - INFO - Сообщение сохранено в базу: -4916602123 - Николай  (@nesrv): -23...
+2025-07-18 11:17:06,610 - telegrambot.services - INFO - Сообщение из группового чата -4916602123 сохранено в ChatMessage
+2025-07-18 11:17:06,610 - telegrambot.telegram_poller - INFO - Получено 1 обновлений, последний ID: 9675588
+2025-07-18 11:17:19,889 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:17:27,086 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:17:40,355 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:17:50,566 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:17:57,503 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:18:10,795 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:18:17,951 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:18:31,246 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:18:41,471 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:18:48,399 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:19:01,671 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:19:08,830 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:19:22,115 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:19:32,309 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:19:39,367 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:19:55,537 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:19:59,807 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:20:15,945 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:20:26,140 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:20:30,245 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:20:46,359 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:20:48,001 - telegrambot.telegram_poller - INFO - Получено новое сообщение: -76...
+2025-07-18 11:20:48,019 - telegrambot.services - INFO - Найден объект для чата -4916602123: Снос дома
+2025-07-18 11:20:48,020 - telegrambot.services - INFO - Сообщение сохранено в базу: -4916602123 - Николай  (@nesrv): -76...
+2025-07-18 11:20:48,026 - telegrambot.services - INFO - Сообщение из группового чата -4916602123 сохранено в ChatMessage
+2025-07-18 11:20:48,026 - telegrambot.telegram_poller - INFO - Получено 1 обновлений, последний ID: 9675589
+2025-07-18 11:20:56,585 - telegrambot.telegram_poller - INFO - Получено новое сообщение: -76...
+2025-07-18 11:20:56,605 - telegrambot.services - INFO - Найден объект для чата -4916602123: Снос дома
+2025-07-18 11:20:56,605 - telegrambot.services - INFO - Сообщение сохранено в базу: -4916602123 - Николай  (@nesrv): -76...
+2025-07-18 11:20:56,607 - telegrambot.services - INFO - Сообщение из группового чата -4916602123 сохранено в ChatMessage
+2025-07-18 11:20:56,608 - telegrambot.telegram_poller - INFO - Получено 1 обновлений, последний ID: 9675589
+2025-07-18 11:21:11,245 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:21:17,045 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:21:31,670 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:21:41,874 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:21:47,464 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:22:02,091 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:22:07,940 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:22:22,523 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:22:32,725 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:22:35,162 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\wsgi.py changed, reloading.
+2025-07-18 11:22:40,502 - ai_zam.wsgi - INFO - Запуск поллера Telegram из WSGI...
+2025-07-18 11:22:40,502 - ai_zam.wsgi - INFO - Поток поллера Telegram запущен из WSGI
+2025-07-18 11:22:40,503 - telegrambot.telegram_poller - WARNING - Найден устаревший файл блокировки, удаляем
+2025-07-18 11:22:40,505 - telegrambot.telegram_poller - INFO - Поллер Telegram запущен с интервалом 20 сек.
+2025-07-18 11:22:40,506 - ai_zam.wsgi - INFO - Поллер Telegram успешно запущен из WSGI
+2025-07-18 11:22:43,691 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:22:53,746 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:23:07,166 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:23:17,369 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:23:24,204 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:23:37,581 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:23:44,614 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:23:58,051 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:24:08,267 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:24:12,712 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:24:22,909 - telegrambot.telegram_poller - INFO - Получено новое сообщение: -1...
+2025-07-18 11:24:22,968 - telegrambot.services - INFO - Найден объект для чата -1002700562903: Дом-3
+2025-07-18 11:24:22,968 - telegrambot.services - INFO - Сообщение сохранено в базу: -1002700562903 - Николай  (@nesrv): -1...
+2025-07-18 11:24:22,968 - telegrambot.services - INFO - Сообщение из группового чата -1002700562903 сохранено в ChatMessage
+2025-07-18 11:24:22,969 - telegrambot.telegram_poller - INFO - Получено 1 обновлений, последний ID: 9675590
+2025-07-18 11:24:28,488 - telegrambot.telegram_poller - INFO - Получено новое сообщение: -1...
+2025-07-18 11:24:28,560 - telegrambot.services - INFO - Найден объект для чата -1002700562903: Дом-3
+2025-07-18 11:24:28,561 - telegrambot.services - INFO - Сообщение сохранено в базу: -1002700562903 - Николай  (@nesrv): -1...
+2025-07-18 11:24:28,561 - telegrambot.services - INFO - Сообщение из группового чата -1002700562903 сохранено в ChatMessage
+2025-07-18 11:24:28,561 - telegrambot.telegram_poller - INFO - Получено 1 обновлений, последний ID: 9675590
+2025-07-18 11:24:38,195 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:24:51,767 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:24:57,885 - telegrambot.telegram_poller - INFO - Вебхук сброшен для освобождения сессии getUpdates
+2025-07-18 11:24:58,611 - telegrambot.telegram_poller - ERROR - Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2025-07-18 11:25:01,769 - telegrambot.telegram_poller - INFO - Поллер Telegram остановлен

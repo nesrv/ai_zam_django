@@ -1,3 +1,31 @@
+у меня джанго в продакте работает в cpanel.
+для получения сообщения из телеграмм-чатов мне пришлось дополнительно в терминале запустить
+python manage.py runserver
+можно ли сделать автоматически?
+может нужно поменять wsgi.py? 
+```
+import os
+from django.core.wsgi import get_wsgi_application
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ai_zam.settings')
+application = get_wsgi_application()
+```
+
+в проекте есть run_telegram_poller.py и telegrambot\management\commands\runserver_with_poller.py.
+возможно один из них лишний, проанализируй
+
+на фронтенде у http://127.0.0.1:8000/telegram/ есть ошибка:
+
+telegram/:1092 Ошибка: TypeError: Cannot set properties of null (setting 'innerHTML')
+(анонимная)	@	telegram/:1092
+
+ .catch(error => {
+        console.error('Ошибка: ' + error);
+
+
+на http://127.0.0.1:8000/telegram/ сооьщения от мессенджера повторяются в раза 
+
+Ошибка API Telegram: 409 - {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+
 при прокручивании колеса мыши над контейнером сообщений  история сообщений не прокручиватся
 
 

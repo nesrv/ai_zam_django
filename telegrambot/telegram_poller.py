@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class TelegramPoller:
     """Класс для периодического опроса API Telegram"""
     
-    def __init__(self, token=None, interval=5):
+    def __init__(self, token=None, interval=20):
         """
         Инициализация поллера
         :param token: Токен Telegram бота
@@ -141,31 +141,47 @@ class TelegramPoller:
 poller = None
 
 # Файл блокировки для предотвращения конфликтов
-LOCK_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'telegram_poller.lock')
+import tempfile
+
+# Используем текущую директорию для файла блокировки
+LOCK_FILE = 'telegram_poller.lock'
 
 def is_another_instance_running():
     """Проверка, запущен ли уже другой экземпляр поллера"""
-    if os.path.exists(LOCK_FILE):
-        # Проверяем время создания файла блокировки
-        file_time = os.path.getmtime(LOCK_FILE)
-        current_time = time.time()
-        # Если файл старше 5 минут, считаем его устаревшим
-        if current_time - file_time > 300:  # 5 минут = 300 секунд
-            logger.warning("Найден устаревший файл блокировки, удаляем")
+    try:
+        if os.path.exists(LOCK_FILE):
+            # Проверяем время создания файла блокировки
             try:
-                os.remove(LOCK_FILE)
-                return False
-            except:
-                logger.error("Не удалось удалить устаревший файл блокировки")
+                file_time = os.path.getmtime(LOCK_FILE)
+                current_time = time.time()
+                # Если файл старше 5 минут, считаем его устаревшим
+                if current_time - file_time > 300:  # 5 минут = 300 секунд
+                    logger.warning("Найден устаревший файл блокировки, удаляем")
+                    try:
+                        os.remove(LOCK_FILE)
+                        return False
+                    except Exception as e:
+                        logger.error(f"Не удалось удалить устаревший файл блокировки: {e}")
+                        # Игнорируем ошибку и разрешаем запуск нового экземпляра
+                        return False
                 return True
-        return True
-    return False
+            except Exception as e:
+                logger.error(f"Ошибка при проверке времени файла блокировки: {e}")
+                # При ошибке доступа к файлу разрешаем запуск нового экземпляра
+                return False
+        return False
+    except Exception as e:
+        logger.error(f"Общая ошибка при проверке файла блокировки: {e}")
+        # При любой ошибке разрешаем запуск нового экземпляра
+        return False
 
 def create_lock_file():
     """Создание файла блокировки"""
     try:
+        # Создаем файл блокировки
         with open(LOCK_FILE, 'w') as f:
             f.write(str(datetime.now()))
+        logger.info(f"Файл блокировки создан: {LOCK_FILE}")
         return True
     except Exception as e:
         logger.error(f"Не удалось создать файл блокировки: {e}")
@@ -174,8 +190,23 @@ def create_lock_file():
 def remove_lock_file():
     """Удаление файла блокировки"""
     try:
+        # Проверяем существование файла в текущей директории
         if os.path.exists(LOCK_FILE):
             os.remove(LOCK_FILE)
+            logger.info(f"Файл блокировки удален: {LOCK_FILE}")
+        
+        # Также проверяем во временной директории
+        temp_lock_file = os.path.join(tempfile.gettempdir(), 'telegram_poller.lock')
+        if os.path.exists(temp_lock_file):
+            os.remove(temp_lock_file)
+            logger.info(f"Файл блокировки удален из временной директории: {temp_lock_file}")
+        
+        # Также проверяем в директории модуля
+        module_lock_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'telegram_poller.lock')
+        if os.path.exists(module_lock_file):
+            os.remove(module_lock_file)
+            logger.info(f"Файл блокировки удален из директории модуля: {module_lock_file}")
+        
         return True
     except Exception as e:
         logger.error(f"Не удалось удалить файл блокировки: {e}")
@@ -185,27 +216,28 @@ def start_polling():
     """Запуск поллера с настройками по умолчанию"""
     global poller
     
-    # Проверяем, запущен ли уже другой экземпляр поллера
-    if is_another_instance_running():
-        logger.warning("Обнаружен другой запущенный экземпляр поллера, новый не будет запущен")
-        return False
-    
-    # Создаем файл блокировки
-    if not create_lock_file():
-        logger.error("Не удалось создать файл блокировки, поллер не будет запущен")
-        return False
-    
-    # Создаем и запускаем поллер
-    if poller is None:
-        poller = TelegramPoller()
-    
-    success = poller.start()
-    
-    # Если не удалось запустить поллер, удаляем файл блокировки
-    if not success:
+    try:
+        # Удаляем все файлы блокировки
         remove_lock_file()
-    
-    return success
+        
+        # Создаем и запускаем поллер
+        if poller is None:
+            poller = TelegramPoller()
+        
+        success = poller.start()
+        return success
+    except Exception as e:
+        logger.error(f"Ошибка при запуске поллера: {e}")
+        
+        # Последняя попытка запустить поллер
+        try:
+            if poller is None:
+                poller = TelegramPoller()
+            
+            return poller.start()
+        except Exception as e2:
+            logger.error(f"Критическая ошибка при запуске поллера: {e2}")
+            return False
 
 def stop_polling():
     """Остановка поллера"""

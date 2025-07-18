@@ -378,16 +378,16 @@
         <div class="iphone-screen">
             <div class="chat-header">
                 <div class="dropdown">
-                    <span class="dropdown-toggle" onclick="toggleDropdown({{ objekt.id }})" title="Добавить информацию">+</span>
+                    <span class="dropdown-toggle" onclick="window.toggleDropdown({{ objekt.id }})" title="Добавить информацию">+</span>
                     <div id="dropdown-{{ objekt.id }}" class="dropdown-menu">
-                        <div class="dropdown-item" onclick="addHours({{ objekt.id }})">&#128337; Часы рабочих в табель</div>
-                        <div class="dropdown-item" onclick="addResources({{ objekt.id }})">&#128230; Заявка на ресурсы</div>
+                        <div class="dropdown-item" onclick="window.addHours({{ objekt.id }})">&#128337; Часы рабочих в табель</div>
+                        <div class="dropdown-item" onclick="window.addResources({{ objekt.id }})">&#128230; Заявка на ресурсы</div>
                     </div>
                 </div>
                 {{ objekt.nazvanie }}
                 {% if objekt.chat_id %}
-                <span class="connected-status" onclick="disconnectBot({{ objekt.id }})" title="Отключить" data-chat-id="{{ objekt.chat_id }}">✓</span>
-                <span onclick="refreshMessages({{ objekt.id }}, '{{ objekt.chat_id }}')" style="cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);" title="Обновить" class="refresh-button">🔄</span>
+                <span class="connected-status" onclick="window.disconnectBot('{{ objekt.id }}')" title="Отключить" data-chat-id="{{ objekt.chat_id }}">✓</span>
+                <span onclick="window.refreshMessages('{{ objekt.id }}', '{{ objekt.chat_id }}')" style="cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);" title="Обновить" class="refresh-button">🔄</span>
             </div>
             <div class="chat-content">
                     
@@ -406,7 +406,7 @@
                     
                     <div style="margin-top: 10px; position: relative; width: 100%;">
                         <textarea id="message-input-{{ objekt.id }}" class="message-input" placeholder="Введите сообщение..."></textarea>
-                        <button class="send-btn" onclick="sendMessage({{ objekt.id }}, '{{ objekt.chat_id }}')" title="Отправить сообщение">
+                        <button class="send-btn" onclick="window.sendMessage('{{ objekt.id }}', '{{ objekt.chat_id }}')" title="Отправить сообщение">
                             ➤
                         </button>
                     </div>
@@ -425,7 +425,7 @@
                                maxlength="20"
                                pattern="-?\d+"
                                title="Введите числовой Chat ID">
-                        <button class="connect-btn" onclick="connectBot({{ objekt.id }})">
+                        <button class="connect-btn" onclick="window.connectBot('{{ objekt.id }}')">
                             Подключить бота
                         </button>
                     </div>
@@ -445,14 +445,14 @@
         <div class="iphone-screen">
             <div class="chat-header">
                 <div class="dropdown">
-                    <span class="dropdown-toggle" onclick="toggleDropdown('work-group')" title="Добавить информацию">+</span>
+                    <span class="dropdown-toggle" onclick="window.toggleDropdown('work-group')" title="Добавить информацию">+</span>
                     <div id="dropdown-work-group" class="dropdown-menu">
-                        <div class="dropdown-item" onclick="addHours('work-group')">ℹ️ Статус работ</div>
-                        <div class="dropdown-item" onclick="addResources('work-group')">❓ Запрос информации</div>
+                        <div class="dropdown-item" onclick="window.addHours('work-group')">ℹ️ Статус работ</div>
+                        <div class="dropdown-item" onclick="window.addResources('work-group')">❓ Запрос информации</div>
                     </div>
                 </div>
                 Рабочая группа
-                <span onclick="refreshFakeMessages('work-group')" style="cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);" title="Обновить" class="refresh-button">🔄</span>
+                <span onclick="window.refreshFakeMessages('work-group')" style="cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);" title="Обновить" class="refresh-button">🔄</span>
             </div>
             <div class="chat-content">
                 <div class="connected-status" data-chat-id="-9000000001">✅</div>
@@ -476,7 +476,7 @@
             <div class="chat-footer">
                 <div class="message-input-container">
                     <textarea id="message-input-work-group" class="message-input" placeholder="Введите сообщение..."></textarea>
-                    <button class="send-btn" onclick="sendFakeMessage('work-group')" title="Отправить сообщение">
+                    <button class="send-btn" onclick="window.sendFakeMessage('work-group')" title="Отправить сообщение">
                         ➞
                     </button>
                 </div>
@@ -489,14 +489,14 @@
         <div class="iphone-screen">
             <div class="chat-header">
                 <div class="dropdown">
-                    <span class="dropdown-toggle" onclick="toggleDropdown('info-channel')" title="Добавить информацию">+</span>
+                    <span class="dropdown-toggle" onclick="window.toggleDropdown('info-channel')" title="Добавить информацию">+</span>
                     <div id="dropdown-info-channel" class="dropdown-menu">
-                        <div class="dropdown-item" onclick="addHours('info-channel')">📢 Объявление</div>
-                        <div class="dropdown-item" onclick="addResources('info-channel')">📅 График работ</div>
+                        <div class="dropdown-item" onclick="window.addHours('info-channel')">📢 Объявление</div>
+                        <div class="dropdown-item" onclick="window.addResources('info-channel')">📅 График работ</div>
                     </div>
                 </div>
                 Информационный чат
-                <span onclick="refreshFakeMessages('info-channel')" style="cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);" title="Обновить" class="refresh-button">🔄</span>
+                <span onclick="window.refreshFakeMessages('info-channel')" style="cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);" title="Обновить" class="refresh-button">🔄</span>
             </div>
             <div class="chat-content">
                 <div class="connected-status" data-chat-id="-9000000002">✅</div>
@@ -520,7 +520,7 @@
             <div class="chat-footer">
                 <div class="message-input-container">
                     <textarea id="message-input-info-channel" class="message-input" placeholder="Введите сообщение..."></textarea>
-                    <button class="send-btn" onclick="sendFakeMessage('info-channel')" title="Отправить сообщение">
+                    <button class="send-btn" onclick="window.sendFakeMessage('info-channel')" title="Отправить сообщение">
                         ➞
                     </button>
                 </div>
@@ -531,8 +531,10 @@
 
 <script>
 // Функция для переключения выпадающего меню
-function toggleDropdown(objektId) {
+window.toggleDropdown = function(objektId) {
     const dropdown = document.getElementById(`dropdown-${objektId}`);
+    if (!dropdown) return;
+    
     dropdown.classList.toggle('show');
     
     // Закрываем все другие открытые выпадающие меню
@@ -541,12 +543,15 @@ function toggleDropdown(objektId) {
             menu.classList.remove('show');
         }
     });
-}
+};
 
 // Функция для добавления часов в табель
-function addHours(objektId) {
+window.addHours = function(objektId) {
     // Закрываем выпадающее меню
-    document.getElementById(`dropdown-${objektId}`).classList.remove('show');
+    const dropdown = document.getElementById(`dropdown-${objektId}`);
+    if (dropdown) {
+        dropdown.classList.remove('show');
+    }
     
     // Добавляем сообщение в поле ввода
     const messageInput = document.getElementById(`message-input-${objektId}`);
@@ -561,12 +566,15 @@ function addHours(objektId) {
         }
         messageInput.focus();
     }
-}
+};
 
 // Функция для добавления заявки на ресурсы
-function addResources(objektId) {
+window.addResources = function(objektId) {
     // Закрываем выпадающее меню
-    document.getElementById(`dropdown-${objektId}`).classList.remove('show');
+    const dropdown = document.getElementById(`dropdown-${objektId}`);
+    if (dropdown) {
+        dropdown.classList.remove('show');
+    }
     
     // Добавляем сообщение в поле ввода
     const messageInput = document.getElementById(`message-input-${objektId}`);
@@ -581,9 +589,9 @@ function addResources(objektId) {
         }
         messageInput.focus();
     }
-}
+};
 
-function getCookie(name) {
+window.getCookie = function(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
         const cookies = document.cookie.split(';');
@@ -596,10 +604,15 @@ function getCookie(name) {
         }
     }
     return cookieValue;
-}
+};
 
-function connectBot(objektId) {
+window.connectBot = function(objektId) {
     const chatIdInput = document.getElementById(`chat-id-${objektId}`);
+    if (!chatIdInput) {
+        alert('Не найдено поле ввода Chat ID');
+        return;
+    }
+    
     const chatId = chatIdInput.value.trim();
     
     if (!chatId) {
@@ -636,9 +649,9 @@ function connectBot(objektId) {
     .catch(error => {
         alert('Ошибка: ' + error);
     });
-}
+};
 
-function disconnectBot(objektId) {
+window.disconnectBot = function(objektId) {
     if (confirm('Отключить чат-бота от объекта?')) {
         fetch('/telegram/update-chat-id/', {
             method: 'POST',
@@ -664,14 +677,17 @@ function disconnectBot(objektId) {
             alert('Ошибка: ' + error);
         });
     }
-}
+};
 
-function refreshMessages(objektId, chatId, limit = 50) {
+window.refreshMessages = function(objektId, chatId, limit = 50) {
     if (!chatId) return;
     
     // Находим кнопку обновления и добавляем анимацию вращения
-    const refreshButton = document.querySelector(`.iphone-screen [data-chat-id="${chatId}"]`).nextElementSibling;
-    if (refreshButton) {
+    const statusElement = document.querySelector(`.iphone-screen [data-chat-id="${chatId}"]`);
+    let refreshButton = null;
+    
+    if (statusElement && statusElement.nextElementSibling) {
+        refreshButton = statusElement.nextElementSibling;
         refreshButton.classList.add('refreshing');
         if (!refreshButton.style.animation) {
             refreshButton.style.animation = 'spin 1s linear infinite';
@@ -683,17 +699,22 @@ function refreshMessages(objektId, chatId, limit = 50) {
     .then(data => {
         if (data.success) {
             const container = document.getElementById(`messages-${objektId}`);
-            if (data.messages.length > 0) {
-                // Используем все полученные сообщения для прокрутки
-                const messages = data.messages;
-                container.innerHTML = messages.map(msg => `
-                    <div class="message-item ${msg.is_from_user ? 'user-message' : 'bot-message'}">
-                        <div class="message-text">${msg.text.substring(0, 40)}${msg.text.length > 40 ? '...' : ''}</div>
-                        <div class="message-meta">${msg.from_user} • ${msg.date}</div>
-                    </div>
-                `).join('');
-            } else {
-                container.innerHTML = '<div class="no-messages">Нет сообщений</div>';
+            if (container) {
+                if (data.messages && data.messages.length > 0) {
+                    // Используем все полученные сообщения для прокрутки
+                    const messages = data.messages;
+                    container.innerHTML = messages.map(msg => `
+                        <div class="message-item ${msg.is_from_user ? 'user-message' : 'bot-message'}">
+                            <div class="message-text">${msg.text.substring(0, 40)}${msg.text.length > 40 ? '...' : ''}</div>
+                            <div class="message-meta">${msg.from_user} • ${msg.date}</div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<div class="no-messages">Нет сообщений</div>';
+                }
+                
+                // Прокручиваем к последнему сообщению
+                container.scrollTop = container.scrollHeight;
             }
         } else {
             console.error('Ошибка обновления: ' + data.error);
@@ -717,10 +738,13 @@ function refreshMessages(objektId, chatId, limit = 50) {
     });
 }
 
-function sendMessage(objektId, chatId) {
+// Определяем функцию в глобальном контексте
+window.sendMessage = function(objektId, chatId) {
     if (!chatId) return;
     
     const messageInput = document.getElementById(`message-input-${objektId}`);
+    if (!messageInput) return;
+    
     const message = messageInput.value.trim();
     
     if (!message) return;
@@ -741,7 +765,7 @@ function sendMessage(objektId, chatId) {
         if (data.success) {
             messageInput.value = ''; // Очищаем поле ввода
             // Обновляем сообщения через 1 секунду
-            setTimeout(() => refreshMessages(objektId, chatId), 1000);
+            setTimeout(() => window.refreshMessages(objektId, chatId), 1000);
         } else {
             alert('Ошибка отправки: ' + data.error);
         }
@@ -749,16 +773,21 @@ function sendMessage(objektId, chatId) {
     .catch(error => {
         alert('Ошибка: ' + error);
     });
-}
+};
 
 // Функция для автоматического обновления всех чатов
-function autoRefreshAllChats() {
+window.autoRefreshAllChats = function() {
     // Находим все подключенные чаты
     const connectedStatuses = document.querySelectorAll('.connected-status[data-chat-id]');
     
     connectedStatuses.forEach(status => {
         const chatId = status.getAttribute('data-chat-id');
-        const container = status.closest('.iphone-frame').querySelector('.messages-container');
+        const iphoneFrame = status.closest('.iphone-frame');
+        
+        // Проверяем, что нашли родительский элемент
+        if (!iphoneFrame) return;
+        
+        const container = iphoneFrame.querySelector('.messages-container');
         if (!container || !container.id) return;
         
         const objektId = container.id.split('-')[1];
@@ -767,17 +796,17 @@ function autoRefreshAllChats() {
             // Проверяем, является ли это фейковый чат
             if (objektId === 'work-group' || objektId === 'info-channel') {
                 // Для фейковых чатов используем фейковое обновление
-                refreshFakeMessages(objektId);
+                window.refreshFakeMessages(objektId);
             } else {
                 // Для реальных чатов используем обычное обновление
-                refreshMessages(objektId, chatId);
+                window.refreshMessages(objektId, chatId);
             }
         }
     });
-}
+};
 
 // Функция для обновления фейковых сообщений
-function refreshFakeMessages(chatId) {
+window.refreshFakeMessages = function(chatId) {
     // Находим кнопку обновления и добавляем анимацию вращения
     const refreshButton = document.querySelector(`.chat-header [onclick*="refreshFakeMessages('${chatId}')"]`);
     if (refreshButton) {
@@ -798,8 +827,10 @@ function refreshFakeMessages(chatId) {
 }
 
 // Функция для отправки фейковых сообщений
-function sendFakeMessage(chatId) {
+window.sendFakeMessage = function(chatId) {
     const messageInput = document.getElementById(`message-input-${chatId}`);
+    if (!messageInput) return;
+    
     const message = messageInput.value.trim();
     
     if (!message) return;
@@ -867,7 +898,7 @@ function sendFakeMessage(chatId) {
         // Прокручиваем к последнему сообщению
         container.scrollTop = container.scrollHeight;
     }, 1500);
-}
+};
 
 // Закрываем выпадающее меню при клике вне его
 document.addEventListener('click', function(event) {
@@ -940,52 +971,52 @@ document.addEventListener('DOMContentLoaded', function() {
     messageInputs.forEach(input => {
         // Получаем ID объекта из ID поля ввода
         const objektId = input.id.split('-')[2];
-        const chatId = input.closest('.iphone-screen').querySelector('.connected-status').getAttribute('data-chat-id');
+        const connectedStatus = input.closest('.iphone-screen').querySelector('.connected-status');
         
-        // Добавляем обработчик нажатия Enter
-        input.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault(); // Предотвращаем перенос строки
-                // Проверяем, является ли это фейковый чат
-                if (objektId === 'work-group' || objektId === 'info-channel') {
-                    sendFakeMessage(objektId);
-                } else {
-                    sendMessage(objektId, chatId);
+        // Проверяем, существует ли элемент connected-status
+        if (connectedStatus) {
+            const chatId = connectedStatus.getAttribute('data-chat-id');
+            
+            // Добавляем обработчик нажатия Enter
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault(); // Предотвращаем перенос строки
+                    // Проверяем, является ли это фейковый чат
+                    if (objektId === 'work-group' || objektId === 'info-channel') {
+                        window.sendFakeMessage(objektId);
+                    } else {
+                        window.sendMessage(objektId, chatId);
+                    }
                 }
-            }
-        });
+            });
+        }
     });
+
     
     // Запускаем автоматическое обновление чатов каждые 30 секунд
-    setInterval(autoRefreshAllChats, 30000);
+    setInterval(window.autoRefreshAllChats, 30000);
     
     // Автообновление работает в фоновом режиме без индикатора
     
     // Настраиваем прокрутку
     setupScrolling();
     
-    // Добавляем тестовые сообщения для проверки прокрутки
+    // Прокручиваем все контейнеры сообщений вниз
     document.querySelectorAll('.messages-container').forEach(container => {
-        // Добавляем тестовые сообщения
-        for (let i = 1; i <= 30; i++) {
-            const testMessage = document.createElement('div');
-            testMessage.className = 'message-item';
-            testMessage.innerHTML = `
-                <div class="message-text">Тестовое сообщение #${i} для проверки прокрутки</div>
-                <div class="message-meta">Тест • ${new Date().toLocaleTimeString()}</div>
-            `;
-            container.appendChild(testMessage);
+        if (container) {
+            // Прокручиваем вниз
+            setTimeout(() => {
+                container.scrollTop = container.scrollHeight;
+            }, 100);
         }
-        
-        // Прокручиваем вниз
-        setTimeout(() => {
-            container.scrollTop = container.scrollHeight;
-        }, 100);
     });
     
     // Функция для ограничения количества сообщений до 10 последних
     function setupScrollableMessages() {
         document.querySelectorAll('.messages-container').forEach(container => {
+            // Проверяем, что контейнер существует и имеет ID
+            if (!container || !container.id) return;
+            
             // Добавляем стили для принудительного отображения полосы прокрутки
             container.style.overflowY = 'scroll';
             container.style.paddingRight = '5px';
@@ -1017,12 +1048,25 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Обновляем все чаты с большим количеством сообщений
     document.querySelectorAll('.connected-status[data-chat-id]').forEach(status => {
+        if (!status) return;
+        
         const chatId = status.getAttribute('data-chat-id');
-        const container = status.closest('.iphone-frame').querySelector('.messages-container');
+        if (!chatId) return;
+        
+        const iphoneFrame = status.closest('.iphone-frame');
+        if (!iphoneFrame) return;
+        
+        const container = iphoneFrame.querySelector('.messages-container');
         if (container && container.id) {
             const objektId = container.id.split('-')[1];
-            if (chatId && objektId) {
-                refreshMessages(objektId, chatId, 50);
+            if (objektId) {
+                // Проверяем, является ли это фейковый чат
+                if (objektId === 'work-group' || objektId === 'info-channel') {
+                    // Для фейковых чатов не делаем автоматическое обновление
+                } else {
+                    // Для реальных чатов используем обычное обновление
+                    window.refreshMessages(objektId, chatId, 50);
+                }
             }
         }
     });

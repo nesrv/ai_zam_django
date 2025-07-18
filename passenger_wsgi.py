@@ -1,13 +1,5 @@
-"""
-WSGI config for ai_zam project.
-
-It exposes the WSGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/5.2/howto/deployment/wsgi/
-"""
-
 import os
+import sys
 import threading
 import logging
 import pathlib
@@ -16,7 +8,7 @@ import pathlib
 try:
     from dotenv import load_dotenv
     # Получаем путь к корневой папке проекта
-    BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
+    BASE_DIR = pathlib.Path(__file__).resolve().parent
     ENV_FILE = BASE_DIR / '.env'
     
     # Загружаем переменные окружения
@@ -27,10 +19,11 @@ try:
         # Замените на ваш токен
         os.environ['TELEGRAM_TOKEN'] = '7836693206:AAFgvbLhQSuDCCWPr5zaafDn0W_-CGF0yGk'
         os.environ['TELEGRAM_POLL_INTERVAL'] = '20'
+        
+    logger = logging.getLogger(__name__)
+    logger.info(f"TELEGRAM_TOKEN: {os.getenv('TELEGRAM_TOKEN')[:10]}...")
 except Exception as e:
     print(f"[Ошибка загрузки .env]: {e}")
-
-from django.core.wsgi import get_wsgi_application
 
 # Настройка логирования
 logging.basicConfig(
@@ -38,23 +31,31 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler('telegram_poller_wsgi.log')
+        logging.FileHandler('passenger_telegram_poller.log')
     ]
 )
 logger = logging.getLogger(__name__)
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ai_zam.settings')
+# Добавляем путь к проекту
+sys.path.insert(0, os.path.dirname(__file__))
 
-application = get_wsgi_application()
+# Импортируем WSGI-приложение Django
+try:
+    from ai_zam.wsgi import application
+    logger.info("Django WSGI application успешно импортирован")
+except Exception as e:
+    logger.error(f"Ошибка импорта Django WSGI application: {e}")
+    raise
 
-# Запускаем поллер Telegram в отдельном потоке
+# Запускаем поллер в отдельном потоке
 def start_telegram_poller():
     try:
-        logger.info("Запуск поллера Telegram из WSGI...")
+        logger.info("Запуск поллера Telegram из Passenger...")
         
         # Принудительно удаляем файл блокировки, если он существует
         from telegrambot.telegram_poller import remove_lock_file
-        # Удаляем файл блокировки
+        
+        logger.info("Удаляем файл блокировки")
         remove_lock_file()
         logger.info("Файл блокировки удален")
         
@@ -63,13 +64,16 @@ def start_telegram_poller():
         success = start_polling()
         
         if success:
-            logger.info("Поллер Telegram успешно запущен из WSGI")
+            logger.info("Поллер Telegram успешно запущен из Passenger")
         else:
-            logger.error("Не удалось запустить поллер Telegram из WSGI")
+            logger.error("Не удалось запустить поллер Telegram из Passenger")
     except Exception as e:
-        logger.error(f"Ошибка при запуске поллера Telegram из WSGI: {e}")
+        logger.error(f"Ошибка при запуске поллера Telegram из Passenger: {e}")
 
 # Запускаем поллер в отдельном потоке
-poller_thread = threading.Thread(target=start_telegram_poller, daemon=True)
-poller_thread.start()
-logger.info("Поток поллера Telegram запущен из WSGI")
+try:
+    poller_thread = threading.Thread(target=start_telegram_poller, daemon=True)
+    poller_thread.start()
+    logger.info("Поток поллера Telegram запущен из Passenger")
+except Exception as e:
+    logger.error(f"Ошибка создания потока для поллера: {e}")

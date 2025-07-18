@@ -2,11 +2,21 @@
 """
 Скрипт для запуска поллера Telegram отдельно от Django
 """
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler('/path/to/logs/telegram_poller.log')
+    ]
+)
+
+
 import os
 import sys
 import django
 import time
-import logging
 from dotenv import load_dotenv
 
 # Настройка путей для Django

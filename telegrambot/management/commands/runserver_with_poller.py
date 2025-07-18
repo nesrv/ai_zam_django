@@ -26,14 +26,14 @@ class Command(BaseCommand):
         parser.add_argument(
             '--interval',
             type=int,
-            default=5,
+            default=10,
             help='Интервал опроса Telegram API в секундах (по умолчанию 5)',
         )
 
     def handle(self, *args, **options):
         django_only = options.get('django_only', False)
         poller_only = options.get('poller_only', False)
-        interval = options.get('interval', 5)
+        interval = options.get('interval', 20)
 
         # Запускаем поллер, если не указан флаг django-only
         poller = None
