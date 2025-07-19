@@ -3,6 +3,7 @@ from . import views
 from .views_chatbots import chatbots_page, update_chat_id, get_chat_messages_ajax as get_chatbot_messages_ajax, send_message_to_chat as send_chatbot_message
 from .views_chat_messages import chat_messages_list, chat_messages_detail, send_message_to_chat, get_chat_messages_ajax
 from .views_stats import messages_stats
+from .views_employees import get_employees_by_object
 
 app_name = 'telegrambot'
 
@@ -38,4 +39,10 @@ urlpatterns = [
     
     # Статистика сообщений
     path('stats/', messages_stats, name='messages_stats'),
+    
+    # API для получения сотрудников по объекту
+    path('get-employees-by-object/', get_employees_by_object, name='get_employees_by_object'),
+    
+    # API для поиска сотрудников по фамилии и объекту
+    path('find-employees/', views.find_employees, name='find_employees'),
 ] 

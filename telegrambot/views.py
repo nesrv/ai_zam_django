@@ -1189,3 +1189,145 @@ def save_json_response(request):
     except Exception as e:
         logger.error(f'Ошибка сохранения JSON ответа: {e}')
         return JsonResponse({'ok': False, 'error': str(e)})
+@csrf_exempt
+@require_POST
+def find_employees(request):
+    """Поиск сотрудников по фамилии и объекту"""
+    try:
+        data = json.loads(request.body)
+        surnames = data.get('surnames', [])
+        objekt_id = data.get('objekt_id')
+        
+        if not surnames or not objekt_id:
+            return JsonResponse({
+                'success': False,
+                'error': 'Необходимо указать фамилии и ID объекта'
+            })
+        
+        logger.info(f"Поиск сотрудников по фамилиям: {surnames} на объекте {objekt_id}")
+        
+        # Импортируем модели
+        from sotrudniki.models import Sotrudnik
+        from object.models import Objekt
+        
+        # Проверяем существование объекта
+        try:
+            objekt = Objekt.objects.get(id=objekt_id)
+        except Objekt.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'error': f'Объект с ID {objekt_id} не найден'
+            })
+        
+        # Получаем сотрудников, связанных с объектом
+        objekt_sotrudniki = objekt.sotrudniki.all()
+        
+        # Если нет сотрудников на объекте, возвращаем пустой результат
+        if not objekt_sotrudniki.exists():
+            return JsonResponse({
+                'success': True,
+                'employees': [],
+                'not_found': surnames,
+                'message': f'На объекте "{objekt.nazvanie}" нет сотрудников'
+            })
+        
+        # Получаем всех сотрудников объекта
+        all_employees = []
+        for sotrudnik in objekt_sotrudniki:
+            
+            # Получаем специальность сотрудника
+            specialnost = ""
+            if hasattr(sotrudnik, 'specialnost') and sotrudnik.specialnost:
+                specialnost = sotrudnik.specialnost.nazvanie
+            
+            # Извлекаем фамилию из поля fio
+            fio_parts = sotrudnik.fio.split()
+            surname = fio_parts[0] if fio_parts else ""
+            
+            all_employees.append({
+                'id': sotrudnik.id,
+                'fio': sotrudnik.fio,
+                'surname': surname,
+                'specialnost': specialnost
+            })
+        
+        # Функция для сравнения фамилий с учетом возможных ошибок
+        def is_similar_surname(surname1, surname2):
+            # Приводим к нижнему регистру и удаляем лишние символы
+            clean1 = surname1.lower().replace(' ', '').replace('-', '')
+            clean2 = surname2.lower().replace(' ', '').replace('-', '')
+            
+            # Точное совпадение
+            if clean1 == clean2:
+                return True
+            
+            # Если одна фамилия содержит другую и длиннее не более чем на 3 символа
+            if clean1 in clean2 and len(clean2) - len(clean1) <= 3:
+                return True
+            if clean2 in clean1 and len(clean1) - len(clean2) <= 3:
+                return True
+            
+            # Реализуем свою функцию расстояния Левенштейна
+            def levenshtein_distance(s1, s2):
+                if len(s1) < len(s2):
+                    return levenshtein_distance(s2, s1)
+                if len(s2) == 0:
+                    return len(s1)
+                
+                previous_row = range(len(s2) + 1)
+                for i, c1 in enumerate(s1):
+                    current_row = [i + 1]
+                    for j, c2 in enumerate(s2):
+                        insertions = previous_row[j + 1] + 1
+                        deletions = current_row[j] + 1
+                        substitutions = previous_row[j] + (c1 != c2)
+                        current_row.append(min(insertions, deletions, substitutions))
+                    previous_row = current_row
+                
+                return previous_row[-1]
+            
+            # Для коротких фамилий допускаем только 1 ошибку
+            if len(clean1) <= 5 and len(clean2) <= 5:
+                return levenshtein_distance(clean1, clean2) <= 1
+            
+            # Для более длинных фамилий допускаем до 2 ошибок
+            return levenshtein_distance(clean1, clean2) <= 2
+        
+        # Ищем совпадения
+        found_employees = []
+        not_found_surnames = []
+        
+        for surname in surnames:
+            found = False
+            for employee in all_employees:
+                if is_similar_surname(surname, employee['surname']):
+                    found_employees.append({
+                        'id': employee['id'],
+                        'fio': employee['fio'],
+                        'specialnost': employee['specialnost'],
+                        'matched_surname': surname
+                    })
+                    found = True
+                    break
+            
+            if not found:
+                not_found_surnames.append(surname)
+        
+        return JsonResponse({
+            'success': True,
+            'employees': found_employees,
+            'not_found': not_found_surnames,
+            'message': f'Найдено {len(found_employees)} сотрудников из {len(surnames)} запрошенных'
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'error': 'Некорректный JSON'
+        }, status=400)
+    except Exception as e:
+        logger.error(f"Ошибка поиска сотрудников: {e}")
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)

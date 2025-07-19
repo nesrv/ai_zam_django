@@ -7,6 +7,8 @@
 <script src="{% static 'js/message-scroll.js' %}"></script>
 <script src="{% static 'js/employees-data.js' %}"></script>
 <script src="{% static 'js/modal-handler.js' %}"></script>
+<script src="{% static 'js/show-modal.js' %}"></script>
+<!-- <script src="{% static 'js/test-modal.js' %}"></script> -->
 {% endblock %}
 
 {% block extra_styles %}
@@ -387,8 +389,8 @@
     margin: 10% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
-    max-width: 600px;
+    width: 88%; /* Увеличено на 10% с 80% до 88% */
+    max-width: 660px; /* Увеличено на 10% с 600px до 660px */
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     animation: slideIn 0.3s;
@@ -557,8 +559,8 @@
 <div id="hoursModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2 class="modal-title">Добавить часы в табель за <span id="message-date">дату</span></h2>
-            <span class="close-modal" onclick="closeHoursModal()">&times;</span>
+            <h2 class="modal-title">Добавить часы в табель за <span id="message-date">дату</span> на <span id="message-object">объекте</span></h2>
+            <span class="close-modal" onclick="window.closeHoursModal()">&times;</span>
         </div>
         <div class="modal-body">
             <table class="hours-table">
@@ -567,6 +569,7 @@
                         <th>Должность</th>
                         <th>Сотрудник</th>
                         <th>Часы</th>
+                        <th>KPI</th>
                         <th>Объект</th>
                     </tr>
                 </thead>
@@ -580,6 +583,9 @@
                         </td>
                         <td>
                             <input type="number" id="hours" value="8" min="1" max="24">
+                        </td>
+                        <td>
+                            <input type="number" id="kpi" value="1.0" min="0.1" max="2.0" step="0.1">
                         </td>
                         <td>
                             <input type="text" id="object" value="Строительство ЖК">
@@ -596,6 +602,9 @@
                             <input type="number" value="6" min="1" max="24">
                         </td>
                         <td>
+                            <input type="number" value="1.0" min="0.1" max="2.0" step="0.1">
+                        </td>
+                        <td>
                             <input type="text" value="Строительство ЖК">
                         </td>
                     </tr>
@@ -610,6 +619,9 @@
                             <input type="number" value="7" min="1" max="24">
                         </td>
                         <td>
+                            <input type="number" value="1.0" min="0.1" max="2.0" step="0.1">
+                        </td>
+                        <td>
                             <input type="text" value="Строительство ЖК">
                         </td>
                     </tr>
@@ -617,13 +629,20 @@
             </table>
         </div>
         <div class="modal-footer">
-            <button class="modal-btn cancel-btn" onclick="closeHoursModal()">Отмена</button>
-            <button class="modal-btn save-btn" onclick="saveHours()">Сохранить</button>
+            <button class="modal-btn cancel-btn" onclick="window.closeHoursModal()">Отмена</button>
+            <button class="modal-btn save-btn" onclick="window.saveHours()">Сохранить</button>
         </div>
     </div>
 </div>
 
 <div class="page-title">Рабочие чаты</div>
+
+<!-- Кнопка для отладки модального окна -->
+<div style="text-align: center; margin-bottom: 20px;">
+    <button onclick="document.getElementById('hoursModal').style.display='block'" style="padding: 10px 20px; background-color: #007AFF; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Показать модальное окно (отладка)
+    </button>
+</div>
 
 {% if not bot_token_configured %}
 <div style="background: #dc3545; color: white; padding: 15px; border-radius: 10px; margin: 20px auto; max-width: 800px; text-align: center;">
@@ -1248,72 +1267,9 @@ function enableMessagesScrolling() {
 }
 
 // Используем функции из modal-handler.js
-// Дополнительная функция для отображения сотрудников по объекту
-function showEmployeesData(modalBody) {
-    // Удаляем предыдущий список сотрудников, если он есть
-    const oldEmployeesList = modalBody.querySelector('.employees-list');
-    if (oldEmployeesList) {
-        oldEmployeesList.remove();
-    }
-    
-    // Добавляем список сотрудников по объекту
-    const employeesList = document.createElement('div');
-    employeesList.className = 'employees-list';
-    employeesList.style.padding = '12px';
-    employeesList.style.marginBottom = '15px';
-    employeesList.style.backgroundColor = '#f5f5f5';
-    employeesList.style.border = '1px solid #ddd';
-    employeesList.style.borderRadius = '5px';
-    employeesList.style.fontSize = '0.9rem';
-    employeesList.style.color = '#333';
-    
-    // Заголовок списка сотрудников
-    const employeesTitle = document.createElement('h4');
-    employeesTitle.style.marginTop = '0';
-    employeesTitle.style.marginBottom = '10px';
-    employeesTitle.style.color = '#333';
-    employeesTitle.textContent = 'Сотрудники по объекту:';
-    employeesList.appendChild(employeesTitle);
-    
-    // Добавляем сотрудников в формате JSON
-    const employeesData = [
-        {"fio": "Иванов Иван Иванович", "specialnost": "альпинист"},
-        {"fio": "Петров Петр Петрович", "specialnost": "монтажник"},
-        {"fio": "Сидоров Сидор Сидорович", "specialnost": "сварщик"}
-    ];
-    
-    // Создаем пре-форматированный блок с JSON
-    const preElement = document.createElement('pre');
-    preElement.style.backgroundColor = '#f8f9fa';
-    preElement.style.padding = '10px';
-    preElement.style.borderRadius = '4px';
-    preElement.style.border = '1px solid #e9ecef';
-    preElement.style.fontSize = '0.85rem';
-    preElement.style.overflow = 'auto';
-    preElement.style.maxHeight = '150px';
-    preElement.style.color = '#212529';
-    preElement.textContent = JSON.stringify(employeesData, null, 2);
-    employeesList.appendChild(preElement);
-    
-    // Добавляем список сотрудников после текста сообщения
-    modalBody.insertBefore(employeesList, modalBody.querySelector('table'));
-}
+// Функция для отображения сотрудников по объекту удалена
 
-// Расширяем функцию openHoursModal из modal-handler.js
-const originalOpenHoursModal = window.openHoursModal || openHoursModal;
-window.openHoursModal = function(messageText, messageDate) {
-    // Вызываем оригинальную функцию
-    originalOpenHoursModal(messageText, messageDate);
-    
-    // Добавляем список сотрудников
-    const modal = document.getElementById('hoursModal');
-    if (modal) {
-        const modalBody = modal.querySelector('.modal-body');
-        if (modalBody) {
-            showEmployeesData(modalBody);
-        }
-    }
-};
+// Функция showEmployeesData удалена
 
 document.addEventListener('DOMContentLoaded', function() {
     // Настраиваем все контейнеры сообщений для отображения последних сообщений
@@ -1342,8 +1298,22 @@ document.addEventListener('DOMContentLoaded', function() {
         container.querySelectorAll('.user-message').forEach(message => {
             message.addEventListener('click', function() {
                 // Получаем текст сообщения
-                const messageText = message.querySelector('.message-text').textContent;
-                openHoursModal(messageText);
+                const messageText = this.querySelector('.message-text').textContent;
+                
+                // Получаем дату из метаданных сообщения
+                const messageMeta = this.querySelector('.message-meta');
+                let messageDate = new Date().toLocaleDateString('ru-RU'); // По умолчанию текущая дата
+                
+                if (messageMeta) {
+                    const metaText = messageMeta.innerText;
+                    // Пробуем извлечь дату из метаданных (формат: "Имя • Дата")
+                    const datePart = metaText.split('•')[1];
+                    if (datePart) {
+                        messageDate = datePart.trim();
+                    }
+                }
+                
+                window.openHoursModal(messageText, messageDate);
             });
         });
     });
@@ -1365,7 +1335,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         node.addEventListener('click', function() {
                             // Получаем текст сообщения
                             const messageText = this.querySelector('.message-text').textContent;
-                            openHoursModal(messageText);
+                            
+                            // Получаем дату из метаданных сообщения
+                            const messageMeta = this.querySelector('.message-meta');
+                            let messageDate = new Date().toLocaleDateString('ru-RU'); // По умолчанию текущая дата
+                            
+                            if (messageMeta) {
+                                const metaText = messageMeta.innerText;
+                                // Пробуем извлечь дату из метаданных (формат: "Имя • Дата")
+                                const datePart = metaText.split('•')[1];
+                                if (datePart) {
+                                    messageDate = datePart.trim();
+                                }
+                            }
+                            
+                            window.openHoursModal(messageText, messageDate);
                         });
                     }
                 });
@@ -1392,7 +1376,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     message.addEventListener('click', function() {
                         // Получаем текст сообщения
                         const messageText = this.querySelector('.message-text').textContent;
-                        openHoursModal(messageText);
+                        
+                        // Получаем дату из метаданных сообщения
+                        const messageMeta = this.querySelector('.message-meta');
+                        let messageDate = new Date().toLocaleDateString('ru-RU'); // По умолчанию текущая дата
+                        
+                        if (messageMeta) {
+                            const metaText = messageMeta.innerText;
+                            // Пробуем извлечь дату из метаданных (формат: "Имя • Дата")
+                            const datePart = metaText.split('•')[1];
+                            if (datePart) {
+                                messageDate = datePart.trim();
+                            }
+                        }
+                        
+                        window.openHoursModal(messageText, messageDate);
                     });
                 });
             }
@@ -1413,7 +1411,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         message.addEventListener('click', function() {
                             // Получаем текст сообщения
                             const messageText = this.querySelector('.message-text').textContent;
-                            openHoursModal(messageText);
+                            
+                            // Получаем дату из метаданных сообщения
+                            const messageMeta = this.querySelector('.message-meta');
+                            let messageDate = new Date().toLocaleDateString('ru-RU'); // По умолчанию текущая дата
+                            
+                            if (messageMeta) {
+                                const metaText = messageMeta.innerText;
+                                // Пробуем извлечь дату из метаданных (формат: "Имя • Дата")
+                                const datePart = metaText.split('•')[1];
+                                if (datePart) {
+                                    messageDate = datePart.trim();
+                                }
+                            }
+                            
+                            window.openHoursModal(messageText, messageDate);
                         });
                     });
                 }

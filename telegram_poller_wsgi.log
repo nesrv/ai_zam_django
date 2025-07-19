@@ -1084,3 +1084,473 @@ django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 372: '
 2025-07-18 13:22:48,770 - telegrambot.services - INFO - Успешный ответ от Telegram API: {'ok': True, 'result': {'message_id': 683, 'from': {'id': 7836693206, 'is_bot': True, 'first_name': 'MyTestBot', 'username': 'NeSrv2Bot'}, 'chat': {'id': -4916602123, 'title': 'Снос дома', 'type': 'group', 'all_members_are_administrators': True, 'accepted_gift_types': {'unlimited_gifts': False, 'limited_gifts': False, 'unique_gifts': False, 'premium_subscription': False}}, 'date': 1752834167, 'text': 'Иванов'}}
 2025-07-18 13:22:48,955 - telegrambot.services - INFO - Сообщение сохранено в ChatMessage: chat_id=-4916602123, message_id=683
 2025-07-18 13:34:26,516 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 13:52:37,526 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 13:54:42,149 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 13:57:00,393 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 13:58:28,720 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 14:04:41,831 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\urls.py changed, reloading.
+2025-07-18 14:04:48,195 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 14:05:01,565 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\urls.py changed, reloading.
+2025-07-18 14:05:07,519 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 16:05:00,678 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 16:07:52,944 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 16:09:31,137 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 16:15:13,578 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views_employees.py changed, reloading.
+2025-07-18 16:15:18,974 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 16:21:49,174 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 16:21:59,797 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 16:26:50,009 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 16:29:39,104 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 16:40:53,498 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 16:41:02,179 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 16:46:32,837 - telegrambot.services - INFO - Бот проверен: MyTestBot (@NeSrv2Bot)
+2025-07-18 16:46:32,838 - telegrambot.services - INFO - Отправка сообщения в Telegram: chat_id=-1002700562903, text=Иванов...
+2025-07-18 16:46:33,141 - telegrambot.services - INFO - Ответ от Telegram API (статус 200): {"ok":true,"result":{"message_id":160,"from":{"id":7836693206,"is_bot":true,"first_name":"MyTestBot","username":"NeSrv2Bot"},"chat":{"id":-1002700562903,"title":"\u0414\u043e\u043c-3","type":"supergroup"},"date":1752846391,"text":"\u0418\u0432\u0430\u043d\u043e\u0432"}}
+2025-07-18 16:46:33,142 - telegrambot.services - INFO - Успешный ответ от Telegram API: {'ok': True, 'result': {'message_id': 160, 'from': {'id': 7836693206, 'is_bot': True, 'first_name': 'MyTestBot', 'username': 'NeSrv2Bot'}, 'chat': {'id': -1002700562903, 'title': 'Дом-3', 'type': 'supergroup'}, 'date': 1752846391, 'text': 'Иванов'}}
+2025-07-18 16:46:33,161 - telegrambot.services - INFO - Сообщение сохранено в ChatMessage: chat_id=-1002700562903, message_id=160
+2025-07-18 16:46:44,418 - telegrambot.services - INFO - Отправка сообщения в Telegram: chat_id=-1002700562903, text=Аманбек...
+2025-07-18 16:46:44,726 - telegrambot.services - INFO - Ответ от Telegram API (статус 200): {"ok":true,"result":{"message_id":161,"from":{"id":7836693206,"is_bot":true,"first_name":"MyTestBot","username":"NeSrv2Bot"},"chat":{"id":-1002700562903,"title":"\u0414\u043e\u043c-3","type":"supergroup"},"date":1752846403,"text":"\u0410\u043c\u0430\u043d\u0431\u0435\u043a"}}
+2025-07-18 16:46:44,727 - telegrambot.services - INFO - Успешный ответ от Telegram API: {'ok': True, 'result': {'message_id': 161, 'from': {'id': 7836693206, 'is_bot': True, 'first_name': 'MyTestBot', 'username': 'NeSrv2Bot'}, 'chat': {'id': -1002700562903, 'title': 'Дом-3', 'type': 'supergroup'}, 'date': 1752846403, 'text': 'Аманбек'}}
+2025-07-18 16:46:44,743 - telegrambot.services - INFO - Сообщение сохранено в ChatMessage: chat_id=-1002700562903, message_id=161
+2025-07-18 16:49:11,771 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 22:17:26,719 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 22:19:32,872 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 22:21:42,791 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 22:43:46,150 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 22:51:15,017 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-07-18 22:51:24,133 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 22:52:00,801 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\urls.py changed, reloading.
+2025-07-18 22:52:09,785 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 22:52:52,888 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 22:52:52,890 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:52:52,892 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:52:52,901 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 22:52:52,905 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 22:52:52,907 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:52:52,907 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:52:52,908 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:52:52,934 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:53:10,659 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 22:53:10,662 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 22:53:10,664 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:53:10,666 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 22:53:10,667 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:53:10,669 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:53:10,668 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:53:10,671 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:53:10,672 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:53:15,667 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек'] на объекте 27
+2025-07-18 22:53:15,668 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:53:15,669 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек'] на объекте 27
+2025-07-18 22:53:15,671 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек'] на объекте 27
+2025-07-18 22:53:15,671 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:53:15,670 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:53:15,672 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:53:15,673 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:53:15,675 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:53:20,132 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 22:53:20,133 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:53:20,134 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 22:53:20,136 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 22:53:20,135 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:53:20,137 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:53:20,137 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:53:20,139 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:53:20,140 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:53:23,499 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 22:53:23,500 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:53:23,502 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 22:53:23,504 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 22:53:23,502 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:53:23,506 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:53:23,507 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:53:23,508 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:53:23,509 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:54:01,535 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 22:54:01,536 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 22:54:01,537 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 22:54:01,553 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:54:01,570 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:54:01,585 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:54:01,594 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:54:01,600 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:54:01,602 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:54:03,397 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 22:54:03,398 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 22:54:03,399 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 22:54:03,400 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:54:03,401 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:54:03,401 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:54:03,402 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:54:03,403 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:54:03,403 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:54:10,100 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 22:54:10,101 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 22:54:10,102 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 22:54:10,102 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:54:10,103 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:54:10,103 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:54:10,104 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:54:10,105 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:54:10,106 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:54:10,939 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 22:54:10,940 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 22:54:10,941 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 22:54:10,941 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:54:10,941 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:54:10,942 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:54:10,942 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:54:10,942 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:54:10,943 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:55:11,655 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 22:55:16,870 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 22:55:16,871 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 22:55:16,871 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 22:55:16,871 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:55:16,872 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:55:16,874 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:55:16,877 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:55:16,877 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:55:16,884 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:55:20,420 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 22:55:20,421 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 22:55:20,421 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 22:55:20,421 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:55:20,422 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:55:20,422 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:55:20,422 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:55:20,423 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:55:20,424 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:55:27,371 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 22:55:27,372 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 22:55:27,372 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 22:55:27,373 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:55:27,373 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:55:27,373 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:55:27,373 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:55:27,374 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:55:27,374 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:55:28,452 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-07-18 22:55:35,049 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 22:56:00,310 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 22:56:00,311 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 22:56:00,312 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 22:56:00,320 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:56:00,321 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:56:00,321 - telegrambot.views - ERROR - Ошибка поиска сотрудников: cannot import name 'ObjektSotrudniki' from 'object.models' (C:\W25\AI-ZAM-DJANGO\object\models.py)
+2025-07-18 22:56:00,324 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:56:00,334 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:56:00,343 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:58:22,702 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-07-18 22:58:29,961 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 22:58:34,188 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 22:58:34,188 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 22:58:34,195 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'sotrudnik'
+2025-07-18 22:58:34,195 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'sotrudnik'
+2025-07-18 22:58:34,199 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:58:34,200 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:58:36,948 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 22:58:36,951 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 22:58:36,956 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'sotrudnik'
+2025-07-18 22:58:36,957 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'sotrudnik'
+2025-07-18 22:58:36,957 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:58:36,957 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:58:40,892 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 22:58:40,893 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 22:58:40,899 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'sotrudnik'
+2025-07-18 22:58:40,900 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'sotrudnik'
+2025-07-18 22:58:40,902 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:58:40,904 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:58:43,820 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Сидоров'] на объекте 27
+2025-07-18 22:58:43,821 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Сидоров'] на объекте 27
+2025-07-18 22:58:43,826 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'sotrudnik'
+2025-07-18 22:58:43,827 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'sotrudnik'
+2025-07-18 22:58:43,828 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:58:43,830 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:59:10,657 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-07-18 22:59:18,056 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 22:59:23,187 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 22:59:23,189 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 22:59:23,193 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 22:59:23,201 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 22:59:23,204 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'familiya'
+2025-07-18 22:59:23,204 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 22:59:23,208 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'familiya'
+2025-07-18 22:59:23,208 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 22:59:23,208 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:59:23,209 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'familiya'
+2025-07-18 22:59:23,209 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:59:23,211 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:59:28,509 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 22:59:28,510 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 22:59:28,510 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 22:59:28,518 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 22:59:28,519 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 22:59:28,519 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'familiya'
+2025-07-18 22:59:28,521 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'familiya'
+2025-07-18 22:59:28,521 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:59:28,522 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:59:28,533 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 22:59:28,541 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'familiya'
+2025-07-18 22:59:28,542 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:59:35,940 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 22:59:35,941 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 22:59:35,942 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 22:59:35,946 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 22:59:35,946 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'familiya'
+2025-07-18 22:59:35,950 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 22:59:35,948 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:59:35,952 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'familiya'
+2025-07-18 22:59:35,957 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 22:59:35,957 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:59:35,958 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'familiya'
+2025-07-18 22:59:35,960 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:59:47,636 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Сидоров'] на объекте 27
+2025-07-18 22:59:47,637 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Сидоров'] на объекте 27
+2025-07-18 22:59:47,637 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Сидоров'] на объекте 27
+2025-07-18 22:59:47,646 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 22:59:47,646 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 22:59:47,647 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 22:59:47,647 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'familiya'
+2025-07-18 22:59:47,653 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'familiya'
+2025-07-18 22:59:47,654 - telegrambot.views - ERROR - Ошибка поиска сотрудников: 'Sotrudnik' object has no attribute 'familiya'
+2025-07-18 22:59:47,654 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:59:47,655 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 22:59:47,655 - django.request - ERROR - Internal Server Error: /telegram/find-employees/
+2025-07-18 23:00:53,845 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-07-18 23:01:01,642 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 23:01:04,060 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:01:04,061 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:01:04,061 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:01:04,063 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:01:04,070 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,077 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,077 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,078 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,079 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,081 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,082 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,089 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,089 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,090 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,090 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,091 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,091 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,091 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,092 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,093 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,094 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,095 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,095 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,096 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,097 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,098 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,098 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,099 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,108 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,110 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,110 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,111 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,112 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,113 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,122 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:04,124 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,196 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:01:09,196 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:01:09,197 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:01:09,198 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:01:09,204 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,210 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,212 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,213 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,213 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,215 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,222 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,222 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,226 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,226 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,227 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,228 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,230 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,231 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,231 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,232 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,238 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,241 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,241 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,243 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,244 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,244 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,244 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,245 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,245 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,246 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,246 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,246 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,247 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,248 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,249 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:09,254 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:01:38,846 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 23:02:10,946 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 23:02:13,345 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:02:13,346 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:02:13,347 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:02:13,461 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,461 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,461 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,462 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,463 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,464 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,464 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,465 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,466 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,470 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,471 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,472 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,472 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,474 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,477 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,477 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,478 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,479 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,479 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,480 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,480 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,483 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,483 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:02:13,494 - telegrambot.views - ERROR - Ошибка получения специальности: cannot import name 'SotrudnikiSpecialnost' from 'sotrudniki.models' (C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py)
+2025-07-18 23:03:09,741 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-07-18 23:03:17,011 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 23:03:19,542 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:03:19,543 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:03:19,544 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:03:25,421 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:03:25,423 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:03:25,424 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:03:32,652 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Сидоров'] на объекте 27
+2025-07-18 23:03:32,653 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Сидоров'] на объекте 27
+2025-07-18 23:03:32,654 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Сидоров'] на объекте 27
+2025-07-18 23:03:38,716 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:03:38,717 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:03:38,719 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:03:39,516 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:03:39,517 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:03:39,517 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:03:45,061 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:03:45,062 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:03:45,062 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:03:48,211 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:03:48,212 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:03:48,213 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:03:50,700 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:03:50,701 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:03:50,703 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:05:02,580 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:05:02,581 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:05:02,581 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:05:07,131 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:05:07,132 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:05:07,133 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:05:10,436 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:05:10,438 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:05:10,439 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:05:23,682 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 23:05:29,091 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Сидоров'] на объекте 27
+2025-07-18 23:05:29,094 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Сидоров'] на объекте 27
+2025-07-18 23:05:29,096 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Сидоров'] на объекте 27
+2025-07-18 23:06:29,766 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:06:29,767 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:06:29,768 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:06:31,731 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:06:31,732 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:06:31,733 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:06:32,547 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:06:32,548 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:06:32,549 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:07:30,173 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:07:30,175 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:07:30,176 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:07:32,997 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:07:32,998 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:07:32,999 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:08:33,420 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:08:33,421 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:08:33,423 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:08:36,130 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 23:12:53,343 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 23:12:55,283 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:12:55,285 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:12:55,289 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:12:59,283 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Сидоров'] на объекте 27
+2025-07-18 23:12:59,284 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Сидоров'] на объекте 27
+2025-07-18 23:12:59,285 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Сидоров'] на объекте 27
+2025-07-18 23:13:01,172 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:13:01,172 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:13:01,173 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:13:03,155 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:13:03,156 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:13:03,156 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:13:06,844 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек'] на объекте 27
+2025-07-18 23:13:06,845 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек'] на объекте 27
+2025-07-18 23:13:06,846 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек'] на объекте 27
+2025-07-18 23:13:11,108 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:13:11,110 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:13:11,111 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:13:11,843 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:13:11,844 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:13:11,845 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:13:23,662 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 23:14:20,581 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:14:20,582 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:14:20,583 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:14:22,067 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:14:22,067 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:14:22,069 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:14:23,777 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 23:14:25,855 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:14:25,859 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:14:25,862 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-18 23:17:25,999 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:17:26,001 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:17:26,001 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:17:28,354 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:17:28,355 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:17:28,356 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:17:42,598 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:17:42,600 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:17:42,600 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:17:43,323 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:17:43,324 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:17:43,325 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:17:49,269 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:17:49,270 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:17:49,271 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:17:51,254 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 23:18:24,230 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:18:24,232 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:18:24,233 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:18:25,979 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:18:25,980 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:18:25,982 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:18:28,803 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:18:28,804 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:18:28,805 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:18:43,957 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:18:43,958 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:18:43,958 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:19:38,315 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-18 23:19:41,670 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:19:41,672 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:19:41,675 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:19:48,673 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 23:23:24,978 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-18 23:23:32,767 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:23:32,770 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:23:32,771 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Аманбек', 'Краснов'] на объекте 27
+2025-07-18 23:23:57,123 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:23:57,124 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:23:57,125 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Петров', 'Седов'] на объекте 27
+2025-07-18 23:24:39,243 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:24:39,244 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-18 23:24:39,244 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
