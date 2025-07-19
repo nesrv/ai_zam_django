@@ -1243,9 +1243,13 @@
                     for (let j = 7; j < cells.length; j++) {
                         const cell = cells[j];
                         
-                        // Добавляем кнопку
+                        // Проверяем, есть ли значение в ячейке
+                        const cellValue = cell.textContent.trim();
+                        const hasValue = cellValue && cellValue !== '0' && cellValue !== '';
+                        
+                        // Добавляем кнопку с разными иконками в зависимости от значения
                         const btn = document.createElement('button');
-                        btn.textContent = '👥';
+                        btn.textContent = hasValue ? '🧑‍🤝‍🧑' : '👥';
                         btn.style.marginLeft = '5px';
                         btn.style.background = 'none';
                         btn.style.border = 'none';
@@ -1262,8 +1266,23 @@
                             // Получаем ID объекта из URL
                             const objectId = window.location.pathname.split('/')[2];
                             
+                            // Получаем дату из заголовка столбца
+                            const dayIndex = j - 7;
+                            const dateHeader = document.querySelectorAll('th')[j];
+                            const dateText = dateHeader ? dateHeader.textContent.trim() : '';
+                            
+                            // Отправляем запрос на отладочный эндпоинт
+                            fetch(`/objects/${objectId}/debug-employees/?position=${encodeURIComponent(position)}&date=${encodeURIComponent(dateText)}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log('Debug response:', data);
+                                })
+                                .catch(error => {
+                                    console.error('Debug error:', error);
+                                });
+                            
                             // Создаем модальное окно с реальными данными
-                            showRealEmployeesModal(objectId, position);
+                            showRealEmployeesModal(objectId, position, dateText);
                         });
                     }
                     
@@ -1276,7 +1295,7 @@
     });
 
     // Функция для отображения модального окна с реальными данными
-    function showRealEmployeesModal(objectId, position) {
+    function showRealEmployeesModal(objectId, position, dateText) {
         // Создаем модальное окно
         const modal = document.createElement('div');
         modal.style.position = 'fixed';
@@ -1295,12 +1314,13 @@
         content.style.backgroundColor = '#2c3e50';
         content.style.padding = '20px';
         content.style.borderRadius = '5px';
-        content.style.width = '500px';
+        content.style.width = '800px';
+        content.style.maxWidth = '90vw';
         content.style.color = 'white';
         
         // Заголовок
         const header = document.createElement('h3');
-        header.textContent = 'Сотрудники: ' + position;
+        header.textContent = 'Сотрудники: ' + position + ' за ' + dateText + '';
         header.style.marginTop = '0';
         content.appendChild(header);
         
@@ -1325,6 +1345,23 @@
             document.body.removeChild(modal);
         });
         
+        // Кнопка сохранения в табель (будет добавлена после таблицы)
+        const saveBtn = document.createElement('button');
+        saveBtn.textContent = 'Сохранить в табель';
+        saveBtn.style.backgroundColor = '#27ae60';
+        saveBtn.style.color = 'white';
+        saveBtn.style.border = 'none';
+        saveBtn.style.padding = '8px 16px';
+        saveBtn.style.borderRadius = '4px';
+        saveBtn.style.cursor = 'pointer';
+        saveBtn.style.marginTop = '20px';
+        saveBtn.style.marginRight = '10px';
+        saveBtn.style.float = 'right';
+        
+        saveBtn.addEventListener('click', function() {
+            saveEmployeeHours(objectId, position, dateText, modal);
+        });
+        
         content.appendChild(closeBtn);
         modal.appendChild(content);
         document.body.appendChild(modal);
@@ -1338,8 +1375,8 @@
         
         // Загружаем данные о сотрудниках
         console.log(`Запрос сотрудников: /objects/${objectId}/employees/?position=${encodeURIComponent(position)}`)
-        // Используем абсолютный URL для избежания проблем с относительными путями
-        fetch(`http://127.0.0.1:8000/objects/${objectId}/employees/?position=${encodeURIComponent(position)}`)
+        // Используем относительный URL для избежания проблем с разными доменами
+        fetch(`/objects/${objectId}/employees/?position=${encodeURIComponent(position)}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -1353,6 +1390,15 @@
                 content.removeChild(loading);
                 
                 if (data.success && data.employees && data.employees.length > 0) {
+                    // Фильтруем сотрудников только по указанной должности
+                    const filteredEmployees = data.employees.filter(employee => {
+                        // Проверяем, содержит ли специальность сотрудника указанную должность
+                        // или должность содержит специальность сотрудника
+                        const employeePosition = employee.specialnost || '';
+                        return employeePosition.toLowerCase().includes(position.toLowerCase()) || 
+                               position.toLowerCase().includes(employeePosition.toLowerCase());
+                    });
+                    
                     // Создаем таблицу сотрудников
                     const table = document.createElement('table');
                     table.style.width = '100%';
@@ -1366,55 +1412,95 @@
                     
                     const thName = document.createElement('th');
                     thName.textContent = 'ФИО';
-                    thName.style.padding = '8px';
+                    thName.style.padding = '4px';
                     thName.style.textAlign = 'left';
                     thName.style.border = '1px solid #2c3e50';
+                    thName.style.width = '30%';
                     
                     const thOrg = document.createElement('th');
                     thOrg.textContent = 'Организация';
-                    thOrg.style.padding = '8px';
+                    thOrg.style.padding = '4px';
                     thOrg.style.textAlign = 'center';
                     thOrg.style.border = '1px solid #2c3e50';
+                    thOrg.style.width = '25%';
                     
                     const thSpec = document.createElement('th');
                     thSpec.textContent = 'Специальность';
-                    thSpec.style.padding = '8px';
+                    thSpec.style.padding = '4px';
                     thSpec.style.textAlign = 'center';
                     thSpec.style.border = '1px solid #2c3e50';
+                    thSpec.style.width = '25%';
+                    
+                    const thHours = document.createElement('th');
+                    thHours.textContent = 'Отработал';
+                    thHours.style.padding = '4px';
+                    thHours.style.textAlign = 'center';
+                    thHours.style.border = '1px solid #2c3e50';
+                    thHours.style.width = '10%';
+                    
+                    const thKPI = document.createElement('th');
+                    thKPI.textContent = 'KPI';
+                    thKPI.style.padding = '4px';
+                    thKPI.style.textAlign = 'center';
+                    thKPI.style.border = '1px solid #2c3e50';
+                    thKPI.style.width = '10%';
                     
                     headerRow.appendChild(thName);
                     headerRow.appendChild(thOrg);
                     headerRow.appendChild(thSpec);
+                    headerRow.appendChild(thHours);
+                    headerRow.appendChild(thKPI);
                     thead.appendChild(headerRow);
                     table.appendChild(thead);
                     
                     // Тело таблицы
                     const tbody = document.createElement('tbody');
                     
-                    data.employees.forEach(employee => {
+                    // Используем отфильтрованный список сотрудников
+                    filteredEmployees.forEach(employee => {
                         const row = document.createElement('tr');
                         row.style.backgroundColor = 'rgba(255,255,255,0.1)';
                         
                         const tdName = document.createElement('td');
                         tdName.textContent = employee.fio;
-                        tdName.style.padding = '8px';
+                        tdName.style.padding = '4px';
                         tdName.style.border = '1px solid #34495e';
                         
                         const tdOrg = document.createElement('td');
                         tdOrg.textContent = employee.organizaciya || '-';
-                        tdOrg.style.padding = '8px';
+                        tdOrg.style.padding = '4px';
                         tdOrg.style.border = '1px solid #34495e';
                         tdOrg.style.textAlign = 'center';
                         
                         const tdSpec = document.createElement('td');
                         tdSpec.textContent = employee.specialnost || '-';
-                        tdSpec.style.padding = '8px';
+                        tdSpec.style.padding = '4px';
                         tdSpec.style.border = '1px solid #34495e';
                         tdSpec.style.textAlign = 'center';
+                        
+                        const tdHours = document.createElement('td');
+                        tdHours.textContent = '8';
+                        tdHours.style.padding = '4px';
+                        tdHours.style.border = '1px solid #34495e';
+                        tdHours.style.textAlign = 'center';
+                        tdHours.contentEditable = 'true';
+                        tdHours.style.cursor = 'pointer';
+                        tdHours.style.backgroundColor = 'rgba(255,255,255,0.05)';
+                        
+                        const tdKPI = document.createElement('td');
+                        tdKPI.textContent = '1.0';
+                        tdKPI.style.padding = '4px';
+                        tdKPI.style.border = '1px solid #34495e';
+                        tdKPI.style.textAlign = 'center';
+                        tdKPI.contentEditable = 'true';
+                        tdKPI.style.cursor = 'pointer';
+                        tdKPI.style.backgroundColor = 'rgba(255,255,255,0.05)';
                         
                         row.appendChild(tdName);
                         row.appendChild(tdOrg);
                         row.appendChild(tdSpec);
+                        row.appendChild(tdHours);
+                        row.appendChild(tdKPI);
                         tbody.appendChild(row);
                     });
                     
@@ -1423,11 +1509,14 @@
                     
                     // Добавляем информацию о количестве сотрудников
                     const info = document.createElement('p');
-                    info.textContent = `Всего сотрудников: ${data.employees.length}`;
+                    info.textContent = `Всего сотрудников: ${filteredEmployees.length}`;
                     info.style.marginTop = '10px';
                     info.style.textAlign = 'right';
                     info.style.color = '#bdc3c7';
                     content.insertBefore(info, closeBtn);
+                    
+                    // Добавляем кнопку "Сохранить в табель" после таблицы
+                    content.insertBefore(saveBtn, closeBtn);
                 } else {
                     const noData = document.createElement('p');
                     noData.textContent = 'Сотрудники не найдены';
@@ -1441,12 +1530,114 @@
                 content.removeChild(loading);
                 
                 // Показываем фиксированные данные в случае ошибки
-                showFixedEmployeesData(content, closeBtn);
+                showFixedEmployeesData(content, closeBtn, position, saveBtn);
             });
     }
     
     // Функция для отображения фиксированных данных в случае ошибки
-    function showFixedEmployeesData(content, closeBtn) {
+    // Функция для сохранения отработанных часов сотрудников в табель
+    function saveEmployeeHours(objectId, position, dateText, modal) {
+        // Получаем таблицу с сотрудниками
+        const table = modal.querySelector('table');
+        if (!table) {
+            alert('Ошибка: таблица с сотрудниками не найдена');
+            return;
+        }
+        
+        // Получаем все строки таблицы (кроме заголовка)
+        const rows = Array.from(table.querySelectorAll('tbody tr'));
+        
+        // Собираем данные о сотрудниках
+        const employeesData = [];
+        let totalHours = 0;
+        
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length >= 5) {
+                const employeeId = row.dataset.employeeId || 0;
+                const fio = cells[0].textContent;
+                const hours = parseFloat(cells[3].textContent) || 0;
+                const kpi = parseFloat(cells[4].textContent) || 1.0;
+                
+                totalHours += hours;
+                
+                employeesData.push({
+                    employee_id: employeeId,
+                    fio: fio,
+                    hours: hours,
+                    kpi: kpi
+                });
+            }
+        });
+        
+        // Преобразуем дату из формата DD.MM в YYYY-MM-DD
+        let dateStr = dateText;
+        if (dateText && dateText.match(/^\d{2}\.\d{2}$/)) {
+            const [day, month] = dateText.split('.');
+            const year = new Date().getFullYear();
+            dateStr = `${year}-${month}-${day}`;
+        }
+        
+        // Отправляем данные на сервер
+        fetch(`/objects/${objectId}/save-hours/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                object_id: objectId,
+                position: position,
+                date: dateStr,
+                employees: employeesData,
+                total_hours: totalHours
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Данные успешно сохранены в табель');
+                document.body.removeChild(modal);
+                
+                // Обновляем ячейку с часами в основной таблице
+                updateCellWithHours(objectId, position, dateText, totalHours);
+            } else {
+                alert('Ошибка при сохранении данных: ' + (data.error || 'неизвестная ошибка'));
+            }
+        })
+        .catch(error => {
+            console.error('Error saving data:', error);
+            alert('Ошибка при отправке данных на сервер');
+        });
+    }
+    
+    // Функция для обновления ячейки с часами в основной таблице
+    function updateCellWithHours(objectId, position, dateText, hours) {
+        // Находим все строки с категорией "Кадровое обеспечение"
+        const rows = document.querySelectorAll('tr');
+        
+        // Ищем строку с указанной должностью
+        for (let i = 0; i < rows.length; i++) {
+            const firstCell = rows[i].querySelector('td');
+            if (firstCell && firstCell.textContent && firstCell.textContent.trim().includes(position)) {
+                // Находим ячейку с указанной датой
+                const cells = rows[i].querySelectorAll('td');
+                for (let j = 7; j < cells.length; j++) {
+                    const headerCell = document.querySelectorAll('th')[j];
+                    if (headerCell && headerCell.textContent.trim() === dateText) {
+                        // Обновляем содержимое ячейки
+                        cells[j].textContent = hours;
+                        cells[j].style.fontWeight = 'bold';
+                        cells[j].style.color = '#27ae60';
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+    }
+    
+    function showFixedEmployeesData(content, closeBtn, position, date) {
         // База сотрудников по должностям
         const allEmployees = {
             'Водитель': [
@@ -1468,10 +1659,6 @@
             ]
         };
         
-        // Получаем текущую должность из заголовка
-        const headerText = document.getElementById('employeesModalHeader').querySelector('h3').textContent;
-        const position = headerText.replace('Сотрудники: ', '');
-        
         // Подбираем сотрудников по должности
         let employees = [];
         
@@ -1481,7 +1668,7 @@
         } else {
             // Если точного совпадения нет, ищем по частичному
             for (const key in allEmployees) {
-                if (key.includes(position) || position.includes(key)) {
+                if (key.toLowerCase().includes(position.toLowerCase()) || position.toLowerCase().includes(key.toLowerCase())) {
                     employees = allEmployees[key];
                     break;
                 }
@@ -1507,25 +1694,44 @@
         
         const thName = document.createElement('th');
         thName.textContent = 'ФИО';
-        thName.style.padding = '8px';
+        thName.style.padding = '4px';
         thName.style.textAlign = 'left';
         thName.style.border = '1px solid #2c3e50';
+        thName.style.width = '30%';
         
         const thOrg = document.createElement('th');
         thOrg.textContent = 'Организация';
-        thOrg.style.padding = '8px';
+        thOrg.style.padding = '4px';
         thOrg.style.textAlign = 'center';
         thOrg.style.border = '1px solid #2c3e50';
+        thOrg.style.width = '25%';
         
         const thSpec = document.createElement('th');
         thSpec.textContent = 'Специальность';
-        thSpec.style.padding = '8px';
+        thSpec.style.padding = '4px';
         thSpec.style.textAlign = 'center';
         thSpec.style.border = '1px solid #2c3e50';
+        thSpec.style.width = '25%';
+        
+        const thHours = document.createElement('th');
+        thHours.textContent = 'Отработал';
+        thHours.style.padding = '4px';
+        thHours.style.textAlign = 'center';
+        thHours.style.border = '1px solid #2c3e50';
+        thHours.style.width = '10%';
+        
+        const thKPI = document.createElement('th');
+        thKPI.textContent = 'KPI';
+        thKPI.style.padding = '4px';
+        thKPI.style.textAlign = 'center';
+        thKPI.style.border = '1px solid #2c3e50';
+        thKPI.style.width = '10%';
         
         headerRow.appendChild(thName);
         headerRow.appendChild(thOrg);
         headerRow.appendChild(thSpec);
+        headerRow.appendChild(thHours);
+        headerRow.appendChild(thKPI);
         thead.appendChild(headerRow);
         table.appendChild(thead);
         
@@ -1538,24 +1744,44 @@
             
             const tdName = document.createElement('td');
             tdName.textContent = employee.fio;
-            tdName.style.padding = '8px';
+            tdName.style.padding = '4px';
             tdName.style.border = '1px solid #34495e';
             
             const tdOrg = document.createElement('td');
             tdOrg.textContent = employee.organizaciya || '-';
-            tdOrg.style.padding = '8px';
+            tdOrg.style.padding = '4px';
             tdOrg.style.border = '1px solid #34495e';
             tdOrg.style.textAlign = 'center';
             
             const tdSpec = document.createElement('td');
             tdSpec.textContent = employee.specialnost || '-';
-            tdSpec.style.padding = '8px';
+            tdSpec.style.padding = '4px';
             tdSpec.style.border = '1px solid #34495e';
             tdSpec.style.textAlign = 'center';
+            
+            const tdHours = document.createElement('td');
+            tdHours.textContent = '8';
+            tdHours.style.padding = '4px';
+            tdHours.style.border = '1px solid #34495e';
+            tdHours.style.textAlign = 'center';
+            tdHours.contentEditable = 'true';
+            tdHours.style.cursor = 'pointer';
+            tdHours.style.backgroundColor = 'rgba(255,255,255,0.05)';
+            
+            const tdKPI = document.createElement('td');
+            tdKPI.textContent = '1.0';
+            tdKPI.style.padding = '4px';
+            tdKPI.style.border = '1px solid #34495e';
+            tdKPI.style.textAlign = 'center';
+            tdKPI.contentEditable = 'true';
+            tdKPI.style.cursor = 'pointer';
+            tdKPI.style.backgroundColor = 'rgba(255,255,255,0.05)';
             
             row.appendChild(tdName);
             row.appendChild(tdOrg);
             row.appendChild(tdSpec);
+            row.appendChild(tdHours);
+            row.appendChild(tdKPI);
             tbody.appendChild(row);
         });
         
@@ -1569,10 +1795,13 @@
         info.style.textAlign = 'right';
         info.style.color = '#bdc3c7';
         content.insertBefore(info, closeBtn);
+        
+        // Добавляем кнопку "Сохранить в табель" после таблицы
+        content.insertBefore(saveBtn, closeBtn);
     }
     
     // Функция для отображения модального окна с фиксированными данными
-    function showFixedEmployeesModal(position) {
+    function showFixedEmployeesModal(position, date) {
         // Создаем модальное окно
         const modal = document.createElement('div');
         modal.style.position = 'fixed';
@@ -1591,75 +1820,15 @@
         content.style.backgroundColor = '#2c3e50';
         content.style.padding = '20px';
         content.style.borderRadius = '5px';
-        content.style.width = '500px';
+        content.style.width = '800px';
+        content.style.maxWidth = '90vw';
         content.style.color = 'white';
         
         // Заголовок
         const header = document.createElement('h3');
-        header.textContent = 'Сотрудники: ' + position;
+        header.textContent = 'Сотрудники: ' + position + (date ? ' (' + date + ')' : '');
         header.style.marginTop = '0';
         content.appendChild(header);
-        
-        // Фиксированные данные сотрудников
-        const employees = [
-            { fio: 'Иванов Иван Иванович', organizaciya: 'ООО "СтройСервис"' },
-            { fio: 'Петров Петр Петрович', organizaciya: 'ООО "СтройСервис"' },
-            { fio: 'Сидоров Сидор Сидорович', organizaciya: 'ООО "СтройСервис"' }
-        ];
-        
-        // Создаем таблицу сотрудников
-        const table = document.createElement('table');
-        table.style.width = '100%';
-        table.style.borderCollapse = 'collapse';
-        table.style.marginTop = '10px';
-        
-        // Заголовок таблицы
-        const thead = document.createElement('thead');
-        const headerRow = document.createElement('tr');
-        headerRow.style.backgroundColor = '#34495e';
-        
-        const thName = document.createElement('th');
-        thName.textContent = 'ФИО';
-        thName.style.padding = '8px';
-        thName.style.textAlign = 'left';
-        thName.style.border = '1px solid #2c3e50';
-        
-        const thOrg = document.createElement('th');
-        thOrg.textContent = 'Организация';
-        thOrg.style.padding = '8px';
-        thOrg.style.textAlign = 'center';
-        thOrg.style.border = '1px solid #2c3e50';
-        
-        headerRow.appendChild(thName);
-        headerRow.appendChild(thOrg);
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
-        
-        // Тело таблицы
-        const tbody = document.createElement('tbody');
-        
-        employees.forEach(employee => {
-            const row = document.createElement('tr');
-            row.style.backgroundColor = 'rgba(255,255,255,0.1)';
-            
-            const tdName = document.createElement('td');
-            tdName.textContent = employee.fio;
-            tdName.style.padding = '8px';
-            tdName.style.border = '1px solid #34495e';
-            
-            const tdOrg = document.createElement('td');
-            tdOrg.textContent = employee.organizaciya || '-';
-            tdOrg.style.padding = '8px';
-            tdOrg.style.border = '1px solid #34495e';
-            tdOrg.style.textAlign = 'center';
-            
-            row.appendChild(tdName);
-            row.appendChild(tdOrg);
-            tbody.appendChild(row);
-        });
-        
-        table.appendChild(tbody);
-        content.appendChild(table);
         
         // Кнопка закрытия
         const closeBtn = document.createElement('button');
@@ -1677,6 +1846,25 @@
             document.body.removeChild(modal);
         });
         
+        // Кнопка сохранения в табель
+        const saveBtn = document.createElement('button');
+        saveBtn.textContent = 'Сохранить в табель';
+        saveBtn.style.backgroundColor = '#27ae60';
+        saveBtn.style.color = 'white';
+        saveBtn.style.border = 'none';
+        saveBtn.style.padding = '8px 16px';
+        saveBtn.style.borderRadius = '4px';
+        saveBtn.style.cursor = 'pointer';
+        saveBtn.style.marginTop = '20px';
+        saveBtn.style.marginRight = '10px';
+        saveBtn.style.float = 'right';
+        
+        saveBtn.addEventListener('click', function() {
+            // Получаем ID объекта из URL
+            const objectId = window.location.pathname.split('/')[2];
+            saveEmployeeHours(objectId, position, date, modal);
+        });
+        
         content.appendChild(closeBtn);
         modal.appendChild(content);
         document.body.appendChild(modal);
@@ -1687,6 +1875,9 @@
                 document.body.removeChild(modal);
             }
         });
+        
+        // Используем функцию showFixedEmployeesData для отображения данных
+        showFixedEmployeesData(content, closeBtn, position, saveBtn);
     }
     </script>
 </body>

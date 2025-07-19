@@ -11,7 +11,9 @@ from django.views.static import serve as staticserve
 def favicon_view(request):
     return HttpResponse(status=204)
 
+from object import views as object_views
 from object.views import home, objects_list, object_detail, object_income_detail, create_object, update_expense, update_resource_data, add_category, add_resource, add_category_to_object, get_resources_by_category, get_employees_by_resource, delete_object, add_resource_to_object, delete_resource_from_object
+from object.api_views import debug_cell_info, get_employees_simple
 from object.views_edit import edit_object
 from object.views_income import update_income
 from object.views_totals import get_income_totals
@@ -44,6 +46,9 @@ urlpatterns = [
     path('objects/<int:object_id>/edit/', edit_object, name='edit_object'),
     path('objects/<int:object_id>/export/', export_object_json, name='export_object_json'),
     path('objects/<int:object_id>/delete/', delete_object, name='delete_object'),
+    path('objects/<int:object_id>/debug-employees/', debug_cell_info, name='debug_employees'),
+    path('objects/<int:object_id>/employees/', get_employees_simple, name='get_employees_by_position'),
+    path('objects/<int:object_id>/save-hours/', object_views.save_employee_hours, name='save_employee_hours'),
     path('add-resource-to-object/', add_resource_to_object, name='add_resource_to_object'),
     path('delete-resource-from-object/', delete_resource_from_object, name='delete_resource_from_object'),
     path('favicon.ico', favicon_view),

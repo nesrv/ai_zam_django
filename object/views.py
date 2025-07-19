@@ -1135,6 +1135,158 @@ def check_employee_in_object(request, object_id, employee_id):
 
 @csrf_exempt
 @require_POST
+def save_employee_hours(request, object_id):
+    """API endpoint для сохранения отработанных часов сотрудников в таблицу sotrudniki_zarplaty"""
+    try:
+        # Получаем объект
+        obj = get_object_or_404(Objekt, id=object_id)
+        
+        # Получаем данные из запроса
+        data = json.loads(request.body)
+        position = data.get('position', '')
+        date_str = data.get('date', '')
+        employees = data.get('employees', [])
+        total_hours = data.get('total_hours', 0)
+        
+        # Преобразуем строку даты в объект date
+        from datetime import datetime
+        try:
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
+        except ValueError:
+            return JsonResponse({'success': False, 'error': 'Неверный формат даты'})
+        
+        # Импортируем модель SotrudnikiZarplaty
+        from sotrudniki.models import Sotrudnik, SotrudnikiZarplaty
+        
+        # Сохраняем данные для каждого сотрудника
+        saved_count = 0
+        for emp_data in employees:
+            employee_id = emp_data.get('employee_id')
+            fio = emp_data.get('fio', '')
+            hours = emp_data.get('hours', 0)
+            kpi = emp_data.get('kpi', 1.0)
+            
+            # Если employee_id не указан, пытаемся найти сотрудника по ФИО
+            if not employee_id:
+                try:
+                    employee = Sotrudnik.objects.filter(fio__icontains=fio).first()
+                    if employee:
+                        employee_id = employee.id
+                except:
+                    pass
+            
+            # Создаем или обновляем запись в таблице SotrudnikiZarplaty
+            if employee_id:
+                try:
+                    # Пытаемся найти существующую запись
+                    zarplata, created = SotrudnikiZarplaty.objects.update_or_create(
+                        sotrudnik_id=employee_id,
+                        objekt=obj,
+                        data=date_obj,
+                        defaults={
+                            'kolichestvo_chasov': hours,
+                            'kpi': kpi
+                        }
+                    )
+                    saved_count += 1
+                except Exception as e:
+                    print(f"Ошибка при сохранении данных для сотрудника {fio}: {str(e)}")
+        
+        # Сохраняем данные в таблицу raskhod_resursa
+        try:
+            # Находим ресурс по объекту с указанной должностью
+            from .models import ResursyPoObjektu, FakticheskijResursPoObjektu, RaskhodResursa, Resurs
+            
+            # Находим ресурс с указанной должностью
+            resource = ResursyPoObjektu.objects.filter(
+                objekt=obj,
+                resurs__naimenovanie__icontains=position
+            ).first()
+            
+            if not resource:
+                # Если не нашли по точному совпадению, ищем по частичному
+                resources = ResursyPoObjektu.objects.filter(
+                    objekt=obj,
+                    resurs__kategoriya_resursa__nazvanie__icontains="Кадровое"
+                )
+                
+                for res in resources:
+                    if position.lower() in res.resurs.naimenovanie.lower() or res.resurs.naimenovanie.lower() in position.lower():
+                        resource = res
+                        break
+            
+            if resource:
+                # Получаем или создаем фактический ресурс
+                fakticheskij_resurs, created = FakticheskijResursPoObjektu.objects.get_or_create(
+                    resurs_po_objektu=resource
+                )
+                
+                # Создаем или обновляем запись в таблице RaskhodResursa
+                raskhod, created = RaskhodResursa.objects.update_or_create(
+                    fakticheskij_resurs=fakticheskij_resurs,
+                    data=date_obj,
+                    defaults={
+                        'izraskhodovano': total_hours
+                    }
+                )
+                
+                # Обновляем поле potracheno в ресурсе
+                total_spent = RaskhodResursa.objects.filter(
+                    fakticheskij_resurs=fakticheskij_resurs
+                ).aggregate(total=models.Sum('izraskhodovano'))['total'] or 0
+                
+                resource.potracheno = total_spent
+                resource.save()
+                
+                print(f"Успешно сохранено в таблицу raskhod_resursa: {total_hours} часов для {position} на дату {date_obj}")
+            else:
+                print(f"Не найден ресурс для должности {position}")
+        except Exception as e:
+            print(f"Ошибка при сохранении в таблицу raskhod_resursa: {str(e)}")
+        
+        # Обновляем ячейку в основной таблице
+        
+        return JsonResponse({
+            'success': True, 
+            'message': f'Сохранено записей: {saved_count}',
+            'saved_count': saved_count,
+            'total_hours': total_hours
+        })
+    except Exception as e:
+        print(f"Ошибка при сохранении часов: {str(e)}")
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+def debug_employees(request, object_id):
+    """Отладочный эндпоинт для вывода информации при клике на 👥"""
+    try:
+        # Получаем параметры из запроса
+        position = request.GET.get('position', '')
+        date = request.GET.get('date', '')
+        
+        # Выводим отладочную информацию в терминал
+        print(f"\n\n*** DEBUG EMPLOYEE CLICK ***")
+        print(f"Object ID: {object_id}")
+        print(f"Position: {position}")
+        print(f"Date: {date}")
+        print("*************************\n\n")
+        
+        # Возвращаем успешный ответ
+        return JsonResponse({
+            'success': True,
+            'debug': {
+                'object_id': object_id,
+                'position': position,
+                'date': date
+            }
+        })
+    except Exception as e:
+        print(f"Error in debug_employees: {str(e)}")
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+@csrf_exempt
+@require_POST
 def add_employee_to_object_api(request, object_id, employee_id):
     """API endpoint для добавления сотрудника к объекту"""
     try:

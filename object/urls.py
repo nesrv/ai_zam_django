@@ -15,7 +15,8 @@ urlpatterns = [
     path('objects/<int:object_id>/edit/', views_edit.edit_object, name='edit_object'),
     path('objects/<int:object_id>/delete/', views.delete_object, name='delete_object'),
     path('objects/create/', views.create_object, name='create_object'),
-    path('objects/29/employees/', views.get_employees_by_position, {'object_id': 29}, name='get_employees_hardcoded'),
+    path('objects/<int:object_id>/employees/', api_views.get_employees_by_object_position, name='get_employees_by_position'),
+    path('objects/<int:object_id>/debug-employees/', views.debug_employees, name='debug_employees'),
     path('update-expense/', views.update_expense, name='update_expense'),
     path('update-resource-data/', views.update_resource_data, name='update_resource_data'),
     path('add-category/', views.add_category, name='add_category'),
@@ -27,7 +28,7 @@ urlpatterns = [
     path('get-resources-by-category/<int:category_id>/', views.get_resources_by_category, name='get_resources_by_category'),
     path('get-employees-by-resource/<int:resource_id>/', views.get_employees_by_resource, name='get_employees_by_resource'),
     path('objects/<int:object_id>/api/employees-by-object-position/', views.get_employees_by_object_position, name='get_employees_by_object_position'),
-    path('objects/<int:object_id>/employees/', views.get_employees_by_position, name='get_employees_by_position'),
+
     path('api/check-employee/<int:object_id>/<int:employee_id>/', views.check_employee_in_object, name='check_employee_in_object'),
     path('api/add-employee-to-object/<int:object_id>/<int:employee_id>/', views.add_employee_to_object_api, name='add_employee_to_object_api'),
     
