@@ -559,8 +559,16 @@
 <div id="hoursModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2 class="modal-title">Добавить часы в табель за <span id="message-date">дату</span> на <span id="message-object">объекте</span></h2>
+            <h2 class="modal-title">Добавить часы в табель за 
+                <span style="white-space: nowrap;">
+                    <button onclick="window.adjustDate(-1)" style="border: none; background: none; cursor: pointer; font-size: 16px; padding: 0 5px;">◀</button>
+                    <span id="message-date">дату</span>
+                    <button onclick="window.adjustDate(1)" style="border: none; background: none; cursor: pointer; font-size: 16px; padding: 0 5px;">▶</button>
+                </span> 
+                на <span id="message-object">объекте</span>
+            </h2>
             <span class="close-modal" onclick="window.closeHoursModal()">&times;</span>
+            <input type="hidden" id="current-objekt-id" value="">
         </div>
         <div class="modal-body">
             <table class="hours-table">
@@ -571,6 +579,7 @@
                         <th>Часы</th>
                         <th>KPI</th>
                         <th>Объект</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -630,19 +639,12 @@
         </div>
         <div class="modal-footer">
             <button class="modal-btn cancel-btn" onclick="window.closeHoursModal()">Отмена</button>
-            <button class="modal-btn save-btn" onclick="window.saveHours()">Сохранить</button>
+            <button class="modal-btn save-btn" onclick="window.saveHours()">Записать в табель</button>
         </div>
     </div>
 </div>
 
 <div class="page-title">Рабочие чаты</div>
-
-<!-- Кнопка для отладки модального окна -->
-<div style="text-align: center; margin-bottom: 20px;">
-    <button onclick="document.getElementById('hoursModal').style.display='block'" style="padding: 10px 20px; background-color: #007AFF; color: white; border: none; border-radius: 5px; cursor: pointer;">
-        Показать модальное окно (отладка)
-    </button>
-</div>
 
 {% if not bot_token_configured %}
 <div style="background: #dc3545; color: white; padding: 15px; border-radius: 10px; margin: 20px auto; max-width: 800px; text-align: center;">
@@ -897,6 +899,13 @@ window.openHoursModal = function(messageText, messageDate) {
                 }
             }
             
+            // Сохраняем ID объекта в скрытом поле
+            const currentObjektIdField = document.getElementById('current-objekt-id');
+            if (currentObjektIdField && currentObjektId) {
+                currentObjektIdField.value = currentObjektId;
+                console.log(`Сохранен ID объекта в скрытом поле: ${currentObjektId}`);
+            }
+            
             // Если все еще нет названия объекта, ищем в заголовке чата
             if (!objectText) {
                 // Пытаемся найти заголовок чата
@@ -940,10 +949,27 @@ window.openHoursModal = function(messageText, messageDate) {
             const surnames = [];
             if (messageText) {
                 // Ищем все слова с заглавной буквы
-                const words = messageText.match(/[\u0410-\u042F][\u0430-\u044F\u0451]+/g) || [];
-                words.forEach(word => {
+                const wordsWithCapital = messageText.match(/[\u0410-\u042F][\u0430-\u044F\u0451]+/g) || [];
+                // Ищем все слова с маленькой буквы, которые могут быть фамилиями
+                const wordsWithLower = messageText.match(/[\u0430-\u044F\u0451]+/g) || [];
+                
+                // Добавляем слова с заглавной буквы
+                wordsWithCapital.forEach(word => {
                     if (word.length > 2) { // Игнорируем короткие слова
                         surnames.push(word);
+                    }
+                });
+                
+                // Добавляем слова с маленькой буквы, но с заглавной первой буквой
+                wordsWithLower.forEach(word => {
+                    // Проверяем, что слово достаточно длинное и не содержит цифры
+                    if (word.length > 3 && !/\d/.test(word) && !/^(\d+|\s+)$/.test(word)) {
+                        // Преобразуем первую букву в заглавную
+                        const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
+                        // Проверяем, что такого слова еще нет в списке
+                        if (!surnames.includes(capitalizedWord)) {
+                            surnames.push(capitalizedWord);
+                        }
                     }
                 });
             }
@@ -1011,6 +1037,7 @@ window.openHoursModal = function(messageText, messageDate) {
                                         <td><input type="number" value="8" min="1" max="24"></td>
                                         <td><input type="number" value="1.0" min="0.1" max="2.0" step="0.1"></td>
                                         <td><input type="text" value="${messageObjectElement ? messageObjectElement.textContent : 'Объект'}"></td>
+                                        <td><span class="delete-row" style="cursor: pointer; color: #dc3545; font-weight: bold; font-size: 18px;">✗</span></td>
                                     </tr>
                                 `;
                             });
@@ -1046,12 +1073,210 @@ window.closeHoursModal = function() {
     }
 };
 
+// Функция для изменения даты на ±1 день
+window.adjustDate = function(days) {
+    const dateElement = document.getElementById('message-date');
+    if (!dateElement) return;
+    
+    // Получаем текущую дату из элемента
+    let currentDate = dateElement.textContent.trim();
+    
+    // Парсим дату в зависимости от формата
+    let date;
+    
+    // Проверяем различные форматы даты
+    if (/^\d{1,2}\.\d{1,2}(\.\d{2,4})?$/.test(currentDate)) {
+        // Формат DD.MM или DD.MM.YYYY
+        const parts = currentDate.split('.');
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; // Месяцы в JS начинаются с 0
+        const year = parts.length > 2 ? parseInt(parts[2], 10) : new Date().getFullYear();
+        date = new Date(year, month, day);
+    } else if (/^\d{1,2}\/\d{1,2}(\/\d{2,4})?$/.test(currentDate)) {
+        // Формат DD/MM или DD/MM/YYYY
+        const parts = currentDate.split('/');
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const year = parts.length > 2 ? parseInt(parts[2], 10) : new Date().getFullYear();
+        date = new Date(year, month, day);
+    } else if (/^\d{1,2}-\d{1,2}(-\d{2,4})?$/.test(currentDate)) {
+        // Формат DD-MM или DD-MM-YYYY
+        const parts = currentDate.split('-');
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const year = parts.length > 2 ? parseInt(parts[2], 10) : new Date().getFullYear();
+        date = new Date(year, month, day);
+    } else {
+        // Если формат не распознан, используем текущую дату
+        date = new Date();
+    }
+    
+    // Проверяем, что дата валидна
+    if (isNaN(date.getTime())) {
+        date = new Date(); // Если дата невалидна, используем текущую
+    }
+    
+    // Изменяем дату на указанное количество дней
+    date.setDate(date.getDate() + days);
+    
+    // Форматируем дату в тот же формат, что был изначально
+    let newDateStr;
+    if (/^\d{1,2}\.\d{1,2}(\.\d{2,4})?$/.test(currentDate)) {
+        // Формат DD.MM или DD.MM.YYYY
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        if (currentDate.split('.').length > 2) {
+            // Если был год, добавляем его
+            const year = date.getFullYear();
+            newDateStr = `${day}.${month}.${year}`;
+        } else {
+            newDateStr = `${day}.${month}`;
+        }
+    } else if (/^\d{1,2}\/\d{1,2}(\/\d{2,4})?$/.test(currentDate)) {
+        // Формат DD/MM или DD/MM/YYYY
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        if (currentDate.split('/').length > 2) {
+            const year = date.getFullYear();
+            newDateStr = `${day}/${month}/${year}`;
+        } else {
+            newDateStr = `${day}/${month}`;
+        }
+    } else if (/^\d{1,2}-\d{1,2}(-\d{2,4})?$/.test(currentDate)) {
+        // Формат DD-MM или DD-MM-YYYY
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        if (currentDate.split('-').length > 2) {
+            const year = date.getFullYear();
+            newDateStr = `${day}-${month}-${year}`;
+        } else {
+            newDateStr = `${day}-${month}`;
+        }
+    } else {
+        // Если формат не распознан, используем DD.MM
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        newDateStr = `${day}.${month}`;
+    }
+    
+    // Обновляем текст в элементе
+    dateElement.textContent = newDateStr;
+};
+
 // Функция для сохранения часов в табель
 window.saveHours = function() {
-    // Здесь можно добавить логику сохранения данных в базу
-    alert('Часы успешно добавлены в табель');
-    window.closeHoursModal();
+    // Получаем данные из таблицы
+    const modal = document.getElementById('hoursModal');
+    if (!modal) return;
+    
+    const hoursTable = modal.querySelector('.hours-table tbody');
+    if (!hoursTable) return;
+    
+    // Получаем все строки таблицы
+    const rows = hoursTable.querySelectorAll('tr');
+    if (rows.length === 0) {
+        alert('Нет данных для сохранения');
+        return;
+    }
+    
+    // Получаем дату из заголовка модального окна
+    const dateElement = document.getElementById('message-date');
+    const date = dateElement ? dateElement.textContent : new Date().toLocaleDateString('ru-RU');
+    
+    // Получаем ID объекта из скрытого поля
+    const currentObjektIdField = document.getElementById('current-objekt-id');
+    const currentObjektId = currentObjektIdField ? currentObjektIdField.value : null;
+    
+    if (!currentObjektId) {
+        alert('Не удалось определить ID объекта');
+        return;
+    }
+    
+    // Собираем данные из всех строк таблицы
+    const hoursData = [];
+    
+    rows.forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        if (inputs.length >= 5) {
+            const position = inputs[0].value;
+            const employeeFio = inputs[1].value;
+            const hours = parseFloat(inputs[2].value) || 0;
+            const kpi = parseFloat(inputs[3].value) || 1.0;
+            const objectName = inputs[4].value;
+            
+            // Получаем ID сотрудника, если есть
+            const employeeId = inputs[0].getAttribute('data-employee-id');
+            
+            hoursData.push({
+                position: position,
+                employee_fio: employeeFio,
+                employee_id: employeeId,
+                hours: hours,
+                kpi: kpi,
+                object_name: objectName
+            });
+        }
+    });
+    
+    if (hoursData.length === 0) {
+        alert('Нет данных для сохранения');
+        return;
+    }
+    
+    // Получаем CSRF токен
+    function getCsrfToken() {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, 'csrftoken'.length + 1) === ('csrftoken=')) {
+                    cookieValue = decodeURIComponent(cookie.substring('csrftoken'.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    // Отправляем данные на сервер
+    fetch('/telegram/save-hours/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCsrfToken(),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            hours: hoursData,
+            objekt_id: currentObjektId,
+            date: date
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`Часы успешно добавлены в табель: ${data.message}`);
+            window.closeHoursModal();
+        } else {
+            alert(`Ошибка сохранения: ${data.error}`);
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка запроса:', error);
+        alert(`Ошибка запроса: ${error.message || error}`);
+    });
 };
+
+// Добавляем обработчик для удаления строк из таблицы
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('delete-row')) {
+        // Находим родительскую строку и удаляем её
+        const row = event.target.closest('tr');
+        if (row) {
+            row.remove();
+        }
+    }
+});
 
 // Функция для переключения выпадающего меню
 window.toggleDropdown = function(objektId) {

@@ -1191,6 +1191,179 @@ def save_json_response(request):
         return JsonResponse({'ok': False, 'error': str(e)})
 @csrf_exempt
 @require_POST
+def save_hours(request):
+    """Сохранение часов в табель и расход ресурсов"""
+    try:
+        data = json.loads(request.body)
+        hours_data = data.get('hours', [])
+        objekt_id = data.get('objekt_id')
+        date = data.get('date')
+        
+        if not hours_data or not objekt_id or not date:
+            return JsonResponse({
+                'success': False,
+                'error': 'Необходимо указать данные о часах, ID объекта и дату'
+            })
+        
+        # Импортируем модели
+        from sotrudniki.models import Sotrudnik, SotrudnikiZarplaty
+        from object.models import Objekt, ResursyPoObjektu, Resurs, KategoriyaResursa, FakticheskijResursPoObjektu, RaskhodResursa
+        from django.utils import timezone
+        import datetime
+        
+        # Проверяем существование объекта
+        try:
+            objekt = Objekt.objects.get(id=objekt_id)
+        except Objekt.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'error': f'Объект с ID {objekt_id} не найден'
+            })
+        
+        # Преобразуем дату из строки в объект даты
+        try:
+            # Пробуем разные форматы даты
+            date_formats = ['%d.%m.%Y', '%d.%m.%y', '%Y-%m-%d', '%d/%m/%Y', '%d/%m/%y']
+            parsed_date = None
+            
+            for date_format in date_formats:
+                try:
+                    parsed_date = datetime.datetime.strptime(date, date_format).date()
+                    break
+                except ValueError:
+                    continue
+            
+            if not parsed_date:
+                # Если не удалось распознать дату, используем текущую
+                parsed_date = timezone.now().date()
+        except Exception as e:
+            logger.error(f"Ошибка преобразования даты: {e}")
+            parsed_date = timezone.now().date()
+        
+        # Получаем или создаем категорию ресурса для зарплаты
+        zarplata_category, _ = KategoriyaResursa.objects.get_or_create(
+            nazvanie='Зарплата',
+            defaults={'raskhod_dokhod': True}  # Расход
+        )
+        
+        saved_hours = []
+        saved_resources = []
+        errors = []
+        
+        for item in hours_data:
+            try:
+                employee_id = item.get('employee_id')
+                employee_fio = item.get('employee_fio')
+                hours = float(item.get('hours', 0))
+                kpi = float(item.get('kpi', 1.0))
+                position = item.get('position', '')
+                
+                if hours <= 0:
+                    continue  # Пропускаем записи с нулевыми часами
+                
+                # Находим сотрудника по ID или по ФИО
+                sotrudnik = None
+                if employee_id:
+                    try:
+                        sotrudnik = Sotrudnik.objects.get(id=employee_id)
+                    except Sotrudnik.DoesNotExist:
+                        pass
+                
+                if not sotrudnik and employee_fio:
+                    # Ищем по ФИО
+                    sotrudnik = Sotrudnik.objects.filter(fio__icontains=employee_fio).first()
+                
+                if not sotrudnik:
+                    errors.append(f'Сотрудник не найден: {employee_fio}')
+                    continue
+                
+                # Создаем запись в таблице SotrudnikiZarplaty
+                zarplata, created = SotrudnikiZarplaty.objects.update_or_create(
+                    sotrudnik=sotrudnik,
+                    objekt=objekt,
+                    data=parsed_date,
+                    defaults={
+                        'kolichestvo_chasov': hours,
+                        'kpi': kpi,
+                        'vydano': False
+                    }
+                )
+                
+                saved_hours.append({
+                    'id': zarplata.id,
+                    'sotrudnik': sotrudnik.fio,
+                    'hours': hours,
+                    'created': created
+                })
+                
+                # Создаем ресурс для зарплаты
+                resource_name = f'Зарплата {sotrudnik.fio}'
+                
+                # Получаем или создаем ресурс
+                resource, _ = Resurs.objects.get_or_create(
+                    naimenovanie=resource_name,
+                    kategoriya_resursa=zarplata_category,
+                    defaults={'edinica_izmereniya': 'час'}
+                )
+                
+                # Создаем запись в таблице ResursyPoObjektu
+                resurs_po_objektu, created = ResursyPoObjektu.objects.update_or_create(
+                    objekt=objekt,
+                    resurs=resource,
+                    defaults={
+                        'kolichestvo': hours,
+                        'cena': 0  # Цена будет установлена позже
+                    }
+                )
+                
+                # Создаем запись в таблице FakticheskijResursPoObjektu
+                fakticheskij_resurs, _ = FakticheskijResursPoObjektu.objects.update_or_create(
+                    resurs_po_objektu=resurs_po_objektu
+                )
+                
+                # Создаем или обновляем запись в таблице RaskhodResursa
+                # Используем update_or_create для обеспечения уникальности по fakticheskij_resurs и data
+                raskhod, _ = RaskhodResursa.objects.update_or_create(
+                    fakticheskij_resurs=fakticheskij_resurs,
+                    data=parsed_date,
+                    defaults={
+                        'izraskhodovano': hours
+                    }
+                )
+                
+                saved_resources.append({
+                    'id': resurs_po_objektu.id,
+                    'resource': resource_name,
+                    'hours': hours,
+                    'created': created
+                })
+                
+            except Exception as e:
+                logger.error(f"Ошибка сохранения часов: {e}")
+                errors.append(str(e))
+        
+        return JsonResponse({
+            'success': True,
+            'saved_hours': saved_hours,
+            'saved_resources': saved_resources,
+            'errors': errors,
+            'message': f'Сохранено {len(saved_hours)} записей в табель'
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'error': 'Некорректный JSON'
+        }, status=400)
+    except Exception as e:
+        logger.error(f"Ошибка сохранения часов: {e}")
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
+
+@csrf_exempt
+@require_POST
 def find_employees(request):
     """Поиск сотрудников по фамилии и другим словам в сообщении, похожим на ФИО в таблице sotrudniki_sotrudnik"""
     try:
@@ -1306,10 +1479,22 @@ def find_employees(request):
         # Ищем совпадения
         found_employees = []
         not_found_surnames = []
+        found_employee_ids = set()  # Множество для отслеживания найденных ID сотрудников
+        processed_search_words = set()  # Множество для отслеживания обработанных поисковых слов
         
         for search_word in surnames:
+            # Пропускаем поисковое слово, если оно уже было обработано
+            if search_word.lower() in processed_search_words:
+                continue
+                
+            processed_search_words.add(search_word.lower())  # Добавляем слово в обработанные
             found = False
+            
             for employee in all_employees:
+                # Пропускаем сотрудника, если он уже был найден
+                if employee['id'] in found_employee_ids:
+                    continue
+                    
                 # Проверяем совпадение с фамилией
                 if is_similar_word(search_word, employee['surname']):
                     found_employees.append({
@@ -1319,6 +1504,7 @@ def find_employees(request):
                         'matched_word': search_word,
                         'match_type': 'фамилия'
                     })
+                    found_employee_ids.add(employee['id'])  # Добавляем ID в множество найденных
                     found = True
                     break
                 
@@ -1333,6 +1519,7 @@ def find_employees(request):
                             'matched_word': search_word,
                             'match_type': match_type
                         })
+                        found_employee_ids.add(employee['id'])  # Добавляем ID в множество найденных
                         found = True
                         break
                 
@@ -1345,6 +1532,7 @@ def find_employees(request):
                         'matched_word': search_word,
                         'match_type': 'полное ФИО'
                     })
+                    found_employee_ids.add(employee['id'])  # Добавляем ID в множество найденных
                     found = True
                     break
                 
@@ -1354,11 +1542,40 @@ def find_employees(request):
             if not found:
                 not_found_surnames.append(search_word)
         
+        # Проходим по всем фамилиям еще раз, чтобы найти совпадения для оставшихся слов
+        # с сотрудниками, которые еще не были найдены
+        for search_word in surnames:
+            # Пропускаем слово, если оно уже было обработано и найдено
+            if search_word in not_found_surnames:
+                found = False
+                
+                for employee in all_employees:
+                    # Пропускаем сотрудника, если он уже был найден
+                    if employee['id'] in found_employee_ids:
+                        continue
+                        
+                    # Проверяем совпадение с фамилией
+                    if is_similar_word(search_word, employee['surname']):
+                        found_employees.append({
+                            'id': employee['id'],
+                            'fio': employee['fio'],
+                            'specialnost': employee['specialnost'],
+                            'matched_word': search_word,
+                            'match_type': 'фамилия (доп. поиск)'
+                        })
+                        found_employee_ids.add(employee['id'])  # Добавляем ID в множество найденных
+                        found = True
+                        break
+                
+                if found:
+                    # Удаляем из списка ненайденных
+                    not_found_surnames.remove(search_word)
+        
         return JsonResponse({
             'success': True,
             'employees': found_employees,
             'not_found': not_found_surnames,
-            'message': f'Найдено {len(found_employees)} сотрудников из {len(surnames)} запрошенных слов'
+            'message': f'Найдено {len(found_employees)} сотрудников из {len(set(surnames))} запрошенных слов'
         })
         
     except json.JSONDecodeError:

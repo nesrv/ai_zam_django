@@ -45,4 +45,7 @@ urlpatterns = [
     
     # API для поиска сотрудников по фамилии и объекту
     path('find-employees/', views.find_employees, name='find_employees'),
+    
+    # API для сохранения часов в табель
+    path('save-hours/', views.save_hours, name='save_hours'),
 ] 

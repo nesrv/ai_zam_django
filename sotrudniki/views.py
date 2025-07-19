@@ -912,6 +912,9 @@ def save_salary(request):
     from django.http import JsonResponse
     import json
     from datetime import datetime
+    import logging
+    
+    logger = logging.getLogger(__name__)
     
     if request.method == 'POST':
         try:
@@ -926,8 +929,9 @@ def save_salary(request):
             # Преобразуем дату
             date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
             
-            # Обновляем или создаем запись
-            from object.models import Objekt
+            # Обновляем или создаем запись в таблице SotrudnikiZarplaty
+            from object.models import Objekt, Resurs, ResursyPoObjektu, FakticheskijResursPoObjektu, RaskhodResursa
+            from sotrudniki.models import Sotrudnik
             
             zarplata, created = SotrudnikiZarplaty.objects.update_or_create(
                 sotrudnik_id=sotrudnik_id,
@@ -939,9 +943,63 @@ def save_salary(request):
                 }
             )
             
+            # Дополнительно записываем данные в таблицу raskhod_resursa
+            try:
+                # Получаем сотрудника и объект
+                sotrudnik = Sotrudnik.objects.get(id=sotrudnik_id)
+                objekt = Objekt.objects.get(id=objekt_id)
+                
+                # Создаем ресурс для зарплаты
+                resource_name = f'Зарплата {sotrudnik.fio}'
+                
+                # Получаем или создаем категорию ресурса для зарплаты
+                from object.models import KategoriyaResursa
+                zarplata_category, _ = KategoriyaResursa.objects.get_or_create(
+                    nazvanie='Зарплата',
+                    defaults={'raskhod_dokhod': True}  # Расход
+                )
+                
+                # Получаем или создаем ресурс
+                resource, _ = Resurs.objects.get_or_create(
+                    naimenovanie=resource_name,
+                    kategoriya_resursa=zarplata_category,
+                    defaults={'edinica_izmereniya': 'час'}
+                )
+                
+                # Создаем запись в таблице ResursyPoObjektu
+                resurs_po_objektu, _ = ResursyPoObjektu.objects.update_or_create(
+                    objekt=objekt,
+                    resurs=resource,
+                    defaults={
+                        'kolichestvo': hours,
+                        'cena': 0  # Цена будет установлена позже
+                    }
+                )
+                
+                # Создаем запись в таблице FakticheskijResursPoObjektu
+                fakticheskij_resurs, _ = FakticheskijResursPoObjektu.objects.update_or_create(
+                    resurs_po_objektu=resurs_po_objektu
+                )
+                
+                # Создаем или обновляем запись в таблице RaskhodResursa
+                raskhod, _ = RaskhodResursa.objects.update_or_create(
+                    fakticheskij_resurs=fakticheskij_resurs,
+                    data=date_obj,
+                    defaults={
+                        'izraskhodovano': hours
+                    }
+                )
+                
+                logger.info(f"Данные успешно записаны в raskhod_resursa: {sotrudnik.fio}, {date_obj}, {hours} часов")
+                
+            except Exception as e:
+                logger.error(f"Ошибка при записи в raskhod_resursa: {e}")
+                # Не прерываем выполнение, так как основная запись в SotrudnikiZarplaty уже создана
+            
             return JsonResponse({'success': True})
             
         except Exception as e:
+            logger.error(f"Ошибка сохранения зарплаты: {e}")
             return JsonResponse({'success': False, 'error': str(e)})
     
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
