@@ -1,3 +1,7 @@
+в http://127.0.0.1:8000/admin/sotrudniki/sotrudnik/37/change/ и http://127.0.0.1:8000/admin/sotrudniki/sotrudnik/add/
+
+добавь возможность привязки сотрудника к объекту через таблицу objekt_sotrudniki
+
 я предполагаю, что теперь миграция sotrudniki\migrations\0043_specialnost_kategoriya.py не нужна
 
  проверь, что модель Sotrudnik (сотрудники) правильно связаны с объектом через таблицу objekt_sotrudniki

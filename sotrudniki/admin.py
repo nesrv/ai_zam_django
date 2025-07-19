@@ -3,6 +3,7 @@ from .models import (
     Organizaciya, Podrazdelenie, Specialnost, Sotrudnik, SotrudnikiZarplaty,
     ProtokolyObucheniya, ShablonyDokumentovPoSpecialnosti, SotrudnikiShablonyProtokolov, Instruktazhi, DokumentySotrudnika, ShablonyInstruktazhej
 )
+from object.models import Objekt
 
 
 @admin.register(Organizaciya)
@@ -47,6 +48,16 @@ class InstruktazhiInline(admin.TabularInline):
     fields = ['instruktazh', 'data_provedeniya', 'instruktor']
 
 
+class ObjektyInline(admin.TabularInline):
+    model = Objekt.sotrudniki.through
+    verbose_name = "Объекты"
+    verbose_name_plural = "Объекты"
+    extra = 0
+    fk_name = 'sotrudnik'
+    fields = ['objekt']
+    can_delete = True
+
+
 @admin.register(Sotrudnik)
 class SotrudnikAdmin(admin.ModelAdmin):
     list_display = ['fio', 'organizaciya', 'specialnost', 'podrazdelenie', 'data_priema', 'data_nachala_raboty', 
@@ -55,9 +66,9 @@ class SotrudnikAdmin(admin.ModelAdmin):
                   'bazovoe_obuchenie', 'obuchenie_na_predpriyatii', 'med_osvidetelstvovanie', 'dopusk_k_rabote', 'stazhirovka', 'siz']
     search_fields = ['fio']
     date_hierarchy = 'data_priema'
-    inlines = [ProtokolyObucheniyaInline, InstruktazhiInline]
+    inlines = [ProtokolyObucheniyaInline, InstruktazhiInline, ObjektyInline]
     readonly_fields = ['get_shablony_dokumentov']
-    # Удалено поле objekty из filter_horizontal
+    # Связь с объектами реализована через поле sotrudniki в модели Objekt
     fieldsets = [
         ('Основная информация', {
             'fields': ['fio', 'organizaciya', 'specialnost', 'podrazdelenie', 'data_rozhdeniya', 'pol']
