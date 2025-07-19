@@ -104,12 +104,7 @@ class Sotrudnik(models.Model):
     )
     data_priema = models.DateField(verbose_name="Дата приема")
     data_nachala_raboty = models.DateField(verbose_name="Дата начала работы")
-    objekty = models.ManyToManyField(
-        'object.Objekt',
-        verbose_name="Объекты",
-        blank=True,
-        help_text="Объекты, на которых работает сотрудник"
-    )
+    # Поле objekty удалено, так как таблица sotrudniki_sotrudnik_objekty не существует
     bazovoe_obuchenie = models.BooleanField(default=True, verbose_name="Базовое обучение")
     obuchenie_na_predpriyatii = models.BooleanField(default=True, verbose_name="Обучение на предприятии")
     med_osvidetelstvovanie = models.BooleanField(default=True, verbose_name="Мед.освидетельствование")

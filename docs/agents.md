@@ -1,3 +1,10 @@
+я предполагаю, что теперь миграция sotrudniki\migrations\0043_specialnost_kategoriya.py не нужна
+
+ проверь, что модель Sotrudnik (сотрудники) правильно связаны с объектом через таблицу objekt_sotrudniki
+ добавь в админку class Sotrudnik
+
+ удали из админки http://127.0.0.1:8000/admin/sotrudniki/sotrudnik/
+ 
  на http://127.0.0.1:8000/objects/29/edit/ в <!-- Строительное управление -->
  
  на http://127.0.0.1:8000/telegram/  нужно реализовать  поиск совпадений фамилий из  <div class="message-preview"> (с учетом возможных ошибок и отсутствия имен и отчеств в тексте) в <div class="employees-list">  (в jsone).

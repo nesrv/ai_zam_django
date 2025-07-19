@@ -26,9 +26,13 @@ class ShablonyDokumentovPoSpecialnostiInline(admin.StackedInline):
 
 @admin.register(Specialnost)
 class SpecialnostAdmin(admin.ModelAdmin):
-    list_display = ['nazvanie']
+    list_display = ['nazvanie', 'get_sotrudniki_count']
     search_fields = ['nazvanie']
     inlines = [ShablonyDokumentovPoSpecialnostiInline]
+    
+    def get_sotrudniki_count(self, obj):
+        return obj.sotrudnik_set.count()
+    get_sotrudniki_count.short_description = 'Количество сотрудников'
 
 
 class ProtokolyObucheniyaInline(admin.TabularInline):
@@ -46,14 +50,14 @@ class InstruktazhiInline(admin.TabularInline):
 @admin.register(Sotrudnik)
 class SotrudnikAdmin(admin.ModelAdmin):
     list_display = ['fio', 'organizaciya', 'specialnost', 'podrazdelenie', 'data_priema', 'data_nachala_raboty', 
-                   'bazovoe_obuchenie', 'obuchenie_na_predpriyatii', 'med_osvidetelstvovanie', 'dopusk_k_rabote', 'stazhirovka', 'siz']
+                   'bazovoe_obuchenie', 'obuchenie_na_predpriyatii', 'med_osvidetelstvovanie', 'dopusk_k_rabote', 'stazhirovka', 'siz', 'get_objekty']
     list_filter = ['organizaciya', 'specialnost', 'podrazdelenie', 'data_priema', 
                   'bazovoe_obuchenie', 'obuchenie_na_predpriyatii', 'med_osvidetelstvovanie', 'dopusk_k_rabote', 'stazhirovka', 'siz']
     search_fields = ['fio']
     date_hierarchy = 'data_priema'
     inlines = [ProtokolyObucheniyaInline, InstruktazhiInline]
     readonly_fields = ['get_shablony_dokumentov']
-    filter_horizontal = ['objekty']
+    # Удалено поле objekty из filter_horizontal
     fieldsets = [
         ('Основная информация', {
             'fields': ['fio', 'organizaciya', 'specialnost', 'podrazdelenie', 'data_rozhdeniya', 'pol']
@@ -68,7 +72,8 @@ class SotrudnikAdmin(admin.ModelAdmin):
             'fields': ['bazovoe_obuchenie', 'obuchenie_na_predpriyatii', 'med_osvidetelstvovanie', 'dopusk_k_rabote', 'stazhirovka', 'siz']
         }),
         ('Объекты', {
-            'fields': ['objekty']
+            'fields': [],
+            'description': 'Объекты назначаются через раздел Объекты'
         }),
         ('Документы', {
             'fields': ['get_shablony_dokumentov']
@@ -92,6 +97,10 @@ class SotrudnikAdmin(admin.ModelAdmin):
             return "\n".join(docs) if docs else "Нет документов"
         return "Специальность не указана или нет шаблонов"
     get_shablony_dokumentov.short_description = "Документы по специальности"
+    
+    def get_objekty(self, obj):
+        return ", ".join([objekt.nazvanie for objekt in obj.objekty_work.all()])
+    get_objekty.short_description = "Объекты"
 
 
 
