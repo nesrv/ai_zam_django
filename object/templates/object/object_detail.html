@@ -350,22 +350,28 @@
                             data-resource-id="{{ resource.id }}">{{ resource.kolichestvo|subtract:resource.potracheno|floatformat:0 }}</td>
                         
                         {% for day in days %}
-                            <td class="number editable-cell" 
+                            <td class="number {% if resource.resurs.kategoriya_resursa.nazvanie|lower != 'кадровое обеспечение' %}editable-cell{% endif %}" 
                                 data-resource-id="{{ resource.id }}" 
                                 data-date="{{ day|date:'Y-m-d' }}" 
-                                onclick="editCell(this)">
+                                {% if resource.resurs.kategoriya_resursa.nazvanie|lower != 'кадровое обеспечение' %}onclick="editCell(this)"{% endif %}>
                             {% with day_value=0 %}
                                 {% for fr in fakticheskij_resursy %}
                                     {% if fr.resurs_po_objektu.id == resource.id %}
                                         {% for rashod in raskhody|get_item:fr.id %}
                                             {% if rashod.data|date:"Y-m-d" == day|date:"Y-m-d" %}
-                                                {{ rashod.izraskhodovano|floatformat:0 }}
+                                                {% if resource.resurs.kategoriya_resursa.nazvanie|lower == 'кадровое обеспечение' %}
+                                                    {% if rashod.izraskhodovano|floatformat:0 != '0' %}
+                                                        {{ rashod.izraskhodovano|floatformat:0 }}
+                                                    {% endif %}
+                                                {% else %}
+                                                    {{ rashod.izraskhodovano|floatformat:0 }}
+                                                {% endif %}
                                                 {% with day_value=1 %}{% endwith %}
                                             {% endif %}
                                         {% endfor %}
                                     {% endif %}
                                 {% endfor %}
-                                <!-- {% if day_value == 0 %}0{% endif %} -->
+                                <!-- {% if day_value == 0 and resource.resurs.kategoriya_resursa.nazvanie|lower != 'кадровое обеспечение' %}0{% endif %} -->
                             {% endwith %}
                             </td>
                         {% endfor %}
@@ -410,10 +416,16 @@
     <a href="/objects/{{ object.id }}/edit/" class="edit-btn">✎ Редактировать</a>
     
     <script>
-    function formatNumber(num) {
+    function formatNumber(num, isKadry = false) {
         if (num === null || num === undefined || isNaN(num)) {
-            return '0';
+            return isKadry ? '' : '0';
         }
+        
+        // Если это кадровое обеспечение и значение равно 0, возвращаем пустую строку
+        if (isKadry && num === 0) {
+            return '';
+        }
+        
         // Используем надежный способ форматирования
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     }
@@ -961,11 +973,22 @@
         numberCells.forEach((cell, index) => {
             const text = cell.textContent.trim();
             
+            // Проверяем, относится ли ячейка к кадровому обеспечению
+            const isKadry = cell.closest('tr') && 
+                          cell.closest('tr').classList && 
+                          Array.from(cell.closest('tr').classList).some(cls => cls === 'category-кадры');
+            
             // Форматируем все числовые значения
             if (text && !isNaN(parseFloat(text))) {
                 const num = parseFloat(text);
-                const formatted = formatNumber(num);
-                cell.textContent = formatted;
+                
+                // Если это кадровое обеспечение и значение равно 0, очищаем ячейку
+                if (isKadry && num === 0) {
+                    cell.textContent = '';
+                } else {
+                    const formatted = formatNumber(num);
+                    cell.textContent = formatted;
+                }
             }
         });
         
@@ -1243,9 +1266,18 @@
                     for (let j = 7; j < cells.length; j++) {
                         const cell = cells[j];
                         
+                        // Удаляем класс editable-cell, чтобы сделать ячейку некликабельной
+                        cell.classList.remove('editable-cell');
+                        cell.removeAttribute('onclick');
+                        
                         // Проверяем, есть ли значение в ячейке
                         const cellValue = cell.textContent.trim();
                         const hasValue = cellValue && cellValue !== '0' && cellValue !== '';
+                        
+                        // Если значение равно 0, очищаем текст ячейки
+                        if (cellValue === '0') {
+                            cell.textContent = '';
+                        }
                         
                         // Добавляем кнопку с разными иконками в зависимости от значения
                         const btn = document.createElement('button');

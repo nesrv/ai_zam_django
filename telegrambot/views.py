@@ -1192,7 +1192,7 @@ def save_json_response(request):
 @csrf_exempt
 @require_POST
 def find_employees(request):
-    """Поиск сотрудников по фамилии и объекту"""
+    """Поиск сотрудников по фамилии и другим словам в сообщении, похожим на ФИО в таблице sotrudniki_sotrudnik"""
     try:
         data = json.loads(request.body)
         surnames = data.get('surnames', [])
@@ -1204,7 +1204,7 @@ def find_employees(request):
                 'error': 'Необходимо указать фамилии и ID объекта'
             })
         
-        logger.info(f"Поиск сотрудников по фамилиям: {surnames} на объекте {objekt_id}")
+        logger.info(f"Поиск сотрудников по словам: {surnames} на объекте {objekt_id}")
         
         # Импортируем модели
         from sotrudniki.models import Sotrudnik
@@ -1240,28 +1240,38 @@ def find_employees(request):
             if hasattr(sotrudnik, 'specialnost') and sotrudnik.specialnost:
                 specialnost = sotrudnik.specialnost.nazvanie
             
-            # Извлекаем фамилию из поля fio
+            # Извлекаем части ФИО
             fio_parts = sotrudnik.fio.split()
             surname = fio_parts[0] if fio_parts else ""
+            
+            # Добавляем все части ФИО для поиска
+            name_parts = []
+            if len(fio_parts) > 0:
+                name_parts.append(fio_parts[0])  # Фамилия
+            if len(fio_parts) > 1:
+                name_parts.append(fio_parts[1])  # Имя
+            if len(fio_parts) > 2:
+                name_parts.append(fio_parts[2])  # Отчество
             
             all_employees.append({
                 'id': sotrudnik.id,
                 'fio': sotrudnik.fio,
                 'surname': surname,
+                'name_parts': name_parts,
                 'specialnost': specialnost
             })
         
-        # Функция для сравнения фамилий с учетом возможных ошибок
-        def is_similar_surname(surname1, surname2):
+        # Функция для сравнения слов с учетом возможных ошибок
+        def is_similar_word(word1, word2):
             # Приводим к нижнему регистру и удаляем лишние символы
-            clean1 = surname1.lower().replace(' ', '').replace('-', '')
-            clean2 = surname2.lower().replace(' ', '').replace('-', '')
+            clean1 = word1.lower().replace(' ', '').replace('-', '')
+            clean2 = word2.lower().replace(' ', '').replace('-', '')
             
             # Точное совпадение
             if clean1 == clean2:
                 return True
             
-            # Если одна фамилия содержит другую и длиннее не более чем на 3 символа
+            # Если одно слово содержит другое и длиннее не более чем на 3 символа
             if clean1 in clean2 and len(clean2) - len(clean1) <= 3:
                 return True
             if clean2 in clean1 and len(clean1) - len(clean2) <= 3:
@@ -1286,38 +1296,69 @@ def find_employees(request):
                 
                 return previous_row[-1]
             
-            # Для коротких фамилий допускаем только 1 ошибку
+            # Для коротких слов допускаем только 1 ошибку
             if len(clean1) <= 5 and len(clean2) <= 5:
                 return levenshtein_distance(clean1, clean2) <= 1
             
-            # Для более длинных фамилий допускаем до 2 ошибок
+            # Для более длинных слов допускаем до 2 ошибок
             return levenshtein_distance(clean1, clean2) <= 2
         
         # Ищем совпадения
         found_employees = []
         not_found_surnames = []
         
-        for surname in surnames:
+        for search_word in surnames:
             found = False
             for employee in all_employees:
-                if is_similar_surname(surname, employee['surname']):
+                # Проверяем совпадение с фамилией
+                if is_similar_word(search_word, employee['surname']):
                     found_employees.append({
                         'id': employee['id'],
                         'fio': employee['fio'],
                         'specialnost': employee['specialnost'],
-                        'matched_surname': surname
+                        'matched_word': search_word,
+                        'match_type': 'фамилия'
                     })
                     found = True
                     break
+                
+                # Проверяем совпадение с любой частью ФИО
+                for i, name_part in enumerate(employee['name_parts']):
+                    if is_similar_word(search_word, name_part):
+                        match_type = 'фамилия' if i == 0 else ('имя' if i == 1 else 'отчество')
+                        found_employees.append({
+                            'id': employee['id'],
+                            'fio': employee['fio'],
+                            'specialnost': employee['specialnost'],
+                            'matched_word': search_word,
+                            'match_type': match_type
+                        })
+                        found = True
+                        break
+                
+                # Проверяем совпадение с полным ФИО
+                if not found and is_similar_word(search_word, employee['fio']):
+                    found_employees.append({
+                        'id': employee['id'],
+                        'fio': employee['fio'],
+                        'specialnost': employee['specialnost'],
+                        'matched_word': search_word,
+                        'match_type': 'полное ФИО'
+                    })
+                    found = True
+                    break
+                
+                if found:
+                    break
             
             if not found:
-                not_found_surnames.append(surname)
+                not_found_surnames.append(search_word)
         
         return JsonResponse({
             'success': True,
             'employees': found_employees,
             'not_found': not_found_surnames,
-            'message': f'Найдено {len(found_employees)} сотрудников из {len(surnames)} запрошенных'
+            'message': f'Найдено {len(found_employees)} сотрудников из {len(surnames)} запрошенных слов'
         })
         
     except json.JSONDecodeError:

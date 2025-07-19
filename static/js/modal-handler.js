@@ -1,5 +1,8 @@
 // Функция для сравнения фамилий с учетом возможных ошибок
 function isSimilarSurname(surname1, surname2) {
+    // Проверяем, что оба параметра определены
+    if (!surname1 || !surname2) return false;
+    
     // Приводим к нижнему регистру и удаляем лишние символы
     const clean1 = surname1.toLowerCase().replace(/[^а-яё]/g, '');
     const clean2 = surname2.toLowerCase().replace(/[^а-яё]/g, '');
@@ -123,6 +126,26 @@ function extractEmployeesAndHours(messageText) {
 window.openHoursModal = function(messageText, messageDate) {
     const modal = document.getElementById('hoursModal');
     if (modal) {
+        // Определяем ID объекта из сообщения
+        let objektId = null;
+        const messageElement = document.activeElement.closest('.user-message') || document.querySelector('.user-message:hover');
+        if (messageElement) {
+            const iphoneScreen = messageElement.closest('.iphone-screen');
+            if (iphoneScreen) {
+                const dropdownToggle = iphoneScreen.querySelector('.dropdown-toggle');
+                if (dropdownToggle) {
+                    const onclickAttr = dropdownToggle.getAttribute('onclick');
+                    if (onclickAttr) {
+                        const match = onclickAttr.match(/toggleDropdown\((\d+)\)/i);
+                        if (match && match[1]) {
+                            objektId = match[1];
+                            console.log(`Найден ID объекта: ${objektId}`);
+                        }
+                    }
+                }
+            }
+        }
+        
         // Извлекаем дату из текста сообщения или используем переданную дату или текущую дату
         let dateText = messageDate || new Date().toLocaleDateString('ru-RU');
         
@@ -135,17 +158,7 @@ window.openHoursModal = function(messageText, messageDate) {
             }
         }
         
-        // Извлекаем объект из текста сообщения
-        let objectText = "";
-        if (messageText) {
-            // Проверяем наличие объекта в формате "Объект: название" или после "по"
-            const objectMatch = messageText.match(/\bобъект:?\s*([^\n,]+)/i) || messageText.match(/\bпо\s+([^\n,]+)/i);
-            if (objectMatch && objectMatch[1]) {
-                objectText = objectMatch[1].trim();
-            }
-        }
-        
-        // Заполняем поля даты и объекта в заголовке модального окна
+        // Заполняем поля даты в заголовке модального окна
         const messageDateElement = document.getElementById('message-date');
         if (messageDateElement) {
             // Удаляем время из даты, оставляем только дату
@@ -156,9 +169,43 @@ window.openHoursModal = function(messageText, messageDate) {
             messageDateElement.textContent = cleanDate;
         }
         
+        // Получаем название объекта по ID
         const messageObjectElement = document.getElementById('message-object');
         if (messageObjectElement) {
-            // Если объект не найден в тексте, используем название объекта из заголовка чата
+            let objectText = "";
+            
+            // Извлекаем объект из текста сообщения
+            if (messageText) {
+                // Проверяем наличие объекта в формате "Объект: название" или после "по"
+                const objectMatch = messageText.match(/\bобъект:?\s*([^\n,]+)/i) || messageText.match(/\bпо\s+([^\n,]+)/i);
+                if (objectMatch && objectMatch[1]) {
+                    objectText = objectMatch[1].trim();
+                }
+            }
+            
+            // Если объект не найден в тексте, используем название объекта по ID
+            if (!objectText && objektId) {
+                // Ищем заголовок чата по ID объекта
+                const dropdownToggle = document.querySelector(`.dropdown-toggle[onclick*="toggleDropdown(${objektId})"]`);
+                if (dropdownToggle) {
+                    const chatHeader = dropdownToggle.closest('.chat-header');
+                    if (chatHeader) {
+                        // Извлекаем текст заголовка чата (название объекта)
+                        const headerText = chatHeader.textContent.trim();
+                        if (headerText) {
+                            // Удаляем все специальные символы из заголовка
+                            objectText = headerText.replace(/[+✔✓✗❌🔄➕➖➗☑☒☐✅❎]/g, '').trim();
+                            // Удаляем текст выпадающего меню
+                            objectText = objectText.replace(/Часы рабочих в табель/g, '').replace(/Заявка на ресурсы/g, '').trim();
+                            // Удаляем все непечатаемые символы
+                            objectText = objectText.replace(/[^А-яёЁa-zA-Z0-9\s\-]/g, '').trim();
+                            console.log(`Найдено название объекта по ID ${objektId}: ${objectText}`);
+                        }
+                    }
+                }
+            }
+            
+            // Если все еще нет названия объекта, ищем в заголовке чата
             if (!objectText) {
                 // Пытаемся найти заголовок чата
                 const messageContainer = document.querySelector('.message-item');
@@ -745,9 +792,14 @@ function updateHoursTable(employees, extractedEmployees) {
         // Ищем соответствующие часы для сотрудника
         let hours = 8; // По умолчанию
         
-        // Ищем совпадение по фамилии
+        // Ищем совпадение по фамилии или другому слову
         for (const extracted of extractedEmployees) {
-            if (isSimilarSurname(extracted.surname, employee.matched_surname)) {
+            // Проверяем наличие matched_word (новое поле) или matched_surname (старое поле)
+            const matchedWord = employee.matched_word || employee.matched_surname;
+            
+            // Проверяем, что matchedWord существует перед вызовом toLowerCase()
+            if (matchedWord && extracted.surname && 
+                isSimilarSurname(extracted.surname, matchedWord)) {
                 hours = extracted.hours;
                 break;
             }

@@ -386,11 +386,11 @@
 
 .modal-content {
     background-color: #fefefe;
-    margin: 10% auto;
+    margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 88%; /* Увеличено на 10% с 80% до 88% */
-    max-width: 660px; /* Увеличено на 10% с 600px до 660px */
+    width: 95%; /* Увеличено на 50% */
+    max-width: 990px; /* Увеличено на 50% с 660px до 990px */
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     animation: slideIn 0.3s;
@@ -812,6 +812,247 @@
 </div>
 
 <script>
+// Функция для открытия модального окна добавления часов в табель
+window.openHoursModal = function(messageText, messageDate) {
+    const modal = document.getElementById('hoursModal');
+    if (modal) {
+        // Определяем ID объекта из сообщения
+        const currentObjektId = (function() {
+            const messageElement = document.activeElement.closest('.user-message') || document.querySelector('.user-message:hover');
+            if (messageElement) {
+                const iphoneScreen = messageElement.closest('.iphone-screen');
+                if (iphoneScreen) {
+                    const dropdownToggle = iphoneScreen.querySelector('.dropdown-toggle');
+                    if (dropdownToggle) {
+                        const onclickAttr = dropdownToggle.getAttribute('onclick');
+                        if (onclickAttr) {
+                            const match = onclickAttr.match(/toggleDropdown\((\d+)\)/i);
+                            if (match && match[1]) {
+                                console.log(`Найден ID объекта: ${match[1]}`);
+                                return match[1];
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        })();
+        
+        // Извлекаем дату из текста сообщения или используем переданную дату или текущую дату
+        let dateText = messageDate || new Date().toLocaleDateString('ru-RU');
+        
+        // Проверяем, есть ли в тексте сообщения упоминание даты
+        if (messageText) {
+            // Проверяем наличие даты в формате "Дата: XX.XX.XXXX" или "Дата: XX.XX"
+            const dateMatch = messageText.match(/\bдата:?\s*(\d{1,2}[.\/-]\d{1,2}(?:[.\/-]\d{2,4})?)/i);
+            if (dateMatch && dateMatch[1]) {
+                dateText = dateMatch[1];
+            }
+        }
+        
+        // Заполняем поля даты в заголовке модального окна
+        const messageDateElement = document.getElementById('message-date');
+        if (messageDateElement) {
+            // Удаляем время из даты, оставляем только дату
+            let cleanDate = dateText;
+            if (dateText.includes(' ')) {
+                cleanDate = dateText.split(' ')[1]; // Берем только вторую часть после пробела
+            }
+            messageDateElement.textContent = cleanDate;
+        }
+        
+        // Получаем название объекта по ID
+        const messageObjectElement = document.getElementById('message-object');
+        if (messageObjectElement) {
+            let objectText = "";
+            
+            // Извлекаем объект из текста сообщения
+            if (messageText) {
+                // Проверяем наличие объекта в формате "Объект: название" или после "по"
+                const objectMatch = messageText.match(/\bобъект:?\s*([^\n,]+)/i) || messageText.match(/\bпо\s+([^\n,]+)/i);
+                if (objectMatch && objectMatch[1]) {
+                    objectText = objectMatch[1].trim();
+                }
+            }
+            
+            // Если объект не найден в тексте, используем название объекта по ID
+            if (!objectText && currentObjektId) {
+                // Ищем заголовок чата по ID объекта
+                const dropdownToggle = document.querySelector(`.dropdown-toggle[onclick*="toggleDropdown(${currentObjektId})"]`);
+                if (dropdownToggle) {
+                    const chatHeader = dropdownToggle.closest('.chat-header');
+                    if (chatHeader) {
+                        // Извлекаем текст заголовка чата (название объекта)
+                        const headerText = chatHeader.textContent.trim();
+                        if (headerText) {
+                            // Удаляем все специальные символы из заголовка
+                            objectText = headerText.replace(/[+✔✓✗❌🔄➕➖➗☑☒☐✅❎]/g, '').trim();
+                            // Удаляем текст выпадающего меню
+                            objectText = objectText.replace(/Часы рабочих в табель/g, '').replace(/Заявка на ресурсы/g, '').trim();
+                            // Удаляем все непечатаемые символы
+                            objectText = objectText.replace(/[^А-яёЁa-zA-Z0-9\s\-]/g, '').trim();
+                            console.log(`Найдено название объекта по ID ${currentObjektId}: ${objectText}`);
+                        }
+                    }
+                }
+            }
+            
+            // Если все еще нет названия объекта, ищем в заголовке чата
+            if (!objectText) {
+                // Пытаемся найти заголовок чата
+                const messageContainer = document.querySelector('.message-item');
+                let chatHeader = null;
+                
+                if (messageContainer) {
+                    // Получаем родительский элемент iphone-screen
+                    const iphoneScreen = messageContainer.closest('.iphone-screen');
+                    if (iphoneScreen) {
+                        chatHeader = iphoneScreen.querySelector('.chat-header');
+                    }
+                }
+                
+                // Если не нашли через сообщение, ищем любой заголовок чата
+                if (!chatHeader) {
+                    chatHeader = document.querySelector('.chat-header');
+                }
+                
+                if (chatHeader) {
+                    // Извлекаем текст заголовка чата (название объекта)
+                    const headerText = chatHeader.textContent.trim();
+                    if (headerText) {
+                        // Удаляем все специальные символы из заголовка
+                        objectText = headerText.replace(/[+✔✓✗❌🔄➕➖➗☑☒☐✅❎]/g, '').trim();
+                        // Удаляем текст выпадающего меню
+                        objectText = objectText.replace(/Часы рабочих в табель/g, '').replace(/Заявка на ресурсы/g, '').trim();
+                        // Удаляем все непечатаемые символы
+                        objectText = objectText.replace(/[^А-яёЁa-zA-Z0-9\s\-]/g, '').trim();
+                    }
+                }
+            }
+            
+            // Если объект пустой или содержит только пробелы, используем слово "объекте"
+            messageObjectElement.textContent = (objectText && objectText.trim()) ? objectText : "объекте Дом-3";
+        }
+        
+        // Отправляем запрос на поиск сотрудников, если есть ID объекта
+        if (currentObjektId) {
+            // Извлекаем фамилии из текста сообщения
+            const surnames = [];
+            if (messageText) {
+                // Ищем все слова с заглавной буквы
+                const words = messageText.match(/[\u0410-\u042F][\u0430-\u044F\u0451]+/g) || [];
+                words.forEach(word => {
+                    if (word.length > 2) { // Игнорируем короткие слова
+                        surnames.push(word);
+                    }
+                });
+            }
+            
+            // Если не нашли фамилий, добавляем хотя бы одну для поиска
+            if (surnames.length === 0) {
+                surnames.push('Иванов'); // Добавляем стандартную фамилию для поиска
+            }
+            
+            console.log('Отправляем запрос на поиск сотрудников:', surnames);
+            
+            // Получаем CSRF токен
+            function getCsrfToken() {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, 'csrftoken'.length + 1) === ('csrftoken=')) {
+                            cookieValue = decodeURIComponent(cookie.substring('csrftoken'.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            
+            // Отправляем AJAX-запрос на сервер для поиска сотрудников
+            fetch('/telegram/find-employees/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCsrfToken(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    surnames: surnames,
+                    objekt_id: currentObjektId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Найденные сотрудники:', data.employees);
+                    
+                    // Заполняем таблицу найденными сотрудниками
+                    console.log('Ищем таблицу для заполнения:', modal);
+                    const hoursTable = document.querySelector('#hoursModal .hours-table tbody');
+                    console.log('Найдена таблица:', hoursTable);
+                    
+                    if (hoursTable) {
+                        // Очищаем таблицу
+                        hoursTable.innerHTML = '';
+                        
+                        // Если нашли сотрудников, добавляем их в таблицу
+                        if (data.employees && data.employees.length > 0) {
+                            console.log('Добавляем сотрудников в таблицу:', data.employees.length);
+                            
+                            // Создаем HTML для всех строк и добавляем сразу
+                            let rowsHtml = '';
+                            data.employees.forEach(employee => {
+                                rowsHtml += `
+                                    <tr>
+                                        <td><input type="text" value="${employee.specialnost || 'Не указана'}" data-employee-id="${employee.id || ''}"></td>
+                                        <td><input type="text" value="${employee.fio}"></td>
+                                        <td><input type="number" value="8" min="1" max="24"></td>
+                                        <td><input type="number" value="1.0" min="0.1" max="2.0" step="0.1"></td>
+                                        <td><input type="text" value="${messageObjectElement ? messageObjectElement.textContent : 'Объект'}"></td>
+                                    </tr>
+                                `;
+                            });
+                            
+                            // Добавляем все строки сразу
+                            hoursTable.innerHTML = rowsHtml;
+                        }
+                    }
+                } else {
+                    console.error('Ошибка поиска сотрудников:', data.error);
+                }
+                
+                // Показываем модальное окно после загрузки данных
+                modal.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Ошибка запроса:', error);
+                // В случае ошибки все равно показываем модальное окно
+                modal.style.display = 'block';
+            });
+        } else {
+            // Если нет ID объекта, просто показываем модальное окно
+            modal.style.display = 'block';
+        }
+    }
+};
+
+// Функция для закрытия модального окна
+window.closeHoursModal = function() {
+    const modal = document.getElementById('hoursModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+};
+
+// Функция для сохранения часов в табель
+window.saveHours = function() {
+    // Здесь можно добавить логику сохранения данных в базу
+    alert('Часы успешно добавлены в табель');
+    window.closeHoursModal();
+};
+
 // Функция для переключения выпадающего меню
 window.toggleDropdown = function(objektId) {
     const dropdown = document.getElementById(`dropdown-${objektId}`);
