@@ -1863,3 +1863,214 @@ django.db.utils.OperationalError: no such table: sotrudniki_sotrudnik_objekty
 2025-07-19 11:54:28,139 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
 2025-07-19 12:03:08,351 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\admin.py changed, reloading.
 2025-07-19 12:07:58,003 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 12:08:43,047 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Семенов', 'Егоров'] на объекте 27
+2025-07-19 12:08:43,048 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Семенов', 'Егоров'] на объекте 27
+2025-07-19 12:08:43,048 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Семенов', 'Егоров'] на объекте 27
+2025-07-19 12:08:48,519 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Мурат'] на объекте 27
+2025-07-19 12:08:48,521 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Мурат'] на объекте 27
+2025-07-19 12:08:48,521 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Мурат'] на объекте 27
+2025-07-19 12:24:03,124 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-07-19 12:24:08,076 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 12:25:30,339 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-07-19 12:25:35,330 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 12:33:41,880 - django.request - ERROR - Internal Server Error: /objects/27/edit/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views_edit.py", line 181, in edit_object
+    for specialty in all_specialties.filter(kategoriya='2'):
+                     ^^^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'all_specialties' where it is not associated with a value
+2025-07-19 12:34:23,949 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 12:34:33,567 - django.request - ERROR - Internal Server Error: /objects/29/edit/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views_edit.py", line 181, in edit_object
+    for specialty in all_specialties.filter(kategoriya='2'):
+                     ^^^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'all_specialties' where it is not associated with a value
+2025-07-19 12:35:01,632 - django.request - ERROR - Internal Server Error: /objects/27/edit/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views_edit.py", line 181, in edit_object
+    for specialty in all_specialties.filter(kategoriya='2'):
+                     ^^^^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'all_specialties' where it is not associated with a value
+2025-07-19 12:36:02,215 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-07-19 12:36:07,644 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 12:36:11,497 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-07-19 12:36:16,839 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 14:31:23,259 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\__init__.py changed, reloading.
+2025-07-19 14:31:28,536 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 14:31:33,633 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\apps.py changed, reloading.
+2025-07-19 14:31:39,180 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 14:34:09,569 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\admin.py changed, reloading.
+2025-07-19 14:34:14,804 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 14:36:59,512 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\admin.py changed, reloading.
+2025-07-19 14:37:04,830 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 14:37:12,010 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\admin.py changed, reloading.
+2025-07-19 14:37:17,699 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 14:37:57,780 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\admin.py changed, reloading.
+2025-07-19 14:38:03,351 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 14:38:07,589 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\urls.py changed, reloading.
+2025-07-19 14:38:13,195 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 14:38:16,278 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\urls.py changed, reloading.
+2025-07-19 14:38:21,581 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 14:40:39,650 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py changed, reloading.
+2025-07-19 14:41:49,645 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 14:42:05,928 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\signals.py changed, reloading.
+2025-07-19 14:42:11,431 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 14:45:22,490 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py changed, reloading.
+2025-07-19 14:55:52,765 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 14:56:59,584 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:00:30,399 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-07-19 15:00:38,198 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 15:00:42,109 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-07-19 15:00:48,988 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 15:10:19,964 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:19:10,562 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-07-19 15:19:15,944 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 15:20:45,547 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-07-19 15:20:50,998 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 15:21:18,721 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-07-19 15:21:23,970 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 15:29:33,410 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:30:44,029 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:35:50,309 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:36:09,291 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:40:28,229 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:40:35,156 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:41:54,525 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:44:13,111 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:44:17,796 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:44:18,688 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:44:51,275 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 15:44:51,679 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:46:54,185 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:46:55,975 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:47:03,669 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:48:29,008 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:48:36,507 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:49:00,986 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 15:57:50,752 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-07-19 15:57:55,853 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 16:00:25,602 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-19 16:00:30,987 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 16:00:49,747 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-19 16:00:55,335 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 16:04:13,357 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-07-19 16:04:18,381 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 16:06:59,139 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-19 16:07:05,472 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 16:07:49,272 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:07:55,046 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:08:00,036 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:08:08,734 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:08:35,657 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 16:08:45,143 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:08:54,717 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:09:41,046 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:09:45,793 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-19 16:09:50,745 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 16:11:31,848 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:11:40,907 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:12:10,743 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:13:33,212 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:14:14,477 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:15:51,997 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:15:59,940 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:16:08,973 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:16:24,855 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Семенов', 'Егоров'] на объекте 27
+2025-07-19 16:16:24,856 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Семенов', 'Егоров'] на объекте 27
+2025-07-19 16:16:24,857 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Семенов', 'Егоров'] на объекте 27
+2025-07-19 16:16:40,351 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-19 16:16:40,352 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-19 16:16:40,353 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Иванов'] на объекте 27
+2025-07-19 16:16:44,351 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Куанычбекович'] на объекте 27
+2025-07-19 16:16:44,352 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Куанычбекович'] на объекте 27
+2025-07-19 16:16:44,353 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Куанычбекович'] на объекте 27
+2025-07-19 16:16:54,689 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-19 16:16:54,690 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-19 16:16:54,691 - telegrambot.views - INFO - Поиск сотрудников по фамилиям: ['Эмирлан', 'Краснов'] на объекте 27
+2025-07-19 16:17:05,589 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:24:57,526 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:25:22,453 - django.request - WARNING - Not Found: /api/employees-by-object-position/
+2025-07-19 16:26:39,533 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-19 16:26:45,142 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 16:27:13,232 - django.request - WARNING - Not Found: /objects/29/api/employees-by-object-position/
+2025-07-19 16:27:20,868 - django.request - WARNING - Not Found: /objects/29/api/employees-by-object-position/
+2025-07-19 16:27:41,811 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-19 16:27:47,391 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 16:27:53,337 - django.request - WARNING - Not Found: /objects/29/api/employees-by-object-position/
+2025-07-19 16:28:23,642 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 16:28:26,656 - django.request - WARNING - Not Found: /objects/29/api/employees-by-object-position/
+2025-07-19 16:28:31,431 - django.request - WARNING - Not Found: /objects/29/api/employees-by-object-position/
+2025-07-19 16:28:52,848 - django.request - WARNING - Not Found: /objects/29/api/employees-by-object-position/
+2025-07-19 16:30:02,885 - django.request - WARNING - Not Found: /objects/29/api/employees-by-object-position/
+2025-07-19 16:30:07,148 - django.request - WARNING - Not Found: /objects/29/api/employees-by-object-position/
+2025-07-19 16:32:48,612 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-19 16:32:54,436 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 16:33:17,954 - django.request - WARNING - Not Found: /objects/29/api/employees-by-object-position/
+2025-07-19 16:34:40,912 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-19 16:34:46,294 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 16:35:14,008 - django.request - WARNING - Not Found: /objects/29/api/employees-by-object-position/
+2025-07-19 16:35:17,789 - django.request - WARNING - Not Found: /objects/29/api/employees-by-object-position/
+2025-07-19 16:36:14,503 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 16:36:18,688 - django.request - WARNING - Not Found: /objects/29/api/employees-by-object-position/
+2025-07-19 16:38:13,782 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:39:11,942 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:39:32,774 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 16:39:44,791 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:40:06,381 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:40:08,702 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:40:10,654 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:40:16,739 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:40:19,214 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:40:23,301 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-19 16:40:28,584 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 16:40:30,864 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:40:42,559 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:42:07,126 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:42:17,389 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:42:32,720 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:42:56,765 - django.request - WARNING - Not Found: /objects/27/employees/
+2025-07-19 16:43:17,900 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 16:43:18,087 - django.request - WARNING - Not Found: /objects/27/employees/
+2025-07-19 16:43:21,918 - django.request - WARNING - Not Found: /objects/27/employees/
+2025-07-19 16:43:24,732 - django.request - WARNING - Not Found: /objects/27/employees/
+2025-07-19 16:43:37,726 - django.request - WARNING - Not Found: /objects/27/employees/
+2025-07-19 16:43:40,301 - django.request - WARNING - Not Found: /objects/27/employees/
+2025-07-19 16:52:06,259 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 16:53:41,684 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:53:50,261 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:54:14,373 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 16:54:18,218 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:54:47,452 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:55:48,121 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-19 16:55:53,987 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 16:56:07,802 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:56:15,030 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:57:28,318 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 16:57:49,995 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-19 16:57:56,358 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 17:00:37,748 - django.request - WARNING - Not Found: /objects/27/employees/
+2025-07-19 17:02:05,167 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 17:02:08,059 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 17:02:12,650 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 17:02:31,692 - django.request - WARNING - Not Found: /objects/29/employees/
+2025-07-19 17:03:25,943 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-19 17:03:32,974 - django.request - WARNING - Not Found: /objects/29/employees/

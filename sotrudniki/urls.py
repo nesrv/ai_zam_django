@@ -1,9 +1,11 @@
 from django.urls import path
 from . import views
+from .admin import get_podrazdeleniya_json
 
 app_name = 'sotrudniki'
 
 urlpatterns = [
+    path('api/podrazdeleniya/', get_podrazdeleniya_json, name='get_podrazdeleniya_json'),
     path('organizations/', views.organizations_list, name='organizations'),
 
     path('organization/<int:pk>/delete/', views.delete_organization, name='delete_organization'),

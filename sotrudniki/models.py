@@ -9,6 +9,13 @@ class Organizaciya(models.Model):
     ogrn = models.CharField(max_length=15, verbose_name="ОГРН", null=True, blank=True)
     adres = models.TextField(verbose_name="Адрес", null=True, blank=True)
     is_active = models.BooleanField(default=True, verbose_name="Активная")
+    podrazdeleniya = models.ManyToManyField(
+        'Podrazdelenie',
+        through='OrganizaciyaPodrazdelenie',
+        verbose_name="Подразделения",
+        related_name="organizacii",
+        blank=True
+    )
     
     class Meta:
         verbose_name = "Организация"
@@ -19,14 +26,6 @@ class Organizaciya(models.Model):
 
 
 class Podrazdelenie(models.Model):
-    organizaciya = models.ForeignKey(
-        'Organizaciya',
-        on_delete=models.CASCADE,
-        verbose_name="Организация",
-        related_name="podrazdeleniya",
-        null=True,
-        blank=True
-    )
     kod = models.CharField(max_length=50, unique=True, verbose_name="Код")
     nazvanie = models.CharField(max_length=200, verbose_name="Название")
     
@@ -297,6 +296,28 @@ class ShablonyInstruktazhej(models.Model):
     
     def __str__(self):
         return f"{self.get_tip_instruktazha_display()} - {self.specialnost.nazvanie}"
+
+
+class OrganizaciyaPodrazdelenie(models.Model):
+    organizaciya = models.ForeignKey(
+        Organizaciya,
+        on_delete=models.CASCADE,
+        verbose_name="Организация"
+    )
+    podrazdelenie = models.ForeignKey(
+        Podrazdelenie,
+        on_delete=models.CASCADE,
+        verbose_name="Подразделение"
+    )
+    is_default = models.BooleanField(default=False, verbose_name="По умолчанию")
+    
+    class Meta:
+        verbose_name = "Подразделение организации"
+        verbose_name_plural = "Подразделения организаций"
+        unique_together = ['organizaciya', 'podrazdelenie']
+    
+    def __str__(self):
+        return f"{self.organizaciya.nazvanie} - {self.podrazdelenie.nazvanie}"
 
 
 class ShablonyDokumentovPoSpecialnosti(models.Model):

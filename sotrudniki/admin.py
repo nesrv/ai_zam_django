@@ -1,22 +1,44 @@
 from django.contrib import admin
+from django.http import JsonResponse
 from .models import (
     Organizaciya, Podrazdelenie, Specialnost, Sotrudnik, SotrudnikiZarplaty,
-    ProtokolyObucheniya, ShablonyDokumentovPoSpecialnosti, SotrudnikiShablonyProtokolov, Instruktazhi, DokumentySotrudnika, ShablonyInstruktazhej
+    ProtokolyObucheniya, ShablonyDokumentovPoSpecialnosti, SotrudnikiShablonyProtokolov, Instruktazhi, DokumentySotrudnika, ShablonyInstruktazhej,
+    OrganizaciyaPodrazdelenie
 )
 from object.models import Objekt
 
 
+def get_podrazdeleniya_json(request):
+    """Возвращает список подразделений в формате JSON"""
+    podrazdeleniya = Podrazdelenie.objects.all().values('id', 'kod', 'nazvanie')
+    return JsonResponse({'podrazdeleniya': list(podrazdeleniya)})
+
+
+class OrganizaciyaPodrazdelenieInline(admin.TabularInline):
+    model = OrganizaciyaPodrazdelenie
+    extra = 1
+    fields = ['podrazdelenie', 'is_default']
+    verbose_name = "Подразделение"
+    verbose_name_plural = "Подразделения"
+
+
 @admin.register(Organizaciya)
 class OrganizaciyaAdmin(admin.ModelAdmin):
-    list_display = ['nazvanie', 'inn', 'ogrn', 'is_active']
+    list_display = ['nazvanie', 'inn', 'ogrn', 'is_active', 'get_podrazdeleniya_count']
     search_fields = ['nazvanie', 'inn', 'ogrn']
     fields = ['nazvanie', 'inn', 'ogrn', 'adres', 'is_active']
+    inlines = [OrganizaciyaPodrazdelenieInline]
+    
+    def get_podrazdeleniya_count(self, obj):
+        return obj.podrazdeleniya.count()
+    get_podrazdeleniya_count.short_description = 'Кол-во подразделений'
 
 
 @admin.register(Podrazdelenie)
 class PodrazdelenieAdmin(admin.ModelAdmin):
     list_display = ['kod', 'nazvanie']
     search_fields = ['kod', 'nazvanie']
+    fields = ['kod', 'nazvanie']
 
 
 class ShablonyDokumentovPoSpecialnostiInline(admin.StackedInline):
@@ -167,6 +189,14 @@ class ShablonyInstruktazhejAdmin(admin.ModelAdmin):
     list_display = ['specialnost', 'tip_instruktazha', 'html_file']
     list_filter = ['specialnost', 'tip_instruktazha']
     search_fields = ['specialnost__nazvanie']
+
+
+@admin.register(OrganizaciyaPodrazdelenie)
+class OrganizaciyaPodrazdelenieAdmin(admin.ModelAdmin):
+    list_display = ['organizaciya', 'podrazdelenie', 'is_default']
+    list_filter = ['organizaciya', 'podrazdelenie', 'is_default']
+    search_fields = ['organizaciya__nazvanie', 'podrazdelenie__nazvanie']
+    list_editable = ['is_default']
 
 
 @admin.register(SotrudnikiZarplaty)

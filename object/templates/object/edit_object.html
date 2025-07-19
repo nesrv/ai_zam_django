@@ -251,59 +251,62 @@
         
         <!-- Сотрудники по объекту -->
         <div class="resources-section" style="margin-top: 2rem;">
-            <h3>Сотрудники по объекту</h3>
             
-            <div style="display: flex; gap: 20px;">
-                <!-- Основное подразделение -->
-                <div style="flex: 1; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 15px;">
-                    <h4 style="color: #27ae60; margin-bottom: 10px;">Основное подразделение</h4>
-                    <div id="employees-category-1" style="margin-bottom: 10px;">
-                        {% for employee in employees_category_1 %}
-                        <div style="background: rgba(255, 255, 255, 0.1); padding: 6px 10px; border-radius: 4px; color: white; font-size: 14px; display: inline-block; margin: 4px;">
-                            {{ employee.fio }} ({{ employee.specialnost.nazvanie }})
-                            <button type="button" onclick="this.parentElement.remove()" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">×</button>
-                            <input type="hidden" name="selected_employees[]" value="{{ employee.id }}">
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <select onchange="addEmployeeToCategory(this, 1)" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; background: white; color: #333; font-size: 12px; width: 100%;">
-                        <option value="">Добавить сотрудника</option>
-                        {% for emp in sotrudniki %}
-                        {% if emp.specialnost.kategoriya == '1' or not emp.specialnost.kategoriya %}
-                        <option value="{{ emp.id }}">{{ emp.fio }} - {{ emp.specialnost.nazvanie }}</option>
-                        {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
+            <!-- Подразделения организации -->
+            <div style="margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; padding: 15px;">
+                <h4 style="color: #3498db; margin-bottom: 10px; text-align: center;">Подразделения организации</h4>
                 
-                <!-- Строительное управление -->
-                <div style="flex: 1; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 15px;">
-                    <h4 style="color: #e67e22; margin-bottom: 10px;">Строительное управление</h4>
-                    
-                    {% for specialty, employees in employees_category_2_by_specialty.items %}
-                    <div style="margin-bottom: 15px; border: 1px solid rgba(230,126,34,0.3); border-radius: 6px; padding: 10px;">
-                        <h5 style="color: #f39c12; margin-bottom: 8px; font-size: 14px;">{{ specialty }}</h5>
-                        <div id="employees-specialty-{{ specialty|slugify }}" style="margin-bottom: 8px;">
+                <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+                    {% for podrazdelenie_name, employees in employees_by_podrazdelenie.items %}
+                    <div style="flex: 1; min-width: 300px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                        <h5 style="color: #3498db; margin-bottom: 10px; font-size: 16px;">Подразделение: {{ podrazdelenie_name }}</h5>
+                        <div id="employees-podrazdelenie-{{ podrazdelenie_name|slugify }}" style="margin-bottom: 10px;">
                             {% for employee in employees %}
-                            <div style="background: rgba(255, 255, 255, 0.1); padding: 4px 8px; border-radius: 4px; color: white; font-size: 13px; display: inline-block; margin: 2px;">
-                                {{ employee.fio }}
-                                <button type="button" onclick="this.parentElement.remove()" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 16px; height: 16px; font-size: 9px; margin-left: 4px; cursor: pointer;">×</button>
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 6px 10px; border-radius: 4px; color: white; font-size: 14px; display: inline-block; margin: 4px;">
+                                {{ employee.fio }} {% if employee.specialnost %}({{ employee.specialnost.nazvanie }}){% endif %}
+                                <button type="button" onclick="removeEmployeeFromObject(this, '{{ employee.id }}')" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">×</button>
                                 <input type="hidden" name="selected_employees[]" value="{{ employee.id }}">
                             </div>
                             {% endfor %}
                         </div>
-                        <select onchange="addEmployeeToSpecialty(this, '{{ specialty|slugify }}')" style="padding: 3px 6px; border-radius: 4px; border: 1px solid #ccc; background: white; color: #333; font-size: 11px; width: 100%;">
-                            <option value="">Добавить {{ specialty }}</option>
-                            {% for emp in sotrudniki %}
-                            {% if emp.specialnost.nazvanie == specialty %}
-                            <option value="{{ emp.id }}">{{ emp.fio }}</option>
-                            {% endif %}
-                            {% endfor %}
-                        </select>
+                        <!-- Выпадающий список для добавления сотрудников удален -->
                     </div>
                     {% endfor %}
                 </div>
             </div>
+            
+            <!-- Должности из Кадрового обеспечения -->
+            <div style="margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; padding: 15px;">
+                <h4 style="color: #27ae60; margin-bottom: 10px; text-align: center;">Должности из Кадрового обеспечения</h4>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+                    {% for position_name, position_data in kadrovoe_positions.items %}
+                    <div style="flex: 1; min-width: 300px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                        <h5 style="color: #27ae60; margin-bottom: 5px; font-size: 16px;">Должность: {{ position_name }}</h5>
+                        <p style="color: white; margin-bottom: 10px; font-size: 14px;">Зарезервировано: {{ position_data.quantity|floatformat:0 }} ч. | Ставка: {{ position_data.price|floatformat:0 }} руб.</p>
+                        
+                        <div style="margin-bottom: 10px;">
+                            {% for employee in position_data.employees %}
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 6px 10px; border-radius: 4px; color: white; font-size: 14px; display: inline-block; margin: 4px;">
+                                {{ employee.fio }} {% if employee.podrazdelenie %}({{ employee.podrazdelenie.nazvanie }}){% endif %}
+                                <button type="button" onclick="removeEmployeeFromObject(this, '{{ employee.id }}')" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">×</button>
+                                <input type="hidden" name="selected_employees[]" value="{{ employee.id }}">
+                            </div>
+                            {% endfor %}
+                            <button type="button" onclick="addEmployeeToPosition('{{ position_name }}')" style="background: #27ae60; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 16px; margin-top: 5px; cursor: pointer;">+</button>
+                        </div>
+                        
+                        <div style="background: rgba(39, 174, 96, 0.1); padding: 5px; border-radius: 4px; margin-top: 5px;">
+                            <p style="color: white; font-size: 12px; margin: 0;">
+                                Выполнено: {{ position_data.employees|length }} из {{ position_data.quantity|floatformat:0 }} ч.
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Блок с основным подразделением и строительным управлением удален -->
         </div>
         
         <div style="text-align: center; margin-top: 2rem;">
@@ -437,7 +440,7 @@ function addEmployeeToCategory(select, categoryId) {
         
         employeeDiv.innerHTML = `
             ${employeeName}
-            <button type="button" onclick="this.parentElement.remove()" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">×</button>
+            <button type="button" onclick="removeEmployeeFromObject(this, '${employeeId}')" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">×</button>
             <input type="hidden" name="selected_employees[]" value="${employeeId}">
         `;
         
@@ -470,7 +473,7 @@ function addEmployeeToSpecialty(select, specialtySlug) {
         
         employeeDiv.innerHTML = `
             ${employeeName}
-            <button type="button" onclick="this.parentElement.remove()" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 16px; height: 16px; font-size: 9px; margin-left: 4px; cursor: pointer;">×</button>
+            <button type="button" onclick="removeEmployeeFromObject(this, '${employeeId}')" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 16px; height: 16px; font-size: 9px; margin-left: 4px; cursor: pointer;">×</button>
             <input type="hidden" name="selected_employees[]" value="${employeeId}">
         `;
         
@@ -478,6 +481,317 @@ function addEmployeeToSpecialty(select, specialtySlug) {
         select.value = '';
     }
 }
+
+function addEmployeeToPodrazdelenie(select, podrazdelenieSlug) {
+    if (select.value) {
+        const employeeId = select.value;
+        const employeeName = select.options[select.selectedIndex].text;
+        
+        const existing = document.querySelector(`input[name="selected_employees[]"][value="${employeeId}"]`);
+        if (existing) {
+            alert('Сотрудник уже добавлен');
+            select.value = '';
+            return;
+        }
+        
+        // Находим контейнер в том же блоке, где находится select
+        const container = select.parentElement.querySelector(`div[id="employees-podrazdelenie-${podrazdelenieSlug}"]`);
+        if (!container) {
+            alert('Контейнер не найден');
+            return;
+        }
+        
+        const employeeDiv = document.createElement('div');
+        employeeDiv.style.cssText = 'background: rgba(255, 255, 255, 0.1); padding: 6px 10px; border-radius: 4px; color: white; font-size: 14px; display: inline-block; margin: 4px;';
+        
+        employeeDiv.innerHTML = `
+            ${employeeName}
+            <button type="button" onclick="removeEmployeeFromObject(this, '${employeeId}')" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">×</button>
+            <input type="hidden" name="selected_employees[]" value="${employeeId}">
+        `;
+        
+        container.appendChild(employeeDiv);
+        select.value = '';
+    }
+}
+
+function addEmployeeToPosition(positionName) {
+    // Сохраняем ссылку на кнопку, которая была нажата
+    const clickedButton = event.target;
+    const positionContainer = clickedButton.parentElement;
+    
+    // Сохраняем ссылку на кнопку в глобальной переменной
+    window.currentPositionButton = clickedButton;
+    
+    // Создаем модальное окно для выбора сотрудника
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 1000;';
+    
+    // Создаем содержимое модального окна
+    const modalContent = document.createElement('div');
+    modalContent.style.cssText = 'background: #2c3e50; padding: 20px; border-radius: 10px; width: 400px; max-width: 90%;';
+    
+    // Заголовок
+    const header = document.createElement('h3');
+    header.style.cssText = 'color: white; margin-bottom: 15px; text-align: center;';
+    header.textContent = `Добавить сотрудника на должность: ${positionName}`;
+    
+    // Создаем выпадающий список сотрудников
+    const select = document.createElement('select');
+    select.style.cssText = 'width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: none;';
+    
+    // Добавляем первый элемент списка
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Выберите сотрудника';
+    select.appendChild(defaultOption);
+    
+    // Добавляем сотрудников в список
+    const employees = [];
+    {% for emp in sotrudniki %}
+    employees.push({
+        id: '{{ emp.id }}',
+        name: '{{ emp.fio }}{% if emp.podrazdelenie %} ({{ emp.podrazdelenie.nazvanie }}){% endif %}',
+        position: '{{ emp.specialnost.nazvanie }}'
+    });
+    {% endfor %}
+    
+    // Фильтруем сотрудников по должности
+    employees.forEach(function(emp) {
+        if (emp.position === positionName) {
+            // Проверяем, не добавлен ли уже этот сотрудник
+            const existing = document.querySelector(`input[name="selected_employees[]"][value="${emp.id}"]`);
+            if (!existing) {
+                const option = document.createElement('option');
+                option.value = emp.id;
+                option.textContent = emp.name;
+                select.appendChild(option);
+            }
+        }
+    });
+    
+    // Кнопки для модального окна
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = 'display: flex; justify-content: space-between;';
+    
+    const addButton = document.createElement('button');
+    addButton.style.cssText = 'background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-right: 10px;';
+    addButton.textContent = 'Добавить';
+    
+    const addDirectButton = document.createElement('button');
+    addDirectButton.style.cssText = 'background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-right: 10px;';
+    addDirectButton.textContent = 'Добавить напрямую';
+    
+    const cancelButton = document.createElement('button');
+    cancelButton.style.cssText = 'background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;';
+    cancelButton.textContent = 'Отмена';
+    
+    buttonContainer.appendChild(addButton);
+    buttonContainer.appendChild(addDirectButton);
+    buttonContainer.appendChild(cancelButton);
+    
+    // Добавляем все элементы в модальное окно
+    modalContent.appendChild(header);
+    modalContent.appendChild(select);
+    modalContent.appendChild(buttonContainer);
+    modal.appendChild(modalContent);
+    
+    // Добавляем модальное окно на страницу
+    document.body.appendChild(modal);
+    
+    // Обработчик кнопки добавления
+    addButton.addEventListener('click', function() {
+        if (select.value) {
+            // Создаем элемент сотрудника
+            const employeeDiv = document.createElement('div');
+            employeeDiv.style.cssText = 'background: rgba(255, 255, 255, 0.1); padding: 6px 10px; border-radius: 4px; color: white; font-size: 14px; display: inline-block; margin: 4px;';
+            
+            employeeDiv.innerHTML = `
+                ${select.options[select.selectedIndex].text}
+                <button type="button" onclick="removeEmployeeFromObject(this, '${select.value}')" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">×</button>
+                <input type="hidden" name="selected_employees[]" value="${select.value}">
+            `;
+            
+            // Добавляем сотрудника в контейнер
+            if (window.currentPositionButton) {
+                const container = window.currentPositionButton.parentElement;
+                container.insertBefore(employeeDiv, window.currentPositionButton);
+            } else {
+                // Если по какой-то причине кнопка не найдена, используем positionContainer
+                positionContainer.insertBefore(employeeDiv, clickedButton);
+            }
+            
+            // Создаем форму для отправки данных
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = window.location.href;
+            form.style.display = 'none';
+            
+            // Добавляем CSRF токен
+            const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = csrfToken;
+            form.appendChild(csrfInput);
+            
+            // Добавляем основные поля формы
+            const mainForm = document.querySelector('form');
+            const formData = new FormData(mainForm);
+            
+            // Добавляем все поля из основной формы
+            for (let [key, value] of formData.entries()) {
+                if (key !== 'selected_employees[]') {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = value;
+                    form.appendChild(input);
+                }
+            }
+            
+            // Добавляем всех выбранных сотрудников
+            const selectedEmployees = document.querySelectorAll('input[name="selected_employees[]"]');
+            selectedEmployees.forEach(function(emp) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'selected_employees[]';
+                input.value = emp.value;
+                form.appendChild(input);
+            });
+            
+            // Добавляем нового сотрудника
+            const newEmpInput = document.createElement('input');
+            newEmpInput.type = 'hidden';
+            newEmpInput.name = 'selected_employees[]';
+            newEmpInput.value = select.value;
+            form.appendChild(newEmpInput);
+            
+            // Добавляем действие (сохранить и остаться на странице)
+            const actionInput = document.createElement('input');
+            actionInput.type = 'hidden';
+            actionInput.name = 'action';
+            actionInput.value = 'save_and_stay';
+            form.appendChild(actionInput);
+            
+            // Добавляем форму на страницу и отправляем
+            document.body.appendChild(form);
+            
+            // Показываем уведомление об успешном добавлении
+            const notification = document.createElement('div');
+            notification.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: #27ae60; color: white; padding: 10px 20px; border-radius: 5px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2);';
+            notification.textContent = `Сотрудник ${select.options[select.selectedIndex].text} добавляется к объекту...`;
+            document.body.appendChild(notification);
+            
+            // Отправляем форму
+            form.submit();
+        } else {
+            // Закрываем модальное окно если не выбран сотрудник
+            document.body.removeChild(modal);
+        }
+    });
+    
+    // Обработчик кнопки прямого добавления
+    addDirectButton.addEventListener('click', function() {
+        if (select.value) {
+            const employeeId = select.value;
+            const employeeName = select.options[select.selectedIndex].text;
+            const url = window.location.pathname;
+            const objectId = url.split('/')[2]; // Получаем ID объекта из URL
+            
+            // Показываем уведомление о начале процесса
+            const notification = document.createElement('div');
+            notification.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: #3498db; color: white; padding: 10px 20px; border-radius: 5px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2);';
+            notification.textContent = `Добавление сотрудника ${employeeName} к объекту...`;
+            document.body.appendChild(notification);
+            
+            // Отправляем запрос на добавление сотрудника к объекту
+            fetch(`/api/add-employee-to-object/${objectId}/${employeeId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+                },
+                body: JSON.stringify({
+                    employee_id: employeeId,
+                    object_id: objectId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Создаем элемент сотрудника
+                    const employeeDiv = document.createElement('div');
+                    employeeDiv.style.cssText = 'background: rgba(255, 255, 255, 0.1); padding: 6px 10px; border-radius: 4px; color: white; font-size: 14px; display: inline-block; margin: 4px;';
+                    
+                    employeeDiv.innerHTML = `
+                        ${employeeName}
+                        <button type="button" onclick="this.parentElement.remove()" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">×</button>
+                        <input type="hidden" name="selected_employees[]" value="${employeeId}">
+                    `;
+                    
+                    // Добавляем сотрудника в контейнер
+                    if (window.currentPositionButton) {
+                        const container = window.currentPositionButton.parentElement;
+                        container.insertBefore(employeeDiv, window.currentPositionButton);
+                    } else {
+                        // Если по какой-то причине кнопка не найдена, используем positionContainer
+                        positionContainer.insertBefore(employeeDiv, clickedButton);
+                    }
+                    
+                    // Обновляем уведомление
+                    notification.style.background = '#27ae60';
+                    notification.textContent = data.message || `Сотрудник ${employeeName} успешно добавлен к объекту`;
+                    
+                    // Удаляем уведомление через 3 секунды
+                    setTimeout(function() {
+                        document.body.removeChild(notification);
+                    }, 3000);
+                    
+                    // Закрываем модальное окно
+                    document.body.removeChild(modal);
+                } else {
+                    // Обновляем уведомление в случае ошибки
+                    notification.style.background = '#e74c3c';
+                    notification.textContent = data.error || `Ошибка при добавлении сотрудника`;
+                    
+                    // Удаляем уведомление через 5 секунд
+                    setTimeout(function() {
+                        document.body.removeChild(notification);
+                    }, 5000);
+                }
+            })
+            .catch(error => {
+                // Обновляем уведомление в случае ошибки
+                notification.style.background = '#e74c3c';
+                notification.textContent = `Ошибка: ${error.message}`;
+                
+                // Удаляем уведомление через 5 секунд
+                setTimeout(function() {
+                    document.body.removeChild(notification);
+                }, 5000);
+                
+                console.error('Error:', error);
+            });
+        } else {
+            alert('Выберите сотрудника');
+        }
+    });
+    
+    // Обработчик кнопки отмены
+    cancelButton.addEventListener('click', function() {
+        document.body.removeChild(modal);
+    });
+    
+    // Закрытие модального окна при клике вне его
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+}
+
+// Дублирующаяся функция удалена
 // Отладка отправки формы
 document.querySelector('form').addEventListener('submit', function(e) {
     console.log('Отправка формы...');
@@ -489,7 +803,146 @@ document.querySelector('form').addEventListener('submit', function(e) {
     
     const employees = formData.getAll('selected_employees[]');
     console.log('Выбранные сотрудники:', employees);
+    
+    // Проверяем, что все выбранные сотрудники добавлены в форму
+    const selectedEmployeeElements = document.querySelectorAll('input[name="selected_employees[]"]');
+    if (selectedEmployeeElements.length !== employees.length) {
+        console.warn(`Предупреждение: Количество элементов (${selectedEmployeeElements.length}) не совпадает с количеством значений (${employees.length})`);
+    }
+    
+    // Проверяем, что все необходимые поля заполнены
+    const requiredFields = ['nazvanie', 'data_nachala'];
+    let allFieldsFilled = true;
+    
+    requiredFields.forEach(field => {
+        const fieldValue = formData.get(field);
+        if (!fieldValue) {
+            console.error(`Ошибка: Поле ${field} не заполнено`);
+            allFieldsFilled = false;
+        }
+    });
+    
+    if (!allFieldsFilled) {
+        console.error('Не все обязательные поля заполнены');
+    }
 });
+
+// Функция для удаления сотрудника из объекта
+function removeEmployeeFromObject(button, employeeId) {
+    if (!confirm('Вы уверены, что хотите удалить сотрудника?')) {
+        return;
+    }
+    
+    const url = window.location.pathname;
+    const objectId = url.split('/')[2]; // Получаем ID объекта из URL
+    
+    // Показываем уведомление о начале процесса
+    const notification = document.createElement('div');
+    notification.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: #3498db; color: white; padding: 10px 20px; border-radius: 5px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2);';
+    notification.textContent = `Удаление сотрудника...`;
+    document.body.appendChild(notification);
+    
+    // Создаем форму для отправки данных
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = window.location.href;
+    form.style.display = 'none';
+    
+    // Добавляем CSRF токен
+    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = 'csrfmiddlewaretoken';
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+    
+    // Добавляем основные поля формы
+    const mainForm = document.querySelector('form');
+    const formData = new FormData(mainForm);
+    
+    // Добавляем все поля из основной формы
+    for (let [key, value] of formData.entries()) {
+        if (key !== 'selected_employees[]') {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = value;
+            form.appendChild(input);
+        }
+    }
+    
+    // Добавляем всех выбранных сотрудников, кроме удаляемого
+    const selectedEmployees = document.querySelectorAll('input[name="selected_employees[]"]');
+    selectedEmployees.forEach(function(emp) {
+        if (emp.value !== employeeId) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'selected_employees[]';
+            input.value = emp.value;
+            form.appendChild(input);
+        }
+    });
+    
+    // Добавляем действие (сохранить и остаться на странице)
+    const actionInput = document.createElement('input');
+    actionInput.type = 'hidden';
+    actionInput.name = 'action';
+    actionInput.value = 'save_and_stay';
+    form.appendChild(actionInput);
+    
+    // Добавляем форму на страницу и отправляем
+    document.body.appendChild(form);
+    
+    // Удаляем элемент из DOM
+    const employeeElement = button.closest('div');
+    if (employeeElement) {
+        employeeElement.remove();
+    }
+    
+    // Отправляем форму
+    form.submit();
+}
+
+// Добавляем общий обработчик событий для всех кнопок удаления сотрудников
+document.addEventListener('click', function(event) {
+    // Проверяем, что клик был по кнопке удаления сотрудника
+    if (event.target.tagName === 'BUTTON' && 
+        event.target.parentElement && 
+        event.target.parentElement.querySelector('input[name="selected_employees[]"]')) {
+        
+        // Получаем ID сотрудника
+        const employeeInput = event.target.parentElement.querySelector('input[name="selected_employees[]"]');
+        if (employeeInput) {
+            const employeeId = employeeInput.value;
+            
+            // Вызываем функцию удаления сотрудника
+            removeEmployeeFromObject(event.target, employeeId);
+            
+            // Предотвращаем дальнейшее распространение события
+            event.stopPropagation();
+        }
+    }
+});
+
+// Добавляем функцию для проверки добавления сотрудника
+function checkEmployeeAdded(employeeId) {
+    // Проверяем, есть ли сотрудник в списке
+    const url = window.location.pathname;
+    const objectId = url.split('/')[2]; // Получаем ID объекта из URL
+    
+    fetch(`/api/check-employee/${objectId}/${employeeId}/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.is_added) {
+                console.log(`Сотрудник ${employeeId} успешно добавлен к объекту`);
+            } else {
+                console.error(`Сотрудник ${employeeId} НЕ был добавлен к объекту!`);
+            }
+        })
+        .catch(error => {
+            console.error(`Ошибка при проверке сотрудника: ${error}`);
+        });
+}
 
 function addResourceToCategory(categoryName, type) {
     const button = event.target;

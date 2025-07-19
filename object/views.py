@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import os
 from django.conf import settings
 import time
+from sotrudniki.models import Sotrudnik, Specialnost
 
 def home(request):
     # Получаем статистику для главной страницы
@@ -664,6 +665,107 @@ def get_employees_by_resource(request, resource_id):
     except Resurs.DoesNotExist:
         return JsonResponse({'employees': []})
 
+@csrf_exempt
+def check_employee_in_object(request, object_id, employee_id):
+    """API endpoint для проверки наличия сотрудника на объекте"""
+    try:
+        obj = get_object_or_404(Objekt, id=object_id)
+        from sotrudniki.models import Sotrudnik
+        employee = get_object_or_404(Sotrudnik, id=employee_id)
+        
+        is_assigned = obj.sotrudniki.filter(id=employee_id).exists()
+        
+        return JsonResponse({
+            'success': True, 
+            'is_assigned': is_assigned,
+            'employee': {
+                'id': employee.id,
+                'fio': employee.fio,
+                'specialnost': employee.specialnost.nazvanie if employee.specialnost else None
+            }
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+@csrf_exempt
+def add_employee_to_object_api(request, object_id, employee_id):
+    """API endpoint для добавления сотрудника на объект"""
+    try:
+        obj = get_object_or_404(Objekt, id=object_id)
+        from sotrudniki.models import Sotrudnik
+        employee = get_object_or_404(Sotrudnik, id=employee_id)
+        
+        # Проверяем, есть ли уже сотрудник на объекте
+        if not obj.sotrudniki.filter(id=employee_id).exists():
+            obj.sotrudniki.add(employee)
+            action = 'added'
+        else:
+            # Если сотрудник уже на объекте, удаляем его
+            obj.sotrudniki.remove(employee)
+            action = 'removed'
+        
+        return JsonResponse({
+            'success': True, 
+            'action': action,
+            'employee': {
+                'id': employee.id,
+                'fio': employee.fio,
+                'specialnost': employee.specialnost.nazvanie if employee.specialnost else None
+            }
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+@csrf_exempt
+def get_employees_by_position(request, object_id):
+    """API для получения сотрудников по должности"""
+    try:
+        position = request.GET.get('position', '')
+        print(f"\nПолучен запрос на сотрудников по позиции: {position}")
+        
+        # Получаем объект
+        obj = get_object_or_404(Objekt, id=object_id)
+        
+        # Находим специальности, подходящие по названию
+        specialnosti = Specialnost.objects.filter(nazvanie__icontains=position)
+        
+        # Если не нашли специальность, ищем по части слова
+        if not specialnosti.exists() and position:
+            words = position.split()
+            for word in words:
+                if len(word) > 3:  # Ищем только по словам длиннее 3 символов
+                    specialnosti = specialnosti | Specialnost.objects.filter(nazvanie__icontains=word)
+        
+        # Получаем всех сотрудников
+        employees = Sotrudnik.objects.all()
+        
+        # Фильтруем по специальностям, если они найдены
+        if specialnosti.exists():
+            filtered_employees = []
+            for spec in specialnosti:
+                filtered_employees.extend(employees.filter(specialnost=spec))
+            employees = filtered_employees
+        
+        # Ограничиваем количество сотрудников
+        if not employees:
+            employees = Sotrudnik.objects.all()[:5]
+        
+        # Формируем список сотрудников
+        employees_data = []
+        for employee in employees:
+            employees_data.append({
+                'id': employee.id,
+                'fio': employee.fio,
+                'organizaciya': employee.organizaciya.nazvanie if employee.organizaciya else None,
+                'podrazdelenie': employee.podrazdelenie.nazvanie if employee.podrazdelenie else None,
+                'specialnost': employee.specialnost.nazvanie if employee.specialnost else None,
+            })
+        
+        return JsonResponse({'success': True, 'employees': employees_data})
+    except Exception as e:
+        print(f"Ошибка при получении сотрудников: {str(e)}")
+        return JsonResponse({'success': False, 'error': str(e)})
+
 def object_income_detail(request, object_id):
     # Получаем объект или 404
     obj = get_object_or_404(Objekt, id=object_id)
@@ -930,5 +1032,146 @@ def delete_resource_from_object(request):
         resurs_po_objektu.delete()
         
         return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+@csrf_exempt
+def get_employees_by_object_position(request, object_id):
+    """API endpoint для получения сотрудников по объекту и должности"""
+    try:
+        position = request.GET.get('position')
+        
+        if not position:
+            return JsonResponse({'success': False, 'error': 'Не указана должность'})
+        
+        # Получаем объект
+        obj = get_object_or_404(Objekt, id=object_id)
+        
+        # Отладочная информация
+        print(f"\nПоиск сотрудников для объекта ID: {object_id}, должность: {position}")
+        
+        # Получаем всех сотрудников, привязанных к объекту
+        all_employees = obj.sotrudniki.all()
+        print(f"Всего сотрудников на объекте: {all_employees.count()}")
+        
+        # Если нет сотрудников на объекте, возвращаем всех сотрудников с подходящей специальностью
+        if all_employees.count() == 0:
+            print("Нет сотрудников на объекте, ищем по специальности")
+            from sotrudniki.models import Sotrudnik
+            all_employees = Sotrudnik.objects.all()
+        
+        # Находим специальности, подходящие по названию
+        specialnosti = Specialnost.objects.filter(nazvanie__icontains=position)
+        print(f"Найдено специальностей по запросу '{position}': {specialnosti.count()}")
+        
+        # Если не нашли специальность, пробуем поиск по части слова
+        if specialnosti.count() == 0:
+            # Разбиваем название должности на слова и ищем по каждому слову
+            words = position.split()
+            for word in words:
+                if len(word) > 3:  # Ищем только по словам длиннее 3 символов
+                    word_specialnosti = Specialnost.objects.filter(nazvanie__icontains=word)
+                    print(f"Поиск по слову '{word}': найдено {word_specialnosti.count()}")
+                    specialnosti = specialnosti | word_specialnosti
+        
+        # Фильтруем сотрудников по найденным специальностям
+        employees = []
+        if specialnosti.count() > 0:
+            for spec in specialnosti:
+                spec_employees = all_employees.filter(specialnost=spec)
+                print(f"Специальность '{spec.nazvanie}': найдено сотрудников {spec_employees.count()}")
+                employees.extend(spec_employees)
+        else:
+            # Если не нашли подходящих специальностей, возвращаем всех сотрудников на объекте
+            employees = list(all_employees)
+            print(f"Специальности не найдены, возвращаем всех сотрудников: {len(employees)}")
+        
+        # Удаляем дубликаты
+        unique_employees = []
+        employee_ids = set()
+        for emp in employees:
+            if emp.id not in employee_ids:
+                employee_ids.add(emp.id)
+                unique_employees.append(emp)
+        
+        # Формируем список сотрудников с дополнительной информацией
+        employees_data = []
+        for employee in unique_employees:
+            employee_data = {
+                'id': employee.id,
+                'fio': employee.fio,
+                'organizaciya': employee.organizaciya.nazvanie if employee.organizaciya else None,
+                'podrazdelenie': employee.podrazdelenie.nazvanie if employee.podrazdelenie else None,
+                'specialnost': employee.specialnost.nazvanie if employee.specialnost else None,
+            }
+            employees_data.append(employee_data)
+        
+        print(f"Итого найдено уникальных сотрудников: {len(employees_data)}")
+        return JsonResponse({'success': True, 'employees': employees_data})
+    except Exception as e:
+        print(f"Ошибка при поиске сотрудников: {str(e)}")
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+@csrf_exempt
+def check_employee_in_object(request, object_id, employee_id):
+    """API endpoint для проверки, привязан ли сотрудник к объекту"""
+    try:
+        # Получаем объект
+        obj = get_object_or_404(Objekt, id=object_id)
+        
+        # Проверяем, есть ли сотрудник в списке сотрудников объекта
+        is_added = obj.sotrudniki.filter(id=employee_id).exists()
+        
+        return JsonResponse({
+            'success': True, 
+            'is_added': is_added,
+            'object_id': object_id,
+            'employee_id': employee_id
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+@csrf_exempt
+@require_POST
+def add_employee_to_object_api(request, object_id, employee_id):
+    """API endpoint для добавления сотрудника к объекту"""
+    try:
+        # Получаем объект и сотрудника
+        obj = get_object_or_404(Objekt, id=object_id)
+        from sotrudniki.models import Sotrudnik
+        employee = get_object_or_404(Sotrudnik, id=employee_id)
+        
+        # Добавляем сотрудника к объекту
+        obj.sotrudniki.add(employee)
+        
+        # Проверяем, что сотрудник действительно добавлен
+        is_added = obj.sotrudniki.filter(id=employee_id).exists()
+        
+        if is_added:
+            return JsonResponse({
+                'success': True, 
+                'message': f'Сотрудник {employee.fio} успешно добавлен к объекту {obj.nazvanie}'
+            })
+        else:
+            # Если сотрудник не добавлен, пробуем еще раз другим способом
+            try:
+                # Альтернативный способ добавления через SQL
+                from django.db import connection
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "INSERT INTO objekt_sotrudniki (objekt_id, sotrudnik_id) VALUES (%s, %s)",
+                        [object_id, employee_id]
+                    )
+                return JsonResponse({
+                    'success': True, 
+                    'message': f'Сотрудник {employee.fio} добавлен к объекту {obj.nazvanie} (альтернативный метод)'
+                })
+            except Exception as e2:
+                return JsonResponse({
+                    'success': False, 
+                    'error': f'Не удалось добавить сотрудника (альтернативный метод): {str(e2)}'
+                })
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
