@@ -1,0 +1,1065 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Анализ общей эффективности по окончанию объекта - AI-ZAM{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .efficiency-container {
+        position: relative;
+        padding-bottom: 2rem;
+    }
+    
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .page-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(90deg, #00c6ff, #0072ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 15px rgba(0, 198, 255, 0.5);
+    }
+    
+    .page-subtitle {
+        font-size: 1.1rem;
+        color: #aaa;
+        margin-bottom: 1.5rem;
+    }
+    
+    .back-btn {
+        background: linear-gradient(45deg, #00c6ff, #0072ff);
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 25px;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 2rem;
+        font-weight: bold;
+        transition: all 0.3s;
+        position: relative;
+        z-index: 10;
+        box-shadow: 0 5px 15px rgba(0, 198, 255, 0.3);
+    }
+    
+    .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 198, 255, 0.5);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .project-tabs {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .project-tab {
+        padding: 0.8rem 1.5rem;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(0, 198, 255, 0.3);
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin: 0 0.5rem;
+        border-radius: 5px;
+    }
+    
+    .project-tab.active {
+        background: linear-gradient(45deg, rgba(0, 198, 255, 0.2), rgba(0, 114, 255, 0.2));
+        border-color: #00c6ff;
+        box-shadow: 0 0 15px rgba(0, 198, 255, 0.3);
+    }
+    
+    .project-tab:hover {
+        background: rgba(0, 198, 255, 0.1);
+    }
+    
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 10;
+    }
+    
+    @media (max-width: 992px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .dashboard-card {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 1px solid rgba(0, 198, 255, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    
+    .card-header {
+        color: #00c6ff;
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .card-icon {
+        margin-right: 0.5rem;
+        font-size: 1.5rem;
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+    
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+    
+    .kpi-card {
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        padding: 1rem;
+        text-align: center;
+        border: 1px solid rgba(0, 198, 255, 0.2);
+        transition: all 0.3s;
+    }
+    
+    .kpi-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 198, 255, 0.3);
+        border-color: rgba(0, 198, 255, 0.5);
+    }
+    
+    .kpi-value {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(90deg, #00c6ff, #0072ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .kpi-label {
+        font-size: 0.9rem;
+        color: #aaa;
+    }
+    
+    .kpi-trend {
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+    
+    .trend-up {
+        color: #00ff00;
+    }
+    
+    .trend-down {
+        color: #ff3366;
+    }
+    
+    .trend-neutral {
+        color: #ffcc00;
+    }
+    
+    .efficiency-meter {
+        position: relative;
+        height: 250px;
+        width: 250px;
+        margin: 0 auto;
+    }
+    
+    .efficiency-value {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 3rem;
+        font-weight: bold;
+        color: #fff;
+    }
+    
+    .efficiency-label {
+        position: absolute;
+        top: 65%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1rem;
+        color: #aaa;
+    }
+    
+    .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+    }
+    
+    .comparison-table th,
+    .comparison-table td {
+        padding: 0.8rem;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .comparison-table th {
+        color: #00c6ff;
+        font-weight: normal;
+    }
+    
+    .comparison-table td {
+        color: #fff;
+    }
+    
+    .comparison-table .better {
+        color: #00ff00;
+    }
+    
+    .comparison-table .worse {
+        color: #ff3366;
+    }
+    
+    .comparison-table .neutral {
+        color: #ffcc00;
+    }
+    
+    .progress-bar {
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 0.3rem;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 1s ease-in-out;
+    }
+    
+    .progress-fill.excellent {
+        background: linear-gradient(90deg, #00ff00, #00c6ff);
+    }
+    
+    .progress-fill.good {
+        background: linear-gradient(90deg, #00c6ff, #0072ff);
+    }
+    
+    .progress-fill.average {
+        background: linear-gradient(90deg, #ffcc00, #ff9900);
+    }
+    
+    .progress-fill.poor {
+        background: linear-gradient(90deg, #ff9900, #ff3366);
+    }
+    
+    .particles-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+    
+    .insights-container {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+        border: 1px solid rgba(0, 198, 255, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        position: relative;
+        z-index: 10;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    
+    .insights-title {
+        color: #00c6ff;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    
+    .insight-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0.8rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        border-left: 4px solid #00c6ff;
+    }
+    
+    .insight-icon {
+        margin-right: 1rem;
+        font-size: 1.5rem;
+        color: #00c6ff;
+    }
+    
+    .insight-text {
+        font-size: 1rem;
+        color: #fff;
+    }
+    
+    .tech-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .tech-badge {
+        background: linear-gradient(45deg, #00c6ff, #0072ff);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        box-shadow: 0 3px 10px rgba(0, 198, 255, 0.3);
+        transition: all 0.3s;
+    }
+    
+    .tech-badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 198, 255, 0.5);
+    }
+    
+    .factor-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .factor-card {
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        padding: 1rem;
+        border: 1px solid rgba(0, 198, 255, 0.2);
+    }
+    
+    .factor-name {
+        font-size: 1rem;
+        color: #fff;
+        margin-bottom: 0.5rem;
+    }
+    
+    .factor-value {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #00c6ff;
+        margin-bottom: 0.5rem;
+    }
+    
+    .factor-impact {
+        font-size: 0.9rem;
+        color: #aaa;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="particles-js" class="particles-bg"></div>
+
+<div class="efficiency-container">
+    <a href="{% url 'analytics:home' %}" class="back-btn">← Назад к аналитике</a>
+    
+    <div class="page-header">
+        <h1 class="page-title">Анализ общей эффективности по окончанию объекта</h1>
+        <p class="page-subtitle">Комплексная оценка KPI проекта с использованием многофакторного анализа данных</p>
+    </div>
+    
+    <div class="tech-badges">
+        <div class="tech-badge">Многофакторный анализ</div>
+        <div class="tech-badge">KPI Metrics</div>
+        <div class="tech-badge">Data Visualization</div>
+        <div class="tech-badge">Predictive Analytics</div>
+        <div class="tech-badge">Performance Evaluation</div>
+    </div>
+    
+    <div class="project-tabs">
+        <div class="project-tab active" data-project="reconstruction">Реконструкция объекта</div>
+        <div class="project-tab" data-project="demolition">Снос спортивного комплекса</div>
+    </div>
+    
+    <div class="dashboard-grid">
+        <div class="dashboard-card" id="card1">
+            <div class="card-header">
+                <div class="card-icon">🏆</div>
+                Общая эффективность проекта
+            </div>
+            <div class="efficiency-meter">
+                <canvas id="efficiencyGauge"></canvas>
+                <div class="efficiency-value" id="efficiencyValue">87%</div>
+                <div class="efficiency-label">Общая эффективность</div>
+            </div>
+        </div>
+        
+        <div class="dashboard-card" id="card2">
+            <div class="card-header">
+                <div class="card-icon">📊</div>
+                Ключевые показатели эффективности
+            </div>
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-value" id="costEfficiency">92%</div>
+                    <div class="kpi-label">Эффективность затрат</div>
+                    <div class="kpi-trend trend-up" id="costTrend">↑ 5%</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-value" id="timeEfficiency">85%</div>
+                    <div class="kpi-label">Эффективность сроков</div>
+                    <div class="kpi-trend trend-down" id="timeTrend">↓ 3%</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-value" id="qualityScore">90%</div>
+                    <div class="kpi-label">Оценка качества</div>
+                    <div class="kpi-trend trend-up" id="qualityTrend">↑ 2%</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-value" id="resourceUtilization">82%</div>
+                    <div class="kpi-label">Использование ресурсов</div>
+                    <div class="kpi-trend trend-neutral" id="resourceTrend">→ 0%</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-card" id="card3">
+            <div class="card-header">
+                <div class="card-icon">📈</div>
+                Динамика эффективности по этапам
+            </div>
+            <div class="chart-container">
+                <canvas id="efficiencyChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="dashboard-card" id="card4">
+            <div class="card-header">
+                <div class="card-icon">⚖️</div>
+                Сравнение с отраслевыми стандартами
+            </div>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Показатель</th>
+                        <th>Проект</th>
+                        <th>Стандарт</th>
+                        <th>Отклонение</th>
+                    </tr>
+                </thead>
+                <tbody id="comparisonTable">
+                    <tr>
+                        <td>Эффективность затрат</td>
+                        <td>92%</td>
+                        <td>85%</td>
+                        <td class="better">+7%</td>
+                    </tr>
+                    <tr>
+                        <td>Эффективность сроков</td>
+                        <td>85%</td>
+                        <td>80%</td>
+                        <td class="better">+5%</td>
+                    </tr>
+                    <tr>
+                        <td>Оценка качества</td>
+                        <td>90%</td>
+                        <td>88%</td>
+                        <td class="better">+2%</td>
+                    </tr>
+                    <tr>
+                        <td>Использование ресурсов</td>
+                        <td>82%</td>
+                        <td>75%</td>
+                        <td class="better">+7%</td>
+                    </tr>
+                    <tr>
+                        <td>Безопасность</td>
+                        <td>95%</td>
+                        <td>90%</td>
+                        <td class="better">+5%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="dashboard-card" id="card5">
+        <div class="card-header">
+            <div class="card-icon">🔍</div>
+            Факторный анализ эффективности
+        </div>
+        <div class="chart-container">
+            <canvas id="radarChart"></canvas>
+        </div>
+        <div class="factor-grid">
+            <div class="factor-card">
+                <div class="factor-name">Управление проектом</div>
+                <div class="factor-value">92%</div>
+                <div class="factor-impact">Влияние на эффективность: Высокое</div>
+            </div>
+            <div class="factor-card">
+                <div class="factor-name">Логистика и поставки</div>
+                <div class="factor-value">78%</div>
+                <div class="factor-impact">Влияние на эффективность: Среднее</div>
+            </div>
+            <div class="factor-card">
+                <div class="factor-name">Квалификация персонала</div>
+                <div class="factor-value">88%</div>
+                <div class="factor-impact">Влияние на эффективность: Высокое</div>
+            </div>
+            <div class="factor-card">
+                <div class="factor-name">Технологии и оборудование</div>
+                <div class="factor-value">85%</div>
+                <div class="factor-impact">Влияние на эффективность: Среднее</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="insights-container" id="insights">
+        <h2 class="insights-title">Инсайты многофакторного анализа</h2>
+        
+        <div class="insight-item">
+            <div class="insight-icon">💡</div>
+            <div class="insight-text">Наибольшее влияние на эффективность проекта оказало грамотное управление и высокая квалификация персонала</div>
+        </div>
+        
+        <div class="insight-item">
+            <div class="insight-icon">📉</div>
+            <div class="insight-text">Выявлены возможности для оптимизации логистических процессов, что может повысить общую эффективность на 5-7%</div>
+        </div>
+        
+        <div class="insight-item">
+            <div class="insight-icon">⚠️</div>
+            <div class="insight-text">Обнаружена корреляция между задержками в поставках материалов и снижением эффективности сроков</div>
+        </div>
+        
+        <div class="insight-item">
+            <div class="insight-icon">🔄</div>
+            <div class="insight-text">Рекомендуется внедрить систему предиктивного анализа для раннего выявления потенциальных проблем с поставками</div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация частиц
+    particlesJS('particles-js', {
+        particles: {
+            number: {
+                value: 50,
+                density: {
+                    enable: true,
+                    value_area: 800
+                }
+            },
+            color: {
+                value: '#00c6ff'
+            },
+            shape: {
+                type: 'circle',
+                stroke: {
+                    width: 0,
+                    color: '#000000'
+                }
+            },
+            opacity: {
+                value: 0.5,
+                random: true,
+                anim: {
+                    enable: true,
+                    speed: 1,
+                    opacity_min: 0.1,
+                    sync: false
+                }
+            },
+            size: {
+                value: 3,
+                random: true,
+                anim: {
+                    enable: true,
+                    speed: 2,
+                    size_min: 0.1,
+                    sync: false
+                }
+            },
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: '#00c6ff',
+                opacity: 0.2,
+                width: 1
+            },
+            move: {
+                enable: true,
+                speed: 1,
+                direction: 'none',
+                random: true,
+                straight: false,
+                out_mode: 'out',
+                bounce: false
+            }
+        },
+        interactivity: {
+            detect_on: 'canvas',
+            events: {
+                onhover: {
+                    enable: true,
+                    mode: 'grab'
+                },
+                onclick: {
+                    enable: true,
+                    mode: 'push'
+                },
+                resize: true
+            },
+            modes: {
+                grab: {
+                    distance: 140,
+                    line_linked: {
+                        opacity: 0.5
+                    }
+                },
+                push: {
+                    particles_nb: 4
+                }
+            }
+        },
+        retina_detect: true
+    });
+    
+    // Анимация появления элементов
+    gsap.to('.dashboard-card', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: 'power3.out'
+    });
+    
+    gsap.to('#insights', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        delay: 0.8,
+        ease: 'power3.out'
+    });
+    
+    // Данные для проектов
+    const projectsData = {
+        reconstruction: {
+            efficiency: 87,
+            kpis: {
+                costEfficiency: {value: 92, trend: "+5%", trendClass: "trend-up"},
+                timeEfficiency: {value: 85, trend: "-3%", trendClass: "trend-down"},
+                qualityScore: {value: 90, trend: "+2%", trendClass: "trend-up"},
+                resourceUtilization: {value: 82, trend: "0%", trendClass: "trend-neutral"}
+            },
+            comparison: [
+                {name: "Эффективность затрат", project: 92, standard: 85, deviation: "+7%", class: "better"},
+                {name: "Эффективность сроков", project: 85, standard: 80, deviation: "+5%", class: "better"},
+                {name: "Оценка качества", project: 90, standard: 88, deviation: "+2%", class: "better"},
+                {name: "Использование ресурсов", project: 82, standard: 75, deviation: "+7%", class: "better"},
+                {name: "Безопасность", project: 95, standard: 90, deviation: "+5%", class: "better"}
+            ],
+            efficiencyData: {
+                labels: ['Подготовка', 'Фундамент', 'Каркас', 'Перекрытия', 'Инженерные системы', 'Отделка', 'Сдача'],
+                datasets: [
+                    {
+                        label: 'Эффективность затрат',
+                        data: [95, 90, 88, 92, 94, 90, 92],
+                        borderColor: '#00c6ff',
+                        backgroundColor: 'rgba(0, 198, 255, 0.1)',
+                        fill: false,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Эффективность сроков',
+                        data: [90, 88, 82, 80, 85, 88, 85],
+                        borderColor: '#0072ff',
+                        backgroundColor: 'rgba(0, 114, 255, 0.1)',
+                        fill: false,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Оценка качества',
+                        data: [92, 90, 88, 91, 89, 92, 90],
+                        borderColor: '#00ff00',
+                        backgroundColor: 'rgba(0, 255, 0, 0.1)',
+                        fill: false,
+                        tension: 0.4
+                    }
+                ]
+            },
+            radarData: {
+                labels: ['Управление проектом', 'Логистика', 'Квалификация персонала', 'Технологии', 'Финансирование', 'Коммуникация', 'Контроль качества'],
+                datasets: [
+                    {
+                        label: 'Текущий проект',
+                        data: [92, 78, 88, 85, 90, 86, 92],
+                        backgroundColor: 'rgba(0, 198, 255, 0.2)',
+                        borderColor: 'rgba(0, 198, 255, 1)',
+                        pointBackgroundColor: 'rgba(0, 198, 255, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(0, 198, 255, 1)'
+                    },
+                    {
+                        label: 'Отраслевой стандарт',
+                        data: [80, 75, 82, 78, 85, 80, 85],
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                        pointBackgroundColor: 'rgba(255, 255, 255, 0.5)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(255, 255, 255, 0.5)'
+                    }
+                ]
+            }
+        },
+        demolition: {
+            efficiency: 92,
+            kpis: {
+                costEfficiency: {value: 95, trend: "+8%", trendClass: "trend-up"},
+                timeEfficiency: {value: 90, trend: "+5%", trendClass: "trend-up"},
+                qualityScore: {value: 88, trend: "+1%", trendClass: "trend-up"},
+                resourceUtilization: {value: 94, trend: "+6%", trendClass: "trend-up"}
+            },
+            comparison: [
+                {name: "Эффективность затрат", project: 95, standard: 85, deviation: "+10%", class: "better"},
+                {name: "Эффективность сроков", project: 90, standard: 80, deviation: "+10%", class: "better"},
+                {name: "Оценка качества", project: 88, standard: 88, deviation: "0%", class: "neutral"},
+                {name: "Использование ресурсов", project: 94, standard: 75, deviation: "+19%", class: "better"},
+                {name: "Безопасность", project: 92, standard: 90, deviation: "+2%", class: "better"}
+            ],
+            efficiencyData: {
+                labels: ['Подготовка', 'Отключение', 'Демонтаж', 'Снос', 'Вывоз', 'Планировка', 'Сдача'],
+                datasets: [
+                    {
+                        label: 'Эффективность затрат',
+                        data: [92, 95, 96, 94, 95, 96, 95],
+                        borderColor: '#00c6ff',
+                        backgroundColor: 'rgba(0, 198, 255, 0.1)',
+                        fill: false,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Эффективность сроков',
+                        data: [88, 90, 92, 91, 89, 90, 90],
+                        borderColor: '#0072ff',
+                        backgroundColor: 'rgba(0, 114, 255, 0.1)',
+                        fill: false,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Оценка качества',
+                        data: [85, 88, 90, 88, 87, 89, 88],
+                        borderColor: '#00ff00',
+                        backgroundColor: 'rgba(0, 255, 0, 0.1)',
+                        fill: false,
+                        tension: 0.4
+                    }
+                ]
+            },
+            radarData: {
+                labels: ['Управление проектом', 'Логистика', 'Квалификация персонала', 'Технологии', 'Финансирование', 'Коммуникация', 'Контроль качества'],
+                datasets: [
+                    {
+                        label: 'Текущий проект',
+                        data: [95, 90, 92, 88, 94, 90, 88],
+                        backgroundColor: 'rgba(0, 198, 255, 0.2)',
+                        borderColor: 'rgba(0, 198, 255, 1)',
+                        pointBackgroundColor: 'rgba(0, 198, 255, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(0, 198, 255, 1)'
+                    },
+                    {
+                        label: 'Отраслевой стандарт',
+                        data: [80, 75, 82, 78, 85, 80, 85],
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                        pointBackgroundColor: 'rgba(255, 255, 255, 0.5)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(255, 255, 255, 0.5)'
+                    }
+                ]
+            }
+        }
+    };
+    
+    // Инициализация графиков и данных
+    let efficiencyGauge, efficiencyChart, radarChart;
+    
+    function initCharts(projectKey) {
+        const project = projectsData[projectKey];
+        
+        // Обновление значения эффективности
+        document.getElementById('efficiencyValue').textContent = project.efficiency + '%';
+        
+        // Обновление KPI
+        document.getElementById('costEfficiency').textContent = project.kpis.costEfficiency.value + '%';
+        document.getElementById('costTrend').textContent = project.kpis.costEfficiency.trend;
+        document.getElementById('costTrend').className = `kpi-trend ${project.kpis.costEfficiency.trendClass}`;
+        
+        document.getElementById('timeEfficiency').textContent = project.kpis.timeEfficiency.value + '%';
+        document.getElementById('timeTrend').textContent = project.kpis.timeEfficiency.trend;
+        document.getElementById('timeTrend').className = `kpi-trend ${project.kpis.timeEfficiency.trendClass}`;
+        
+        document.getElementById('qualityScore').textContent = project.kpis.qualityScore.value + '%';
+        document.getElementById('qualityTrend').textContent = project.kpis.qualityScore.trend;
+        document.getElementById('qualityTrend').className = `kpi-trend ${project.kpis.qualityScore.trendClass}`;
+        
+        document.getElementById('resourceUtilization').textContent = project.kpis.resourceUtilization.value + '%';
+        document.getElementById('resourceTrend').textContent = project.kpis.resourceUtilization.trend;
+        document.getElementById('resourceTrend').className = `kpi-trend ${project.kpis.resourceUtilization.trendClass}`;
+        
+        // Обновление таблицы сравнения
+        const comparisonTable = document.getElementById('comparisonTable');
+        comparisonTable.innerHTML = '';
+        
+        project.comparison.forEach(item => {
+            const row = document.createElement('tr');
+            
+            const nameCell = document.createElement('td');
+            nameCell.textContent = item.name;
+            row.appendChild(nameCell);
+            
+            const projectCell = document.createElement('td');
+            projectCell.textContent = item.project + '%';
+            row.appendChild(projectCell);
+            
+            const standardCell = document.createElement('td');
+            standardCell.textContent = item.standard + '%';
+            row.appendChild(standardCell);
+            
+            const deviationCell = document.createElement('td');
+            deviationCell.textContent = item.deviation;
+            deviationCell.className = item.class;
+            row.appendChild(deviationCell);
+            
+            comparisonTable.appendChild(row);
+        });
+        
+        // График эффективности (круговой)
+        const efficiencyCtx = document.getElementById('efficiencyGauge').getContext('2d');
+        
+        if (efficiencyGauge) {
+            efficiencyGauge.destroy();
+        }
+        
+        efficiencyGauge = new Chart(efficiencyCtx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [project.efficiency, 100 - project.efficiency],
+                    backgroundColor: [
+                        project.efficiency > 90 ? '#00ff00' : 
+                        project.efficiency > 80 ? '#00c6ff' : 
+                        project.efficiency > 70 ? '#ffcc00' : '#ff3366',
+                        'rgba(255, 255, 255, 0.1)'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                cutout: '70%',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                },
+                animation: {
+                    animateRotate: true,
+                    animateScale: true,
+                    duration: 2000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+        
+        // График динамики эффективности
+        const efficiencyChartCtx = document.getElementById('efficiencyChart').getContext('2d');
+        
+        if (efficiencyChart) {
+            efficiencyChart.destroy();
+        }
+        
+        efficiencyChart = new Chart(efficiencyChartCtx, {
+            type: 'line',
+            data: project.efficiencyData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#fff',
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#00c6ff',
+                        bodyColor: '#fff',
+                        borderColor: '#00c6ff',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#aaa'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#aaa',
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        },
+                        min: 70,
+                        max: 100
+                    }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+        
+        // Радарный график
+        const radarCtx = document.getElementById('radarChart').getContext('2d');
+        
+        if (radarChart) {
+            radarChart.destroy();
+        }
+        
+        radarChart = new Chart(radarCtx, {
+            type: 'radar',
+            data: project.radarData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#fff',
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#00c6ff',
+                        bodyColor: '#fff',
+                        borderColor: '#00c6ff',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    r: {
+                        angleLines: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        pointLabels: {
+                            color: '#fff',
+                            font: {
+                                size: 12
+                            }
+                        },
+                        ticks: {
+                            backdropColor: 'transparent',
+                            color: '#aaa',
+                            z: 1
+                        },
+                        min: 0,
+                        max: 100
+                    }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+    }
+    
+    // Инициализация с первым проектом
+    initCharts('reconstruction');
+    
+    // Переключение между проектами
+    document.querySelectorAll('.project-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.project-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            const projectKey = this.getAttribute('data-project');
+            initCharts(projectKey);
+        });
+    });
+});
+</script>
+{% endblock %}

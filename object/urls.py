@@ -6,6 +6,7 @@ from . import views_totals
 from . import export_views
 from . import api_views
 from . import api
+from . import debug_views
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -15,8 +16,11 @@ urlpatterns = [
     path('objects/<int:object_id>/edit/', views_edit.edit_object, name='edit_object'),
     path('objects/<int:object_id>/delete/', views.delete_object, name='delete_object'),
     path('objects/create/', views.create_object, name='create_object'),
-    path('objects/<int:object_id>/employees/', api_views.get_employees_by_object_position, name='get_employees_by_position'),
+    path('objects/<int:object_id>/employees/', api_views.get_employees_simple, name='get_employees_by_position'),
     path('objects/<int:object_id>/debug-employees/', views.debug_employees, name='debug_employees'),
+    path('objects/<int:object_id>/debug-cell/', api_views.debug_cell_info, name='debug_cell_info'),
+    path('objects/<int:object_id>/debug-salary/', debug_views.debug_salary_data, name='debug_salary_data'),
+    path('objects/<int:object_id>/get-salary-data/', api_views.get_salary_data, name='get_salary_data'),
     path('update-expense/', views.update_expense, name='update_expense'),
     path('update-resource-data/', views.update_resource_data, name='update_resource_data'),
     path('add-category/', views.add_category, name='add_category'),

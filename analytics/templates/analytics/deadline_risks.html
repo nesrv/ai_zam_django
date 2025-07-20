@@ -1,0 +1,969 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Прогнозирование рисков срыва сроков - AI-ZAM{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .risk-container {
+        position: relative;
+        padding-bottom: 2rem;
+    }
+    
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .page-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(90deg, #ff3366, #ff9933);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
+    }
+    
+    .page-subtitle {
+        font-size: 1.1rem;
+        color: #aaa;
+        margin-bottom: 1.5rem;
+    }
+    
+    .back-btn {
+        background: linear-gradient(45deg, #ff3366, #ff9933);
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 25px;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 2rem;
+        font-weight: bold;
+        transition: all 0.3s;
+        position: relative;
+        z-index: 10;
+        box-shadow: 0 5px 15px rgba(255, 51, 102, 0.3);
+    }
+    
+    .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(255, 51, 102, 0.5);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .project-tabs {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .project-tab {
+        padding: 0.8rem 1.5rem;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 51, 102, 0.3);
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin: 0 0.5rem;
+        border-radius: 5px;
+    }
+    
+    .project-tab.active {
+        background: linear-gradient(45deg, rgba(255, 51, 102, 0.2), rgba(255, 153, 51, 0.2));
+        border-color: #ff3366;
+        box-shadow: 0 0 15px rgba(255, 51, 102, 0.3);
+    }
+    
+    .project-tab:hover {
+        background: rgba(255, 51, 102, 0.1);
+    }
+    
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 10;
+    }
+    
+    @media (max-width: 992px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .dashboard-card {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 1px solid rgba(255, 51, 102, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    
+    .card-header {
+        color: #ff3366;
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .card-icon {
+        margin-right: 0.5rem;
+        font-size: 1.5rem;
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+    
+    .risk-meter-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 300px;
+        position: relative;
+    }
+    
+    .risk-meter {
+        width: 200px;
+        height: 200px;
+        position: relative;
+    }
+    
+    .risk-value {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #fff;
+    }
+    
+    .risk-label {
+        margin-top: 1rem;
+        font-size: 1.2rem;
+        color: #aaa;
+    }
+    
+    .risk-factors {
+        margin-top: 1.5rem;
+        width: 100%;
+    }
+    
+    .risk-factor {
+        margin-bottom: 1rem;
+    }
+    
+    .risk-factor-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.3rem;
+    }
+    
+    .risk-factor-name {
+        color: #fff;
+    }
+    
+    .risk-factor-value {
+        color: #ff3366;
+        font-weight: bold;
+    }
+    
+    .risk-factor-bar {
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    
+    .risk-factor-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 1s ease-in-out;
+    }
+    
+    .risk-low {
+        background: linear-gradient(90deg, #00ff00, #99ff00);
+    }
+    
+    .risk-medium {
+        background: linear-gradient(90deg, #ffff00, #ffa500);
+    }
+    
+    .risk-high {
+        background: linear-gradient(90deg, #ffa500, #ff3366);
+    }
+    
+    .risk-critical {
+        background: linear-gradient(90deg, #ff3366, #ff0000);
+    }
+    
+    .timeline {
+        position: relative;
+        margin: 2rem 0;
+        padding-left: 2rem;
+    }
+    
+    .timeline-line {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(255, 51, 102, 0.5);
+    }
+    
+    .timeline-item {
+        position: relative;
+        padding-bottom: 2rem;
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    
+    .timeline-dot {
+        position: absolute;
+        left: -2.5rem;
+        top: 0;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        background: #ff3366;
+        border: 2px solid #000;
+    }
+    
+    .timeline-date {
+        font-size: 0.9rem;
+        color: #ff3366;
+        margin-bottom: 0.3rem;
+    }
+    
+    .timeline-title {
+        font-size: 1.1rem;
+        color: #fff;
+        margin-bottom: 0.3rem;
+    }
+    
+    .timeline-desc {
+        font-size: 0.9rem;
+        color: #aaa;
+    }
+    
+    .particles-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+    
+    .ml-insights {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+        border: 1px solid rgba(255, 51, 102, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        position: relative;
+        z-index: 10;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    
+    .ml-insights-title {
+        color: #ff3366;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    
+    .insight-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0.8rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        border-left: 4px solid #ff3366;
+    }
+    
+    .insight-icon {
+        margin-right: 1rem;
+        font-size: 1.5rem;
+        color: #ff3366;
+    }
+    
+    .insight-text {
+        font-size: 1rem;
+        color: #fff;
+    }
+    
+    .tech-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .tech-badge {
+        background: linear-gradient(45deg, #ff3366, #ff9933);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        box-shadow: 0 3px 10px rgba(255, 51, 102, 0.3);
+        transition: all 0.3s;
+    }
+    
+    .tech-badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 51, 102, 0.5);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="particles-js" class="particles-bg"></div>
+
+<div class="risk-container">
+    <a href="{% url 'analytics:home' %}" class="back-btn">← Назад к аналитике</a>
+    
+    <div class="page-header">
+        <h1 class="page-title">Прогнозирование рисков срыва сроков</h1>
+        <p class="page-subtitle">Модели глубокого обучения для предсказания временных задержек в строительных процессах</p>
+    </div>
+    
+    <div class="tech-badges">
+        <div class="tech-badge">Deep Learning</div>
+        <div class="tech-badge">LSTM</div>
+        <div class="tech-badge">Time Series</div>
+        <div class="tech-badge">PyTorch</div>
+        <div class="tech-badge">Predictive Analytics</div>
+    </div>
+    
+    <div class="project-tabs">
+        <div class="project-tab active" data-project="reconstruction">Реконструкция объекта</div>
+        <div class="project-tab" data-project="demolition">Снос спортивного комплекса</div>
+    </div>
+    
+    <div class="dashboard-grid">
+        <div class="dashboard-card" id="card1">
+            <div class="card-header">
+                <div class="card-icon">⚠️</div>
+                Общий риск срыва сроков
+            </div>
+            <div class="risk-meter-container">
+                <div class="risk-meter">
+                    <canvas id="riskGauge"></canvas>
+                    <div class="risk-value" id="riskValue">68%</div>
+                </div>
+                <div class="risk-label">Вероятность срыва сроков</div>
+            </div>
+        </div>
+        
+        <div class="dashboard-card" id="card2">
+            <div class="card-header">
+                <div class="card-icon">📊</div>
+                Факторы риска
+            </div>
+            <div class="risk-factors">
+                <div class="risk-factor">
+                    <div class="risk-factor-label">
+                        <span class="risk-factor-name">Нехватка материалов</span>
+                        <span class="risk-factor-value" id="factor1">75%</span>
+                    </div>
+                    <div class="risk-factor-bar">
+                        <div class="risk-factor-fill risk-high" id="factor1-bar" style="width: 75%"></div>
+                    </div>
+                </div>
+                
+                <div class="risk-factor">
+                    <div class="risk-factor-label">
+                        <span class="risk-factor-name">Погодные условия</span>
+                        <span class="risk-factor-value" id="factor2">45%</span>
+                    </div>
+                    <div class="risk-factor-bar">
+                        <div class="risk-factor-fill risk-medium" id="factor2-bar" style="width: 45%"></div>
+                    </div>
+                </div>
+                
+                <div class="risk-factor">
+                    <div class="risk-factor-label">
+                        <span class="risk-factor-name">Производительность бригад</span>
+                        <span class="risk-factor-value" id="factor3">30%</span>
+                    </div>
+                    <div class="risk-factor-bar">
+                        <div class="risk-factor-fill risk-low" id="factor3-bar" style="width: 30%"></div>
+                    </div>
+                </div>
+                
+                <div class="risk-factor">
+                    <div class="risk-factor-label">
+                        <span class="risk-factor-name">Технические проблемы</span>
+                        <span class="risk-factor-value" id="factor4">85%</span>
+                    </div>
+                    <div class="risk-factor-bar">
+                        <div class="risk-factor-fill risk-critical" id="factor4-bar" style="width: 85%"></div>
+                    </div>
+                </div>
+                
+                <div class="risk-factor">
+                    <div class="risk-factor-label">
+                        <span class="risk-factor-name">Согласования и разрешения</span>
+                        <span class="risk-factor-value" id="factor5">60%</span>
+                    </div>
+                    <div class="risk-factor-bar">
+                        <div class="risk-factor-fill risk-medium" id="factor5-bar" style="width: 60%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-card" id="card3">
+            <div class="card-header">
+                <div class="card-icon">📈</div>
+                Прогноз задержек по этапам
+            </div>
+            <div class="chart-container">
+                <canvas id="delayChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="dashboard-card" id="card4">
+            <div class="card-header">
+                <div class="card-icon">🔮</div>
+                Прогноз вероятности срыва сроков
+            </div>
+            <div class="chart-container">
+                <canvas id="predictionChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="dashboard-card" id="card5">
+        <div class="card-header">
+            <div class="card-icon">⏱️</div>
+            Критические точки проекта
+        </div>
+        <div class="timeline">
+            <div class="timeline-line"></div>
+            
+            <div class="timeline-item" id="timeline1">
+                <div class="timeline-dot"></div>
+                <div class="timeline-date">15 июня 2025</div>
+                <div class="timeline-title">Завершение монтажа конструкций</div>
+                <div class="timeline-desc">Высокий риск задержки из-за нехватки материалов. Рекомендуется заранее заказать дополнительные материалы.</div>
+            </div>
+            
+            <div class="timeline-item" id="timeline2">
+                <div class="timeline-dot"></div>
+                <div class="timeline-date">10 июля 2025</div>
+                <div class="timeline-title">Установка инженерных систем</div>
+                <div class="timeline-desc">Средний риск задержки из-за технических проблем. Рекомендуется привлечь дополнительных специалистов.</div>
+            </div>
+            
+            <div class="timeline-item" id="timeline3">
+                <div class="timeline-dot"></div>
+                <div class="timeline-date">5 августа 2025</div>
+                <div class="timeline-title">Отделочные работы</div>
+                <div class="timeline-desc">Низкий риск задержки. Рекомендуется поддерживать текущий темп работ.</div>
+            </div>
+            
+            <div class="timeline-item" id="timeline4">
+                <div class="timeline-dot"></div>
+                <div class="timeline-date">20 августа 2025</div>
+                <div class="timeline-title">Сдача объекта</div>
+                <div class="timeline-desc">Критический риск задержки из-за согласований. Рекомендуется начать процесс согласований заранее.</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="ml-insights" id="mlInsights">
+        <h2 class="ml-insights-title">Инсайты модели глубокого обучения</h2>
+        
+        <div class="insight-item">
+            <div class="insight-icon">🔍</div>
+            <div class="insight-text">Модель LSTM обнаружила паттерн задержек в поставках материалов, который может привести к срыву сроков на 2-3 недели</div>
+        </div>
+        
+        <div class="insight-item">
+            <div class="insight-icon">⚠️</div>
+            <div class="insight-text">Прогнозируется критическая задержка на этапе монтажа конструкций из-за технических проблем с оборудованием</div>
+        </div>
+        
+        <div class="insight-item">
+            <div class="insight-icon">💡</div>
+            <div class="insight-text">Рекомендуется увеличить количество рабочих на этапе установки инженерных систем для компенсации возможных задержек</div>
+        </div>
+        
+        <div class="insight-item">
+            <div class="insight-icon">📈</div>
+            <div class="insight-text">Анализ временных рядов показывает, что вероятность срыва сроков снизится на 35% при оптимизации логистики материалов</div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация частиц
+    particlesJS('particles-js', {
+        particles: {
+            number: {
+                value: 50,
+                density: {
+                    enable: true,
+                    value_area: 800
+                }
+            },
+            color: {
+                value: '#ff3366'
+            },
+            shape: {
+                type: 'circle',
+                stroke: {
+                    width: 0,
+                    color: '#000000'
+                }
+            },
+            opacity: {
+                value: 0.5,
+                random: true,
+                anim: {
+                    enable: true,
+                    speed: 1,
+                    opacity_min: 0.1,
+                    sync: false
+                }
+            },
+            size: {
+                value: 3,
+                random: true,
+                anim: {
+                    enable: true,
+                    speed: 2,
+                    size_min: 0.1,
+                    sync: false
+                }
+            },
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: '#ff3366',
+                opacity: 0.2,
+                width: 1
+            },
+            move: {
+                enable: true,
+                speed: 1,
+                direction: 'none',
+                random: true,
+                straight: false,
+                out_mode: 'out',
+                bounce: false
+            }
+        },
+        interactivity: {
+            detect_on: 'canvas',
+            events: {
+                onhover: {
+                    enable: true,
+                    mode: 'grab'
+                },
+                onclick: {
+                    enable: true,
+                    mode: 'push'
+                },
+                resize: true
+            },
+            modes: {
+                grab: {
+                    distance: 140,
+                    line_linked: {
+                        opacity: 0.5
+                    }
+                },
+                push: {
+                    particles_nb: 4
+                }
+            }
+        },
+        retina_detect: true
+    });
+    
+    // Анимация появления элементов
+    gsap.to('.dashboard-card', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: 'power3.out'
+    });
+    
+    gsap.to('#mlInsights', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        delay: 0.8,
+        ease: 'power3.out'
+    });
+    
+    gsap.to('.timeline-item', {
+        opacity: 1,
+        x: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        delay: 1,
+        ease: 'power3.out'
+    });
+    
+    // Данные для проектов
+    const projectsData = {
+        reconstruction: {
+            riskValue: 68,
+            factors: [
+                {name: "Нехватка материалов", value: 75, class: "risk-high"},
+                {name: "Погодные условия", value: 45, class: "risk-medium"},
+                {name: "Производительность бригад", value: 30, class: "risk-low"},
+                {name: "Технические проблемы", value: 85, class: "risk-critical"},
+                {name: "Согласования и разрешения", value: 60, class: "risk-medium"}
+            ],
+            delayData: {
+                labels: ['Подготовка', 'Фундамент', 'Каркас', 'Перекрытия', 'Инженерные системы', 'Отделка', 'Сдача'],
+                datasets: [
+                    {
+                        label: 'Прогноз задержки (дни)',
+                        data: [1, 3, 7, 5, 12, 4, 8],
+                        backgroundColor: 'rgba(255, 51, 102, 0.5)',
+                        borderColor: 'rgba(255, 51, 102, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            predictionData: {
+                labels: ['Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь'],
+                datasets: [
+                    {
+                        label: 'Вероятность срыва сроков',
+                        data: [35, 48, 68, 75, 62, 55],
+                        borderColor: '#ff3366',
+                        backgroundColor: 'rgba(255, 51, 102, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Критический порог',
+                        data: [50, 50, 50, 50, 50, 50],
+                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                        borderDash: [5, 5],
+                        fill: false,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            timeline: [
+                {date: "15 июня 2025", title: "Завершение монтажа конструкций", desc: "Высокий риск задержки из-за нехватки материалов. Рекомендуется заранее заказать дополнительные материалы."},
+                {date: "10 июля 2025", title: "Установка инженерных систем", desc: "Средний риск задержки из-за технических проблем. Рекомендуется привлечь дополнительных специалистов."},
+                {date: "5 августа 2025", title: "Отделочные работы", desc: "Низкий риск задержки. Рекомендуется поддерживать текущий темп работ."},
+                {date: "20 августа 2025", title: "Сдача объекта", desc: "Критический риск задержки из-за согласований. Рекомендуется начать процесс согласований заранее."}
+            ]
+        },
+        demolition: {
+            riskValue: 42,
+            factors: [
+                {name: "Нехватка материалов", value: 25, class: "risk-low"},
+                {name: "Погодные условия", value: 65, class: "risk-medium"},
+                {name: "Производительность бригад", value: 40, class: "risk-medium"},
+                {name: "Технические проблемы", value: 55, class: "risk-medium"},
+                {name: "Согласования и разрешения", value: 30, class: "risk-low"}
+            ],
+            delayData: {
+                labels: ['Подготовка', 'Отключение', 'Демонтаж', 'Снос', 'Вывоз', 'Планировка', 'Сдача'],
+                datasets: [
+                    {
+                        label: 'Прогноз задержки (дни)',
+                        data: [0, 2, 4, 3, 8, 2, 3],
+                        backgroundColor: 'rgba(255, 51, 102, 0.5)',
+                        borderColor: 'rgba(255, 51, 102, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            predictionData: {
+                labels: ['Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь'],
+                datasets: [
+                    {
+                        label: 'Вероятность срыва сроков',
+                        data: [20, 35, 42, 38, 30, 25],
+                        borderColor: '#ff3366',
+                        backgroundColor: 'rgba(255, 51, 102, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Критический порог',
+                        data: [50, 50, 50, 50, 50, 50],
+                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                        borderDash: [5, 5],
+                        fill: false,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            timeline: [
+                {date: "5 июня 2025", title: "Отключение коммуникаций", desc: "Низкий риск задержки. Все согласования получены заранее."},
+                {date: "20 июня 2025", title: "Демонтаж оборудования", desc: "Средний риск задержки из-за погодных условий. Рекомендуется подготовить защитные конструкции."},
+                {date: "15 июля 2025", title: "Снос основных конструкций", desc: "Средний риск задержки из-за технических проблем. Рекомендуется проверить оборудование."},
+                {date: "10 августа 2025", title: "Вывоз строительного мусора", desc: "Высокий риск задержки из-за логистических проблем. Рекомендуется заранее договориться о дополнительном транспорте."}
+            ]
+        }
+    };
+    
+    // Инициализация графиков и данных
+    let riskGauge, delayChart, predictionChart;
+    
+    function initCharts(projectKey) {
+        const project = projectsData[projectKey];
+        
+        // Обновление значения риска
+        document.getElementById('riskValue').textContent = project.riskValue + '%';
+        
+        // Обновление факторов риска
+        project.factors.forEach((factor, index) => {
+            const factorId = `factor${index + 1}`;
+            const barId = `factor${index + 1}-bar`;
+            
+            if (document.getElementById(factorId)) {
+                document.getElementById(factorId).textContent = factor.value + '%';
+                const bar = document.getElementById(barId);
+                bar.style.width = factor.value + '%';
+                bar.className = `risk-factor-fill ${factor.class}`;
+            }
+        });
+        
+        // График риска (круговой)
+        const riskCtx = document.getElementById('riskGauge').getContext('2d');
+        
+        if (riskGauge) {
+            riskGauge.destroy();
+        }
+        
+        riskGauge = new Chart(riskCtx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [project.riskValue, 100 - project.riskValue],
+                    backgroundColor: [
+                        project.riskValue > 75 ? '#ff0000' : 
+                        project.riskValue > 50 ? '#ff3366' : 
+                        project.riskValue > 25 ? '#ff9933' : '#00ff00',
+                        'rgba(255, 255, 255, 0.1)'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                cutout: '70%',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                },
+                animation: {
+                    animateRotate: true,
+                    animateScale: true,
+                    duration: 2000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+        
+        // График задержек
+        const delayCtx = document.getElementById('delayChart').getContext('2d');
+        
+        if (delayChart) {
+            delayChart.destroy();
+        }
+        
+        delayChart = new Chart(delayCtx, {
+            type: 'bar',
+            data: project.delayData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#fff',
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#ff3366',
+                        bodyColor: '#fff',
+                        borderColor: '#ff3366',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#aaa'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#aaa',
+                            callback: function(value) {
+                                return value + ' дн.';
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+        
+        // График прогноза
+        const predictionCtx = document.getElementById('predictionChart').getContext('2d');
+        
+        if (predictionChart) {
+            predictionChart.destroy();
+        }
+        
+        predictionChart = new Chart(predictionCtx, {
+            type: 'line',
+            data: project.predictionData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#fff',
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#ff3366',
+                        bodyColor: '#fff',
+                        borderColor: '#ff3366',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#aaa'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#aaa',
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        },
+                        min: 0,
+                        max: 100
+                    }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+        
+        // Обновление временной шкалы
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        project.timeline.forEach((item, index) => {
+            if (timelineItems[index]) {
+                const dateEl = timelineItems[index].querySelector('.timeline-date');
+                const titleEl = timelineItems[index].querySelector('.timeline-title');
+                const descEl = timelineItems[index].querySelector('.timeline-desc');
+                
+                if (dateEl) dateEl.textContent = item.date;
+                if (titleEl) titleEl.textContent = item.title;
+                if (descEl) descEl.textContent = item.desc;
+            }
+        });
+    }
+    
+    // Инициализация с первым проектом
+    initCharts('reconstruction');
+    
+    // Переключение между проектами
+    document.querySelectorAll('.project-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.project-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            const projectKey = this.getAttribute('data-project');
+            initCharts(projectKey);
+        });
+    });
+});
+</script>
+{% endblock %}

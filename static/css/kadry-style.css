@@ -1,0 +1,293 @@
+/* Стили для страницы кадров */
+.kadry-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.kadry-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.kadry-title {
+    font-size: 3rem;
+    font-weight: bold;
+    background: linear-gradient(90deg, #00d4ff, #ff00aa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.kadry-title::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, #00d4ff, #ff00aa);
+    border-radius: 2px;
+}
+
+.kadry-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.8;
+    max-width: 800px;
+    margin: 1.5rem auto;
+}
+
+.kadry-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.kadry-btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    font-weight: 500;
+    text-decoration: none;
+    color: white;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.kadry-btn-back {
+    background: linear-gradient(45deg, #666, #999);
+}
+
+.kadry-btn-add {
+    background: linear-gradient(45deg, #00cc44, #00aa88);
+}
+
+.kadry-btn-control {
+    background: linear-gradient(45deg, #ff9900, #ff5500);
+}
+
+.kadry-btn-salary {
+    background: linear-gradient(45deg, #0088ff, #0044cc);
+}
+
+.kadry-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    color: white;
+    text-decoration: none;
+}
+
+.kadry-table-container {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+.kadry-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.kadry-table th {
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    padding: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.kadry-table th::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.5), transparent);
+}
+
+.kadry-table td {
+    padding: 1rem;
+    color: white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.kadry-table tr:hover td {
+    background: rgba(0, 212, 255, 0.05);
+}
+
+.kadry-table tr:last-child td {
+    border-bottom: none;
+}
+
+.kadry-table-empty {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 3rem;
+    font-style: italic;
+}
+
+.kadry-link {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.kadry-link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #00d4ff, #ff00aa);
+    transition: width 0.3s ease;
+}
+
+.kadry-link:hover::after {
+    width: 100%;
+}
+
+.kadry-action-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    margin: 0 0.25rem;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.kadry-action-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: white;
+    text-decoration: none;
+}
+
+.kadry-action-btn.documents {
+    background: rgba(0, 150, 255, 0.2);
+    border-color: rgba(0, 150, 255, 0.4);
+}
+
+.kadry-action-btn.salary {
+    background: rgba(255, 215, 0, 0.2);
+    border-color: rgba(255, 215, 0, 0.4);
+}
+
+.kadry-action-btn.details {
+    background: rgba(0, 200, 100, 0.2);
+    border-color: rgba(0, 200, 100, 0.4);
+}
+
+.kadry-status {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.kadry-status.active {
+    background: rgba(0, 200, 100, 0.2);
+    color: #00cc66;
+    border: 1px solid rgba(0, 200, 100, 0.4);
+}
+
+.kadry-status.inactive {
+    background: rgba(200, 0, 0, 0.2);
+    color: #ff6666;
+    border: 1px solid rgba(200, 0, 0, 0.4);
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Адаптивность */
+@media (max-width: 992px) {
+    .kadry-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .kadry-table-container {
+        overflow-x: auto;
+    }
+    
+    .kadry-table {
+        min-width: 800px;
+    }
+}
+
+/* Фоновые элементы */
+.kadry-bg-element {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.1;
+    filter: blur(40px);
+    z-index: -1;
+}
+
+.kadry-bg-1 {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, #00d4ff, transparent 70%);
+    top: 10%;
+    left: 10%;
+}
+
+.kadry-bg-2 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, #ff00aa, transparent 70%);
+    bottom: 10%;
+    right: 10%;
+}
+
+.kadry-bg-3 {
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, #ffcc00, transparent 70%);
+    top: 40%;
+    right: 30%;
+}

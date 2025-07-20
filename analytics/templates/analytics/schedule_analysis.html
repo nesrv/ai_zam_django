@@ -1,0 +1,803 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Анализ соблюдения графика и объемов работ - AI-ZAM{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .schedule-container {
+        position: relative;
+        padding-bottom: 2rem;
+    }
+    
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .page-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(90deg, #00d4ff, #7b2ff7);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+    }
+    
+    .page-subtitle {
+        font-size: 1.1rem;
+        color: #aaa;
+        margin-bottom: 1.5rem;
+    }
+    
+    .back-btn {
+        background: linear-gradient(45deg, #00d4ff, #7b2ff7);
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 25px;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 2rem;
+        font-weight: bold;
+        transition: all 0.3s;
+        position: relative;
+        z-index: 10;
+        box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+    }
+    
+    .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 212, 255, 0.5);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .project-tabs {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .project-tab {
+        padding: 0.8rem 1.5rem;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin: 0 0.5rem;
+        border-radius: 5px;
+    }
+    
+    .project-tab.active {
+        background: linear-gradient(45deg, rgba(0, 212, 255, 0.2), rgba(123, 47, 247, 0.2));
+        border-color: #00d4ff;
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+    }
+    
+    .project-tab:hover {
+        background: rgba(0, 212, 255, 0.1);
+    }
+    
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 10;
+    }
+    
+    @media (max-width: 992px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .dashboard-card {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    
+    .card-header {
+        color: #00d4ff;
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .card-icon {
+        margin-right: 0.5rem;
+        font-size: 1.5rem;
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .stat-card {
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        padding: 1rem;
+        text-align: center;
+        border: 1px solid rgba(0, 212, 255, 0.2);
+    }
+    
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #fff;
+        margin-bottom: 0.3rem;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        color: #aaa;
+    }
+    
+    .progress-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+    }
+    
+    .progress-table th,
+    .progress-table td {
+        padding: 0.8rem;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .progress-table th {
+        color: #00d4ff;
+        font-weight: normal;
+    }
+    
+    .progress-bar {
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 0.3rem;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 1s ease-in-out;
+    }
+    
+    .progress-fill.good {
+        background: linear-gradient(90deg, #00ff00, #99ff00);
+    }
+    
+    .progress-fill.warning {
+        background: linear-gradient(90deg, #ffff00, #ffa500);
+    }
+    
+    .progress-fill.danger {
+        background: linear-gradient(90deg, #ffa500, #ff0000);
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 0.3rem 0.6rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+    
+    .status-on-time {
+        background: rgba(0, 255, 0, 0.2);
+        color: #00ff00;
+        border: 1px solid rgba(0, 255, 0, 0.5);
+    }
+    
+    .status-delayed {
+        background: rgba(255, 165, 0, 0.2);
+        color: #ffa500;
+        border: 1px solid rgba(255, 165, 0, 0.5);
+    }
+    
+    .status-critical {
+        background: rgba(255, 0, 0, 0.2);
+        color: #ff0000;
+        border: 1px solid rgba(255, 0, 0, 0.5);
+    }
+    
+    .particles-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+    
+    .ml-insights {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        position: relative;
+        z-index: 10;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    
+    .ml-insights-title {
+        color: #00d4ff;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    
+    .insight-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0.8rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        border-left: 4px solid #00d4ff;
+    }
+    
+    .insight-icon {
+        margin-right: 1rem;
+        font-size: 1.5rem;
+        color: #00d4ff;
+    }
+    
+    .insight-text {
+        font-size: 1rem;
+        color: #fff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="particles-js" class="particles-bg"></div>
+
+<div class="schedule-container">
+    <a href="{% url 'analytics:home' %}" class="back-btn">← Назад к аналитике</a>
+    
+    <div class="page-header">
+        <h1 class="page-title">Анализ соблюдения графика и объемов работ</h1>
+        <p class="page-subtitle">Интеллектуальный анализ выполнения проектных планов с применением статистических моделей</p>
+    </div>
+    
+    <div class="project-tabs">
+        <div class="project-tab active" data-project="reconstruction">Реконструкция объекта</div>
+        <div class="project-tab" data-project="demolition">Снос спортивного комплекса</div>
+    </div>
+    
+    <div class="dashboard-grid">
+        <div class="dashboard-card" id="card1">
+            <div class="card-header">
+                <div class="card-icon">📊</div>
+                Выполнение графика работ
+            </div>
+            <div class="chart-container">
+                <canvas id="scheduleChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="dashboard-card" id="card2">
+            <div class="card-header">
+                <div class="card-icon">📈</div>
+                Объемы выполненных работ
+            </div>
+            <div class="chart-container">
+                <canvas id="volumeChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="dashboard-card" id="card3">
+            <div class="card-header">
+                <div class="card-icon">⏱️</div>
+                Ключевые показатели
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="completionRate">78%</div>
+                    <div class="stat-label">Выполнение плана</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="timeDeviation">+4.2%</div>
+                    <div class="stat-label">Отклонение по срокам</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="efficiency">92%</div>
+                    <div class="stat-label">Эффективность</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="riskScore">18%</div>
+                    <div class="stat-label">Риск срыва сроков</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-card" id="card4">
+            <div class="card-header">
+                <div class="card-icon">📋</div>
+                Прогресс по этапам работ
+            </div>
+            <table class="progress-table">
+                <thead>
+                    <tr>
+                        <th>Этап работ</th>
+                        <th>Прогресс</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
+                <tbody id="stagesTable">
+                    <!-- Данные будут добавлены через JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="ml-insights" id="mlInsights">
+        <h2 class="ml-insights-title">Инсайты статистических моделей</h2>
+        
+        <div class="insight-item">
+            <div class="insight-icon">🔍</div>
+            <div class="insight-text">Выявлено отставание от графика на этапе "Монтаж конструкций" на 3.5 дня</div>
+        </div>
+        
+        <div class="insight-item">
+            <div class="insight-icon">⚠️</div>
+            <div class="insight-text">Прогнозируется задержка сдачи проекта на 1 неделю при текущей динамике работ</div>
+        </div>
+        
+        <div class="insight-item">
+            <div class="insight-icon">💡</div>
+            <div class="insight-text">Рекомендуется увеличить ресурсы на этапе "Отделочные работы" для компенсации отставания</div>
+        </div>
+        
+        <div class="insight-item">
+            <div class="insight-icon">📈</div>
+            <div class="insight-text">Обнаружена высокая эффективность бригады на этапе "Демонтаж перегородок" (+15% от нормы)</div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация частиц
+    particlesJS('particles-js', {
+        particles: {
+            number: {
+                value: 50,
+                density: {
+                    enable: true,
+                    value_area: 800
+                }
+            },
+            color: {
+                value: '#00d4ff'
+            },
+            shape: {
+                type: 'circle',
+                stroke: {
+                    width: 0,
+                    color: '#000000'
+                }
+            },
+            opacity: {
+                value: 0.5,
+                random: true,
+                anim: {
+                    enable: true,
+                    speed: 1,
+                    opacity_min: 0.1,
+                    sync: false
+                }
+            },
+            size: {
+                value: 3,
+                random: true,
+                anim: {
+                    enable: true,
+                    speed: 2,
+                    size_min: 0.1,
+                    sync: false
+                }
+            },
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: '#00d4ff',
+                opacity: 0.2,
+                width: 1
+            },
+            move: {
+                enable: true,
+                speed: 1,
+                direction: 'none',
+                random: true,
+                straight: false,
+                out_mode: 'out',
+                bounce: false
+            }
+        },
+        interactivity: {
+            detect_on: 'canvas',
+            events: {
+                onhover: {
+                    enable: true,
+                    mode: 'grab'
+                },
+                onclick: {
+                    enable: true,
+                    mode: 'push'
+                },
+                resize: true
+            },
+            modes: {
+                grab: {
+                    distance: 140,
+                    line_linked: {
+                        opacity: 0.5
+                    }
+                },
+                push: {
+                    particles_nb: 4
+                }
+            }
+        },
+        retina_detect: true
+    });
+    
+    // Анимация появления элементов
+    gsap.to('.dashboard-card', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: 'power3.out'
+    });
+    
+    gsap.to('#mlInsights', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        delay: 0.8,
+        ease: 'power3.out'
+    });
+    
+    // Данные для проектов
+    const projectsData = {
+        reconstruction: {
+            name: "Реконструкция объекта",
+            stats: {
+                completionRate: "78%",
+                timeDeviation: "+4.2%",
+                efficiency: "92%",
+                riskScore: "18%"
+            },
+            scheduleData: {
+                labels: ['Янв', 'Фев', 'Март', 'Апр', 'Май', 'Июнь', 'Июль'],
+                planned: [10, 25, 40, 55, 70, 85, 100],
+                actual: [12, 28, 38, 52, 65, 78, null]
+            },
+            volumeData: {
+                labels: ['Демонтаж', 'Фундамент', 'Стены', 'Перекрытия', 'Кровля', 'Отделка', 'Коммуникации'],
+                planned: [100, 100, 100, 100, 100, 100, 100],
+                actual: [100, 100, 95, 85, 70, 45, 30]
+            },
+            stages: [
+                {name: "Демонтаж", progress: 100, status: "on-time"},
+                {name: "Фундамент", progress: 100, status: "on-time"},
+                {name: "Возведение стен", progress: 95, status: "on-time"},
+                {name: "Монтаж перекрытий", progress: 85, status: "delayed"},
+                {name: "Кровельные работы", progress: 70, status: "delayed"},
+                {name: "Отделочные работы", progress: 45, status: "on-time"},
+                {name: "Инженерные коммуникации", progress: 30, status: "on-time"}
+            ]
+        },
+        demolition: {
+            name: "Снос спортивного комплекса",
+            stats: {
+                completionRate: "65%",
+                timeDeviation: "-2.8%",
+                efficiency: "88%",
+                riskScore: "12%"
+            },
+            scheduleData: {
+                labels: ['Янв', 'Фев', 'Март', 'Апр', 'Май', 'Июнь', 'Июль'],
+                planned: [15, 30, 45, 60, 75, 90, 100],
+                actual: [18, 32, 48, 58, 65, null, null]
+            },
+            volumeData: {
+                labels: ['Подготовка', 'Отключение', 'Демонтаж оборуд.', 'Снос стен', 'Снос перекрытий', 'Вывоз мусора', 'Планировка'],
+                planned: [100, 100, 100, 100, 100, 100, 100],
+                actual: [100, 100, 100, 85, 60, 40, 20]
+            },
+            stages: [
+                {name: "Подготовка площадки", progress: 100, status: "on-time"},
+                {name: "Отключение коммуникаций", progress: 100, status: "on-time"},
+                {name: "Демонтаж оборудования", progress: 100, status: "on-time"},
+                {name: "Снос стен", progress: 85, status: "on-time"},
+                {name: "Снос перекрытий", progress: 60, status: "on-time"},
+                {name: "Вывоз строительного мусора", progress: 40, status: "delayed"},
+                {name: "Планировка территории", progress: 20, status: "on-time"}
+            ]
+        }
+    };
+    
+    // Инициализация графиков
+    let scheduleChart, volumeChart;
+    
+    function initCharts(projectKey) {
+        const project = projectsData[projectKey];
+        
+        // Обновление статистики
+        document.getElementById('completionRate').textContent = project.stats.completionRate;
+        document.getElementById('timeDeviation').textContent = project.stats.timeDeviation;
+        document.getElementById('efficiency').textContent = project.stats.efficiency;
+        document.getElementById('riskScore').textContent = project.stats.riskScore;
+        
+        // График выполнения
+        const scheduleCtx = document.getElementById('scheduleChart').getContext('2d');
+        
+        if (scheduleChart) {
+            scheduleChart.destroy();
+        }
+        
+        scheduleChart = new Chart(scheduleCtx, {
+            type: 'line',
+            data: {
+                labels: project.scheduleData.labels,
+                datasets: [
+                    {
+                        label: 'План',
+                        data: project.scheduleData.planned,
+                        borderColor: '#7b2ff7',
+                        backgroundColor: 'rgba(123, 47, 247, 0.1)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        pointBackgroundColor: '#7b2ff7',
+                        pointBorderColor: '#fff',
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'Факт',
+                        data: project.scheduleData.actual,
+                        borderColor: '#00d4ff',
+                        backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        pointBackgroundColor: '#00d4ff',
+                        pointBorderColor: '#fff',
+                        pointRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#fff',
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#00d4ff',
+                        bodyColor: '#fff',
+                        borderColor: '#00d4ff',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#aaa'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#aaa',
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        },
+                        min: 0,
+                        max: 100
+                    }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+        
+        // График объемов работ
+        const volumeCtx = document.getElementById('volumeChart').getContext('2d');
+        
+        if (volumeChart) {
+            volumeChart.destroy();
+        }
+        
+        volumeChart = new Chart(volumeCtx, {
+            type: 'bar',
+            data: {
+                labels: project.volumeData.labels,
+                datasets: [
+                    {
+                        label: 'План',
+                        data: project.volumeData.planned,
+                        backgroundColor: 'rgba(123, 47, 247, 0.5)',
+                        borderColor: 'rgba(123, 47, 247, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Факт',
+                        data: project.volumeData.actual,
+                        backgroundColor: 'rgba(0, 212, 255, 0.5)',
+                        borderColor: 'rgba(0, 212, 255, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#fff',
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#00d4ff',
+                        bodyColor: '#fff',
+                        borderColor: '#00d4ff',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#aaa'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#aaa',
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        },
+                        min: 0,
+                        max: 100
+                    }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+        
+        // Обновление таблицы этапов
+        const stagesTable = document.getElementById('stagesTable');
+        stagesTable.innerHTML = '';
+        
+        project.stages.forEach(stage => {
+            const row = document.createElement('tr');
+            
+            const nameCell = document.createElement('td');
+            nameCell.textContent = stage.name;
+            row.appendChild(nameCell);
+            
+            const progressCell = document.createElement('td');
+            const progressBar = document.createElement('div');
+            progressBar.className = 'progress-bar';
+            
+            const progressFill = document.createElement('div');
+            progressFill.className = `progress-fill ${stage.progress > 90 ? 'good' : stage.progress > 70 ? 'warning' : 'danger'}`;
+            progressFill.style.width = `${stage.progress}%`;
+            
+            progressBar.appendChild(progressFill);
+            
+            const progressText = document.createElement('div');
+            progressText.textContent = `${stage.progress}%`;
+            progressText.style.marginBottom = '5px';
+            
+            progressCell.appendChild(progressText);
+            progressCell.appendChild(progressBar);
+            row.appendChild(progressCell);
+            
+            const statusCell = document.createElement('td');
+            const statusBadge = document.createElement('span');
+            statusBadge.className = `status-badge status-${stage.status}`;
+            statusBadge.textContent = stage.status === 'on-time' ? 'По графику' : 
+                                     stage.status === 'delayed' ? 'Задержка' : 'Критично';
+            statusCell.appendChild(statusBadge);
+            row.appendChild(statusCell);
+            
+            stagesTable.appendChild(row);
+        });
+    }
+    
+    // Инициализация с первым проектом
+    initCharts('reconstruction');
+    
+    // Переключение между проектами
+    document.querySelectorAll('.project-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.project-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            const projectKey = this.getAttribute('data-project');
+            initCharts(projectKey);
+        });
+    });
+});
+</script>
+{% endblock %}

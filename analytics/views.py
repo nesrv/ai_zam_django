@@ -4,9 +4,74 @@ import numpy as np
 from django.db import connection
 import json
 from datetime import datetime, timedelta
+import random
 
 def analytics_home(request):
     return render(request, 'analytics/analytics_home.html')
+
+def financial_monitoring(request):
+    # Создаем фейковые данные для визуализации
+    projects = [
+        {"id": 1, "name": "Реконструкция дома", "budget": 5000000, "status": "В процессе"},
+        {"id": 2, "name": "Снос спортивного комплекса", "budget": 3500000, "status": "В процессе"},
+        {"id": 3, "name": "Строительство офисного центра", "budget": 12000000, "status": "Планирование"},
+        {"id": 4, "name": "Реновация парковой зоны", "budget": 8000000, "status": "Завершен"},
+    ]
+    
+    # Генерируем данные о финансовых потоках
+    months = ['Янв', 'Фев', 'Март', 'Апр', 'Май', 'Июнь', 'Июль', 'Авг', 'Сент', 'Окт', 'Нояб', 'Дек']
+    financial_data = {}
+    
+    for project in projects:
+        financial_data[project["id"]] = {
+            "expenses": [random.randint(100000, 500000) for _ in range(12)],
+            "income": [random.randint(150000, 600000) for _ in range(12)],
+            "predictions": [random.randint(100000, 600000) for _ in range(6)],
+            "risk_factors": {
+                "budget_overrun": random.randint(10, 90),
+                "schedule_delay": random.randint(10, 90),
+                "quality_issues": random.randint(10, 90),
+                "resource_shortage": random.randint(10, 90),
+            },
+            "resource_allocation": {
+                "materials": random.randint(30, 50),
+                "labor": random.randint(20, 40),
+                "equipment": random.randint(10, 30),
+                "management": random.randint(5, 15),
+                "other": random.randint(5, 15)
+            },
+            "efficiency_metrics": {
+                "roi": round(random.uniform(0.8, 1.5), 2),
+                "cost_variance": round(random.uniform(-0.2, 0.3), 2),
+                "schedule_variance": round(random.uniform(-0.15, 0.25), 2),
+                "resource_utilization": round(random.uniform(0.6, 0.95), 2),
+            },
+            "anomalies": [
+                {"date": "2025-03-15", "type": "Перерасход", "amount": random.randint(50000, 200000), "category": "Материалы"} if random.random() > 0.5 else None,
+                {"date": "2025-05-22", "type": "Задержка платежа", "amount": random.randint(100000, 300000), "category": "Оплата"} if random.random() > 0.5 else None,
+                {"date": "2025-07-10", "type": "Непредвиденные расходы", "amount": random.randint(30000, 150000), "category": "Оборудование"} if random.random() > 0.5 else None,
+            ],
+            "ml_insights": [
+                "Высокая вероятность перерасхода бюджета в следующем квартале" if random.random() > 0.7 else None,
+                "Рекомендуется оптимизировать закупку материалов" if random.random() > 0.7 else None,
+                "Прогнозируется задержка в графике на 2 недели" if random.random() > 0.7 else None,
+                "Обнаружены аномалии в расходовании средств на оборудование" if random.random() > 0.7 else None,
+            ]
+        }
+    
+    # Удаляем None из списков
+    for project_id in financial_data:
+        financial_data[project_id]["anomalies"] = [a for a in financial_data[project_id]["anomalies"] if a is not None]
+        financial_data[project_id]["ml_insights"] = [i for i in financial_data[project_id]["ml_insights"] if i is not None]
+    
+    context = {
+        "projects": projects,
+        "months": months,
+        "financial_data": financial_data,
+        "page_title": "Автоматизированная система мониторинга финансовых потоков"
+    }
+    
+    return render(request, 'analytics/financial_monitoring.html', context)
 
 def daily_expenses_analytics(request):
     # Получаем данные из таблицы svodnaya_raskhod_dokhod_po_dnyam
@@ -57,49 +122,48 @@ def daily_expenses_analytics(request):
     return render(request, 'analytics/daily_expenses.html', context)
 
 def risk_prediction(request):
-    return render(request, 'analytics/ml_demo.html', {
-        'title': 'Прогнозирование рисков перерасхода ресурсов',
-        'description': 'Предиктивная аналитика на базе временных рядов',
-        'technologies': ['scikit-learn', 'XGBoost', 'Random Forest'],
-        'demo_code': 'from sklearn.ensemble import RandomForestRegressor\nimport pandas as pd\n\n# Загрузка данных\ndf = pd.read_sql("SELECT * FROM expenses", connection)\n\n# Обучение модели\nmodel = RandomForestRegressor()\nmodel.fit(X_train, y_train)\n\n# Прогноз рисков\nrisk_score = model.predict(new_data)'
-    })
+    # Создаем фейковые данные для визуализации
+    projects = [
+        {"id": "project1", "name": "Реконструкция объекта", "budget": 5000000, "status": "В процессе"},
+        {"id": "project2", "name": "Снос спортивного комплекса", "budget": 8000000, "status": "В процессе"},
+    ]
+    
+    # Генерируем данные о финансовых потоках и рисках
+    months = ['Янв', 'Фев', 'Март', 'Апр', 'Май', 'Июнь', 'Июль', 'Авг', 'Сент']
+    
+    context = {
+        "projects": projects,
+        "months": months
+    }
+    
+    return render(request, 'analytics/risk_prediction_new.html', context)
 
 def schedule_analysis(request):
-    return render(request, 'analytics/ml_demo.html', {
-        'title': 'Анализ соблюдения графика и объемов работ',
-        'description': 'Интеллектуальный анализ выполнения проектных планов',
-        'technologies': ['pandas', 'statsmodels', 'matplotlib'],
-        'demo_code': 'import pandas as pd\nimport statsmodels.api as sm\n\n# Анализ временных рядов\nts_data = pd.read_sql("SELECT date, progress FROM schedule", conn)\n\n# Статистический анализ\nmodel = sm.tsa.ARIMA(ts_data, order=(1,1,1))\nresult = model.fit()\n\n# Прогноз выполнения\nforecast = result.forecast(steps=30)'
-    })
+    return render(request, 'analytics/schedule_analysis.html')
 
 def task_recommendations(request):
-    return render(request, 'analytics/ml_demo.html', {
-        'title': 'Рекомендации по постановке задач бригадам',
-        'description': 'ИИ-система оптимизации распределения задач',
-        'technologies': ['TensorFlow', 'Keras', 'Neural Networks'],
-        'demo_code': 'import tensorflow as tf\nfrom tensorflow import keras\n\n# Создание нейронной сети\nmodel = keras.Sequential([\n    keras.layers.Dense(64, activation="relu"),\n    keras.layers.Dense(32, activation="relu"),\n    keras.layers.Dense(1, activation="sigmoid")\n])\n\n# Обучение модели\nmodel.compile(optimizer="adam", loss="mse")\nmodel.fit(X_train, y_train, epochs=100)'
-    })
+    return render(request, 'analytics/task_recommendations.html')
 
 def deadline_risks(request):
-    return render(request, 'analytics/ml_demo.html', {
-        'title': 'Прогнозирование рисков срыва сроков',
-        'description': 'Модели глубокого обучения для предсказания задержек',
-        'technologies': ['PyTorch', 'LSTM', 'Time Series'],
-        'demo_code': 'import torch\nimport torch.nn as nn\n\nclass LSTMModel(nn.Module):\n    def __init__(self, input_size, hidden_size):\n        super().__init__()\n        self.lstm = nn.LSTM(input_size, hidden_size)\n        self.linear = nn.Linear(hidden_size, 1)\n    \n    def forward(self, x):\n        out, _ = self.lstm(x)\n        return self.linear(out[-1])\n\nmodel = LSTMModel(10, 50)'
-    })
+    return render(request, 'analytics/deadline_risks.html')
 
 def efficiency_analysis(request):
-    return render(request, 'analytics/ml_demo.html', {
-        'title': 'Анализ общей эффективности по окончанию объекта',
-        'description': 'Комплексная оценка KPI проекта с многофакторным анализом',
-        'technologies': ['pandas', 'numpy', 'seaborn'],
-        'demo_code': 'import pandas as pd\nimport numpy as np\nimport seaborn as sns\n\n# Загрузка данных эффективности\ndf = pd.read_sql("SELECT * FROM project_kpi", conn)\n\n# Корреляционный анализ\ncorr_matrix = df.corr()\n\n# Расчет индекса эффективности\nefficiency_score = np.mean([\n    df["cost_efficiency"],\n    df["time_efficiency"],\n    df["quality_score"]\n])'
-    })
+    return render(request, 'analytics/efficiency_analysis.html')
 
 def legal_risks(request):
-    return render(request, 'analytics/ml_demo.html', {
-        'title': 'Анализ юридических рисков в Договорах',
-        'description': 'NLP-анализ договорной документации',
-        'technologies': ['NLTK', 'spaCy', 'Transformers'],
-        'demo_code': 'import nltk\nimport spacy\nfrom transformers import pipeline\n\n# Загрузка модели NLP\nnlp = spacy.load("ru_core_news_sm")\nclassifier = pipeline("text-classification")\n\n# Анализ договора\ndoc = nlp(contract_text)\nrisks = []\n\nfor sent in doc.sents:\n    risk_score = classifier(sent.text)\n    if risk_score[0]["label"] == "HIGH_RISK":\n        risks.append(sent.text)'
-    })
+    # Создаем простой контекст для шаблона
+    context = {
+        "contract": {
+            "id": "contract1",
+            "name": "Договор подряда №2025-07-001",
+            "risk_index": 68
+        },
+        "metrics": {
+            "risk_index": 68,
+            "risks_count": 8,
+            "high_risks": 1,
+            "accuracy": 92
+        }
+    }
+    
+    return render(request, 'analytics/legal_risks.html', context)

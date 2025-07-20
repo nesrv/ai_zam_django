@@ -1,0 +1,67 @@
+/* Simple fix for chart container height issues */
+.risk-dashboard {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.risk-chart-container {
+    grid-column: span 8;
+}
+
+.risk-metrics {
+    grid-column: span 4;
+}
+
+.resource-breakdown {
+    grid-column: span 6;
+}
+
+.timeline-analysis {
+    grid-column: span 6;
+}
+
+.risk-factors {
+    grid-column: span 6;
+}
+
+.recommendations {
+    grid-column: span 6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+    
+    .risk-chart-container {
+        grid-column: span 6;
+    }
+    
+    .risk-metrics {
+        grid-column: span 6;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .risk-chart-container,
+    .risk-metrics,
+    .resource-breakdown,
+    .timeline-analysis,
+    .risk-factors,
+    .recommendations {
+        grid-column: span 1;
+    }
+}

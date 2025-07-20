@@ -1,0 +1,1082 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Мониторинг финансовых потоков - AI-ZAM{% endblock %}
+
+{% block extra_head %}
+<!-- Chart.js для визуализации данных -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- ApexCharts для продвинутых графиков -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<!-- GSAP для анимаций -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<!-- Particles.js для фоновых эффектов -->
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<!-- Tailwind CSS для стилей -->
+<script src="https://cdn.tailwindcss.com"></script>
+{% endblock %}
+
+{% block extra_styles %}
+<style>
+    /* Основные стили */
+    .dashboard-container {
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 15px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+    }
+    
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #00d4ff;
+        font-size: 2.5rem;
+        font-weight: bold;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .dashboard-card {
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(20, 20, 40, 0.7));
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .dashboard-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s;
+    }
+    
+    .dashboard-card:hover::before {
+        left: 100%;
+    }
+    
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        border-color: rgba(0, 212, 255, 0.6);
+    }
+    
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: #fff;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 0.5rem;
+    }
+    
+    /* Размеры карточек */
+    .card-full {
+        grid-column: span 12;
+    }
+    
+    .card-half {
+        grid-column: span 6;
+    }
+    
+    .card-third {
+        grid-column: span 4;
+    }
+    
+    .card-quarter {
+        grid-column: span 3;
+    }
+    
+    /* Стили для графиков */
+    .chart-container {
+        width: 100%;
+        height: 300px;
+        position: relative;
+    }
+    
+    /* Стили для таблиц */
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        color: #fff;
+    }
+    
+    .data-table th {
+        background: rgba(0, 212, 255, 0.2);
+        padding: 0.75rem;
+        text-align: left;
+        font-weight: bold;
+    }
+    
+    .data-table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .data-table tr:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    /* Стили для метрик */
+    .metrics-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .metric-box {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        padding: 1rem;
+        flex: 1;
+        min-width: 120px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .metric-value {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin: 0.5rem 0;
+        background: linear-gradient(45deg, #00d4ff, #ff00ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .metric-label {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+    
+    /* Стили для индикаторов риска */
+    .risk-indicator {
+        height: 8px;
+        background: linear-gradient(90deg, #00d4ff, #ff00ff);
+        border-radius: 4px;
+        margin-top: 0.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .risk-level {
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    
+    /* Стили для списка инсайтов */
+    .insights-list {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0;
+    }
+    
+    .insights-list li {
+        padding: 0.75rem;
+        border-left: 3px solid #00d4ff;
+        background: rgba(0, 212, 255, 0.1);
+        margin-bottom: 0.75rem;
+        border-radius: 0 4px 4px 0;
+    }
+    
+    .insights-list li:nth-child(2n) {
+        border-left-color: #ff00ff;
+        background: rgba(255, 0, 255, 0.1);
+    }
+    
+    /* Стили для переключателя проектов */
+    .project-selector {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .project-button {
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .project-button:hover {
+        background: rgba(0, 212, 255, 0.2);
+        border-color: #00d4ff;
+    }
+    
+    .project-button.active {
+        background: linear-gradient(45deg, rgba(0, 212, 255, 0.5), rgba(255, 0, 255, 0.5));
+        border-color: white;
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+    }
+    
+    /* Анимированный фон */
+    #particles-js {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 0;
+    }
+    
+    /* Адаптивность */
+    @media (max-width: 1200px) {
+        .card-third {
+            grid-column: span 6;
+        }
+        
+        .card-quarter {
+            grid-column: span 6;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .card-half, .card-third, .card-quarter {
+            grid-column: span 12;
+        }
+        
+        .dashboard-header {
+            font-size: 1.8rem;
+        }
+    }
+    
+    /* Анимации для элементов */
+    .animate-fade-in {
+        opacity: 0;
+    }
+    
+    .animate-slide-up {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    
+    .animate-scale {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    
+    /* Стили для аномалий */
+    .anomaly-item {
+        background: rgba(255, 50, 50, 0.1);
+        border-left: 3px solid #ff3232;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+        border-radius: 0 4px 4px 0;
+    }
+    
+    .anomaly-date {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .anomaly-type {
+        font-weight: bold;
+        color: #ff5050;
+    }
+    
+    .anomaly-amount {
+        font-weight: bold;
+        color: white;
+    }
+    
+    /* Стили для прогресс-бара */
+    .progress-container {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        margin: 1rem 0;
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        height: 10px;
+        background: linear-gradient(90deg, #00d4ff, #ff00ff);
+        border-radius: 10px;
+        transition: width 1s ease;
+    }
+    
+    /* Стили для пульсирующих точек */
+    .pulse-dot {
+        width: 10px;
+        height: 10px;
+        background: #00d4ff;
+        border-radius: 50%;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+    
+    .pulse-dot::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 212, 255, 0.5);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(3);
+            opacity: 0;
+        }
+    }
+    
+    /* Стили для бейджей статуса */
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        margin-left: 0.5rem;
+    }
+    
+    .status-active {
+        background: rgba(0, 255, 0, 0.2);
+        color: #00ff00;
+    }
+    
+    .status-planning {
+        background: rgba(255, 165, 0, 0.2);
+        color: #ffa500;
+    }
+    
+    .status-completed {
+        background: rgba(0, 212, 255, 0.2);
+        color: #00d4ff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="particles-js"></div>
+
+<div class="dashboard-container">
+    <h1 class="dashboard-header animate-fade-in">{{ page_title }}</h1>
+    
+    <div class="project-selector animate-fade-in">
+        {% for project in projects %}
+        <button class="project-button {% if forloop.first %}active{% endif %}" data-project-id="{{ project.id }}">
+            {{ project.name }}
+            {% if project.status == "В процессе" %}
+            <span class="status-badge status-active">В процессе</span>
+            {% elif project.status == "Планирование" %}
+            <span class="status-badge status-planning">Планирование</span>
+            {% elif project.status == "Завершен" %}
+            <span class="status-badge status-completed">Завершен</span>
+            {% endif %}
+        </button>
+        {% endfor %}
+    </div>
+    
+    <div class="dashboard-grid">
+        <!-- Основной график финансовых потоков -->
+        <div class="dashboard-card card-full animate-slide-up" data-delay="0.1">
+            <div class="pulse-dot"></div>
+            <h3 class="card-title">Финансовые потоки по месяцам</h3>
+            <div class="chart-container">
+                <div id="financialFlowChart"></div>
+            </div>
+        </div>
+        
+        <!-- Карточка с метриками -->
+        <div class="dashboard-card card-third animate-slide-up" data-delay="0.2">
+            <h3 class="card-title">Ключевые метрики</h3>
+            <div class="metrics-container">
+                <div class="metric-box">
+                    <div class="metric-label">ROI</div>
+                    <div class="metric-value" id="roiMetric">1.2</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Отклонение бюджета</div>
+                    <div class="metric-value" id="budgetVarianceMetric">+5%</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Отклонение графика</div>
+                    <div class="metric-value" id="scheduleVarianceMetric">-2%</div>
+                </div>
+            </div>
+            <div class="metrics-container">
+                <div class="metric-box">
+                    <div class="metric-label">Использование ресурсов</div>
+                    <div class="metric-value" id="resourceUtilizationMetric">85%</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Прогноз завершения</div>
+                    <div class="metric-value" id="forecastMetric">+3 нед</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Карточка с распределением ресурсов -->
+        <div class="dashboard-card card-third animate-slide-up" data-delay="0.3">
+            <h3 class="card-title">Распределение ресурсов</h3>
+            <div class="chart-container">
+                <div id="resourceAllocationChart"></div>
+            </div>
+        </div>
+        
+        <!-- Карточка с факторами риска -->
+        <div class="dashboard-card card-third animate-slide-up" data-delay="0.4">
+            <h3 class="card-title">Факторы риска</h3>
+            <div>
+                <div class="metric-label">Перерасход бюджета</div>
+                <div class="risk-indicator">
+                    <div class="risk-level" id="budgetRisk" style="width: 30%"></div>
+                </div>
+            </div>
+            <div style="margin-top: 1rem;">
+                <div class="metric-label">Задержка графика</div>
+                <div class="risk-indicator">
+                    <div class="risk-level" id="scheduleRisk" style="width: 45%"></div>
+                </div>
+            </div>
+            <div style="margin-top: 1rem;">
+                <div class="metric-label">Проблемы с качеством</div>
+                <div class="risk-indicator">
+                    <div class="risk-level" id="qualityRisk" style="width: 20%"></div>
+                </div>
+            </div>
+            <div style="margin-top: 1rem;">
+                <div class="metric-label">Нехватка ресурсов</div>
+                <div class="risk-indicator">
+                    <div class="risk-level" id="resourceRisk" style="width: 60%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Карточка с прогнозами ML -->
+        <div class="dashboard-card card-half animate-slide-up" data-delay="0.5">
+            <h3 class="card-title">Прогнозы на основе ML</h3>
+            <div class="chart-container">
+                <div id="mlPredictionChart"></div>
+            </div>
+        </div>
+        
+        <!-- Карточка с аномалиями -->
+        <div class="dashboard-card card-half animate-slide-up" data-delay="0.6">
+            <h3 class="card-title">Обнаруженные аномалии</h3>
+            <div id="anomaliesContainer">
+                <div class="anomaly-item">
+                    <div class="anomaly-date">15.03.2025</div>
+                    <div class="anomaly-type">Перерасход</div>
+                    <div class="anomaly-amount">120 000 ₽ (Материалы)</div>
+                </div>
+                <div class="anomaly-item">
+                    <div class="anomaly-date">22.05.2025</div>
+                    <div class="anomaly-type">Задержка платежа</div>
+                    <div class="anomaly-amount">250 000 ₽ (Оплата)</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Карточка с инсайтами ML -->
+        <div class="dashboard-card card-full animate-slide-up" data-delay="0.7">
+            <h3 class="card-title">Инсайты машинного обучения</h3>
+            <ul class="insights-list" id="insightsList">
+                <li>Высокая вероятность перерасхода бюджета в следующем квартале</li>
+                <li>Рекомендуется оптимизировать закупку материалов</li>
+                <li>Прогнозируется задержка в графике на 2 недели</li>
+                <li>Обнаружены аномалии в расходовании средств на оборудование</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Данные из Django
+    const projects = {{ projects|safe }};
+    const months = {{ months|safe }};
+    const financialData = {{ financial_data|safe }};
+    
+    // Текущий выбранный проект (по умолчанию первый)
+    let currentProjectId = projects[0].id;
+    
+    // Инициализация частиц для фона
+    document.addEventListener('DOMContentLoaded', function() {
+        // Инициализация Particles.js
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#00d4ff" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#00d4ff",
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: "none",
+                    random: true,
+                    out_mode: "out"
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "grab" },
+                    onclick: { enable: true, mode: "push" }
+                },
+                modes: {
+                    grab: { distance: 140, line_linked: { opacity: 1 } },
+                    push: { particles_nb: 4 }
+                }
+            }
+        });
+        
+        // Анимация элементов при загрузке
+        gsap.to('.animate-fade-in', { opacity: 1, duration: 1, stagger: 0.1 });
+        gsap.to('.animate-slide-up', { y: 0, opacity: 1, duration: 1, stagger: 0.1 });
+        gsap.to('.animate-scale', { scale: 1, opacity: 1, duration: 1, stagger: 0.1 });
+        
+        // Инициализация графиков и данных
+        updateDashboard(currentProjectId);
+        
+        // Обработчики событий для кнопок проектов
+        document.querySelectorAll('.project-button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Убираем активный класс со всех кнопок
+                document.querySelectorAll('.project-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Добавляем активный класс на нажатую кнопку
+                this.classList.add('active');
+                
+                // Обновляем текущий проект
+                currentProjectId = parseInt(this.dataset.projectId);
+                
+                // Анимация обновления данных
+                gsap.to('.dashboard-card', { 
+                    opacity: 0, 
+                    y: 20, 
+                    duration: 0.3,
+                    stagger: 0.05,
+                    onComplete: function() {
+                        // Обновляем данные
+                        updateDashboard(currentProjectId);
+                        
+                        // Анимация появления обновленных данных
+                        gsap.to('.dashboard-card', { 
+                            opacity: 1, 
+                            y: 0, 
+                            duration: 0.5,
+                            stagger: 0.05
+                        });
+                    }
+                });
+            });
+        });
+    });
+    
+    // Функция обновления всех данных на дашборде
+    function updateDashboard(projectId) {
+        const data = financialData[projectId];
+        const project = projects.find(p => p.id === projectId);
+        
+        // Обновляем основной график финансовых потоков
+        updateFinancialFlowChart(data, project);
+        
+        // Обновляем график распределения ресурсов
+        updateResourceAllocationChart(data, project);
+        
+        // Обновляем график прогнозов ML
+        updateMLPredictionChart(data, project);
+        
+        // Обновляем метрики
+        updateMetrics(data, project);
+        
+        // Обновляем индикаторы рисков
+        updateRiskIndicators(data, project);
+        
+        // Обновляем список аномалий
+        updateAnomalies(data, project);
+        
+        // Обновляем инсайты ML
+        updateInsights(data, project);
+    }
+    
+    // Функция обновления основного графика финансовых потоков
+    function updateFinancialFlowChart(data, project) {
+        const options = {
+            series: [{
+                name: 'Расходы',
+                data: data.expenses
+            }, {
+                name: 'Доходы',
+                data: data.income
+            }],
+            chart: {
+                height: 300,
+                type: 'area',
+                fontFamily: 'Segoe UI, sans-serif',
+                toolbar: {
+                    show: false
+                },
+                animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    speed: 800
+                },
+                background: 'transparent'
+            },
+            colors: ['#ff00ff', '#00d4ff'],
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.7,
+                    opacityTo: 0.2,
+                    stops: [0, 90, 100]
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth',
+                width: 2
+            },
+            grid: {
+                borderColor: 'rgba(255, 255, 255, 0.1)',
+                row: {
+                    colors: ['transparent'],
+                    opacity: 0.5
+                }
+            },
+            markers: {
+                size: 4,
+                colors: ['#ff00ff', '#00d4ff'],
+                strokeColors: '#000',
+                strokeWidth: 2,
+                hover: {
+                    size: 7
+                }
+            },
+            xaxis: {
+                categories: months,
+                labels: {
+                    style: {
+                        colors: 'rgba(255, 255, 255, 0.7)'
+                    }
+                },
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                }
+            },
+            yaxis: {
+                labels: {
+                    style: {
+                        colors: 'rgba(255, 255, 255, 0.7)'
+                    },
+                    formatter: function(val) {
+                        return val.toLocaleString() + ' ₽';
+                    }
+                }
+            },
+            tooltip: {
+                theme: 'dark',
+                x: {
+                    format: 'dd/MM/yy'
+                }
+            },
+            legend: {
+                position: 'top',
+                horizontalAlign: 'right',
+                labels: {
+                    colors: 'rgba(255, 255, 255, 0.7)'
+                }
+            }
+        };
+
+        // Очищаем предыдущий график
+        document.getElementById('financialFlowChart').innerHTML = '';
+        
+        // Создаем новый график
+        const chart = new ApexCharts(document.getElementById('financialFlowChart'), options);
+        chart.render();
+    }
+    
+    // Функция обновления графика распределения ресурсов
+    function updateResourceAllocationChart(data, project) {
+        const options = {
+            series: Object.values(data.resource_allocation),
+            chart: {
+                height: 250,
+                type: 'donut',
+                fontFamily: 'Segoe UI, sans-serif',
+                animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    speed: 800,
+                    animateGradually: {
+                        enabled: true,
+                        delay: 150
+                    },
+                    dynamicAnimation: {
+                        enabled: true,
+                        speed: 350
+                    }
+                },
+                background: 'transparent'
+            },
+            colors: ['#00d4ff', '#ff00ff', '#ffff00', '#00ff00', '#ff5500'],
+            labels: Object.keys(data.resource_allocation).map(key => 
+                key.charAt(0).toUpperCase() + key.slice(1)
+            ),
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '60%',
+                        background: 'transparent',
+                        labels: {
+                            show: true,
+                            name: {
+                                show: true,
+                                fontSize: '14px',
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            },
+                            value: {
+                                show: true,
+                                fontSize: '16px',
+                                color: '#fff',
+                                formatter: function(val) {
+                                    return val + '%';
+                                }
+                            },
+                            total: {
+                                show: true,
+                                label: 'Всего',
+                                color: '#fff',
+                                formatter: function(w) {
+                                    return '100%';
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            legend: {
+                position: 'bottom',
+                labels: {
+                    colors: 'rgba(255, 255, 255, 0.7)'
+                }
+            },
+            tooltip: {
+                theme: 'dark',
+                y: {
+                    formatter: function(val) {
+                        return val + '%';
+                    }
+                }
+            }
+        };
+
+        // Очищаем предыдущий график
+        document.getElementById('resourceAllocationChart').innerHTML = '';
+        
+        // Создаем новый график
+        const chart = new ApexCharts(document.getElementById('resourceAllocationChart'), options);
+        chart.render();
+    }
+    
+    // Функция обновления графика прогнозов ML
+    function updateMLPredictionChart(data, project) {
+        // Объединяем фактические данные и прогнозы
+        const actualExpenses = data.expenses.slice(-6);
+        const actualIncome = data.income.slice(-6);
+        const predictedExpenses = data.predictions.slice(0, 6);
+        
+        // Создаем метки для оси X
+        const lastMonthIndex = months.length - 6;
+        const xAxisLabels = [
+            ...months.slice(lastMonthIndex),
+            ...months.slice(0, 6).map(month => month + ' (прогноз)')
+        ];
+        
+        const options = {
+            series: [{
+                name: 'Фактические расходы',
+                data: actualExpenses
+            }, {
+                name: 'Фактические доходы',
+                data: actualIncome
+            }, {
+                name: 'Прогноз',
+                data: [...Array(6).fill(null), ...predictedExpenses]
+            }],
+            chart: {
+                height: 250,
+                type: 'line',
+                fontFamily: 'Segoe UI, sans-serif',
+                toolbar: {
+                    show: false
+                },
+                animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    speed: 800
+                },
+                background: 'transparent'
+            },
+            colors: ['#ff00ff', '#00d4ff', '#ffff00'],
+            stroke: {
+                width: [3, 3, 4],
+                curve: 'smooth',
+                dashArray: [0, 0, 5]
+            },
+            grid: {
+                borderColor: 'rgba(255, 255, 255, 0.1)',
+                row: {
+                    colors: ['transparent'],
+                    opacity: 0.5
+                }
+            },
+            markers: {
+                size: [4, 4, 6],
+                colors: ['#ff00ff', '#00d4ff', '#ffff00'],
+                strokeColors: '#000',
+                strokeWidth: 2,
+                hover: {
+                    size: 7
+                }
+            },
+            xaxis: {
+                categories: xAxisLabels,
+                labels: {
+                    style: {
+                        colors: 'rgba(255, 255, 255, 0.7)'
+                    },
+                    rotate: -45,
+                    rotateAlways: false
+                },
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                }
+            },
+            yaxis: {
+                labels: {
+                    style: {
+                        colors: 'rgba(255, 255, 255, 0.7)'
+                    },
+                    formatter: function(val) {
+                        return val.toLocaleString() + ' ₽';
+                    }
+                }
+            },
+            tooltip: {
+                theme: 'dark',
+                shared: true,
+                intersect: false
+            },
+            legend: {
+                position: 'top',
+                horizontalAlign: 'right',
+                labels: {
+                    colors: 'rgba(255, 255, 255, 0.7)'
+                }
+            },
+            annotations: {
+                xaxis: [{
+                    x: xAxisLabels[5],
+                    borderColor: '#fff',
+                    label: {
+                        borderColor: 'rgba(255, 255, 255, 0.2)',
+                        style: {
+                            color: '#fff',
+                            background: 'rgba(0, 0, 0, 0.7)'
+                        },
+                        text: 'Начало прогноза'
+                    }
+                }]
+            }
+        };
+
+        // Очищаем предыдущий график
+        document.getElementById('mlPredictionChart').innerHTML = '';
+        
+        // Создаем новый график
+        const chart = new ApexCharts(document.getElementById('mlPredictionChart'), options);
+        chart.render();
+    }
+    
+    // Функция обновления метрик
+    function updateMetrics(data, project) {
+        const metrics = data.efficiency_metrics;
+        
+        // Обновляем значения метрик
+        document.getElementById('roiMetric').textContent = metrics.roi.toFixed(2);
+        
+        const budgetVariance = metrics.cost_variance * 100;
+        document.getElementById('budgetVarianceMetric').textContent = 
+            (budgetVariance > 0 ? '+' : '') + budgetVariance.toFixed(1) + '%';
+        document.getElementById('budgetVarianceMetric').style.color = 
+            budgetVariance > 0 ? '#ff5050' : '#50ff50';
+        
+        const scheduleVariance = metrics.schedule_variance * 100;
+        document.getElementById('scheduleVarianceMetric').textContent = 
+            (scheduleVariance > 0 ? '+' : '') + scheduleVariance.toFixed(1) + '%';
+        document.getElementById('scheduleVarianceMetric').style.color = 
+            scheduleVariance > 0 ? '#ff5050' : '#50ff50';
+        
+        const resourceUtilization = metrics.resource_utilization * 100;
+        document.getElementById('resourceUtilizationMetric').textContent = 
+            resourceUtilization.toFixed(0) + '%';
+        
+        // Генерируем случайный прогноз завершения
+        const forecastOptions = ['-2 нед', '+1 нед', '+3 нед', 'По графику', '+2 мес'];
+        document.getElementById('forecastMetric').textContent = 
+            forecastOptions[Math.floor(Math.random() * forecastOptions.length)];
+    }
+    
+    // Функция обновления индикаторов рисков
+    function updateRiskIndicators(data, project) {
+        const risks = data.risk_factors;
+        
+        // Обновляем индикаторы рисков
+        document.getElementById('budgetRisk').style.width = (100 - risks.budget_overrun) + '%';
+        document.getElementById('scheduleRisk').style.width = (100 - risks.schedule_delay) + '%';
+        document.getElementById('qualityRisk').style.width = (100 - risks.quality_issues) + '%';
+        document.getElementById('resourceRisk').style.width = (100 - risks.resource_shortage) + '%';
+        
+        // Добавляем цветовую индикацию в зависимости от уровня риска
+        const riskElements = ['budgetRisk', 'scheduleRisk', 'qualityRisk', 'resourceRisk'];
+        const riskValues = [
+            risks.budget_overrun, 
+            risks.schedule_delay, 
+            risks.quality_issues, 
+            risks.resource_shortage
+        ];
+        
+        riskElements.forEach((elementId, index) => {
+            const element = document.getElementById(elementId);
+            const riskValue = riskValues[index];
+            
+            if (riskValue < 30) {
+                element.style.background = 'rgba(0, 255, 0, 0.3)';
+            } else if (riskValue < 70) {
+                element.style.background = 'rgba(255, 165, 0, 0.3)';
+            } else {
+                element.style.background = 'rgba(255, 0, 0, 0.3)';
+            }
+        });
+    }
+    
+    // Функция обновления списка аномалий
+    function updateAnomalies(data, project) {
+        const anomaliesContainer = document.getElementById('anomaliesContainer');
+        anomaliesContainer.innerHTML = '';
+        
+        if (data.anomalies.length === 0) {
+            anomaliesContainer.innerHTML = '<p>Аномалий не обнаружено</p>';
+            return;
+        }
+        
+        data.anomalies.forEach(anomaly => {
+            if (!anomaly) return;
+            
+            const anomalyItem = document.createElement('div');
+            anomalyItem.className = 'anomaly-item';
+            
+            const dateObj = new Date(anomaly.date);
+            const formattedDate = `${dateObj.getDate().toString().padStart(2, '0')}.${(dateObj.getMonth() + 1).toString().padStart(2, '0')}.${dateObj.getFullYear()}`;
+            
+            anomalyItem.innerHTML = `
+                <div class="anomaly-date">${formattedDate}</div>
+                <div class="anomaly-type">${anomaly.type}</div>
+                <div class="anomaly-amount">${anomaly.amount.toLocaleString()} ₽ (${anomaly.category})</div>
+            `;
+            
+            anomaliesContainer.appendChild(anomalyItem);
+        });
+        
+        // Анимация появления элементов
+        gsap.from('.anomaly-item', {
+            opacity: 0,
+            y: 20,
+            stagger: 0.1,
+            duration: 0.5,
+            delay: 0.2
+        });
+    }
+    
+    // Функция обновления инсайтов ML
+    function updateInsights(data, project) {
+        const insightsList = document.getElementById('insightsList');
+        insightsList.innerHTML = '';
+        
+        if (data.ml_insights.length === 0) {
+            insightsList.innerHTML = '<li>Недостаточно данных для анализа</li>';
+            return;
+        }
+        
+        data.ml_insights.forEach(insight => {
+            if (!insight) return;
+            
+            const insightItem = document.createElement('li');
+            insightItem.textContent = insight;
+            insightsList.appendChild(insightItem);
+        });
+        
+        // Анимация появления элементов
+        gsap.from('#insightsList li', {
+            opacity: 0,
+            x: -20,
+            stagger: 0.1,
+            duration: 0.5,
+            delay: 0.2
+        });
+    }
+</script>
+{% endblock %}

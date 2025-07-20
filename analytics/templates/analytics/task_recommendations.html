@@ -1,0 +1,1097 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Рекомендации по постановке задач бригадам - AI-ZAM{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .task-container {
+        position: relative;
+        padding-bottom: 2rem;
+    }
+    
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .page-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(90deg, #9333ea, #4f46e5);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 15px rgba(147, 51, 234, 0.5);
+    }
+    
+    .page-subtitle {
+        font-size: 1.1rem;
+        color: #aaa;
+        margin-bottom: 1.5rem;
+    }
+    
+    .back-btn {
+        background: linear-gradient(45deg, #9333ea, #4f46e5);
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 25px;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 2rem;
+        font-weight: bold;
+        transition: all 0.3s;
+        position: relative;
+        z-index: 10;
+        box-shadow: 0 5px 15px rgba(147, 51, 234, 0.3);
+    }
+    
+    .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(147, 51, 234, 0.5);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .project-tabs {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .project-tab {
+        padding: 0.8rem 1.5rem;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(147, 51, 234, 0.3);
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin: 0 0.5rem;
+        border-radius: 5px;
+    }
+    
+    .project-tab.active {
+        background: linear-gradient(45deg, rgba(147, 51, 234, 0.2), rgba(79, 70, 229, 0.2));
+        border-color: #9333ea;
+        box-shadow: 0 0 15px rgba(147, 51, 234, 0.3);
+    }
+    
+    .project-tab:hover {
+        background: rgba(147, 51, 234, 0.1);
+    }
+    
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 10;
+    }
+    
+    @media (max-width: 992px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .dashboard-card {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 1px solid rgba(147, 51, 234, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    
+    .card-header {
+        color: #9333ea;
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .card-icon {
+        margin-right: 0.5rem;
+        font-size: 1.5rem;
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+    
+    .particles-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+    
+    .tech-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .tech-badge {
+        background: linear-gradient(45deg, #9333ea, #4f46e5);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        box-shadow: 0 3px 10px rgba(147, 51, 234, 0.3);
+        transition: all 0.3s;
+    }
+    
+    .tech-badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(147, 51, 234, 0.5);
+    }
+    
+    .task-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .task-item {
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid #9333ea;
+        transition: all 0.3s;
+    }
+    
+    .task-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(147, 51, 234, 0.3);
+    }
+    
+    .task-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    .task-title {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #fff;
+    }
+    
+    .task-priority {
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+    
+    .priority-high {
+        background: rgba(255, 51, 102, 0.2);
+        color: #ff3366;
+        border: 1px solid rgba(255, 51, 102, 0.5);
+    }
+    
+    .priority-medium {
+        background: rgba(255, 153, 51, 0.2);
+        color: #ff9933;
+        border: 1px solid rgba(255, 153, 51, 0.5);
+    }
+    
+    .priority-low {
+        background: rgba(0, 198, 255, 0.2);
+        color: #00c6ff;
+        border: 1px solid rgba(0, 198, 255, 0.5);
+    }
+    
+    .task-details {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        color: #aaa;
+    }
+    
+    .task-description {
+        font-size: 0.9rem;
+        color: #ddd;
+        margin-bottom: 0.5rem;
+    }
+    
+    .task-resources {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    
+    .resource-tag {
+        background: rgba(147, 51, 234, 0.2);
+        color: #9333ea;
+        padding: 0.2rem 0.5rem;
+        border-radius: 5px;
+        font-size: 0.8rem;
+        border: 1px solid rgba(147, 51, 234, 0.3);
+    }
+    
+    .team-card {
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid rgba(147, 51, 234, 0.3);
+        transition: all 0.3s;
+    }
+    
+    .team-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(147, 51, 234, 0.3);
+    }
+    
+    .team-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    .team-name {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #fff;
+    }
+    
+    .team-status {
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+    
+    .status-available {
+        background: rgba(0, 255, 0, 0.2);
+        color: #00ff00;
+        border: 1px solid rgba(0, 255, 0, 0.5);
+    }
+    
+    .status-busy {
+        background: rgba(255, 153, 51, 0.2);
+        color: #ff9933;
+        border: 1px solid rgba(255, 153, 51, 0.5);
+    }
+    
+    .status-overloaded {
+        background: rgba(255, 51, 102, 0.2);
+        color: #ff3366;
+        border: 1px solid rgba(255, 51, 102, 0.5);
+    }
+    
+    .team-details {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        color: #aaa;
+    }
+    
+    .team-skills {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .skill-tag {
+        background: rgba(79, 70, 229, 0.2);
+        color: #4f46e5;
+        padding: 0.2rem 0.5rem;
+        border-radius: 5px;
+        font-size: 0.8rem;
+        border: 1px solid rgba(79, 70, 229, 0.3);
+    }
+    
+    .ai-insights {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+        border: 1px solid rgba(147, 51, 234, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        position: relative;
+        z-index: 10;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    
+    .ai-insights-title {
+        color: #9333ea;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    
+    .insight-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0.8rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        border-left: 4px solid #9333ea;
+    }
+    
+    .insight-icon {
+        margin-right: 1rem;
+        font-size: 1.5rem;
+        color: #9333ea;
+    }
+    
+    .insight-text {
+        font-size: 1rem;
+        color: #fff;
+    }
+    
+    .optimization-metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .metric-card {
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        padding: 1rem;
+        text-align: center;
+        border: 1px solid rgba(147, 51, 234, 0.3);
+    }
+    
+    .metric-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #9333ea;
+        margin-bottom: 0.5rem;
+    }
+    
+    .metric-label {
+        font-size: 0.9rem;
+        color: #aaa;
+    }
+    
+    .gantt-chart {
+        margin-top: 1rem;
+        position: relative;
+        overflow-x: auto;
+    }
+    
+    .gantt-row {
+        display: flex;
+        margin-bottom: 0.5rem;
+        align-items: center;
+    }
+    
+    .gantt-label {
+        width: 150px;
+        font-size: 0.9rem;
+        color: #fff;
+        padding-right: 1rem;
+    }
+    
+    .gantt-timeline {
+        position: relative;
+        height: 30px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+        flex-grow: 1;
+    }
+    
+    .gantt-bar {
+        position: absolute;
+        height: 100%;
+        border-radius: 5px;
+        top: 0;
+        transition: all 0.5s ease;
+    }
+    
+    .gantt-bar-assigned {
+        background: linear-gradient(90deg, #9333ea, #4f46e5);
+    }
+    
+    .gantt-bar-recommended {
+        background: rgba(147, 51, 234, 0.3);
+        border: 1px dashed #9333ea;
+    }
+    
+    .gantt-timeline-markers {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 0.5rem;
+        padding: 0 0.5rem;
+        color: #aaa;
+        font-size: 0.8rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="particles-js" class="particles-bg"></div>
+
+<div class="task-container">
+    <a href="{% url 'analytics:home' %}" class="back-btn">← Назад к аналитике</a>
+    
+    <div class="page-header">
+        <h1 class="page-title">Рекомендации по постановке задач бригадам</h1>
+        <p class="page-subtitle">ИИ-система оптимизации распределения задач на основе анализа производительности и ресурсов</p>
+    </div>
+    
+    <div class="tech-badges">
+        <div class="tech-badge">Искусственный интеллект</div>
+        <div class="tech-badge">Оптимизация ресурсов</div>
+        <div class="tech-badge">Планирование задач</div>
+        <div class="tech-badge">Анализ производительности</div>
+        <div class="tech-badge">Машинное обучение</div>
+    </div>
+    
+    <div class="project-tabs">
+        <div class="project-tab active" data-project="reconstruction">Реконструкция объекта</div>
+        <div class="project-tab" data-project="demolition">Снос спортивного комплекса</div>
+    </div>
+    
+    <div class="dashboard-grid">
+        <div class="dashboard-card" id="card1">
+            <div class="card-header">
+                <div class="card-icon">📋</div>
+                Рекомендуемые задачи
+            </div>
+            <ul class="task-list" id="taskList">
+                <!-- Задачи будут добавлены через JavaScript -->
+            </ul>
+        </div>
+        
+        <div class="dashboard-card" id="card2">
+            <div class="card-header">
+                <div class="card-icon">👥</div>
+                Доступные бригады
+            </div>
+            <div id="teamList">
+                <!-- Бригады будут добавлены через JavaScript -->
+            </div>
+        </div>
+        
+        <div class="dashboard-card" id="card3">
+            <div class="card-header">
+                <div class="card-icon">📊</div>
+                Распределение нагрузки
+            </div>
+            <div class="chart-container">
+                <canvas id="workloadChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="dashboard-card" id="card4">
+            <div class="card-header">
+                <div class="card-icon">⏱️</div>
+                График выполнения задач
+            </div>
+            <div class="gantt-chart" id="ganttChart">
+                <!-- График Ганта будет добавлен через JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="ai-insights" id="aiInsights">
+        <h2 class="ai-insights-title">Инсайты ИИ-системы оптимизации</h2>
+        
+        <div class="optimization-metrics">
+            <div class="metric-card">
+                <div class="metric-value" id="efficiencyMetric">+24%</div>
+                <div class="metric-label">Повышение эффективности</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="timeMetric">-18%</div>
+                <div class="metric-label">Сокращение времени</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="resourceMetric">+15%</div>
+                <div class="metric-label">Оптимизация ресурсов</div>
+            </div>
+        </div>
+        
+        <div class="insight-item">
+            <div class="insight-icon">💡</div>
+            <div class="insight-text">Рекомендуется перераспределить задачи между бригадами для более равномерной нагрузки и сокращения общего времени выполнения на 18%</div>
+        </div>
+        
+        <div class="insight-item">
+            <div class="insight-icon">⚠️</div>
+            <div class="insight-text">Обнаружен риск перегрузки бригады "Монтажники" на этапе установки перекрытий. Рекомендуется привлечь дополнительных специалистов</div>
+        </div>
+        
+        <div class="insight-item">
+            <div class="insight-icon">📈</div>
+            <div class="insight-text">Анализ производительности показывает, что бригада "Отделочники" работает на 15% эффективнее при выполнении задач в первой половине дня</div>
+        </div>
+        
+        <div class="insight-item">
+            <div class="insight-icon">🔄</div>
+            <div class="insight-text">Предложенное распределение задач учитывает специализацию бригад и их текущую загруженность, что позволяет оптимизировать использование ресурсов</div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация частиц
+    particlesJS('particles-js', {
+        particles: {
+            number: {
+                value: 50,
+                density: {
+                    enable: true,
+                    value_area: 800
+                }
+            },
+            color: {
+                value: '#9333ea'
+            },
+            shape: {
+                type: 'circle',
+                stroke: {
+                    width: 0,
+                    color: '#000000'
+                }
+            },
+            opacity: {
+                value: 0.5,
+                random: true,
+                anim: {
+                    enable: true,
+                    speed: 1,
+                    opacity_min: 0.1,
+                    sync: false
+                }
+            },
+            size: {
+                value: 3,
+                random: true,
+                anim: {
+                    enable: true,
+                    speed: 2,
+                    size_min: 0.1,
+                    sync: false
+                }
+            },
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: '#9333ea',
+                opacity: 0.2,
+                width: 1
+            },
+            move: {
+                enable: true,
+                speed: 1,
+                direction: 'none',
+                random: true,
+                straight: false,
+                out_mode: 'out',
+                bounce: false
+            }
+        },
+        interactivity: {
+            detect_on: 'canvas',
+            events: {
+                onhover: {
+                    enable: true,
+                    mode: 'grab'
+                },
+                onclick: {
+                    enable: true,
+                    mode: 'push'
+                },
+                resize: true
+            },
+            modes: {
+                grab: {
+                    distance: 140,
+                    line_linked: {
+                        opacity: 0.5
+                    }
+                },
+                push: {
+                    particles_nb: 4
+                }
+            }
+        },
+        retina_detect: true
+    });
+    
+    // Анимация появления элементов
+    gsap.to('.dashboard-card', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: 'power3.out'
+    });
+    
+    gsap.to('#aiInsights', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        delay: 0.8,
+        ease: 'power3.out'
+    });
+    
+    // Данные для проектов
+    const projectsData = {
+        reconstruction: {
+            tasks: [
+                {
+                    title: "Монтаж перекрытий 3-го этажа",
+                    priority: "high",
+                    team: "Монтажники",
+                    deadline: "15.07.2025",
+                    duration: "5 дней",
+                    description: "Установка железобетонных перекрытий на 3-м этаже согласно проекту",
+                    resources: ["Кран", "Бетон", "Арматура"],
+                    start: 10,
+                    end: 40
+                },
+                {
+                    title: "Прокладка электрокабелей",
+                    priority: "medium",
+                    team: "Электрики",
+                    deadline: "20.07.2025",
+                    duration: "7 дней",
+                    description: "Прокладка силовых и слаботочных кабелей на 1-2 этажах",
+                    resources: ["Кабель", "Инструменты"],
+                    start: 15,
+                    end: 35
+                },
+                {
+                    title: "Установка окон",
+                    priority: "medium",
+                    team: "Монтажники",
+                    deadline: "25.07.2025",
+                    duration: "4 дня",
+                    description: "Монтаж оконных блоков на 1-2 этажах",
+                    resources: ["Окна", "Монтажная пена"],
+                    start: 45,
+                    end: 65
+                },
+                {
+                    title: "Штукатурка стен",
+                    priority: "low",
+                    team: "Отделочники",
+                    deadline: "01.08.2025",
+                    duration: "10 дней",
+                    description: "Оштукатуривание внутренних стен на 1 этаже",
+                    resources: ["Штукатурка", "Инструменты"],
+                    start: 50,
+                    end: 90
+                },
+                {
+                    title: "Монтаж систем вентиляции",
+                    priority: "high",
+                    team: "Инженеры",
+                    deadline: "10.08.2025",
+                    duration: "6 дней",
+                    description: "Установка вентиляционного оборудования и воздуховодов",
+                    resources: ["Вентиляторы", "Воздуховоды"],
+                    start: 25,
+                    end: 55
+                }
+            ],
+            teams: [
+                {
+                    name: "Монтажники",
+                    status: "busy",
+                    members: 8,
+                    currentTask: "Монтаж перекрытий 2-го этажа",
+                    availability: "15.07.2025",
+                    skills: ["Монтаж конструкций", "Бетонные работы", "Сварка"]
+                },
+                {
+                    name: "Электрики",
+                    status: "available",
+                    members: 5,
+                    currentTask: "-",
+                    availability: "Сейчас",
+                    skills: ["Электромонтаж", "Слаботочные системы", "Освещение"]
+                },
+                {
+                    name: "Отделочники",
+                    status: "available",
+                    members: 10,
+                    currentTask: "-",
+                    availability: "Сейчас",
+                    skills: ["Штукатурка", "Покраска", "Плитка", "Гипсокартон"]
+                },
+                {
+                    name: "Инженеры",
+                    status: "overloaded",
+                    members: 4,
+                    currentTask: "Монтаж отопления",
+                    availability: "20.07.2025",
+                    skills: ["Вентиляция", "Отопление", "Кондиционирование"]
+                }
+            ],
+            workloadData: {
+                labels: ['Монтажники', 'Электрики', 'Отделочники', 'Инженеры'],
+                datasets: [
+                    {
+                        label: 'Текущая загрузка (%)',
+                        data: [85, 40, 30, 95],
+                        backgroundColor: 'rgba(147, 51, 234, 0.5)',
+                        borderColor: 'rgba(147, 51, 234, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Оптимальная загрузка (%)',
+                        data: [70, 70, 70, 70],
+                        backgroundColor: 'rgba(79, 70, 229, 0.2)',
+                        borderColor: 'rgba(79, 70, 229, 1)',
+                        borderWidth: 1,
+                        borderDash: [5, 5]
+                    }
+                ]
+            },
+            metrics: {
+                efficiency: "+24%",
+                time: "-18%",
+                resource: "+15%"
+            }
+        },
+        demolition: {
+            tasks: [
+                {
+                    title: "Демонтаж кровли",
+                    priority: "high",
+                    team: "Демонтажники",
+                    deadline: "10.07.2025",
+                    duration: "3 дня",
+                    description: "Разбор кровельного покрытия и стропильной системы",
+                    resources: ["Инструменты", "Контейнеры"],
+                    start: 5,
+                    end: 20
+                },
+                {
+                    title: "Отключение коммуникаций",
+                    priority: "high",
+                    team: "Инженеры",
+                    deadline: "05.07.2025",
+                    duration: "2 дня",
+                    description: "Отключение и демонтаж электрических, водопроводных и газовых сетей",
+                    resources: ["Специнструменты"],
+                    start: 0,
+                    end: 10
+                },
+                {
+                    title: "Демонтаж перекрытий",
+                    priority: "medium",
+                    team: "Демонтажники",
+                    deadline: "15.07.2025",
+                    duration: "5 дней",
+                    description: "Разбор межэтажных перекрытий с сортировкой материалов",
+                    resources: ["Техника", "Контейнеры"],
+                    start: 25,
+                    end: 50
+                },
+                {
+                    title: "Снос несущих стен",
+                    priority: "medium",
+                    team: "Демонтажники",
+                    deadline: "20.07.2025",
+                    duration: "4 дня",
+                    description: "Поэтапный снос несущих конструкций здания",
+                    resources: ["Экскаватор", "Отбойники"],
+                    start: 55,
+                    end: 75
+                },
+                {
+                    title: "Вывоз строительного мусора",
+                    priority: "low",
+                    team: "Логисты",
+                    deadline: "25.07.2025",
+                    duration: "7 дней",
+                    description: "Погрузка и транспортировка строительного мусора на полигон",
+                    resources: ["Самосвалы", "Погрузчик"],
+                    start: 80,
+                    end: 100
+                }
+            ],
+            teams: [
+                {
+                    name: "Демонтажники",
+                    status: "available",
+                    members: 12,
+                    currentTask: "-",
+                    availability: "Сейчас",
+                    skills: ["Демонтаж", "Разборка конструкций", "Работа с техникой"]
+                },
+                {
+                    name: "Инженеры",
+                    status: "busy",
+                    members: 3,
+                    currentTask: "Обследование здания",
+                    availability: "05.07.2025",
+                    skills: ["Коммуникации", "Электрика", "Водоснабжение"]
+                },
+                {
+                    name: "Логисты",
+                    status: "available",
+                    members: 6,
+                    currentTask: "-",
+                    availability: "Сейчас",
+                    skills: ["Логистика", "Управление транспортом", "Погрузка"]
+                },
+                {
+                    name: "Техники",
+                    status: "busy",
+                    members: 4,
+                    currentTask: "Подготовка техники",
+                    availability: "07.07.2025",
+                    skills: ["Управление техникой", "Обслуживание оборудования"]
+                }
+            ],
+            workloadData: {
+                labels: ['Демонтажники', 'Инженеры', 'Логисты', 'Техники'],
+                datasets: [
+                    {
+                        label: 'Текущая загрузка (%)',
+                        data: [20, 80, 30, 75],
+                        backgroundColor: 'rgba(147, 51, 234, 0.5)',
+                        borderColor: 'rgba(147, 51, 234, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Оптимальная загрузка (%)',
+                        data: [70, 70, 70, 70],
+                        backgroundColor: 'rgba(79, 70, 229, 0.2)',
+                        borderColor: 'rgba(79, 70, 229, 1)',
+                        borderWidth: 1,
+                        borderDash: [5, 5]
+                    }
+                ]
+            },
+            metrics: {
+                efficiency: "+18%",
+                time: "-12%",
+                resource: "+22%"
+            }
+        }
+    };
+    
+    // Инициализация графиков и данных
+    let workloadChart;
+    
+    function initData(projectKey) {
+        const project = projectsData[projectKey];
+        
+        // Обновление списка задач
+        const taskList = document.getElementById('taskList');
+        taskList.innerHTML = '';
+        
+        project.tasks.forEach(task => {
+            const taskItem = document.createElement('li');
+            taskItem.className = 'task-item';
+            
+            taskItem.innerHTML = `
+                <div class="task-header">
+                    <div class="task-title">${task.title}</div>
+                    <div class="task-priority priority-${task.priority}">${task.priority === 'high' ? 'Высокий' : task.priority === 'medium' ? 'Средний' : 'Низкий'}</div>
+                </div>
+                <div class="task-details">
+                    <div>Бригада: ${task.team}</div>
+                    <div>Срок: ${task.deadline}</div>
+                    <div>Длительность: ${task.duration}</div>
+                </div>
+                <div class="task-description">${task.description}</div>
+                <div class="task-resources">
+                    ${task.resources.map(resource => `<div class="resource-tag">${resource}</div>`).join('')}
+                </div>
+            `;
+            
+            taskList.appendChild(taskItem);
+        });
+        
+        // Обновление списка бригад
+        const teamList = document.getElementById('teamList');
+        teamList.innerHTML = '';
+        
+        project.teams.forEach(team => {
+            const teamCard = document.createElement('div');
+            teamCard.className = 'team-card';
+            
+            teamCard.innerHTML = `
+                <div class="team-header">
+                    <div class="team-name">${team.name}</div>
+                    <div class="team-status status-${team.status}">${team.status === 'available' ? 'Доступна' : team.status === 'busy' ? 'Занята' : 'Перегружена'}</div>
+                </div>
+                <div class="team-details">
+                    <div>Состав: ${team.members} чел.</div>
+                    <div>Текущая задача: ${team.currentTask}</div>
+                    <div>Доступность: ${team.availability}</div>
+                </div>
+                <div class="team-skills">
+                    ${team.skills.map(skill => `<div class="skill-tag">${skill}</div>`).join('')}
+                </div>
+            `;
+            
+            teamList.appendChild(teamCard);
+        });
+        
+        // График загрузки бригад
+        const workloadCtx = document.getElementById('workloadChart').getContext('2d');
+        
+        if (workloadChart) {
+            workloadChart.destroy();
+        }
+        
+        workloadChart = new Chart(workloadCtx, {
+            type: 'bar',
+            data: project.workloadData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#fff',
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#9333ea',
+                        bodyColor: '#fff',
+                        borderColor: '#9333ea',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#aaa'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#aaa',
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        },
+                        min: 0,
+                        max: 100
+                    }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+        
+        // График Ганта
+        const ganttChart = document.getElementById('ganttChart');
+        ganttChart.innerHTML = '';
+        
+        // Добавляем временную шкалу
+        const timelineMarkers = document.createElement('div');
+        timelineMarkers.className = 'gantt-timeline-markers';
+        
+        for (let i = 0; i <= 10; i++) {
+            const marker = document.createElement('div');
+            marker.textContent = `${i * 10}%`;
+            timelineMarkers.appendChild(marker);
+        }
+        
+        ganttChart.appendChild(timelineMarkers);
+        
+        // Добавляем задачи на график Ганта
+        project.tasks.forEach(task => {
+            const ganttRow = document.createElement('div');
+            ganttRow.className = 'gantt-row';
+            
+            const ganttLabel = document.createElement('div');
+            ganttLabel.className = 'gantt-label';
+            ganttLabel.textContent = task.title;
+            
+            const ganttTimeline = document.createElement('div');
+            ganttTimeline.className = 'gantt-timeline';
+            
+            const ganttBar = document.createElement('div');
+            ganttBar.className = 'gantt-bar gantt-bar-assigned';
+            ganttBar.style.left = `${task.start}%`;
+            ganttBar.style.width = `${task.end - task.start}%`;
+            
+            ganttTimeline.appendChild(ganttBar);
+            ganttRow.appendChild(ganttLabel);
+            ganttRow.appendChild(ganttTimeline);
+            
+            ganttChart.appendChild(ganttRow);
+        });
+        
+        // Обновление метрик оптимизации
+        document.getElementById('efficiencyMetric').textContent = project.metrics.efficiency;
+        document.getElementById('timeMetric').textContent = project.metrics.time;
+        document.getElementById('resourceMetric').textContent = project.metrics.resource;
+    }
+    
+    // Инициализация с первым проектом
+    initData('reconstruction');
+    
+    // Переключение между проектами
+    document.querySelectorAll('.project-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.project-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            const projectKey = this.getAttribute('data-project');
+            initData(projectKey);
+        });
+    });
+});
+</script>
+{% endblock %}

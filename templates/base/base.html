@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}AI-ZAM - Система управления строительными объектами{% endblock %}</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="{% static 'css/3d-logo.css' %}">
+    <link rel="stylesheet" href="{% static 'css/logo-letter.css' %}">
     <style>
         * {
             margin: 0;
@@ -35,6 +37,18 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0, 212, 255, 0.05), rgba(255, 0, 255, 0.05));
+            pointer-events: none;
         }
         
 
@@ -58,12 +72,22 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            background: linear-gradient(45deg, #00d4ff, #ff00ff, #ffff00, #00d4ff);
-            background-size: 300% 300%;
+        }
+        
+        .logo-text {
+            background: linear-gradient(45deg, #0088ff, #00aaff, #00ccff);
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            animation: cleanGradient 3s ease infinite;
+        }
+        
+        @keyframes cleanGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         
         @keyframes gradientShift {
@@ -114,7 +138,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: gradientShift 3s ease-in-out infinite;
         }
         
         .nav-links a:hover {
@@ -225,10 +248,12 @@
 
         <div class="container">
             <div class="header-content">
-                <a href="/" class="logo">
-                    <img src="{% static 'images/logo-ai.png' %}" alt="AI-Зам">
-                    AI-Зам
-                </a>
+                <div class="logo-container">
+                    <a href="/" class="logo">
+                        <img src="{% static 'images/logo-ai.png' %}" alt="AI-Зам">
+                        <span class="logo-text">AI-Зам</span>
+                    </a>
+                </div>
                 <nav class="nav-links">
                     <a href="/">Главная</a>
                     <a href="/objects/">Объекты</a>
@@ -236,7 +261,6 @@
                     <a href="/ai-agent/">ИИ-агент</a>
                     <a href="/analytics/">ИИ-аналитика</a>
                     <a href="/telegram/">Чат-боты</a>
-                    <a href="/telegram/stats/">Статистика</a>
                 </nav>
                 <div class="mobile-menu">
                     <div class="burger-menu" onclick="toggleMenu()">
@@ -268,10 +292,13 @@
         <a href="/ai-agent/">ИИ-агент</a>
         <a href="/analytics/">ИИ-аналитика</a>
         <a href="/telegram/">Чат-боты</a>
-        <a href="/telegram/stats/">Статистика</a>
     </div>
     
     {% block extra_scripts %}{% endblock %}
+    <!-- Animation scripts disabled
+    <script src="{% static 'js/3d-logo.js' %}"></script>
+    <script src="{% static 'js/logo-text-effect.js' %}"></script>
+    -->
     <script>
         function toggleMenu() {
             const mobileNav = document.getElementById('mobileNav');
