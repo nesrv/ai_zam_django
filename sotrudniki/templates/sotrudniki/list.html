@@ -1,143 +1,120 @@
 {% extends 'base/base.html' %}
-{% load static %}
 
-{% block title %}Управление кадрами - AI-ZAM{% endblock %}
+{% block title %}Сотрудники организации{% endblock %}
 
 {% block extra_styles %}
-<link rel="stylesheet" href="{% static 'css/kadry-style.css' %}">
-<style>
-    /* Дополнительные стили для анимации */
-    .kadry-table tr {
-        opacity: 0;
-        animation: fadeIn 0.5s ease-out forwards;
-    }
-    
-    .kadry-table tr:nth-child(1) { animation-delay: 0.1s; }
-    .kadry-table tr:nth-child(2) { animation-delay: 0.2s; }
-    .kadry-table tr:nth-child(3) { animation-delay: 0.3s; }
-    .kadry-table tr:nth-child(4) { animation-delay: 0.4s; }
-    .kadry-table tr:nth-child(5) { animation-delay: 0.5s; }
-    .kadry-table tr:nth-child(6) { animation-delay: 0.6s; }
-    .kadry-table tr:nth-child(7) { animation-delay: 0.7s; }
-    .kadry-table tr:nth-child(8) { animation-delay: 0.8s; }
-    .kadry-table tr:nth-child(9) { animation-delay: 0.9s; }
-    .kadry-table tr:nth-child(10) { animation-delay: 1.0s; }
-    
-    /* Анимация для фоновых элементов */
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-20px); }
-    }
-    
-    .kadry-bg-1 {
-        animation: float 15s infinite ease-in-out;
-    }
-    
-    .kadry-bg-2 {
-        animation: float 20s infinite ease-in-out reverse;
-    }
-    
-    .kadry-bg-3 {
-        animation: float 18s infinite ease-in-out;
-    }
-</style>
+.page-title {
+    text-align: center;
+    color: white;
+    font-size: 3rem;
+    margin-bottom: 3rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+.employees-table {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.employees-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.employees-table th {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 15px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.employees-table td {
+    padding: 12px 15px;
+    color: white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.employees-table tr:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+.btn-detail {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 6px 12px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s;
+}
+.btn-detail:hover {
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+    text-decoration: none;
+}
 {% endblock %}
 
 {% block content %}
-<!-- Фоновые элементы -->
-<div class="kadry-bg-element kadry-bg-1"></div>
-<div class="kadry-bg-element kadry-bg-2"></div>
-<div class="kadry-bg-element kadry-bg-3"></div>
+<div class="page-title">Сотрудники организации</div>
 
-<div class="kadry-container">
-    <div class="kadry-header animate-fade-in">
-        <h1 class="kadry-title">Управление кадрами</h1>
-        <p class="kadry-subtitle">Система управления персоналом и документооборотом</p>
-    </div>
-
-    <div class="kadry-actions animate-fade-in">
-        <a href="/kadry/" class="kadry-btn kadry-btn-back">
-            <i class="fas fa-arrow-left"></i> Назад к подразделению
-        </a>
-        <a href="{% url 'sotrudniki:add' %}{% if request.GET.podrazdelenie %}?podrazdelenie={{ request.GET.podrazdelenie }}{% endif %}" class="kadry-btn kadry-btn-add">
-            <i class="fas fa-plus"></i> Добавить сотрудника
-        </a>
-        <a href="{% url 'sotrudniki:control' %}" class="kadry-btn kadry-btn-control">
-            <i class="fas fa-tasks"></i> Контроль
-        </a>
-        <a href="{% url 'sotrudniki:salaries_list' %}" class="kadry-btn kadry-btn-salary">
-            <i class="fas fa-money-bill-wave"></i> Зарплаты
-        </a>
-    </div>
-
-    <div class="kadry-table-container animate-fade-in">
-        <table class="kadry-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>ФИО</th>
-                    <th>Должность</th>
-                    <th>Дата приема</th>
-                    <th>Дата начала работы</th>
-                    <th>Статус</th>
-                    <th>Действия</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for sotrudnik in sotrudniki %}
-                <tr>
-                    <td>{{ sotrudnik.id }}</td>
-                    <td>
-                        <a href="{% url 'sotrudniki:detail' sotrudnik.pk %}" class="kadry-link">
-                            {{ sotrudnik.fio }}
-                        </a>
-                    </td>
-                    <td>{{ sotrudnik.specialnost|default:"-" }}</td>
-                    <td>{{ sotrudnik.data_priema|date:"d.m.Y" }}</td>
-                    <td>{{ sotrudnik.data_nachala_raboty|date:"d.m.Y" }}</td>
-                    <td>
-                        <span class="kadry-status active">Активен</span>
-                    </td>
-                    <td>
-                        <a href="{% url 'sotrudniki:documents' sotrudnik.pk %}" class="kadry-action-btn documents" title="Документы">
-                            <i class="fas fa-folder"></i>
-                        </a>
-                        <a href="{% url 'sotrudniki:sotrudnik_salary' sotrudnik.pk %}" class="kadry-action-btn salary" title="Зарплата">
-                            <i class="fas fa-coins"></i>
-                        </a>
-                        <a href="{% url 'sotrudniki:detail' sotrudnik.pk %}" class="kadry-action-btn details" title="Подробности">
-                            <i class="fas fa-info"></i>
-                        </a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="7" class="kadry-table-empty">Нет сотрудников</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+    <a href="/kadry/" 
+       style="background: rgba(150, 150, 150, 0.8); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+        ← Назад к подразделению
+    </a>
+    <a href="{% url 'sotrudniki:add' %}{% if request.GET.podrazdelenie %}?podrazdelenie={{ request.GET.podrazdelenie }}{% endif %}" 
+       style="background: rgba(0, 150, 0, 0.8); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+        + Добавить сотрудника
+    </a>
+    <a href="{% url 'sotrudniki:control' %}" 
+       style="background: rgba(200, 100, 0, 0.8); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+        Контроль
+    </a>
+    <a href="{% url 'sotrudniki:salaries_list' %}" 
+       style="background: rgba(0, 150, 200, 0.8); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+        Зарплаты
+    </a>
 </div>
-{% endblock %}
 
-{% block extra_scripts %}
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Добавляем интерактивность к таблице
-        const rows = document.querySelectorAll('.kadry-table tbody tr');
-        rows.forEach(row => {
-            row.addEventListener('click', function(e) {
-                // Если клик не по ссылке, переходим на страницу сотрудника
-                if (!e.target.closest('a')) {
-                    const link = this.querySelector('.kadry-link');
-                    if (link) {
-                        window.location.href = link.getAttribute('href');
-                    }
-                }
-            });
-        });
-    });
-</script>
+<div class="employees-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Код</th>
+                <th>ФИО</th>
+                <th>Должность</th>
+                <th>Дата<br>приема</th>
+                <th>Дата начала<br>работы</th>
+                <th>Перевод<br>увольн</th>
+                <th>Управление</th>
+                <th>Зарплаты</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sotrudnik in sotrudniki %}
+            <tr>
+                <td>{{ sotrudnik.id }}</td>
+                <td><a href="{% url 'sotrudniki:detail' sotrudnik.pk %}" style="text-decoration: none; color: white; font-weight: bold;">{{ sotrudnik.fio }}</a></td>
+                <td>{{ sotrudnik.specialnost|default:"-" }}</td>
+                <td>{{ sotrudnik.data_priema|date:"d.m.Y" }}</td>
+                <td>{{ sotrudnik.data_nachala_raboty|date:"d.m.Y" }}</td>
+                <td>-</td>
+                <td>
+                    <a href="{% url 'sotrudniki:documents' sotrudnik.pk %}" class="btn-detail">💼</a>
+                </td>
+                <td>
+                    <a href="{% url 'sotrudniki:sotrudnik_salary' sotrudnik.pk %}" class="btn-detail">💰</a>
+                </td>
+                <td>
+                    <a href="{% url 'sotrudniki:detail' sotrudnik.pk %}" class="btn-detail">Документы</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9" style="text-align: center; color: rgba(255, 255, 255, 0.7);">Нет сотрудников</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

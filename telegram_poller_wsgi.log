@@ -2529,3 +2529,4 @@ UnboundLocalError: cannot access local variable 'all_specialties' where it is no
 2025-07-20 11:52:12,247 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\analytics\views.py changed, reloading.
 2025-07-20 11:52:19,969 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
 2025-07-20 12:19:13,341 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\analytics\views.py changed, reloading.
+2025-07-20 12:19:18,888 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
