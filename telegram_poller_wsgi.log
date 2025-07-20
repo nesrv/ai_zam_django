@@ -2612,3 +2612,5 @@ django.template.exceptions.TemplateDoesNotExist: cams/camera_list.html
 2025-07-20 17:19:43,140 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
 2025-07-20 17:19:48,374 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
 2025-07-20 17:20:49,017 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
+2025-07-20 17:20:54,742 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-20 17:32:58,799 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.

@@ -11,9 +11,9 @@ def camera_list(request):
         },
         {
             'id': 8,
-            'name': 'Москва HD',
-            'url': 'https://vkvideo.ru/video_ext.php?oid=-106879986&id=456252667&hd=2&autoplay=1',
-            'description': 'Вид на город в высоком качестве'
+            'name': 'Улица в реальном времени',
+            'url': 'https://open.ivideon.com/embed/v3/?server=100-xdKWVLFVn1GVNmt5RHC3Q9&camera=0&width=&height=&lang=ru',
+            'description': 'Онлайн трансляция с улицы'
         },
         {
             'id': 9,

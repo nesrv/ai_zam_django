@@ -1,4 +1,7 @@
-на https://ai-zam.ru/cameras/ добавь креативную и стильную систему распознавания информации на камерах.
+на https://ai-zam.ru/cameras/ на место 2 камеры поставь
+<iframe class="iv-i" style="display:block;margin:0;padding:0;border:0;" src="https://open.ivideon.com/embed/v3/?server=100-xdKWVLFVn1GVNmt5RHC3Q9&amp;camera=0&amp;width=&amp;height=&amp;lang=ru" width="730" height="460" frameborder="0" allowfullscreen=""></iframe>
+
+добавь креативную и стильную систему распознавания информации на камерах.
 Система должна быть полезна для руководителя строительного объекта и министерствам рф.
 Распознавать людей, технику, погоду на объект, предсказывать опасности и критические ситуации, вести учет и тд.
 Пока можно использовать фейковые данные

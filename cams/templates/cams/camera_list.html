@@ -167,6 +167,191 @@
             grid-template-columns: 1fr;
         }
     }
+    
+    /* Стили для системы распознавания */
+    .ai-recognition {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 10;
+    }
+    
+    .ai-box {
+        position: absolute;
+        border: 2px solid rgba(0, 255, 0, 0.7);
+        border-radius: 3px;
+        animation: boxPulse 2s infinite;
+    }
+    
+    @keyframes boxPulse {
+        0% { border-color: rgba(0, 255, 0, 0.7); }
+        50% { border-color: rgba(0, 255, 0, 0.3); }
+        100% { border-color: rgba(0, 255, 0, 0.7); }
+    }
+    
+    .ai-label {
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #00ff00;
+        font-size: 10px;
+        padding: 2px 5px;
+        border-radius: 3px;
+        top: -20px;
+        left: 0;
+        white-space: nowrap;
+    }
+    
+    .ai-warning {
+        position: absolute;
+        border: 2px solid rgba(255, 0, 0, 0.7);
+        border-radius: 3px;
+        animation: warningPulse 1s infinite;
+    }
+    
+    @keyframes warningPulse {
+        0% { border-color: rgba(255, 0, 0, 0.7); }
+        50% { border-color: rgba(255, 0, 0, 0.3); }
+        100% { border-color: rgba(255, 0, 0, 0.7); }
+    }
+    
+    .ai-warning-label {
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #ff0000;
+        font-size: 10px;
+        padding: 2px 5px;
+        border-radius: 3px;
+        top: -20px;
+        left: 0;
+        white-space: nowrap;
+    }
+    
+    .ai-analytics {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .ai-analytics h3 {
+        color: #00d4ff;
+        margin-top: 0;
+        font-size: 1.2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .analytics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+    }
+    
+    .analytics-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        padding: 10px;
+        transition: transform 0.3s;
+    }
+    
+    .analytics-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .analytics-title {
+        font-size: 0.9rem;
+        color: #ccc;
+        margin-bottom: 5px;
+    }
+    
+    .analytics-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #fff;
+    }
+    
+    .analytics-trend {
+        font-size: 0.8rem;
+        margin-top: 5px;
+    }
+    
+    .trend-up {
+        color: #4CAF50;
+    }
+    
+    .trend-down {
+        color: #f44336;
+    }
+    
+    .ai-toggle {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        z-index: 20;
+        transition: all 0.3s;
+    }
+    
+    .ai-toggle:hover {
+        background: rgba(0, 0, 0, 0.9);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+    
+    .ai-toggle.active {
+        background: rgba(0, 212, 255, 0.2);
+        border-color: rgba(0, 212, 255, 0.5);
+    }
+    
+    .weather-info {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 0.8rem;
+        z-index: 15;
+    }
+    
+    .risk-indicator {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 5px;
+    }
+    
+    .risk-low {
+        background-color: #4CAF50;
+    }
+    
+    .risk-medium {
+        background-color: #FFC107;
+    }
+    
+    .risk-high {
+        background-color: #f44336;
+        animation: riskPulse 1s infinite;
+    }
+    
+    @keyframes riskPulse {
+        0% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7); }
+        70% { box-shadow: 0 0 0 5px rgba(244, 67, 54, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0); }
+    }
 </style>
 {% endblock %}
 
@@ -192,9 +377,57 @@
         </div>
         <div class="camera-stream">
             <iframe src="{{ camera.url }}" allowfullscreen></iframe>
+            
+            <!-- Система распознавания -->
+            <div class="ai-recognition" id="ai-recognition-{{ camera.id }}">
+                <!-- Распознанные объекты будут добавлены скриптом -->
+            </div>
+            
+            <!-- Погодные условия -->
+            <div class="weather-info" id="weather-info-{{ camera.id }}">
+                <i class="fas fa-cloud-sun"></i> +18°C, Ясно
+            </div>
+            
+            <!-- Кнопка включения/выключения аналитики -->
+            <button class="ai-toggle active" id="ai-toggle-{{ camera.id }}" onclick="toggleAI({{ camera.id }})">
+                <i class="fas fa-robot"></i> AI аналитика: Вкл
+            </button>
         </div>
+        
         <div class="camera-info">
             <div class="camera-description">{{ camera.description }}</div>
+        </div>
+        
+        <!-- Блок аналитики -->
+        <div class="ai-analytics" id="ai-analytics-{{ camera.id }}">
+            <h3>Аналитика объекта</h3>
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <div class="analytics-title">Персонал на объекте</div>
+                    <div class="analytics-value" id="personnel-count-{{ camera.id }}">8</div>
+                    <div class="analytics-trend trend-up">↑ 2 за час</div>
+                </div>
+                
+                <div class="analytics-card">
+                    <div class="analytics-title">Техника в работе</div>
+                    <div class="analytics-value" id="equipment-count-{{ camera.id }}">3</div>
+                    <div class="analytics-trend trend-down">↓ 1 за час</div>
+                </div>
+                
+                <div class="analytics-card">
+                    <div class="analytics-title">Средняя активность</div>
+                    <div class="analytics-value" id="activity-level-{{ camera.id }}">76%</div>
+                    <div class="analytics-trend trend-up">↑ 5% за час</div>
+                </div>
+                
+                <div class="analytics-card">
+                    <div class="analytics-title">Уровень риска</div>
+                    <div class="analytics-value" id="risk-level-{{ camera.id }}">
+                        <span class="risk-indicator risk-low"></span> Низкий
+                    </div>
+                    <div class="analytics-trend">Без изменений</div>
+                </div>
+            </div>
         </div>
     </div>
     {% endfor %}
@@ -202,6 +435,7 @@
 {% endblock %}
 
 {% block extra_scripts %}
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 <script>
     // Добавляем небольшую анимацию при загрузке страницы
     document.addEventListener('DOMContentLoaded', function() {
@@ -215,7 +449,229 @@
                 camera.style.opacity = '1';
                 camera.style.transform = 'translateY(0)';
             }, 100 * index);
+            
+            // Запускаем систему распознавания для каждой камеры
+            const cameraId = camera.querySelector('.ai-recognition').id.split('-').pop();
+            initAIRecognition(cameraId);
+            
+            // Обновляем погодные условия
+            updateWeatherInfo(cameraId);
+            
+            // Обновляем аналитику
+            updateAnalytics(cameraId);
         });
     });
+    
+    // Функция для включения/выключения аналитики
+    function toggleAI(cameraId) {
+        const toggle = document.getElementById(`ai-toggle-${cameraId}`);
+        const recognition = document.getElementById(`ai-recognition-${cameraId}`);
+        const analytics = document.getElementById(`ai-analytics-${cameraId}`);
+        
+        if (toggle.classList.contains('active')) {
+            toggle.classList.remove('active');
+            toggle.innerHTML = '<i class="fas fa-robot"></i> AI аналитика: Выкл';
+            recognition.style.display = 'none';
+            analytics.style.display = 'none';
+        } else {
+            toggle.classList.add('active');
+            toggle.innerHTML = '<i class="fas fa-robot"></i> AI аналитика: Вкл';
+            recognition.style.display = 'block';
+            analytics.style.display = 'block';
+            
+            // Перезапускаем распознавание
+            initAIRecognition(cameraId);
+        }
+    }
+    
+    // Функция для инициализации системы распознавания
+    function initAIRecognition(cameraId) {
+        const recognition = document.getElementById(`ai-recognition-${cameraId}`);
+        recognition.innerHTML = ''; // Очищаем предыдущие объекты
+        
+        // Фейковые данные для распознавания
+        const objects = [
+            { type: 'person', label: 'Рабочий #1', x: 20, y: 100, width: 40, height: 80, warning: false },
+            { type: 'person', label: 'Рабочий #2', x: 70, y: 120, width: 40, height: 80, warning: false },
+            { type: 'person', label: 'Рабочий #3 (без каски)', x: 150, y: 110, width: 40, height: 80, warning: true },
+            { type: 'equipment', label: 'Экскаватор', x: 200, y: 130, width: 100, height: 60, warning: false },
+            { type: 'equipment', label: 'Грузовик', x: 320, y: 140, width: 80, height: 50, warning: false },
+        ];
+        
+        // Добавляем случайные вариации для разных камер
+        if (cameraId % 2 === 0) {
+            objects.push({ type: 'warning', label: 'Опасная зона', x: 250, y: 180, width: 100, height: 40, warning: true });
+        }
+        
+        if (cameraId % 3 === 0) {
+            objects.push({ type: 'person', label: 'Мастер', x: 100, y: 90, width: 40, height: 80, warning: false });
+        }
+        
+        // Создаем элементы для каждого объекта
+        objects.forEach(obj => {
+            const box = document.createElement('div');
+            box.className = obj.warning ? 'ai-warning' : 'ai-box';
+            box.style.left = `${obj.x}px`;
+            box.style.top = `${obj.y}px`;
+            box.style.width = `${obj.width}px`;
+            box.style.height = `${obj.height}px`;
+            
+            const label = document.createElement('div');
+            label.className = obj.warning ? 'ai-warning-label' : 'ai-label';
+            label.textContent = obj.label;
+            box.appendChild(label);
+            
+            recognition.appendChild(box);
+        });
+        
+        // Добавляем анимацию движения объектов
+        animateObjects(recognition.querySelectorAll('.ai-box, .ai-warning'));
+    }
+    
+    // Функция для анимации объектов
+    function animateObjects(objects) {
+        objects.forEach(obj => {
+            // Случайное движение каждые 3-5 секунд
+            setInterval(() => {
+                const currentX = parseInt(obj.style.left);
+                const currentY = parseInt(obj.style.top);
+                
+                // Случайное смещение в пределах 5 пикселей
+                const newX = currentX + (Math.random() * 10 - 5);
+                const newY = currentY + (Math.random() * 10 - 5);
+                
+                // Плавное перемещение
+                obj.style.transition = 'left 2s, top 2s';
+                obj.style.left = `${newX}px`;
+                obj.style.top = `${newY}px`;
+            }, 3000 + Math.random() * 2000);
+        });
+    }
+    
+    // Функция для обновления погодных условий
+    function updateWeatherInfo(cameraId) {
+        const weatherInfo = document.getElementById(`weather-info-${cameraId}`);
+        
+        // Фейковые данные о погоде
+        const weatherTypes = [
+            { icon: 'fas fa-sun', text: 'Ясно', temp: '+18°C' },
+            { icon: 'fas fa-cloud-sun', text: 'Облачно', temp: '+16°C' },
+            { icon: 'fas fa-cloud', text: 'Пасмурно', temp: '+14°C' },
+            { icon: 'fas fa-cloud-rain', text: 'Дождь', temp: '+12°C' },
+        ];
+        
+        // Выбираем случайную погоду для камеры
+        const weather = weatherTypes[Math.floor(Math.random() * weatherTypes.length)];
+        weatherInfo.innerHTML = `<i class="${weather.icon}"></i> ${weather.temp}, ${weather.text}`;
+        
+        // Обновляем погоду каждые 30 минут
+        setTimeout(() => updateWeatherInfo(cameraId), 30 * 60 * 1000);
+    }
+    
+    // Функция для обновления аналитики
+    function updateAnalytics(cameraId) {
+        // Обновляем данные каждые 5 минут
+        setInterval(() => {
+            // Количество персонала
+            const personnelCount = document.getElementById(`personnel-count-${cameraId}`);
+            const currentPersonnel = parseInt(personnelCount.textContent);
+            const newPersonnel = currentPersonnel + (Math.random() > 0.5 ? 1 : -1);
+            personnelCount.textContent = Math.max(1, newPersonnel);
+            
+            // Тренд персонала
+            const personnelTrend = personnelCount.nextElementSibling;
+            if (newPersonnel > currentPersonnel) {
+                personnelTrend.className = 'analytics-trend trend-up';
+                personnelTrend.textContent = `↑ ${newPersonnel - currentPersonnel} за час`;
+            } else if (newPersonnel < currentPersonnel) {
+                personnelTrend.className = 'analytics-trend trend-down';
+                personnelTrend.textContent = `↓ ${currentPersonnel - newPersonnel} за час`;
+            }
+            
+            // Количество техники
+            const equipmentCount = document.getElementById(`equipment-count-${cameraId}`);
+            const currentEquipment = parseInt(equipmentCount.textContent);
+            const newEquipment = currentEquipment + (Math.random() > 0.7 ? 1 : (Math.random() > 0.5 ? -1 : 0));
+            equipmentCount.textContent = Math.max(1, newEquipment);
+            
+            // Тренд техники
+            const equipmentTrend = equipmentCount.nextElementSibling;
+            if (newEquipment > currentEquipment) {
+                equipmentTrend.className = 'analytics-trend trend-up';
+                equipmentTrend.textContent = `↑ ${newEquipment - currentEquipment} за час`;
+            } else if (newEquipment < currentEquipment) {
+                equipmentTrend.className = 'analytics-trend trend-down';
+                equipmentTrend.textContent = `↓ ${currentEquipment - newEquipment} за час`;
+            } else {
+                equipmentTrend.className = 'analytics-trend';
+                equipmentTrend.textContent = 'Без изменений';
+            }
+            
+            // Активность
+            const activityLevel = document.getElementById(`activity-level-${cameraId}`);
+            const currentActivity = parseInt(activityLevel.textContent);
+            const newActivity = Math.min(100, Math.max(10, currentActivity + (Math.random() * 20 - 10)));
+            activityLevel.textContent = `${Math.round(newActivity)}%`;
+            
+            // Тренд активности
+            const activityTrend = activityLevel.nextElementSibling;
+            if (newActivity > currentActivity) {
+                activityTrend.className = 'analytics-trend trend-up';
+                activityTrend.textContent = `↑ ${Math.round(newActivity - currentActivity)}% за час`;
+            } else if (newActivity < currentActivity) {
+                activityTrend.className = 'analytics-trend trend-down';
+                activityTrend.textContent = `↓ ${Math.round(currentActivity - newActivity)}% за час`;
+            }
+            
+            // Уровень риска
+            const riskLevel = document.getElementById(`risk-level-${cameraId}`);
+            const riskValue = Math.random();
+            
+            if (riskValue < 0.7) {
+                riskLevel.innerHTML = '<span class="risk-indicator risk-low"></span> Низкий';
+            } else if (riskValue < 0.9) {
+                riskLevel.innerHTML = '<span class="risk-indicator risk-medium"></span> Средний';
+            } else {
+                riskLevel.innerHTML = '<span class="risk-indicator risk-high"></span> Высокий';
+                
+                // Добавляем предупреждение при высоком риске
+                const warning = document.createElement('div');
+                warning.className = 'ai-warning';
+                warning.style.left = `${Math.random() * 300}px`;
+                warning.style.top = `${Math.random() * 200}px`;
+                warning.style.width = '80px';
+                warning.style.height = '40px';
+                
+                const warningLabel = document.createElement('div');
+                warningLabel.className = 'ai-warning-label';
+                warningLabel.textContent = 'Опасная зона';
+                warning.appendChild(warningLabel);
+                
+                const recognition = document.getElementById(`ai-recognition-${cameraId}`);
+                recognition.appendChild(warning);
+                
+                // Удаляем предупреждение через 30 секунд
+                setTimeout(() => {
+                    recognition.removeChild(warning);
+                }, 30000);
+            }
+            
+            // Тренд риска
+            const riskTrend = riskLevel.nextElementSibling;
+            if (Math.random() > 0.7) {
+                riskTrend.textContent = 'Без изменений';
+            } else if (Math.random() > 0.5) {
+                riskTrend.className = 'analytics-trend trend-up';
+                riskTrend.textContent = '↑ Растет';
+            } else {
+                riskTrend.className = 'analytics-trend trend-down';
+                riskTrend.textContent = '↓ Снижается';
+            }
+            
+        }, 5 * 60 * 1000); // Обновление каждые 5 минут
+        
+        // Для демонстрации запускаем первое обновление через 10 секунд
+        setTimeout(() => updateAnalytics(cameraId), 10000);
+    }
 </script>
 {% endblock %}
