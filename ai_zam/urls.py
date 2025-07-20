@@ -21,6 +21,7 @@ from object.export_views import export_object_json
 from sotrudniki.views import organizations_list
 from telegrambot import views
 
+
 # Изменяем заголовки админки
 # admin.site.site_header = "Ruslan administration"
 # admin.site.site_title = "Ruslan administration"
@@ -58,6 +59,7 @@ urlpatterns = [
     path('sotrudniki/', include('sotrudniki.urls')),
     path('kadry/', organizations_list, name='organizations_main'),
     path('analytics/', include('analytics.urls')),
+    path('cameras/', include('cams.urls')),
 ]
 
 # Обслуживание статических файлов

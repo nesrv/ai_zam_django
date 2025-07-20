@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'telegrambot',
     'sotrudniki',
     'analytics',
+    'cams',
 ]
 
 MIDDLEWARE = [

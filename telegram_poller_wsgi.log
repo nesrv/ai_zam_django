@@ -2541,3 +2541,56 @@ UnboundLocalError: cannot access local variable 'all_specialties' where it is no
 2025-07-20 12:48:16,197 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
 2025-07-20 12:48:54,447 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\analytics\views.py changed, reloading.
 2025-07-20 12:49:00,410 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-20 12:49:43,996 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-20 12:54:35,691 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-20 12:54:45,133 - django.request - WARNING - Not Found: /objects/29/debug-cell/
+2025-07-20 12:54:45,133 - django.request - WARNING - Not Found: /objects/29/debug-salary/
+2025-07-20 12:54:45,133 - django.request - WARNING - Not Found: /objects/29/get-salary-data/
+2025-07-20 16:51:01,989 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-20 16:53:02,983 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-07-20 16:53:08,534 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-20 16:53:11,767 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-07-20 16:53:16,596 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-20 16:53:28,153 - django.request - ERROR - Internal Server Error: /cameras/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\cams\views.py", line 44, in camera_list
+    return render(request, 'cams/camera_list.html', {'cameras': moscow_cameras})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: cams/camera_list.html
+2025-07-20 16:53:44,963 - django.request - ERROR - Internal Server Error: /cameras/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\cams\views.py", line 44, in camera_list
+    return render(request, 'cams/camera_list.html', {'cameras': moscow_cameras})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: cams/camera_list.html
+2025-07-20 16:53:54,928 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\settings.py changed, reloading.
+2025-07-20 16:53:59,588 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-20 16:55:55,196 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
