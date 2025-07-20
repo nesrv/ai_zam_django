@@ -2594,3 +2594,21 @@ django.template.exceptions.TemplateDoesNotExist: cams/camera_list.html
 2025-07-20 16:53:54,928 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\settings.py changed, reloading.
 2025-07-20 16:53:59,588 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
 2025-07-20 16:55:55,196 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
+2025-07-20 16:55:59,403 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-20 16:59:31,669 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
+2025-07-20 16:59:35,915 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-20 17:04:33,514 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
+2025-07-20 17:04:38,763 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-20 17:06:32,627 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
+2025-07-20 17:06:37,438 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-20 17:10:51,569 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
+2025-07-20 17:10:56,757 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-20 17:15:13,162 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
+2025-07-20 17:15:18,561 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-20 17:16:23,934 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
+2025-07-20 17:16:29,146 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-20 17:18:08,424 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
+2025-07-20 17:18:15,625 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-20 17:19:43,140 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
+2025-07-20 17:19:48,374 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-20 17:20:49,017 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.

@@ -1,3 +1,13 @@
+на https://ai-zam.ru/cameras/ добавь креативную и стильную систему распознавания информации на камерах.
+Система должна быть полезна для руководителя строительного объекта и министерствам рф.
+Распознавать людей, технику, погоду на объект, предсказывать опасности и критические ситуации, вести учет и тд.
+Пока можно использовать фейковые данные
+
+<iframe width="730" height="420" data-replacedsrc="https://rtsp.me/embed/7b49D38G/" allowfullscreen="" src="https://rtsp.me/embed/7b49D38G/"></iframe>
+еще добавь
+<iframe width="730" height="420" data-replacedsrc="https://rtsp.me/embed/Qtsh3rNi/" allowfullscreen="" noreferrer="" noopener="" nofollow="" src="https://rtsp.me/embed/Qtsh3rNi/"></iframe>
+
+с http://127.0.0.1:8000/cameras/ удали камеры 2,3,4,5,6
 создай app cams
 в меню в хеадере добавь "Камеры"
 создай креативную и стильную страницу для камер, добавь несколько открытых видеопотоков с видом Москвы
