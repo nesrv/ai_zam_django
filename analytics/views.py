@@ -160,9 +160,9 @@ def legal_risks(request):
         },
         "metrics": {
             "risk_index": 68,
-            "risks_count": 8,
-            "high_risks": 1,
-            "accuracy": 92
+            "risks_count": 9,
+            "high_risks": 2,
+            "accuracy": 94
         }
     }
     
