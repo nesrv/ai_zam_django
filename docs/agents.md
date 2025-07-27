@@ -1,3 +1,106 @@
+добавь (если отсутствует) связь между auth_user и sotrudniki_organizaciya, у одного пользователя может быть несколько организаций
+
+
+objekt
+на http://127.0.0.1:8000/objects/profile/ добавь логику для кнопки Добавить организацию для сохранения организации в таблице sotrudniki_organizaciya
+
+подскажи, нужно ли для этого проекта создавать отдельной app для работы с пользователями?
+
+в ai_zam\urls.py все urls связанные с object перенеси в object\urls.py.
+удали дубирование
+
+через include 
+
+при клике на кнопку Объекты верни привязку к object\urls.py
+
+сделай страницу http://127.0.0.1:8000/register/ более стильной.
+уменьши длину полей ввода, добавь фото (по умолчанию media\user_photos\avatar_default.jpg для таблицы object_userprofile)
+
+раздели функционал для кнопки "Вход/Регистрация"
+для Регистрация сделай переход на форму register, для Вход на форму входа
+
+Уменьши расстояния между пунктами меню в хеадере
+
+http://127.0.0.1:8000/objects/profile/ измени:
+"Редактирование профиля" на
+"Профиль/Редактирование профиля"
+режим редактирования открывается при клике на кнопке "Редактирование профиля"
+
+перед Объекты добавь:
+Организации
+Нет связанных организаций
+Добавить организацию
+
+добавь возможность добавления и редактирования всех полей  auth_user
+
+в auth_user добавь поле фото (по умолчанию  avatar_default.jpg).
+админку измени 
+
+при клике на user.username сделай переход на страницу profile.
+На странице profile выведи инфу о пользователе (из таблицы auth_user и object_userprofile) и связанных с ним организациях (sotrudniki_organizaciya) и объектах (objekt)
+
+
+при наведении мышкой на user.username добавь всплывающущю кнопку "Выйти"
+
+
+в templates\base\base.html добавь Войти/Зарегистрироваться и привяжи его к /objects/register/step1/.
+если пользователь авторизован, то выведи его ФИО
+
+Создай креативную и стильню страницу регистрации новых клиентов:
+- на первом экране пользователю предлагается ввести фио, логин, пароль,
+- на втором добавить организацию (таблица sotrudniki_organizaciya) (название, инн, огрн, адрес)
+- на третьем экране предложить создать объект на странице http://127.0.0.1:8000/ai-agent/
+
+
+на основе простого описания как в \telegrambot\status.html
+Название объекта: Дом-2
+Описание проекта: жилой дом 2 этажа на 10 квартир, нулевой цикл
+объект создается на основе запроса и json-ответа от ai (действие по кнопке "Создать ОБЪЕКТ на основе JSON") 
+
+
+информацию о камерах в cams\views.py  возьми из таблицы cams_camera
+
+
+создай 
+в class Camera поменяй название ip_address на url
+
+class Camera(models.Model):
+    # Основные данные
+    name = models.CharField(max_length=100, verbose_name="Название камеры")
+    url = models.CharField(max_length=15, verbose_name="IP-адрес")
+   
+    # Местоположение
+    location = models.CharField(max_length=200, verbose_name="Местоположение")
+    description = models.TextField(blank=True, verbose_name="Описание")
+
+    # Статус и настройки
+    is_active = models.BooleanField(default=True, verbose_name="Активна")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата добавления")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Последнее обновление")
+
+    def __str__(self):
+        return f"{self.name} ({self.ip_address})"
+
+    class Meta:
+        verbose_name = "Камера"
+        verbose_name_plural = "Камеры"
+
+зарегистрируй Camera в админке
+
+
+сделай связь между объектами (таблица objekt) и камерами (таблица cams_camera)
+У одного объекта может быть несколько камер
+
+cams\models.py
+
+делаю сайт системы видеонаблюдения на django
+подскажи структуру model для добавления камер в бд
+
+
+
+Онлайн-трансляции с камер наблюдения в режиме реального времени.
+
+
 на https://ai-zam.ru/cameras/ на место 2 камеры поставь
 <iframe class="iv-i" style="display:block;margin:0;padding:0;border:0;" src="https://open.ivideon.com/embed/v3/?server=100-xdKWVLFVn1GVNmt5RHC3Q9&amp;camera=0&amp;width=&amp;height=&amp;lang=ru" width="730" height="460" frameborder="0" allowfullscreen=""></iframe>
 

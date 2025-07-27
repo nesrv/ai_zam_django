@@ -11,13 +11,7 @@ from django.views.static import serve as staticserve
 def favicon_view(request):
     return HttpResponse(status=204)
 
-from object import views as object_views
-from object.views import home, objects_list, object_detail, object_income_detail, create_object, update_expense, update_resource_data, add_category, add_resource, add_category_to_object, get_resources_by_category, get_employees_by_resource, delete_object, add_resource_to_object, delete_resource_from_object
-from object.api_views import debug_cell_info, get_employees_simple
-from object.views_edit import edit_object
-from object.views_income import update_income
-from object.views_totals import get_income_totals
-from object.export_views import export_object_json
+from object.views import home
 from sotrudniki.views import organizations_list
 from telegrambot import views
 
@@ -30,28 +24,6 @@ from telegrambot import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
-    path('objects/', objects_list, name='objects_list'),
-    path('objects/<int:object_id>/', object_detail, name='object_detail'),
-    path('objects/<int:object_id>/income/', object_income_detail, name='object_income_detail'),
-    path('objects/create/', create_object, name='create_object'),
-
-    path('update-expense/', update_expense, name='update_expense'),
-    path('update-resource-data/', update_resource_data, name='update_resource_data'),
-    path('update-income/', update_income, name='update_income'),
-    path('get-income-totals/', get_income_totals, name='get_income_totals'),
-    path('add-category/', add_category, name='add_category'),
-    path('add-resource/', add_resource, name='add_resource'),
-    path('add-category-to-object/', add_category_to_object, name='add_category_to_object'),
-    path('get-resources-by-category/<int:category_id>/', get_resources_by_category, name='get_resources_by_category'),
-    path('get-employees/<int:resource_id>/', get_employees_by_resource, name='get_employees_by_resource'),
-    path('objects/<int:object_id>/edit/', edit_object, name='edit_object'),
-    path('objects/<int:object_id>/export/', export_object_json, name='export_object_json'),
-    path('objects/<int:object_id>/delete/', delete_object, name='delete_object'),
-    path('objects/<int:object_id>/debug-employees/', debug_cell_info, name='debug_employees'),
-    path('objects/<int:object_id>/employees/', get_employees_simple, name='get_employees_by_position'),
-    path('objects/<int:object_id>/save-hours/', object_views.save_employee_hours, name='save_employee_hours'),
-    path('add-resource-to-object/', add_resource_to_object, name='add_resource_to_object'),
-    path('delete-resource-from-object/', delete_resource_from_object, name='delete_resource_from_object'),
     path('favicon.ico', favicon_view),
     path('ai/', include('ai.urls')),
     path('telegram/', include('telegrambot.urls')),
@@ -60,6 +32,7 @@ urlpatterns = [
     path('kadry/', organizations_list, name='organizations_main'),
     path('analytics/', include('analytics.urls')),
     path('cameras/', include('cams.urls')),
+    path('objects/', include('object.urls')),
 ]
 
 # Обслуживание статических файлов

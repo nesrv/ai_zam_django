@@ -106,7 +106,7 @@
         
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 1rem;
         }
         
         .nav-links a {
@@ -239,6 +239,27 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         
+        .user-menu {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .user-menu:hover .logout-btn {
+            display: block;
+        }
+        
+        .logout-btn {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(0,0,0,0.9);
+            padding: 8px 12px;
+            border-radius: 5px;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+        
         {% block extra_styles %}{% endblock %}
     </style>
     {% block extra_head %}{% endblock %}
@@ -260,8 +281,19 @@
                     <a href="/kadry/">Кадры</a>
                     <a href="/ai-agent/">ИИ-агент</a>
                     <a href="/analytics/">ИИ-аналитика</a>
-                    <a href="/telegram/">Чат-боты</a>
+                    <a href="/telegram/">Рабочие чаты</a>
                     <a href="/cameras/">Камеры</a>
+                    {% if user.is_authenticated %}
+                        <div class="user-menu">
+                            <a href="/objects/profile/" style="color: #00d4ff; text-decoration: none;">{{ user.username }}</a>
+                            <div class="logout-btn">
+                                <a href="/objects/logout/" style="color: #ff6b6b; text-decoration: none; font-size: 14px;">Выйти</a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="/objects/login/">Войти</a>
+                        <a href="/objects/register/">Регистрация</a>
+                    {% endif %}
                 </nav>
                 <div class="mobile-menu">
                     <div class="burger-menu" onclick="toggleMenu()">
@@ -292,8 +324,19 @@
         <a href="/kadry/">Кадры</a>
         <a href="/ai-agent/">ИИ-агент</a>
         <a href="/analytics/">ИИ-аналитика</a>
-        <a href="/telegram/">Чат-боты</a>
+        <a href="/telegram/">Рабочие чаты</a>
         <a href="/cameras/">Камеры</a>
+        {% if user.is_authenticated %}
+            <div class="user-menu">
+                <a href="/objects/profile/" style="color: #00d4ff; text-decoration: none;">{{ user.username }}</a>
+                <div class="logout-btn">
+                    <a href="/objects/logout/" style="color: #ff6b6b; text-decoration: none; font-size: 14px;">Выйти</a>
+                </div>
+            </div>
+        {% else %}
+            <a href="/objects/login/">Войти</a>
+            <a href="/objects/register/">Регистрация</a>
+        {% endif %}
     </div>
     
     {% block extra_scripts %}{% endblock %}

@@ -1,0 +1,174 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .register-container {
+        max-width: 450px;
+        margin: 30px auto;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 30px;
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .register-title {
+        text-align: center;
+        color: white;
+        margin-bottom: 25px;
+        font-size: 26px;
+    }
+    .photo-section {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+    .photo-preview {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #00d4ff;
+        margin-bottom: 10px;
+    }
+    .form-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+    .form-group {
+        margin-bottom: 15px;
+        flex: 1;
+    }
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid rgba(255,255,255,0.2);
+        border-radius: 8px;
+        font-size: 14px;
+        background: rgba(255,255,255,0.1);
+        color: white;
+        transition: all 0.3s ease;
+    }
+    .form-control::placeholder {
+        color: rgba(255,255,255,0.7);
+    }
+    .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+    }
+    .btn-register {
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        margin-top: 10px;
+    }
+    .btn-register:hover {
+        transform: translateY(-2px);
+    }
+    .error {
+        color: #ff6b6b;
+        font-size: 12px;
+        margin-top: 3px;
+    }
+    .login-link {
+        text-align: center;
+        margin-top: 15px;
+        color: rgba(255,255,255,0.8);
+        font-size: 14px;
+    }
+    .login-link a {
+        color: #00d4ff;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <h2 class="register-title">Регистрация</h2>
+    
+    <div class="photo-section">
+        <img src="/media/user_photos/avatar_default.jpg" alt="Аватар" class="photo-preview" id="photoPreview">
+    </div>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                    <div class="error">{{ form.first_name.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                    <div class="error">{{ form.last_name.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            {{ form.username }}
+            {% if form.username.errors %}
+                <div class="error">{{ form.username.errors.0 }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <div class="error">{{ form.password.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.password_confirm }}
+                {% if form.password_confirm.errors %}
+                    <div class="error">{{ form.password_confirm.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label style="color: white; margin-bottom: 5px; display: block; font-size: 14px;">Фото профиля (необязательно):</label>
+            {{ photo_form.photo }}
+        </div>
+        
+        {% if form.non_field_errors %}
+            <div class="error">{{ form.non_field_errors.0 }}</div>
+        {% endif %}
+        
+        <button type="submit" class="btn-register">Зарегистрироваться</button>
+    </form>
+    
+    <div class="login-link">
+        Уже есть аккаунт? <a href="/login/">Войти</a>
+    </div>
+</div>
+
+<script>
+document.getElementById('id_photo').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('photoPreview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+{% endblock %}

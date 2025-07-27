@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Категория ресурса
 class KategoriyaResursa(models.Model):
@@ -27,8 +28,6 @@ class Resurs(models.Model):
     
     def __str__(self):
         return self.naimenovanie
-
-
 
 # Объект
 class Objekt(models.Model):
@@ -153,3 +152,20 @@ class ObjectJson(models.Model):
     
     def __str__(self):
         return self.nazvanie
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    photo = models.ImageField(upload_to='user_photos/', default='user_photos/avatar_default.jpg', verbose_name='Фото')
+    organizations = models.ManyToManyField(
+        'sotrudniki.Organizaciya',
+        verbose_name='Организации',
+        blank=True,
+        related_name='users'
+    )
+    
+    class Meta:
+        verbose_name = 'Профиль пользователя'
+        verbose_name_plural = 'Профили пользователей'
+    
+    def __str__(self):
+        return f'Профиль {self.user.username}'

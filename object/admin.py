@@ -1,6 +1,8 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
 from django import forms
-from .models import KategoriyaResursa, Resurs, Objekt, ResursyPoObjektu, FakticheskijResursPoObjektu, RaskhodResursa, DokhodResursa, SvodnayaRaskhodDokhodPoDnyam
+from .models import KategoriyaResursa, Resurs, Objekt, ResursyPoObjektu, FakticheskijResursPoObjektu, RaskhodResursa, DokhodResursa, SvodnayaRaskhodDokhodPoDnyam, UserProfile
 
 def format_number(value):
     """Форматирует число с пробелами как разделителями разрядов"""
@@ -392,3 +394,13 @@ class SvodnayaRaskhodDokhodPoDnyamAdmin(admin.ModelAdmin):
         extra_context = extra_context or {}
         extra_context['title'] = 'Выберите объект для просмотра сводной информации'
         return super().changelist_view(request, extra_context)
+class UserProfileInline(admin.StackedInline):
+    model = UserProfile
+    can_delete = False
+    verbose_name_plural = 'Профиль'
+
+class UserAdmin(BaseUserAdmin):
+    inlines = (UserProfileInline,)
+
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)

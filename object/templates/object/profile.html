@@ -1,0 +1,191 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Профиль пользователя{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .profile-container {
+        max-width: 800px;
+        margin: 20px auto;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 30px;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+    }
+    .profile-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .profile-photo {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-right: 20px;
+        object-fit: cover;
+        border: 3px solid #00d4ff;
+    }
+    .profile-info h2 {
+        color: white;
+        margin: 0 0 10px 0;
+    }
+    .profile-info p {
+        color: rgba(255,255,255,0.8);
+        margin: 5px 0;
+    }
+    .section {
+        margin-bottom: 30px;
+    }
+    .section h3 {
+        color: #00d4ff;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #00d4ff;
+        padding-bottom: 5px;
+    }
+    .item {
+        background: rgba(255,255,255,0.05);
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        border-left: 4px solid #00d4ff;
+    }
+    .item h4 {
+        color: white;
+        margin: 0 0 5px 0;
+    }
+    .item p {
+        color: rgba(255,255,255,0.7);
+        margin: 0;
+        font-size: 14px;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid rgba(255,255,255,0.2);
+        border-radius: 8px;
+        background: rgba(255,255,255,0.1);
+        color: white;
+        font-size: 14px;
+    }
+    .form-control:focus {
+        outline: none;
+        border-color: #00d4ff;
+    }
+    .btn-save {
+        background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    .btn-save:hover {
+        transform: translateY(-1px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <img src="{{ profile.photo.url }}" alt="Фото профиля" class="profile-photo">
+        <div class="profile-info">
+            <h2>{{ user.get_full_name|default:user.username }}</h2>
+            <p><strong>Дата регистрации:</strong> {{ user.date_joined|date:"d.m.Y" }}</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Профиль</h3>
+        <div id="profile-view">
+            <div class="item">
+                <p><strong>Логин:</strong> {{ user.username }}</p>
+                <p><strong>Имя:</strong> {{ user.first_name|default:"Не указано" }}</p>
+                <p><strong>Фамилия:</strong> {{ user.last_name|default:"Не указана" }}</p>
+                <p><strong>Email:</strong> {{ user.email|default:"Не указан" }}</p>
+            </div>
+            <button class="btn-save" onclick="toggleEdit()">Редактирование профиля</button>
+        </div>
+        <div id="profile-edit" style="display: none;">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ user_form.username }}
+                </div>
+                <div class="form-group">
+                    {{ user_form.first_name }}
+                </div>
+                <div class="form-group">
+                    {{ user_form.last_name }}
+                </div>
+                <div class="form-group">
+                    {{ user_form.email }}
+                </div>
+                <div class="form-group">
+                    <label style="color: white; margin-bottom: 5px; display: block;">Фото:</label>
+                    {{ photo_form.photo }}
+                </div>
+                <button type="submit" class="btn-save">Сохранить</button>
+                <button type="button" class="btn-save" onclick="toggleEdit()" style="background: #666; margin-left: 10px;">Отмена</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Организации</h3>
+        {% if organizations %}
+            {% for org in organizations %}
+            <div class="item">
+                <h4>{{ org.nazvanie }}</h4>
+                <p><strong>ИНН:</strong> {{ org.inn|default:"Не указан" }}</p>
+                <p><strong>ОГРН:</strong> {{ org.ogrn|default:"Не указан" }}</p>
+                <p><strong>Адрес:</strong> {{ org.adres|default:"Не указан" }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="color: rgba(255,255,255,0.7);">Нет связанных организаций</p>
+        {% endif %}
+        <button class="btn-save" style="margin-top: 10px;">Добавить организацию</button>
+    </div>
+
+    {% if objects %}
+    <div class="section">
+        <h3>Объекты</h3>
+        {% for obj in objects %}
+        <div class="item">
+            <h4><a href="{% url 'object_detail' obj.id %}" style="color: #00d4ff; text-decoration: none;">{{ obj.nazvanie }}</a></h4>
+            <p><strong>Статус:</strong> {{ obj.get_status_display }}</p>
+            <p><strong>Дата начала:</strong> {{ obj.data_nachala|date:"d.m.Y" }}</p>
+            <p><strong>Плановое завершение:</strong> {{ obj.data_plan_zaversheniya|date:"d.m.Y" }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="section">
+        <h3>Объекты</h3>
+        <p style="color: rgba(255,255,255,0.7);">Нет связанных объектов</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function toggleEdit() {
+    const viewDiv = document.getElementById('profile-view');
+    const editDiv = document.getElementById('profile-edit');
+    
+    if (viewDiv.style.display === 'none') {
+        viewDiv.style.display = 'block';
+        editDiv.style.display = 'none';
+    } else {
+        viewDiv.style.display = 'none';
+        editDiv.style.display = 'block';
+    }
+}
+</script>
+{% endblock %}

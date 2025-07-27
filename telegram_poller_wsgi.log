@@ -2614,3 +2614,253 @@ django.template.exceptions.TemplateDoesNotExist: cams/camera_list.html
 2025-07-20 17:20:49,017 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
 2025-07-20 17:20:54,742 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
 2025-07-20 17:32:58,799 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
+2025-07-20 17:33:05,058 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-21 23:16:32,315 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 10:55:39,689 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 10:56:14,153 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 11:21:40,509 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 11:22:08,404 - django.request - ERROR - Internal Server Error: /admin/cams/camera/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: cams_camera
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\contrib\admin\options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\contrib\admin\sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\utils\decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\utils\decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\contrib\admin\options.py", line 2024, in changelist_view
+    cl = self.get_changelist_instance(request)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\contrib\admin\options.py", line 867, in get_changelist_instance
+    return ChangeList(
+           ^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\contrib\admin\views\main.py", line 146, in __init__
+    self.get_results(request)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\contrib\admin\views\main.py", line 313, in get_results
+    result_count = paginator.count
+                   ^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\utils\functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\paginator.py", line 110, in count
+    return c()
+           ^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\query.py", line 604, in count
+    return self.query.get_count(using=self.db)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\sql\query.py", line 644, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\sql\query.py", line 626, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\backends\sqlite3\base.py", line 360, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: cams_camera
+2025-07-27 11:23:07,815 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 11:24:40,553 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\models.py changed, reloading.
+2025-07-27 11:24:45,283 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 11:24:47,986 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\models.py changed, reloading.
+2025-07-27 11:25:48,779 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 11:29:06,356 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\models.py changed, reloading.
+2025-07-27 11:29:11,204 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 11:31:20,506 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 11:34:23,906 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
+2025-07-27 11:34:28,924 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 11:35:09,992 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-27 11:37:36,824 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 11:37:37,649 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-27 11:37:37,725 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-27 11:43:03,701 - telegrambot.views - INFO - Получен запрос на генерацию документа: Смета для жилой дом 2 этажа на 10 квартир, нулевой цикл. Никакого текста, только JSON:{"kategoriya_resursa":{"Кадровое обеспечение":[{"sotrudniki_specialnost":"str","hours":0,"price":0}],"Машины и механизмы":[{"name":"str","hours":0,"price":0}],"Инструмент и материалы":[{"name":"str","count":0,"unit":"str","price":0}],"Административно-бытовые расходы":[{"name":"str","count":0,"unit":"str","price":0}],"СИЗ и спецодежда":[{"name":"str","count":0,"unit":"str","price":0}]},"works":[{"section":"str","items":[{"name":"str","unit":"str","price":0,"count":0}]}]}
+2025-07-27 11:43:03,702 - telegrambot.views - INFO - Отправляю запрос к DeepSeek API...
+2025-07-27 11:43:03,702 - telegrambot.services - INFO - Отправляю запрос к DeepSeek API с промптом: Смета для жилой дом 2 этажа на 10 квартир, нулевой цикл. Никакого текста, только JSON:{"kategoriya_r...
+2025-07-27 11:43:03,703 - telegrambot.services - INFO - Отправляю POST запрос к https://api.deepseek.com/v1/chat/completions
+2025-07-27 11:43:37,636 - telegrambot.services - INFO - Получен ответ от DeepSeek API: статус 200
+2025-07-27 11:43:37,636 - telegrambot.services - INFO - Успешно сгенерирован документ длиной 2418 символов
+2025-07-27 11:43:37,637 - telegrambot.views - INFO - Получен ответ от DeepSeek: ```json
+{
+  "kategoriya_resursa": {
+    "Кадровое обеспечение": [
+      {
+        "sotrudniki_specialnost": "Прораб",
+        "hours": 160,
+        "price": 500
+      },
+      {
+        "sotrudniki_sp...
+2025-07-27 11:43:37,642 - telegrambot.views - INFO - Найдено активных пользователей: 1
+2025-07-27 11:43:37,644 - telegrambot.views - INFO - Отправляю документ пользователю 5690246274 (Николай)
+2025-07-27 11:43:37,835 - telegrambot.services - INFO - Бот проверен: MyTestBot (@NeSrv2Bot)
+2025-07-27 11:43:37,836 - telegrambot.services - INFO - Отправка сообщения в Telegram: chat_id=5690246274, text=```json
+{
+  "kategoriya_resursa": {
+    "Кадровое ...
+2025-07-27 11:43:38,067 - telegrambot.services - INFO - Ответ от Telegram API (статус 200): {"ok":true,"result":{"message_id":707,"from":{"id":7836693206,"is_bot":true,"first_name":"MyTestBot","username":"NeSrv2Bot"},"chat":{"id":5690246274,"first_name":"\u041d\u0438\u043a\u043e\u043b\u0430\u0439","username":"nesrv","type":"private"},"date":1753605818,"text":"```json\n{\n  \"kategoriya_resursa\": {\n    \"\u041a\u0430\u0434\u0440\u043e\u0432\u043e\u0435 \u043e\u0431\u0435\u0441\u043f\u0435\u0447\u0435\u043d\u0438\u0435\": [\n      {\n        \"sotrudniki_specialnost\": \"\u041f\u0440\u043e\u0440\u0430\u0431\",\n        \"hours\": 160,\n        \"price\": 500\n      },\n      {\n        \"sotrudniki_specialnost\": \"\u0411\u0435\u0442\u043e\u043d\u0449\u0438\u043a\",\n        \"hours\": 480,\n        \"price\": 350\n      },\n      {\n        \"sotrudniki_specialnost\": \"\u0410\u0440\u043c\u0430\u0442\u0443\u0440\u0449\u0438\u043a\",\n        \"hours\": 400,\n        \"price\": 380\n      },\n      {\n        \"sotrudniki_specialnost\": \"\u041a\u0440\u0430\u043d\u043e\u0432\u0449\u0438\u043a\",\n        \"hours\": 200,\n        \"price\": 450\n      }\n    ],\n    \"\u041c\u0430\u0448\u0438\u043d\u044b \u0438 \u043c\u0435\u0445\u0430\u043d\u0438\u0437\u043c\u044b\": [\n      {\n        \"name\": \"\u042d\u043a\u0441\u043a\u0430\u0432\u0430\u0442\u043e\u0440\",\n        \"hours\": 80,\n        \"price\": 1200\n      },\n      {\n        \"name\": \"\u0411\u0435\u0442\u043e\u043d\u043e\u043d\u0430\u0441\u043e\u0441\",\n        \"hours\": 60,\n        \"price\": 900\n      },\n      {\n        \"name\": \"\u041a\u0440\u0430\u043d\",\n        \"hours\": 100,\n        \"price\": 1500\n      }\n    ],\n    \"\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u0438 \u043c\u0430\u0442\u0435\u0440\u0438\u0430\u043b\u044b\": [\n      {\n        \"name\": \"\u0411\u0435\u0442\u043e\u043d \u041c300\",\n        \"count\": 150,\n        \"unit\": \"\u043c3\",\n        \"price\": 4500\n      },\n      {\n        \"name\": \"\u0410\u0440\u043c\u0430\u0442\u0443\u0440\u0430 \u0410500\u0421\",\n        \"count\": 5,\n        \"unit\": \"\u0442\",\n        \"price\": 55000\n      },\n      {\n        \"name\": \"\u0414\u043e\u0441\u043a\u0430 \u043e\u0431\u0440\u0435\u0437\u043d\u0430\u044f\",\n        \"count\": 3,\n        \"unit\": \"\u043c3\",\n        \"price\": 12000\n      }\n    ],\n    \"\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u0438\u0432\u043d\u043e-\u0431\u044b\u0442\u043e\u0432\u044b\u0435 \u0440\u0430\u0441\u0445\u043e\u0434\u044b\": [\n      {\n        \"name\": \"\u041e\u0444\u0438\u0441\u043d\u044b\u0435 \u0440\u0430\u0441\u0445\u043e\u0434\u044b\",\n        \"count\": 1,\n        \"unit\": \"\u043c\u0435\u0441\",\n        \"price\": 15000\n      },\n      {\n        \"name\": \"\u0410\u0440\u0435\u043d\u0434\u0430 \u0431\u044b\u0442\u043e\u0432\u043a\u0438\",\n        \"count\": 2,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 8000\n      }\n    ],\n    \"\u0421\u0418\u0417 \u0438 \u0441\u043f\u0435\u0446\u043e\u0434\u0435\u0436\u0434\u0430\": [\n      {\n        \"name\": \"\u041a\u0430\u0441\u043a\u0430\",\n        \"count\": 10,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 500\n      },\n      {\n        \"name\": \"\u041f\u0435\u0440\u0447\u0430\u0442\u043a\u0438\",\n        \"count\": 50,\n        \"unit\": \"\u043f\u0430\u0440\",\n        \"price\": 100\n      }\n    ]\n  },\n  \"works\": [\n    {\n      \"section\": \"\u0417\u0435\u043c\u043b\u044f\u043d\u044b\u0435 \u0440\u0430\u0431\u043e\u0442\u044b\",\n      \"items\": [\n        {\n          \"name\": \"\u0420\u0430\u0437\u0440\u0430\u0431\u043e\u0442\u043a\u0430 \u043a\u043e\u0442\u043b\u043e\u0432\u0430\u043d\u0430\",\n          \"unit\": \"\u043c3\",\n          \"price\": 300,\n          \"count\": 500\n        },\n        {\n          \"name\": \"\u041e\u0431\u0440\u0430\u0442\u043d\u0430\u044f \u0437\u0430\u0441\u044b\u043f\u043a\u0430\",\n          \"unit\": \"\u043c3\",\n          \"price\": 200,\n          \"count\": 200\n        }\n      ]\n    },\n    {\n      \"section\": \"\u0424\u0443\u043d\u0434\u0430\u043c\u0435\u043d\u0442\",\n      \"items\": [\n        {\n          \"name\": \"\u0423\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u043e \u043f\u043b\u0438\u0442\u043d\u043e\u0433\u043e \u0444\u0443\u043d\u0434\u0430\u043c\u0435\u043d\u0442\u0430\",\n          \"unit\": \"\u043c3\",\n          \"price\": 4500,\n          \"count\": 150\n        },\n        {\n          \"name\": \"\u0413\u0438\u0434\u0440\u043e\u0438\u0437\u043e\u043b\u044f\u0446\u0438\u044f \u0444\u0443\u043d\u0434\u0430\u043c\u0435\u043d\u0442\u0430\",\n          \"unit\": \"\u043c2\",\n          \"price\": 350,\n          \"count\": 300\n        }\n      ]\n    }\n  ]\n}\n```"}}
+2025-07-27 11:43:38,070 - telegrambot.services - INFO - Успешный ответ от Telegram API: {'ok': True, 'result': {'message_id': 707, 'from': {'id': 7836693206, 'is_bot': True, 'first_name': 'MyTestBot', 'username': 'NeSrv2Bot'}, 'chat': {'id': 5690246274, 'first_name': 'Николай', 'username': 'nesrv', 'type': 'private'}, 'date': 1753605818, 'text': '```json\n{\n  "kategoriya_resursa": {\n    "Кадровое обеспечение": [\n      {\n        "sotrudniki_specialnost": "Прораб",\n        "hours": 160,\n        "price": 500\n      },\n      {\n        "sotrudniki_specialnost": "Бетонщик",\n        "hours": 480,\n        "price": 350\n      },\n      {\n        "sotrudniki_specialnost": "Арматурщик",\n        "hours": 400,\n        "price": 380\n      },\n      {\n        "sotrudniki_specialnost": "Крановщик",\n        "hours": 200,\n        "price": 450\n      }\n    ],\n    "Машины и механизмы": [\n      {\n        "name": "Экскаватор",\n        "hours": 80,\n        "price": 1200\n      },\n      {\n        "name": "Бетононасос",\n        "hours": 60,\n        "price": 900\n      },\n      {\n        "name": "Кран",\n        "hours": 100,\n        "price": 1500\n      }\n    ],\n    "Инструмент и материалы": [\n      {\n        "name": "Бетон М300",\n        "count": 150,\n        "unit": "м3",\n        "price": 4500\n      },\n      {\n        "name": "Арматура А500С",\n        "count": 5,\n        "unit": "т",\n        "price": 55000\n      },\n      {\n        "name": "Доска обрезная",\n        "count": 3,\n        "unit": "м3",\n        "price": 12000\n      }\n    ],\n    "Административно-бытовые расходы": [\n      {\n        "name": "Офисные расходы",\n        "count": 1,\n        "unit": "мес",\n        "price": 15000\n      },\n      {\n        "name": "Аренда бытовки",\n        "count": 2,\n        "unit": "шт",\n        "price": 8000\n      }\n    ],\n    "СИЗ и спецодежда": [\n      {\n        "name": "Каска",\n        "count": 10,\n        "unit": "шт",\n        "price": 500\n      },\n      {\n        "name": "Перчатки",\n        "count": 50,\n        "unit": "пар",\n        "price": 100\n      }\n    ]\n  },\n  "works": [\n    {\n      "section": "Земляные работы",\n      "items": [\n        {\n          "name": "Разработка котлована",\n          "unit": "м3",\n          "price": 300,\n          "count": 500\n        },\n        {\n          "name": "Обратная засыпка",\n          "unit": "м3",\n          "price": 200,\n          "count": 200\n        }\n      ]\n    },\n    {\n      "section": "Фундамент",\n      "items": [\n        {\n          "name": "Устройство плитного фундамента",\n          "unit": "м3",\n          "price": 4500,\n          "count": 150\n        },\n        {\n          "name": "Гидроизоляция фундамента",\n          "unit": "м2",\n          "price": 350,\n          "count": 300\n        }\n      ]\n    }\n  ]\n}\n```'}}
+2025-07-27 11:43:38,091 - telegrambot.services - INFO - Сообщение сохранено в TelegramMessage: user_id=7
+2025-07-27 11:43:38,252 - telegrambot.views - INFO - Документ сгенерирован и отправлен: 1/1 пользователей
+2025-07-27 11:52:34,508 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
+2025-07-27 11:52:40,441 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 11:54:54,624 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
+2025-07-27 11:55:00,020 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 12:00:17,185 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 12:00:22,632 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 12:00:26,633 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 12:00:32,529 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 12:20:26,507 - django.request - WARNING - Not Found: /register
+2025-07-27 12:20:37,987 - django.request - WARNING - Not Found: /register/step1/'
+2025-07-27 12:20:40,322 - django.request - WARNING - Not Found: /register/step1/
+2025-07-27 12:20:43,250 - django.request - WARNING - Not Found: /register/step1
+2025-07-27 12:21:01,135 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
+2025-07-27 12:21:06,091 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 12:27:55,841 - django.request - WARNING - Not Found: /objects/register/step1/
+2025-07-27 12:28:14,654 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-07-27 12:30:46,816 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 12:33:06,680 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\urls.py changed, reloading.
+2025-07-27 12:33:33,171 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 14:08:56,557 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\urls.py changed, reloading.
+2025-07-27 14:11:40,166 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 14:19:37,314 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\models.py changed, reloading.
+2025-07-27 14:19:43,326 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 14:19:50,950 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\admin.py changed, reloading.
+2025-07-27 14:19:56,649 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 14:21:32,541 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 14:26:56,851 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 14:27:02,573 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 14:27:11,018 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-07-27 14:27:16,323 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 14:28:42,688 - django.request - ERROR - Internal Server Error: /profile/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 1577, in profile
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+                       ^^^^^^^^^^^
+NameError: name 'UserProfile' is not defined
+2025-07-27 14:29:04,427 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 14:29:10,052 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 14:33:04,978 - django.request - WARNING - Method Not Allowed (GET): /admin/logout/
+2025-07-27 14:33:18,883 - django.request - WARNING - Method Not Allowed (GET): /admin/logout/
+2025-07-27 14:33:37,113 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 14:33:42,685 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 14:33:54,034 - django.request - WARNING - Not Found: /logout/
+2025-07-27 14:34:05,146 - django.request - WARNING - Not Found: /logout/
+2025-07-27 14:34:21,411 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-07-27 14:34:26,366 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 14:34:54,949 - django.request - WARNING - Not Found: /objects/register/step1/
+2025-07-27 14:36:07,974 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-07-27 14:36:13,348 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 14:36:16,173 - django.request - WARNING - Not Found: /objects/register/step1/
+2025-07-27 14:36:31,746 - django.request - WARNING - Not Found: /objects/register/step1/
+2025-07-27 14:37:20,559 - django.request - WARNING - Not Found: /objects/register/step1/
+2025-07-27 14:37:23,665 - django.request - WARNING - Not Found: /objects/register/step1/
+2025-07-27 14:38:07,955 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-07-27 14:38:13,782 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 14:58:07,370 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 14:59:35,293 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:02:00,723 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\forms.py changed, reloading.
+2025-07-27 15:02:07,681 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:02:18,658 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 15:02:24,673 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:11:33,371 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 15:11:41,507 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:11:44,308 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-07-27 15:11:50,439 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:15:57,198 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 15:16:04,583 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:18:21,926 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-07-27 15:18:28,006 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:19:11,919 - django.request - WARNING - Not Found: /objects/27/
+2025-07-27 15:19:20,514 - django.request - WARNING - Not Found: /objects/create/
+2025-07-27 15:19:37,439 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-07-27 15:19:43,403 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:19:46,635 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\urls.py changed, reloading.
+2025-07-27 15:19:52,283 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:19:55,855 - django.request - WARNING - Not Found: /objects/27/
+2025-07-27 15:20:09,127 - django.request - WARNING - Not Found: /objects/31/
+2025-07-27 15:23:02,285 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-07-27 15:23:06,978 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:23:15,296 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-07-27 15:23:19,986 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:24:17,262 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:26:13,135 - django.request - WARNING - Not Found: /objects/27/debug-cell/
+2025-07-27 15:26:13,136 - django.request - WARNING - Not Found: /objects/27/debug-salary/
+2025-07-27 15:26:13,141 - django.request - WARNING - Not Found: /objects/27/get-salary-data/
+2025-07-27 15:26:18,631 - django.request - WARNING - Not Found: /objects/27/debug-salary/
+2025-07-27 15:26:18,636 - django.request - WARNING - Not Found: /objects/27/debug-cell/
+2025-07-27 15:26:18,640 - django.request - WARNING - Not Found: /objects/27/get-salary-data/
+2025-07-27 15:26:26,206 - django.request - WARNING - Not Found: /objects/27/debug-cell/
+2025-07-27 15:26:26,210 - django.request - WARNING - Not Found: /objects/27/debug-salary/
+2025-07-27 15:26:26,216 - django.request - WARNING - Not Found: /objects/27/get-salary-data/
+2025-07-27 15:28:00,709 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-07-27 15:28:51,378 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:29:27,445 - django.request - WARNING - Not Found: /profile/
+2025-07-27 15:29:32,834 - django.request - WARNING - Not Found: /logout/
+2025-07-27 15:30:07,953 - django.request - WARNING - Not Found: /logout/
+2025-07-27 15:30:11,099 - django.request - WARNING - Not Found: /logout/
+2025-07-27 15:41:28,856 - django.request - WARNING - Not Found: /logout/
+2025-07-27 15:41:31,962 - django.request - WARNING - Not Found: /profile/
+2025-07-27 15:42:05,448 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 15:42:12,547 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:42:37,538 - django.request - WARNING - Not Found: /logout/
+2025-07-27 15:42:42,084 - django.request - WARNING - Not Found: /profile/
+2025-07-27 15:43:33,792 - django.security.csrf - WARNING - Forbidden (CSRF token from POST incorrect.): /objects/login/
+2025-07-27 15:47:03,664 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\models.py changed, reloading.

@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth import login
+from django.contrib.auth.models import User
 from django.db.models import Sum, Count, F
-from .models import Objekt, ResursyPoObjektu, RaskhodResursa, Resurs, FakticheskijResursPoObjektu, DokhodResursa, SvodnayaRaskhodDokhodPoDnyam
+from .models import Objekt, ResursyPoObjektu, RaskhodResursa, Resurs, FakticheskijResursPoObjektu, DokhodResursa, SvodnayaRaskhodDokhodPoDnyam, UserProfile
+from .forms import UserRegistrationForm, OrganizationForm, UserProfileForm, UserPhotoForm
 from datetime import datetime, timedelta
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -12,7 +15,7 @@ import matplotlib.pyplot as plt
 import os
 from django.conf import settings
 import time
-from sotrudniki.models import Sotrudnik, Specialnost
+from sotrudniki.models import Sotrudnik, Specialnost, Organizaciya
 
 def home(request):
     # Получаем статистику для главной страницы
@@ -1515,3 +1518,89 @@ def add_employee_to_object_api(request, object_id, employee_id):
                 })
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
+def register(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        photo_form = UserPhotoForm(request.POST, request.FILES)
+        if form.is_valid() and photo_form.is_valid():
+            # Создаем пользователя
+            user = User.objects.create_user(
+                username=form.cleaned_data['username'],
+                first_name=form.cleaned_data['first_name'],
+                last_name=form.cleaned_data['last_name'],
+                password=form.cleaned_data['password']
+            )
+            
+            # Создаем профиль
+            profile = UserProfile.objects.create(user=user)
+            if photo_form.cleaned_data['photo']:
+                profile.photo = photo_form.cleaned_data['photo']
+                profile.save()
+            
+            # Авторизуем пользователя
+            login(request, user)
+            
+            return redirect('/objects/profile/')
+    else:
+        form = UserRegistrationForm()
+        photo_form = UserPhotoForm()
+    return render(request, 'object/register.html', {'form': form, 'photo_form': photo_form})
+def profile(request):
+    if not request.user.is_authenticated:
+        return redirect('/objects/register/')
+    
+    # Получаем или создаем профиль пользователя
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if request.method == 'POST':
+        user_form = UserProfileForm(request.POST, instance=request.user)
+        photo_form = UserPhotoForm(request.POST, request.FILES, instance=user_profile)
+        
+        if user_form.is_valid() and photo_form.is_valid():
+            user_form.save()
+            photo_form.save()
+            return redirect('/objects/profile/')
+    else:
+        user_form = UserProfileForm(instance=request.user)
+        photo_form = UserPhotoForm(instance=user_profile)
+    
+    # Получаем организации пользователя
+    from sotrudniki.models import Sotrudnik
+    organizations = []
+    try:
+        sotrudnik = Sotrudnik.objects.get(fio__icontains=request.user.get_full_name())
+        if sotrudnik.organizaciya:
+            organizations.append(sotrudnik.organizaciya)
+    except:
+        pass
+    
+    # Получаем объекты
+    objects = Objekt.objects.filter(otvetstvennyj__icontains=request.user.get_full_name())
+    
+    context = {
+        'profile': user_profile,
+        'user_form': user_form,
+        'photo_form': photo_form,
+        'organizations': organizations,
+        'objects': objects,
+    }
+    
+    return render(request, 'object/profile.html', context)
+def logout_view(request):
+    from django.contrib.auth import logout
+    logout(request)
+    return redirect('home')
+def login_view(request):
+    if request.method == 'POST':
+        from django.contrib.auth import authenticate, login
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('/objects/profile/')
+        else:
+            return render(request, 'object/login.html', {'error': 'Неверный логин или пароль'})
+    
+    return render(request, 'object/login.html')
