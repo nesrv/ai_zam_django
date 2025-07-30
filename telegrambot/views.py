@@ -941,6 +941,16 @@ def create_object_from_json(request):
             otvetstvennyj='Администратор'
         )
         
+        # Привязываем объект к организациям авторизованного пользователя
+        if request.user.is_authenticated:
+            try:
+                user_profile = request.user.profile
+                user_organizations = user_profile.organizations.all()
+                obj.organizacii.set(user_organizations)
+            except:
+                # Если профиль не найден, пропускаем
+                pass
+        
         # Получаем подразделение с кодом 792
         podrazdelenie, _ = Podrazdelenie.objects.get_or_create(
             kod='792',
@@ -1361,6 +1371,231 @@ def save_hours(request):
             'success': False,
             'error': str(e)
         }, status=500)
+
+@csrf_exempt
+def get_json_files(request):
+    """Получение списка JSON файлов из папки media/documents_ai"""
+    try:
+        import os
+        import glob
+        from django.conf import settings
+        
+        # Путь к папке с JSON файлами
+        json_dir = os.path.join(settings.MEDIA_ROOT, 'documents_ai')
+        
+        if not os.path.exists(json_dir):
+            return JsonResponse({'ok': False, 'error': 'Папка documents_ai не найдена'})
+        
+        # Получаем все JSON файлы
+        json_files = glob.glob(os.path.join(json_dir, '*.json'))
+        
+        if not json_files:
+            return JsonResponse({'ok': False, 'error': 'JSON файлы не найдены'})
+        
+        # Формируем список файлов с информацией
+        files_info = []
+        for file_path in json_files:
+            file_name = os.path.basename(file_path)
+            file_stat = os.stat(file_path)
+            
+            files_info.append({
+                'name': file_name,
+                'size': file_stat.st_size,
+                'modified': file_stat.st_mtime
+            })
+        
+        # Сортируем по времени модификации (новые сначала)
+        files_info.sort(key=lambda x: x['modified'], reverse=True)
+        
+        return JsonResponse({
+            'ok': True,
+            'files': files_info,
+            'count': len(files_info)
+        })
+        
+    except Exception as e:
+        logger.error(f'Ошибка получения списка JSON файлов: {e}')
+        return JsonResponse({'ok': False, 'error': str(e)})
+
+@csrf_exempt
+@require_POST
+def create_object_from_selected_json(request):
+    """Создание объекта в базе данных на основе выбранного JSON файла"""
+    try:
+        data = json.loads(request.body)
+        file_name = data.get('file_name', '').strip()
+        
+        if not file_name:
+            return JsonResponse({'ok': False, 'error': 'Не указано имя файла'})
+        
+        from object.models import Objekt, KategoriyaResursa, Resurs, ResursyPoObjektu, FakticheskijResursPoObjektu
+        from sotrudniki.models import Specialnost, Podrazdelenie
+        from datetime import date
+        import os
+        from django.conf import settings
+        
+        # Путь к выбранному JSON файлу
+        json_file_path = os.path.join(settings.MEDIA_ROOT, 'documents_ai', file_name)
+        
+        if not os.path.exists(json_file_path):
+            return JsonResponse({'ok': False, 'error': f'Файл {file_name} не найден'})
+        
+        # Читаем JSON данные
+        with open(json_file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+            
+        # Извлекаем JSON из содержимого
+        import re
+        
+        # Ищем JSON в markdown блоке
+        json_match = re.search(r'```json\s*\n(.*?)\n```', content, re.DOTALL)
+        if json_match:
+            json_str = json_match.group(1).strip()
+        else:
+            # Ищем JSON объект по фигурным скобкам
+            start = content.find('{')
+            if start == -1:
+                raise ValueError('JSON объект не найден в файле')
+            
+            brace_count = 0
+            end = start
+            for i, char in enumerate(content[start:], start):
+                if char == '{':
+                    brace_count += 1
+                elif char == '}':
+                    brace_count -= 1
+                    if brace_count == 0:
+                        end = i + 1
+                        break
+            
+            json_str = content[start:end].strip()
+        
+        json_data = json.loads(json_str)
+        
+        # Создаем объект с именем на основе файла
+        object_name = f'Объект из {file_name}'
+        obj = Objekt.objects.create(
+            nazvanie=object_name,
+            data_nachala=date.today(),
+            data_plan_zaversheniya=date.today(),
+            otvetstvennyj='Администратор'
+        )
+        
+        # Привязываем объект к организациям авторизованного пользователя
+        if request.user.is_authenticated:
+            try:
+                user_profile = request.user.profile
+                user_organizations = user_profile.organizations.all()
+                obj.organizacii.set(user_organizations)
+            except:
+                # Если профиль не найден, пропускаем
+                pass
+        
+        # Получаем подразделение с кодом 792
+        podrazdelenie, _ = Podrazdelenie.objects.get_or_create(
+            kod='792',
+            defaults={'nazvanie': 'Линейные сотрудники'}
+        )
+        
+        # Обрабатываем kategoriya_resursa (расходы)
+        if 'kategoriya_resursa' in json_data:
+            for category_name, items in json_data['kategoriya_resursa'].items():
+                # Создаем категорию расходов
+                category, _ = KategoriyaResursa.objects.get_or_create(
+                    nazvanie=category_name,
+                    defaults={'raskhod_dokhod': True}
+                )
+                
+                for item in items:
+                    if category_name in ['Кадры', 'Кадровое обеспечение']:
+                        resource_name = item.get('sotrudniki_specialnost') or item.get('name', 'Не указано')
+                        quantity = item.get('hours') or item.get('часов', 1)
+                        price = item.get('price') or item.get('стоимость_часа', 0)
+                        unit = 'час'
+                        
+                        Specialnost.objects.get_or_create(
+                            nazvanie=resource_name,
+                            defaults={'kategoriya': 'Строительство'}
+                        )
+                    else:
+                        resource_name = item.get('name') or item.get('наименование', 'Не указано')
+                        quantity = item.get('count') or item.get('hours') or item.get('количество') or item.get('часов', 1)
+                        price = item.get('price') or item.get('цена_за_ед') or item.get('стоимость_часа', 0)
+                        unit = item.get('unit') or item.get('ед_изм', 'шт')
+                    
+                    # Создаем ресурс
+                    resource, _ = Resurs.objects.get_or_create(
+                        naimenovanie=resource_name,
+                        kategoriya_resursa=category,
+                        defaults={'edinica_izmereniya': unit}
+                    )
+                    
+                    # Добавляем ресурс к объекту
+                    resurs_po_objektu = ResursyPoObjektu.objects.create(
+                        objekt=obj,
+                        resurs=resource,
+                        kolichestvo=quantity,
+                        cena=price
+                    )
+                    
+                    # Создаем фактический ресурс
+                    FakticheskijResursPoObjektu.objects.create(
+                        resurs_po_objektu=resurs_po_objektu
+                    )
+        
+        # Обрабатываем works (доходы)
+        if 'works' in json_data:
+            for work_section in json_data['works']:
+                section_name = work_section.get('section', 'Работы')
+                
+                # Создаем категорию доходов
+                category, _ = KategoriyaResursa.objects.get_or_create(
+                    nazvanie=section_name,
+                    defaults={'raskhod_dokhod': False}
+                )
+                
+                for item in work_section.get('items', []):
+                    resource_name = item.get('name') or item.get('наименование', 'Не указано')
+                    quantity = item.get('count') or item.get('количество', 1)
+                    unit = item.get('unit') or item.get('ед_изм', 'шт')
+                    price = item.get('price') or item.get('цена_за_ед', 0)
+                    
+                    # Создаем ресурс
+                    resource, _ = Resurs.objects.get_or_create(
+                        naimenovanie=resource_name,
+                        kategoriya_resursa=category,
+                        defaults={'edinica_izmereniya': unit}
+                    )
+                    
+                    # Добавляем ресурс к объекту с ценой из JSON (доходы)
+                    resurs_po_objektu = ResursyPoObjektu.objects.create(
+                        objekt=obj,
+                        resurs=resource,
+                        kolichestvo=quantity,
+                        cena=price
+                    )
+                    
+                    # Создаем фактический ресурс
+                    FakticheskijResursPoObjektu.objects.create(
+                        resurs_po_objektu=resurs_po_objektu
+                    )
+        
+        # Добавляем всех сотрудников в подразделение 792
+        from sotrudniki.models import Sotrudnik
+        sotrudniki_792 = Sotrudnik.objects.filter(podrazdelenie__kod='792')
+        obj.sotrudniki.set(sotrudniki_792)
+        
+        return JsonResponse({
+            'ok': True,
+            'object_id': obj.id,
+            'object_name': obj.nazvanie,
+            'json_file': file_name,
+            'message': f'Объект успешно создан из файла {file_name}'
+        })
+        
+    except Exception as e:
+        logger.error(f'Ошибка создания объекта из выбранного JSON: {e}')
+        return JsonResponse({'ok': False, 'error': str(e)})
 
 @csrf_exempt
 @require_POST

@@ -14,27 +14,27 @@
         --card-bg: rgba(18, 18, 18, 0.8);
         --card-border: rgba(255, 255, 255, 0.1);
     }
-    
+
     body {
         background-color: var(--dark-bg);
         color: white;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    
+
     /* Dashboard container */
     .risk-dashboard {
         max-width: 1400px;
         margin: 0 auto;
         padding: 2rem;
     }
-    
+
     /* Header styles */
     .dashboard-header {
         text-align: center;
         margin-bottom: 2rem;
         position: relative;
     }
-    
+
     .dashboard-title {
         font-size: 2.5rem;
         font-weight: bold;
@@ -45,7 +45,7 @@
         position: relative;
         display: inline-block;
     }
-    
+
     .dashboard-title::after {
         content: "";
         position: absolute;
@@ -57,14 +57,14 @@
         background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
         border-radius: 2px;
     }
-    
+
     .dashboard-subtitle {
         font-size: 1.2rem;
         opacity: 0.8;
         max-width: 800px;
         margin: 1.5rem auto;
     }
-    
+
     /* Project selector */
     .project-selector {
         display: flex;
@@ -73,7 +73,7 @@
         margin: 2rem 0;
         flex-wrap: wrap;
     }
-    
+
     .project-btn {
         background: rgba(0, 0, 0, 0.5);
         border: 1px solid var(--card-border);
@@ -84,18 +84,18 @@
         transition: all 0.3s ease;
         font-weight: 500;
     }
-    
+
     .project-btn:hover {
         background: rgba(0, 212, 255, 0.2);
         transform: translateY(-2px);
     }
-    
+
     .project-btn.active {
         background: linear-gradient(90deg, rgba(0, 212, 255, 0.5), rgba(255, 0, 170, 0.5));
         border-color: var(--primary-color);
         box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
     }
-    
+
     /* Dashboard grid */
     .dashboard-grid {
         display: grid;
@@ -103,7 +103,7 @@
         gap: 1.5rem;
         margin-top: 2rem;
     }
-    
+
     /* Card styles */
     .dashboard-card {
         background: var(--card-bg);
@@ -115,12 +115,12 @@
         overflow: hidden;
         position: relative;
     }
-    
+
     .dashboard-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
     }
-    
+
     .card-glow {
         position: absolute;
         top: 0;
@@ -132,40 +132,40 @@
         transition: opacity 0.5s ease;
         pointer-events: none;
     }
-    
+
     .dashboard-card:hover .card-glow {
         opacity: 1;
     }
-    
+
     .card-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1rem;
     }
-    
+
     .card-title {
         font-size: 1.2rem;
         font-weight: bold;
         color: var(--primary-color);
     }
-    
+
     .card-icon {
         font-size: 1.5rem;
         color: var(--primary-color);
         opacity: 0.8;
     }
-    
+
     /* Chart containers */
     .risk-chart-container {
         grid-column: span 8;
     }
-    
+
     .chart-container {
         height: 350px;
         position: relative;
     }
-    
+
     /* Risk metrics */
     .risk-metrics {
         grid-column: span 4;
@@ -173,7 +173,7 @@
         flex-direction: column;
         gap: 1rem;
     }
-    
+
     .metric-card {
         background: rgba(0, 0, 0, 0.3);
         border-radius: 10px;
@@ -182,35 +182,35 @@
         align-items: center;
         gap: 1rem;
     }
-    
+
     .metric-icon {
         font-size: 1.8rem;
         color: var(--accent-color);
     }
-    
+
     .metric-value {
         font-size: 1.8rem;
         font-weight: bold;
         color: white;
     }
-    
+
     .metric-label {
         font-size: 0.9rem;
         opacity: 0.7;
     }
-    
+
     /* Resource breakdown */
     .resource-breakdown {
         grid-column: span 6;
     }
-    
+
     .resource-item {
         display: flex;
         align-items: center;
         gap: 1rem;
         margin-bottom: 1rem;
     }
-    
+
     .resource-icon {
         font-size: 1.5rem;
         width: 40px;
@@ -221,16 +221,16 @@
         background: rgba(0, 212, 255, 0.1);
         border-radius: 50%;
     }
-    
+
     .resource-info {
         flex: 1;
     }
-    
+
     .resource-name {
         font-size: 1rem;
         margin-bottom: 0.3rem;
     }
-    
+
     .resource-progress {
         height: 6px;
         background: rgba(255, 255, 255, 0.1);
@@ -238,24 +238,24 @@
         overflow: hidden;
         position: relative;
     }
-    
+
     .resource-bar {
         height: 100%;
         transition: width 1.5s ease-out;
     }
-    
+
     .resource-bar.overbudget {
         background: linear-gradient(90deg, #ff5e62, #ff9966);
     }
-    
+
     .resource-bar.warning {
         background: linear-gradient(90deg, #ffb347, #ffcc33);
     }
-    
+
     .resource-bar.normal {
         background: linear-gradient(90deg, #56ab2f, #a8e063);
     }
-    
+
     .resource-values {
         display: flex;
         justify-content: space-between;
@@ -263,23 +263,23 @@
         opacity: 0.7;
         margin-top: 0.3rem;
     }
-    
+
     /* Timeline analysis */
     .timeline-analysis {
         grid-column: span 6;
     }
-    
+
     .timeline-point {
         display: flex;
         gap: 1rem;
         margin-bottom: 1.5rem;
         position: relative;
     }
-    
+
     .timeline-point:last-child {
         margin-bottom: 0;
     }
-    
+
     .timeline-point::before {
         content: "";
         position: absolute;
@@ -289,11 +289,11 @@
         width: 2px;
         background: rgba(255, 255, 255, 0.1);
     }
-    
+
     .timeline-point:last-child::before {
         display: none;
     }
-    
+
     .timeline-marker {
         width: 30px;
         height: 30px;
@@ -306,42 +306,42 @@
         font-weight: bold;
         flex-shrink: 0;
     }
-    
+
     .timeline-content {
         flex: 1;
     }
-    
+
     .timeline-date {
         font-size: 0.9rem;
         opacity: 0.7;
         margin-bottom: 0.3rem;
     }
-    
+
     .timeline-event {
         font-size: 1rem;
         margin-bottom: 0.3rem;
     }
-    
+
     .timeline-desc {
         font-size: 0.9rem;
         opacity: 0.7;
     }
-    
+
     /* Risk factors */
     .risk-factors {
         grid-column: span 6;
     }
-    
+
     .progress-container {
         margin: 1rem 0;
     }
-    
+
     .progress-label {
         display: flex;
         justify-content: space-between;
         margin-bottom: 0.5rem;
     }
-    
+
     .progress-bar {
         height: 8px;
         background: rgba(255, 255, 255, 0.1);
@@ -349,30 +349,30 @@
         overflow: hidden;
         position: relative;
     }
-    
+
     .progress-fill {
         height: 100%;
         border-radius: 4px;
         transition: width 1.5s ease-out;
     }
-    
+
     .progress-fill.high {
         background: linear-gradient(90deg, #ff5e62, #ff9966);
     }
-    
+
     .progress-fill.medium {
         background: linear-gradient(90deg, #ffb347, #ffcc33);
     }
-    
+
     .progress-fill.low {
         background: linear-gradient(90deg, #56ab2f, #a8e063);
     }
-    
+
     /* Recommendations */
     .recommendations {
         grid-column: span 6;
     }
-    
+
     .recommendation-item {
         display: flex;
         gap: 1rem;
@@ -380,23 +380,23 @@
         padding-bottom: 1rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-    
+
     .recommendation-item:last-child {
         border-bottom: none;
         margin-bottom: 0;
         padding-bottom: 0;
     }
-    
+
     .recommendation-icon {
         font-size: 1.5rem;
         color: var(--accent-color);
     }
-    
+
     .recommendation-text {
         font-size: 0.95rem;
         line-height: 1.4;
     }
-    
+
     /* Risk badges */
     .risk-badge {
         padding: 0.3rem 0.8rem;
@@ -405,22 +405,22 @@
         font-weight: bold;
         display: inline-block;
     }
-    
+
     .risk-high {
         background: rgba(255, 94, 98, 0.2);
         color: #ff5e62;
     }
-    
+
     .risk-medium {
         background: rgba(255, 179, 71, 0.2);
         color: #ffb347;
     }
-    
+
     .risk-low {
         background: rgba(86, 171, 47, 0.2);
         color: #56ab2f;
     }
-    
+
     /* Loader */
     .loader-container {
         position: fixed;
@@ -435,13 +435,13 @@
         z-index: 9999;
         transition: opacity 0.5s ease-out;
     }
-    
+
     .loader {
         position: relative;
         width: 120px;
         height: 120px;
     }
-    
+
     .loader-circle {
         position: absolute;
         width: 100%;
@@ -451,7 +451,7 @@
         border-top-color: #00d4ff;
         animation: spin 1.5s linear infinite;
     }
-    
+
     .loader-circle:nth-child(2) {
         width: 80%;
         height: 80%;
@@ -461,7 +461,7 @@
         animation-duration: 2s;
         animation-direction: reverse;
     }
-    
+
     .loader-circle:nth-child(3) {
         width: 60%;
         height: 60%;
@@ -470,7 +470,7 @@
         border-top-color: #ffcc00;
         animation-duration: 2.5s;
     }
-    
+
     .loader-text {
         position: absolute;
         bottom: -40px;
@@ -482,7 +482,7 @@
         letter-spacing: 2px;
         animation: pulse 1.5s ease-in-out infinite;
     }
-    
+
     /* Background particles */
     .particles-container {
         position: fixed;
@@ -493,62 +493,98 @@
         z-index: -1;
         overflow: hidden;
     }
-    
+
     .particle {
         position: absolute;
         border-radius: 50%;
         opacity: 0.3;
         pointer-events: none;
     }
-    
+
     /* Animations */
     @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
     }
-    
+
     @keyframes pulse {
-        0%, 100% { opacity: 0.5; }
-        50% { opacity: 1; }
+
+        0%,
+        100% {
+            opacity: 0.5;
+        }
+
+        50% {
+            opacity: 1;
+        }
     }
-    
+
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
-    
+
     .animate-in {
         animation: fadeIn 0.6s ease-out forwards;
     }
-    
+
     /* Animation delays */
-    .delay-1 { animation-delay: 0.1s; }
-    .delay-2 { animation-delay: 0.2s; }
-    .delay-3 { animation-delay: 0.3s; }
-    .delay-4 { animation-delay: 0.4s; }
-    .delay-5 { animation-delay: 0.5s; }
-    .delay-6 { animation-delay: 0.6s; }
-    
+    .delay-1 {
+        animation-delay: 0.1s;
+    }
+
+    .delay-2 {
+        animation-delay: 0.2s;
+    }
+
+    .delay-3 {
+        animation-delay: 0.3s;
+    }
+
+    .delay-4 {
+        animation-delay: 0.4s;
+    }
+
+    .delay-5 {
+        animation-delay: 0.5s;
+    }
+
+    .delay-6 {
+        animation-delay: 0.6s;
+    }
+
     /* Responsive adjustments */
     @media (max-width: 1200px) {
         .dashboard-grid {
             grid-template-columns: repeat(6, 1fr);
         }
-        
+
         .risk-chart-container {
             grid-column: span 6;
         }
-        
+
         .risk-metrics {
             grid-column: span 6;
         }
     }
-    
+
     @media (max-width: 768px) {
         .dashboard-grid {
             grid-template-columns: 1fr;
         }
-        
+
         .risk-chart-container,
         .risk-metrics,
         .resource-breakdown,
@@ -565,7 +601,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Hide loader
         setTimeout(() => {
             const loader = document.getElementById('loader');
@@ -576,34 +612,34 @@
                 }, 500);
             }
         }, 1500);
-        
+
         // Create particles
         createParticles();
-        
+
         // Initialize animations
         initAnimations();
-        
+
         // Initialize charts
         initCharts();
-        
+
         // Project selection
         document.querySelectorAll('.project-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function () {
                 document.querySelectorAll('.project-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
-                
+
                 // Update charts for the selected project
                 updateCharts(this.getAttribute('data-project'));
             });
         });
-        
+
         // Card hover effects
         document.querySelectorAll('.dashboard-card').forEach(card => {
-            card.addEventListener('mousemove', function(e) {
+            card.addEventListener('mousemove', function (e) {
                 const rect = this.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-                
+
                 const glow = this.querySelector('.card-glow');
                 if (glow) {
                     glow.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(0, 212, 255, 0.2), transparent 70%)`;
@@ -611,45 +647,45 @@
             });
         });
     });
-    
+
     function createParticles() {
         const container = document.querySelector('.particles-container');
         if (!container) return;
-        
+
         const particleCount = 30;
         const particleTypes = ['particle-1', 'particle-2', 'particle-3', 'particle-4', 'particle-5'];
-        
+
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
             particle.classList.add('particle');
-            
+
             // Random size
             const size = Math.random() * 8 + 4;
             particle.style.width = `${size}px`;
             particle.style.height = `${size}px`;
-            
+
             // Random color
             const colors = ['#00d4ff', '#ff00aa', '#ffcc00', '#00cc88', '#aa88ff'];
             particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-            
+
             // Random position
             particle.style.left = `${Math.random() * 100}%`;
             particle.style.top = `${Math.random() * 100}%`;
-            
+
             // Random animation
             particle.style.animation = `float ${Math.random() * 15 + 15}s infinite ease-in-out`;
             particle.style.animationDelay = `${Math.random() * 10}s`;
-            
+
             container.appendChild(particle);
         }
     }
-    
+
     function initAnimations() {
         // Animate header elements
-        gsap.from(".dashboard-title", {duration: 1, y: -50, opacity: 0, ease: "power3.out"});
-        gsap.from(".dashboard-subtitle", {duration: 1, y: -30, opacity: 0, ease: "power3.out", delay: 0.3});
-        gsap.from(".project-btn", {duration: 0.5, y: -20, opacity: 0, stagger: 0.1, ease: "power3.out", delay: 0.5});
-        
+        gsap.from(".dashboard-title", { duration: 1, y: -50, opacity: 0, ease: "power3.out" });
+        gsap.from(".dashboard-subtitle", { duration: 1, y: -30, opacity: 0, ease: "power3.out", delay: 0.3 });
+        gsap.from(".project-btn", { duration: 0.5, y: -20, opacity: 0, stagger: 0.1, ease: "power3.out", delay: 0.5 });
+
         // Animate dashboard cards
         gsap.utils.toArray('.dashboard-card').forEach((card, i) => {
             gsap.from(card, {
@@ -660,21 +696,21 @@
                 ease: "power3.out"
             });
         });
-        
+
         // Initialize progress bars with animation
         setTimeout(() => {
             document.querySelectorAll('.progress-fill').forEach(bar => {
                 const width = bar.getAttribute('data-width');
                 bar.style.width = width + '%';
             });
-            
+
             document.querySelectorAll('.resource-bar').forEach(bar => {
                 const width = bar.getAttribute('data-width');
                 bar.style.width = width + '%';
             });
         }, 1000);
     }
-    
+
     function initCharts() {
         // Main risk prediction chart
         const riskCtx = document.getElementById('riskChart');
@@ -752,7 +788,7 @@
                             },
                             ticks: {
                                 color: 'rgba(255, 255, 255, 0.7)',
-                                callback: function(value) {
+                                callback: function (value) {
                                     return value.toLocaleString() + ' ₽';
                                 }
                             }
@@ -769,7 +805,7 @@
                 }
             });
         }
-        
+
         // Resource distribution chart
         const resourceCtx = document.getElementById('resourceChart');
         if (resourceCtx) {
@@ -811,7 +847,7 @@
                             borderColor: 'rgba(0, 212, 255, 0.3)',
                             borderWidth: 1,
                             callbacks: {
-                                label: function(context) {
+                                label: function (context) {
                                     return context.label + ': ' + context.raw + '%';
                                 }
                             }
@@ -827,7 +863,7 @@
                 }
             });
         }
-        
+
         // Risk factors radar chart
         const radarCtx = document.getElementById('radarChart');
         if (radarCtx) {
@@ -916,7 +952,7 @@
             });
         }
     }
-    
+
     function updateCharts(projectId) {
         // Define different datasets for each project
         const projectData = {
@@ -935,10 +971,10 @@
                 risks: [90, 50, 60, 40, 80, 70]
             }
         };
-        
+
         // Get the selected project data
         const data = projectData[projectId] || projectData.project1;
-        
+
         // Update the main risk chart
         const riskChart = Chart.getChart('riskChart');
         if (riskChart) {
@@ -947,21 +983,21 @@
             riskChart.data.datasets[2].data = data.forecast;
             riskChart.update();
         }
-        
+
         // Update the resource chart
         const resourceChart = Chart.getChart('resourceChart');
         if (resourceChart) {
             resourceChart.data.datasets[0].data = data.resources;
             resourceChart.update();
         }
-        
+
         // Update the radar chart
         const radarChart = Chart.getChart('radarChart');
         if (radarChart) {
             radarChart.data.datasets[0].data = data.risks;
             radarChart.update();
         }
-        
+
         // Update metrics with animation
         document.querySelectorAll('.metric-value').forEach(metric => {
             const newValue = Math.floor(Math.random() * 30) + 70;
@@ -971,14 +1007,14 @@
                 snap: { innerHTML: 1 }
             });
         });
-        
+
         // Update progress bars
         document.querySelectorAll('.progress-fill').forEach(bar => {
             const newWidth = Math.floor(Math.random() * 50) + 50;
             bar.setAttribute('data-width', newWidth);
             bar.style.width = newWidth + '%';
         });
-        
+
         // Update resource bars
         document.querySelectorAll('.resource-bar').forEach(bar => {
             const newWidth = Math.floor(Math.random() * 40) + 60;
@@ -986,7 +1022,7 @@
             bar.style.width = newWidth + '%';
         });
     }
-    
+
     // Add float animation for particles
     document.head.insertAdjacentHTML('beforeend', `
         <style>
@@ -1026,14 +1062,15 @@
 <div class="risk-dashboard">
     <div class="dashboard-header">
         <h1 class="dashboard-title">Прогнозирование рисков перерасхода ресурсов</h1>
-        <p class="dashboard-subtitle">Предиктивная аналитика на базе временных рядов для выявления потенциальных превышений бюджета и оптимизации использования ресурсов на строительных объектах</p>
+        <p class="dashboard-subtitle">Предиктивная аналитика на базе временных рядов для выявления потенциальных
+            превышений бюджета и оптимизации использования ресурсов на строительных объектах</p>
     </div>
-    
+
     <div class="project-selector">
         <button class="project-btn active" data-project="project1">Реконструкция объекта</button>
         <button class="project-btn" data-project="project2">Снос спортивного комплекса</button>
     </div>
-    
+
     <div class="dashboard-grid">
         <!-- Main Risk Chart -->
         <div class="dashboard-card risk-chart-container animate-in delay-1">
@@ -1046,7 +1083,7 @@
                 <canvas id="riskChart"></canvas>
             </div>
         </div>
-        
+
         <!-- Risk Metrics -->
         <div class="dashboard-card risk-metrics animate-in delay-2">
             <div class="card-glow"></div>
@@ -1054,7 +1091,7 @@
                 <div class="card-title">Ключевые метрики рисков</div>
                 <div class="card-icon">🎯</div>
             </div>
-            
+
             <div class="metric-card">
                 <div class="metric-icon">⚠️</div>
                 <div>
@@ -1062,15 +1099,15 @@
                     <div class="metric-label">Вероятность перерасхода</div>
                 </div>
             </div>
-            
+
             <div class="metric-card">
-                <div class="metric-icon">💰</div>
+                <div class="metric-icon">💳</div>
                 <div>
                     <div class="metric-value">22%</div>
                     <div class="metric-label">Прогнозируемый перерасход</div>
                 </div>
             </div>
-            
+
             <div class="metric-card">
                 <div class="metric-icon">⏱️</div>
                 <div>
@@ -1078,7 +1115,7 @@
                     <div class="metric-label">Точность прогноза</div>
                 </div>
             </div>
-            
+
             <div class="metric-card">
                 <div class="metric-icon">🛠️</div>
                 <div>
@@ -1087,7 +1124,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Resource Breakdown -->
         <div class="dashboard-card resource-breakdown animate-in delay-3">
             <div class="card-glow"></div>
@@ -1095,11 +1132,11 @@
                 <div class="card-title">Распределение ресурсов</div>
                 <div class="card-icon">📊</div>
             </div>
-            
+
             <div class="chart-container" style="height: 250px;">
                 <canvas id="resourceChart"></canvas>
             </div>
-            
+
             <div class="resource-item">
                 <div class="resource-icon">🧱</div>
                 <div class="resource-info">
@@ -1113,7 +1150,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="resource-item">
                 <div class="resource-icon">⚙️</div>
                 <div class="resource-info">
@@ -1128,7 +1165,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Timeline Analysis -->
         <div class="dashboard-card timeline-analysis animate-in delay-4">
             <div class="card-glow"></div>
@@ -1136,7 +1173,7 @@
                 <div class="card-title">Временная шкала рисков</div>
                 <div class="card-icon">🗓️</div>
             </div>
-            
+
             <div class="timeline-point">
                 <div class="timeline-marker">1</div>
                 <div class="timeline-content">
@@ -1146,7 +1183,7 @@
                     <span class="risk-badge risk-medium">Средний риск</span>
                 </div>
             </div>
-            
+
             <div class="timeline-point">
                 <div class="timeline-marker">2</div>
                 <div class="timeline-content">
@@ -1156,7 +1193,7 @@
                     <span class="risk-badge risk-high">Высокий риск</span>
                 </div>
             </div>
-            
+
             <div class="timeline-point">
                 <div class="timeline-marker">3</div>
                 <div class="timeline-content">
@@ -1167,7 +1204,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Risk Factors -->
         <div class="dashboard-card risk-factors animate-in delay-5">
             <div class="card-glow"></div>
@@ -1175,11 +1212,11 @@
                 <div class="card-title">Факторы риска</div>
                 <div class="card-icon">🔍</div>
             </div>
-            
+
             <div class="chart-container" style="height: 250px;">
                 <canvas id="radarChart"></canvas>
             </div>
-            
+
             <div class="progress-container">
                 <div class="progress-label">
                     <span>Перерасход бюджета</span>
@@ -1189,7 +1226,7 @@
                     <div class="progress-fill high" data-width="80" style="width: 80%;"></div>
                 </div>
             </div>
-            
+
             <div class="progress-container">
                 <div class="progress-label">
                     <span>Задержки поставок</span>
@@ -1199,7 +1236,7 @@
                     <div class="progress-fill medium" data-width="60" style="width: 60%;"></div>
                 </div>
             </div>
-            
+
             <div class="progress-container">
                 <div class="progress-label">
                     <span>Нехватка персонала</span>
@@ -1210,7 +1247,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Recommendations -->
         <div class="dashboard-card recommendations animate-in delay-6">
             <div class="card-glow"></div>
@@ -1218,32 +1255,36 @@
                 <div class="card-title">Рекомендации по снижению рисков</div>
                 <div class="card-icon">💡</div>
             </div>
-            
+
             <div class="recommendation-item">
                 <div class="recommendation-icon">📉</div>
                 <div class="recommendation-text">
-                    <strong>Оптимизация закупок материалов</strong>: Пересмотреть контракты с поставщиками и найти более выгодные условия для снижения затрат на 15%.
+                    <strong>Оптимизация закупок материалов</strong>: Пересмотреть контракты с поставщиками и найти более
+                    выгодные условия для снижения затрат на 15%.
                 </div>
             </div>
-            
+
             <div class="recommendation-item">
                 <div class="recommendation-icon">⏰</div>
                 <div class="recommendation-text">
-                    <strong>Ускорение поставок</strong>: Заключить договоры с альтернативными поставщиками для минимизации рисков задержек критически важных материалов.
+                    <strong>Ускорение поставок</strong>: Заключить договоры с альтернативными поставщиками для
+                    минимизации рисков задержек критически важных материалов.
                 </div>
             </div>
-            
+
             <div class="recommendation-item">
                 <div class="recommendation-icon">👥</div>
                 <div class="recommendation-text">
-                    <strong>Перераспределение персонала</strong>: Оптимизировать график работы бригад для повышения эффективности использования трудовых ресурсов.
+                    <strong>Перераспределение персонала</strong>: Оптимизировать график работы бригад для повышения
+                    эффективности использования трудовых ресурсов.
                 </div>
             </div>
-            
+
             <div class="recommendation-item">
                 <div class="recommendation-icon">📋</div>
                 <div class="recommendation-text">
-                    <strong>Пересмотр бюджета</strong>: Создать резервный фонд в размере 10% от общего бюджета для покрытия непредвиденных расходов.
+                    <strong>Пересмотр бюджета</strong>: Создать резервный фонд в размере 10% от общего бюджета для
+                    покрытия непредвиденных расходов.
                 </div>
             </div>
         </div>

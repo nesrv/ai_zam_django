@@ -2864,3 +2864,1612 @@ NameError: name 'UserProfile' is not defined
 2025-07-27 15:42:42,084 - django.request - WARNING - Not Found: /profile/
 2025-07-27 15:43:33,792 - django.security.csrf - WARNING - Forbidden (CSRF token from POST incorrect.): /objects/login/
 2025-07-27 15:47:03,664 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\models.py changed, reloading.
+2025-07-27 15:49:45,274 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:52:26,954 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\models.py changed, reloading.
+2025-07-27 15:52:35,027 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:53:50,532 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:54:43,945 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 15:54:49,297 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 15:54:52,142 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 15:54:57,797 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 16:18:24,867 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 16:19:02,814 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 16:19:05,914 - telegrambot.services - INFO - Бот проверен: MyTestBot (@NeSrv2Bot)
+2025-07-27 16:19:05,914 - telegrambot.services - INFO - Отправка сообщения в Telegram: chat_id=-4916602123, text=876...
+2025-07-27 16:19:06,160 - telegrambot.services - INFO - Ответ от Telegram API (статус 200): {"ok":true,"result":{"message_id":708,"from":{"id":7836693206,"is_bot":true,"first_name":"MyTestBot","username":"NeSrv2Bot"},"chat":{"id":-4916602123,"title":"\u0421\u043d\u043e\u0441 \u0434\u043e\u043c\u0430","type":"group","all_members_are_administrators":true,"accepted_gift_types":{"unlimited_gifts":false,"limited_gifts":false,"unique_gifts":false,"premium_subscription":false}},"date":1753622345,"text":"876"}}
+2025-07-27 16:19:06,161 - telegrambot.services - INFO - Успешный ответ от Telegram API: {'ok': True, 'result': {'message_id': 708, 'from': {'id': 7836693206, 'is_bot': True, 'first_name': 'MyTestBot', 'username': 'NeSrv2Bot'}, 'chat': {'id': -4916602123, 'title': 'Снос дома', 'type': 'group', 'all_members_are_administrators': True, 'accepted_gift_types': {'unlimited_gifts': False, 'limited_gifts': False, 'unique_gifts': False, 'premium_subscription': False}}, 'date': 1753622345, 'text': '876'}}
+2025-07-27 16:19:06,178 - telegrambot.services - INFO - Сообщение сохранено в ChatMessage: chat_id=-4916602123, message_id=708
+2025-07-27 16:25:17,724 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\admin.py changed, reloading.
+2025-07-27 16:25:22,899 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 16:25:33,797 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\admin.py changed, reloading.
+2025-07-27 16:27:00,328 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 16:27:38,406 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 16:42:29,425 - django.request - ERROR - Internal Server Error: /objects/profile/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 1584, in profile
+    'user_form': user_form,
+                 ^^^^^^^^^
+UnboundLocalError: cannot access local variable 'user_form' where it is not associated with a value
+2025-07-27 16:43:11,419 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 16:43:17,035 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 16:45:03,582 - django.request - ERROR - Internal Server Error: /objects/27/edit/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views_edit.py", line 277, in edit_object
+    organizaciya = obj.organizaciya
+                   ^^^^^^^^^^^^^^^^
+AttributeError: 'Objekt' object has no attribute 'organizaciya'. Did you mean: 'organizacii'?
+2025-07-27 16:45:44,577 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-07-27 16:45:50,285 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 16:46:07,525 - django.request - ERROR - Internal Server Error: /objects/27/edit/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views_edit.py", line 278, in edit_object
+    if organizaciya:
+       ^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'organizaciya' where it is not associated with a value
+2025-07-27 16:46:36,793 - django.request - ERROR - Internal Server Error: /objects/27/edit/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views_edit.py", line 278, in edit_object
+    if organizaciya:
+       ^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'organizaciya' where it is not associated with a value
+2025-07-27 16:47:00,851 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-07-27 16:47:15,691 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 16:47:20,610 - django.request - ERROR - Internal Server Error: /objects/27/edit/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views_edit.py", line 279, in edit_object
+    podrazdeleniya = organizaciya.podrazdeleniya.all()
+                     ^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'organizaciya' where it is not associated with a value
+2025-07-27 16:47:26,573 - django.request - ERROR - Internal Server Error: /objects/27/edit/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views_edit.py", line 279, in edit_object
+    podrazdeleniya = organizaciya.podrazdeleniya.all()
+                     ^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'organizaciya' where it is not associated with a value
+2025-07-27 16:47:57,106 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 16:48:09,319 - django.request - ERROR - Internal Server Error: /objects/27/edit/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views_edit.py", line 279, in edit_object
+    podrazdeleniya = organizaciya.podrazdeleniya.all()
+                     ^^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'organizaciya' where it is not associated with a value
+2025-07-27 16:48:38,833 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-07-27 16:48:44,830 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 16:51:19,931 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 16:51:25,846 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 17:03:16,799 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 17:03:23,528 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 17:03:57,287 - django.request - ERROR - Internal Server Error: /objects/create/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 476, in create_object
+    obj = Objekt.objects.create(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\query.py", line 661, in create
+    obj = self.model(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\base.py", line 569, in __init__
+    raise TypeError(
+TypeError: Objekt() got unexpected keyword arguments: 'organizaciya'
+2025-07-27 17:04:43,291 - django.request - ERROR - Internal Server Error: /objects/create/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 476, in create_object
+    obj = Objekt.objects.create(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\query.py", line 661, in create
+    obj = self.model(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\base.py", line 569, in __init__
+    raise TypeError(
+TypeError: Objekt() got unexpected keyword arguments: 'organizaciya'
+2025-07-27 17:05:26,106 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 17:05:31,375 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 17:09:16,972 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 17:09:23,860 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 17:11:10,683 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 17:11:16,010 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 17:13:22,368 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-27 17:20:48,800 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-27 17:20:55,333 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-29 10:16:40,466 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-29 15:05:43,587 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-29 15:10:46,388 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\models.py changed, reloading.
+2025-07-29 15:19:47,870 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-29 15:20:19,055 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-29 15:27:33,171 - telegrambot.views - INFO - Получен запрос на генерацию документа: Смета для каркасный жилой дом, 1 этаж на 10 квартир. Никакого текста, только JSON:{"kategoriya_resursa":{"Кадровое обеспечение":[{"sotrudniki_specialnost":"str","hours":0,"price":0}],"Машины и механизмы":[{"name":"str","hours":0,"price":0}],"Инструмент и материалы":[{"name":"str","count":0,"unit":"str","price":0}],"Административно-бытовые расходы":[{"name":"str","count":0,"unit":"str","price":0}],"СИЗ и спецодежда":[{"name":"str","count":0,"unit":"str","price":0}]},"works":[{"section":"str","items":[{"name":"str","unit":"str","price":0,"count":0}]}]}
+2025-07-29 15:27:33,172 - telegrambot.views - INFO - Отправляю запрос к DeepSeek API...
+2025-07-29 15:27:33,172 - telegrambot.services - INFO - Отправляю запрос к DeepSeek API с промптом: Смета для каркасный жилой дом, 1 этаж на 10 квартир. Никакого текста, только JSON:{"kategoriya_resur...
+2025-07-29 15:27:33,172 - telegrambot.services - INFO - Отправляю POST запрос к https://api.deepseek.com/v1/chat/completions
+2025-07-29 15:28:29,748 - telegrambot.services - INFO - Получен ответ от DeepSeek API: статус 200
+2025-07-29 15:28:29,749 - telegrambot.services - INFO - Успешно сгенерирован документ длиной 3346 символов
+2025-07-29 15:28:29,750 - telegrambot.views - INFO - Получен ответ от DeepSeek: ```json
+{
+  "kategoriya_resursa": {
+    "Кадровое обеспечение": [
+      {
+        "sotrudniki_specialnost": "Плотник",
+        "hours": 1200,
+        "price": 500
+      },
+      {
+        "sotrudniki_...
+2025-07-29 15:28:29,757 - telegrambot.views - INFO - Найдено активных пользователей: 1
+2025-07-29 15:28:29,758 - telegrambot.views - INFO - Отправляю документ пользователю 5690246274 (Николай)
+2025-07-29 15:28:29,974 - telegrambot.services - INFO - Бот проверен: MyTestBot (@NeSrv2Bot)
+2025-07-29 15:28:29,975 - telegrambot.services - INFO - Отправка сообщения в Telegram: chat_id=5690246274, text=```json
+{
+  "kategoriya_resursa": {
+    "Кадровое ...
+2025-07-29 15:28:30,222 - telegrambot.services - INFO - Ответ от Telegram API (статус 200): {"ok":true,"result":{"message_id":710,"from":{"id":7836693206,"is_bot":true,"first_name":"MyTestBot","username":"NeSrv2Bot"},"chat":{"id":5690246274,"first_name":"\u041d\u0438\u043a\u043e\u043b\u0430\u0439","username":"nesrv","type":"private"},"date":1753792106,"text":"```json\n{\n  \"kategoriya_resursa\": {\n    \"\u041a\u0430\u0434\u0440\u043e\u0432\u043e\u0435 \u043e\u0431\u0435\u0441\u043f\u0435\u0447\u0435\u043d\u0438\u0435\": [\n      {\n        \"sotrudniki_specialnost\": \"\u041f\u043b\u043e\u0442\u043d\u0438\u043a\",\n        \"hours\": 1200,\n        \"price\": 500\n      },\n      {\n        \"sotrudniki_specialnost\": \"\u0421\u0432\u0430\u0440\u0449\u0438\u043a\",\n        \"hours\": 600,\n        \"price\": 700\n      },\n      {\n        \"sotrudniki_specialnost\": \"\u042d\u043b\u0435\u043a\u0442\u0440\u0438\u043a\",\n        \"hours\": 400,\n        \"price\": 650\n      }\n    ],\n    \"\u041c\u0430\u0448\u0438\u043d\u044b \u0438 \u043c\u0435\u0445\u0430\u043d\u0438\u0437\u043c\u044b\": [\n      {\n        \"name\": \"\u0411\u0435\u0442\u043e\u043d\u043e\u043d\u0430\u0441\u043e\u0441\",\n        \"hours\": 100,\n        \"price\": 2500\n      },\n      {\n        \"name\": \"\u041a\u0440\u0430\u043d\",\n        \"hours\": 80,\n        \"price\": 3500\n      },\n      {\n        \"name\": \"\u042d\u043a\u0441\u043a\u0430\u0432\u0430\u0442\u043e\u0440\",\n        \"hours\": 60,\n        \"price\": 2000\n      }\n    ],\n    \"\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u0438 \u043c\u0430\u0442\u0435\u0440\u0438\u0430\u043b\u044b\": [\n      {\n        \"name\": \"\u0414\u043e\u0441\u043a\u0430 \u043e\u0431\u0440\u0435\u0437\u043d\u0430\u044f\",\n        \"count\": 5000,\n        \"unit\": \"\u043c3\",\n        \"price\": 12000\n      },\n      {\n        \"name\": \"\u041c\u0435\u0442\u0430\u043b\u043b\u043e\u043f\u0440\u043e\u043a\u0430\u0442\",\n        \"count\": 3000,\n        \"unit\": \"\u043a\u0433\",\n        \"price\": 80\n      },\n      {\n        \"name\": \"\u041a\u0438\u0440\u043f\u0438\u0447\",\n        \"count\": 20000,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 25\n      }\n    ],\n    \"\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u0438\u0432\u043d\u043e-\u0431\u044b\u0442\u043e\u0432\u044b\u0435 \u0440\u0430\u0441\u0445\u043e\u0434\u044b\": [\n      {\n        \"name\": \"\u041e\u0444\u0438\u0441\u043d\u044b\u0435 \u043f\u0440\u0438\u043d\u0430\u0434\u043b\u0435\u0436\u043d\u043e\u0441\u0442\u0438\",\n        \"count\": 1,\n        \"unit\": \"\u043a\u043e\u043c\u043f\u043b\u0435\u043a\u0442\",\n        \"price\": 15000\n      },\n      {\n        \"name\": \"\u0410\u0440\u0435\u043d\u0434\u0430 \u0431\u044b\u0442\u043e\u0432\u043a\u0438\",\n        \"count\": 6,\n        \"unit\": \"\u043c\u0435\u0441\u044f\u0446\",\n        \"price\": 10000\n      }\n    ],\n    \"\u0421\u0418\u0417 \u0438 \u0441\u043f\u0435\u0446\u043e\u0434\u0435\u0436\u0434\u0430\": [\n      {\n        \"name\": \"\u041a\u0430\u0441\u043a\u0430\",\n        \"count\": 15,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 500\n      },\n      {\n        \"name\": \"\u041f\u0435\u0440\u0447\u0430\u0442\u043a\u0438\",\n        \"count\": 100,\n        \"unit\": \"\u043f\u0430\u0440\",\n        \"price\": 150\n      }\n    ]\n  },\n  \"works\": [\n    {\n      \"section\": \"\u041f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u0438\u0442\u0435\u043b\u044c\u043d\u044b\u0435 \u0440\u0430\u0431\u043e\u0442\u044b\",\n      \"items\": [\n        {\n          \"name\": \"\u0420\u0430\u0437\u043c\u0435\u0442\u043a\u0430 \u0443\u0447\u0430\u0441\u0442\u043a\u0430\",\n          \"unit\": \"\u0443\u0447\u0430\u0441\u0442\u043e\u043a\",\n          \"price\": 5000,\n          \"count\": 1\n        },\n        {\n          \"name\": \"\u0412\u044b\u0440\u0430\u0432\u043d\u0438\u0432\u0430\u043d\u0438\u0435 \u0433\u0440\u0443\u043d\u0442\u0430\",\n          \"unit\": \"\u043c2\",\n          \"price\": 300,\n          \"count\": 500\n        }\n      ]\n    },\n    {\n      \"section\": \"\u0424\u0443\u043d\u0434\u0430\u043c\u0435\u043d\u0442\",\n      \"items\": [\n        {\n          \"name\": \"\u0423\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u043e \u043b\u0435\u043d\u0442\u043e\u0447\u043d\u043e\u0433\u043e \u0444\u0443\u043d\u0434\u0430\u043c\u0435\u043d\u0442\u0430\",\n          \"unit\": \"\u043f.\u043c.\",\n          \"price\": 2500,\n          \"count\": 120\n        },\n        {\n          \"name\": \"\u0413\u0438\u0434\u0440\u043e\u0438\u0437\u043e\u043b\u044f\u0446\u0438\u044f \u0444\u0443\u043d\u0434\u0430\u043c\u0435\u043d\u0442\u0430\",\n          \"unit\": \"\u043c2\",\n          \"price\": 400,\n          \"count\": 200\n        }\n      ]\n    },\n    {\n      \"section\": \"\u041a\u0430\u0440\u043a\u0430\u0441\",\n      \"items\": [\n        {\n          \"name\": \"\u041c\u043e\u043d\u0442\u0430\u0436 \u043a\u0430\u0440\u043a\u0430\u0441\u0430 \u0441\u0442\u0435\u043d\",\n          \"unit\": \"\u043c2\",\n          \"price\": 1200,\n          \"count\": 600\n        },\n        {\n          \"name\": \"\u041c\u043e\u043d\u0442\u0430\u0436 \u0441\u0442\u0440\u043e\u043f\u0438\u043b\u044c\u043d\u043e\u0439 \u0441\u0438\u0441\u0442\u0435\u043c\u044b\",\n          \"unit\": \"\u043c2\",\n          \"price\": 1500,\n          \"count\": 400\n        }\n      ]\n    },\n    {\n      \"section\": \"\u041a\u0440\u043e\u0432\u043b\u044f\",\n      \"items\": [\n        {\n          \"name\": \"\u0423\u043a\u043b\u0430\u0434\u043a\u0430 \u043c\u0435\u0442\u0430\u043b\u043b\u043e\u0447\u0435\u0440\u0435\u043f\u0438\u0446\u044b\",\n          \"unit\": \"\u043c2\",\n          \"price\": 800,\n          \"count\": 400\n        },\n        {\n          \"name\": \"\u0423\u0442\u0435\u043f\u043b\u0435\u043d\u0438\u0435 \u043a\u0440\u043e\u0432\u043b\u0438\",\n          \"unit\": \"\u043c2\",\n          \"price\": 350,\n          \"count\": 400\n        }\n      ]\n    },\n    {\n      \"section\": \"\u041e\u0442\u0434\u0435\u043b\u043e\u0447\u043d\u044b\u0435 \u0440\u0430\u0431\u043e\u0442\u044b\",\n      \"items\": [\n        {\n          \"name\": \"\u0428\u0442\u0443\u043a\u0430\u0442\u0443\u0440\u043a\u0430 \u0441\u0442\u0435\u043d\",\n          \"unit\": \"\u043c2\",\n          \"price\": 450,\n          \"count\": 3000\n        },\n        {\n          \"name\": \"\u041f\u043e\u043a\u0440\u0430\u0441\u043a\u0430 \u0444\u0430\u0441\u0430\u0434\u0430\",\n          \"unit\": \"\u043c2\",\n          \"price\": 300,\n          \"count\": 800\n        }\n      ]\n    }\n  ]\n}\n```"}}
+2025-07-29 15:28:30,281 - telegrambot.services - INFO - Успешный ответ от Telegram API: {'ok': True, 'result': {'message_id': 710, 'from': {'id': 7836693206, 'is_bot': True, 'first_name': 'MyTestBot', 'username': 'NeSrv2Bot'}, 'chat': {'id': 5690246274, 'first_name': 'Николай', 'username': 'nesrv', 'type': 'private'}, 'date': 1753792106, 'text': '```json\n{\n  "kategoriya_resursa": {\n    "Кадровое обеспечение": [\n      {\n        "sotrudniki_specialnost": "Плотник",\n        "hours": 1200,\n        "price": 500\n      },\n      {\n        "sotrudniki_specialnost": "Сварщик",\n        "hours": 600,\n        "price": 700\n      },\n      {\n        "sotrudniki_specialnost": "Электрик",\n        "hours": 400,\n        "price": 650\n      }\n    ],\n    "Машины и механизмы": [\n      {\n        "name": "Бетононасос",\n        "hours": 100,\n        "price": 2500\n      },\n      {\n        "name": "Кран",\n        "hours": 80,\n        "price": 3500\n      },\n      {\n        "name": "Экскаватор",\n        "hours": 60,\n        "price": 2000\n      }\n    ],\n    "Инструмент и материалы": [\n      {\n        "name": "Доска обрезная",\n        "count": 5000,\n        "unit": "м3",\n        "price": 12000\n      },\n      {\n        "name": "Металлопрокат",\n        "count": 3000,\n        "unit": "кг",\n        "price": 80\n      },\n      {\n        "name": "Кирпич",\n        "count": 20000,\n        "unit": "шт",\n        "price": 25\n      }\n    ],\n    "Административно-бытовые расходы": [\n      {\n        "name": "Офисные принадлежности",\n        "count": 1,\n        "unit": "комплект",\n        "price": 15000\n      },\n      {\n        "name": "Аренда бытовки",\n        "count": 6,\n        "unit": "месяц",\n        "price": 10000\n      }\n    ],\n    "СИЗ и спецодежда": [\n      {\n        "name": "Каска",\n        "count": 15,\n        "unit": "шт",\n        "price": 500\n      },\n      {\n        "name": "Перчатки",\n        "count": 100,\n        "unit": "пар",\n        "price": 150\n      }\n    ]\n  },\n  "works": [\n    {\n      "section": "Подготовительные работы",\n      "items": [\n        {\n          "name": "Разметка участка",\n          "unit": "участок",\n          "price": 5000,\n          "count": 1\n        },\n        {\n          "name": "Выравнивание грунта",\n          "unit": "м2",\n          "price": 300,\n          "count": 500\n        }\n      ]\n    },\n    {\n      "section": "Фундамент",\n      "items": [\n        {\n          "name": "Устройство ленточного фундамента",\n          "unit": "п.м.",\n          "price": 2500,\n          "count": 120\n        },\n        {\n          "name": "Гидроизоляция фундамента",\n          "unit": "м2",\n          "price": 400,\n          "count": 200\n        }\n      ]\n    },\n    {\n      "section": "Каркас",\n      "items": [\n        {\n          "name": "Монтаж каркаса стен",\n          "unit": "м2",\n          "price": 1200,\n          "count": 600\n        },\n        {\n          "name": "Монтаж стропильной системы",\n          "unit": "м2",\n          "price": 1500,\n          "count": 400\n        }\n      ]\n    },\n    {\n      "section": "Кровля",\n      "items": [\n        {\n          "name": "Укладка металлочерепицы",\n          "unit": "м2",\n          "price": 800,\n          "count": 400\n        },\n        {\n          "name": "Утепление кровли",\n          "unit": "м2",\n          "price": 350,\n          "count": 400\n        }\n      ]\n    },\n    {\n      "section": "Отделочные работы",\n      "items": [\n        {\n          "name": "Штукатурка стен",\n          "unit": "м2",\n          "price": 450,\n          "count": 3000\n        },\n        {\n          "name": "Покраска фасада",\n          "unit": "м2",\n          "price": 300,\n          "count": 800\n        }\n      ]\n    }\n  ]\n}\n```'}}
+2025-07-29 15:28:30,306 - telegrambot.services - INFO - Сообщение сохранено в TelegramMessage: user_id=7
+2025-07-29 15:28:30,501 - telegrambot.views - INFO - Документ сгенерирован и отправлен: 1/1 пользователей
+2025-07-30 09:03:35,404 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 09:05:46,045 - telegrambot.views - INFO - Получен запрос на генерацию документа: Смета для жилой дом 2 этажа на 10 квартир, нулевой цикл. Никакого текста, только JSON:{"kategoriya_resursa":{"Кадровое обеспечение":[{"sotrudniki_specialnost":"str","hours":0,"price":0}],"Машины и механизмы":[{"name":"str","hours":0,"price":0}],"Инструмент и материалы":[{"name":"str","count":0,"unit":"str","price":0}],"Административно-бытовые расходы":[{"name":"str","count":0,"unit":"str","price":0}],"СИЗ и спецодежда":[{"name":"str","count":0,"unit":"str","price":0}]},"works":[{"section":"str","items":[{"name":"str","unit":"str","price":0,"count":0}]}]}
+2025-07-30 09:05:46,045 - telegrambot.views - INFO - Отправляю запрос к DeepSeek API...
+2025-07-30 09:05:46,045 - telegrambot.services - INFO - Отправляю запрос к DeepSeek API с промптом: Смета для жилой дом 2 этажа на 10 квартир, нулевой цикл. Никакого текста, только JSON:{"kategoriya_r...
+2025-07-30 09:05:46,046 - telegrambot.services - INFO - Отправляю POST запрос к https://api.deepseek.com/v1/chat/completions
+2025-07-30 09:06:35,047 - telegrambot.services - INFO - Получен ответ от DeepSeek API: статус 200
+2025-07-30 09:06:35,048 - telegrambot.services - INFO - Успешно сгенерирован документ длиной 2753 символов
+2025-07-30 09:06:35,048 - telegrambot.views - INFO - Получен ответ от DeepSeek: ```json
+{
+  "kategoriya_resursa": {
+    "Кадровое обеспечение": [
+      {
+        "sotrudniki_specialnost": "Прораб",
+        "hours": 160,
+        "price": 500
+      },
+      {
+        "sotrudniki_sp...
+2025-07-30 09:06:35,052 - telegrambot.views - INFO - Найдено активных пользователей: 1
+2025-07-30 09:06:35,053 - telegrambot.views - INFO - Отправляю документ пользователю 5690246274 (Николай)
+2025-07-30 09:06:35,269 - telegrambot.services - INFO - Бот проверен: MyTestBot (@NeSrv2Bot)
+2025-07-30 09:06:35,269 - telegrambot.services - INFO - Отправка сообщения в Telegram: chat_id=5690246274, text=```json
+{
+  "kategoriya_resursa": {
+    "Кадровое ...
+2025-07-30 09:06:35,493 - telegrambot.services - INFO - Ответ от Telegram API (статус 200): {"ok":true,"result":{"message_id":711,"from":{"id":7836693206,"is_bot":true,"first_name":"MyTestBot","username":"NeSrv2Bot"},"chat":{"id":5690246274,"first_name":"\u041d\u0438\u043a\u043e\u043b\u0430\u0439","username":"nesrv","type":"private"},"date":1753855591,"text":"```json\n{\n  \"kategoriya_resursa\": {\n    \"\u041a\u0430\u0434\u0440\u043e\u0432\u043e\u0435 \u043e\u0431\u0435\u0441\u043f\u0435\u0447\u0435\u043d\u0438\u0435\": [\n      {\n        \"sotrudniki_specialnost\": \"\u041f\u0440\u043e\u0440\u0430\u0431\",\n        \"hours\": 160,\n        \"price\": 500\n      },\n      {\n        \"sotrudniki_specialnost\": \"\u041a\u0430\u043c\u0435\u043d\u0449\u0438\u043a\",\n        \"hours\": 1200,\n        \"price\": 350\n      },\n      {\n        \"sotrudniki_specialnost\": \"\u041f\u043b\u043e\u0442\u043d\u0438\u043a\",\n        \"hours\": 800,\n        \"price\": 300\n      },\n      {\n        \"sotrudniki_specialnost\": \"\u0420\u0430\u0437\u043d\u043e\u0440\u0430\u0431\u043e\u0447\u0438\u0439\",\n        \"hours\": 2000,\n        \"price\": 200\n      }\n    ],\n    \"\u041c\u0430\u0448\u0438\u043d\u044b \u0438 \u043c\u0435\u0445\u0430\u043d\u0438\u0437\u043c\u044b\": [\n      {\n        \"name\": \"\u042d\u043a\u0441\u043a\u0430\u0432\u0430\u0442\u043e\u0440\",\n        \"hours\": 80,\n        \"price\": 1500\n      },\n      {\n        \"name\": \"\u0411\u0435\u0442\u043e\u043d\u043e\u043c\u0435\u0448\u0430\u043b\u043a\u0430\",\n        \"hours\": 200,\n        \"price\": 800\n      },\n      {\n        \"name\": \"\u041a\u0440\u0430\u043d\",\n        \"hours\": 100,\n        \"price\": 2000\n      }\n    ],\n    \"\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u0438 \u043c\u0430\u0442\u0435\u0440\u0438\u0430\u043b\u044b\": [\n      {\n        \"name\": \"\u0411\u0435\u0442\u043e\u043d\",\n        \"count\": 200,\n        \"unit\": \"\u043c3\",\n        \"price\": 4500\n      },\n      {\n        \"name\": \"\u0410\u0440\u043c\u0430\u0442\u0443\u0440\u0430\",\n        \"count\": 5000,\n        \"unit\": \"\u043a\u0433\",\n        \"price\": 60\n      },\n      {\n        \"name\": \"\u0414\u043e\u0441\u043a\u0430 \u043e\u0431\u0440\u0435\u0437\u043d\u0430\u044f\",\n        \"count\": 10,\n        \"unit\": \"\u043c3\",\n        \"price\": 12000\n      },\n      {\n        \"name\": \"\u0413\u0432\u043e\u0437\u0434\u0438\",\n        \"count\": 50,\n        \"unit\": \"\u043a\u0433\",\n        \"price\": 120\n      }\n    ],\n    \"\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u0438\u0432\u043d\u043e-\u0431\u044b\u0442\u043e\u0432\u044b\u0435 \u0440\u0430\u0441\u0445\u043e\u0434\u044b\": [\n      {\n        \"name\": \"\u041e\u0444\u0438\u0441\u043d\u044b\u0435 \u043f\u0440\u0438\u043d\u0430\u0434\u043b\u0435\u0436\u043d\u043e\u0441\u0442\u0438\",\n        \"count\": 1,\n        \"unit\": \"\u043a\u043e\u043c\u043f\u043b\u0435\u043a\u0442\",\n        \"price\": 15000\n      },\n      {\n        \"name\": \"\u0412\u043e\u0434\u0430 \u043f\u0438\u0442\u044c\u0435\u0432\u0430\u044f\",\n        \"count\": 20,\n        \"unit\": \"\u0431\u0443\u0442\",\n        \"price\": 100\n      }\n    ],\n    \"\u0421\u0418\u0417 \u0438 \u0441\u043f\u0435\u0446\u043e\u0434\u0435\u0436\u0434\u0430\": [\n      {\n        \"name\": \"\u041a\u0430\u0441\u043a\u0430\",\n        \"count\": 15,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 500\n      },\n      {\n        \"name\": \"\u041f\u0435\u0440\u0447\u0430\u0442\u043a\u0438\",\n        \"count\": 100,\n        \"unit\": \"\u043f\u0430\u0440\u0430\",\n        \"price\": 50\n      },\n      {\n        \"name\": \"\u0416\u0438\u043b\u0435\u0442 \u0441\u0438\u0433\u043d\u0430\u043b\u044c\u043d\u044b\u0439\",\n        \"count\": 15,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 300\n      }\n    ]\n  },\n  \"works\": [\n    {\n      \"section\": \"\u0417\u0435\u043c\u043b\u044f\u043d\u044b\u0435 \u0440\u0430\u0431\u043e\u0442\u044b\",\n      \"items\": [\n        {\n          \"name\": \"\u0420\u0430\u0437\u0440\u0430\u0431\u043e\u0442\u043a\u0430 \u043a\u043e\u0442\u043b\u043e\u0432\u0430\u043d\u0430\",\n          \"unit\": \"\u043c3\",\n          \"price\": 300,\n          \"count\": 500\n        },\n        {\n          \"name\": \"\u041e\u0431\u0440\u0430\u0442\u043d\u0430\u044f \u0437\u0430\u0441\u044b\u043f\u043a\u0430\",\n          \"unit\": \"\u043c3\",\n          \"price\": 200,\n          \"count\": 200\n        }\n      ]\n    },\n    {\n      \"section\": \"\u0424\u0443\u043d\u0434\u0430\u043c\u0435\u043d\u0442\",\n      \"items\": [\n        {\n          \"name\": \"\u0423\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u043e \u043e\u043f\u0430\u043b\u0443\u0431\u043a\u0438\",\n          \"unit\": \"\u043c2\",\n          \"price\": 500,\n          \"count\": 400\n        },\n        {\n          \"name\": \"\u0411\u0435\u0442\u043e\u043d\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435\",\n          \"unit\": \"\u043c3\",\n          \"price\": 3500,\n          \"count\": 200\n        },\n        {\n          \"name\": \"\u0410\u0440\u043c\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435\",\n          \"unit\": \"\u0442\",\n          \"price\": 25000,\n          \"count\": 5\n        }\n      ]\n    }\n  ]\n}\n```"}}
+2025-07-30 09:06:35,495 - telegrambot.services - INFO - Успешный ответ от Telegram API: {'ok': True, 'result': {'message_id': 711, 'from': {'id': 7836693206, 'is_bot': True, 'first_name': 'MyTestBot', 'username': 'NeSrv2Bot'}, 'chat': {'id': 5690246274, 'first_name': 'Николай', 'username': 'nesrv', 'type': 'private'}, 'date': 1753855591, 'text': '```json\n{\n  "kategoriya_resursa": {\n    "Кадровое обеспечение": [\n      {\n        "sotrudniki_specialnost": "Прораб",\n        "hours": 160,\n        "price": 500\n      },\n      {\n        "sotrudniki_specialnost": "Каменщик",\n        "hours": 1200,\n        "price": 350\n      },\n      {\n        "sotrudniki_specialnost": "Плотник",\n        "hours": 800,\n        "price": 300\n      },\n      {\n        "sotrudniki_specialnost": "Разнорабочий",\n        "hours": 2000,\n        "price": 200\n      }\n    ],\n    "Машины и механизмы": [\n      {\n        "name": "Экскаватор",\n        "hours": 80,\n        "price": 1500\n      },\n      {\n        "name": "Бетономешалка",\n        "hours": 200,\n        "price": 800\n      },\n      {\n        "name": "Кран",\n        "hours": 100,\n        "price": 2000\n      }\n    ],\n    "Инструмент и материалы": [\n      {\n        "name": "Бетон",\n        "count": 200,\n        "unit": "м3",\n        "price": 4500\n      },\n      {\n        "name": "Арматура",\n        "count": 5000,\n        "unit": "кг",\n        "price": 60\n      },\n      {\n        "name": "Доска обрезная",\n        "count": 10,\n        "unit": "м3",\n        "price": 12000\n      },\n      {\n        "name": "Гвозди",\n        "count": 50,\n        "unit": "кг",\n        "price": 120\n      }\n    ],\n    "Административно-бытовые расходы": [\n      {\n        "name": "Офисные принадлежности",\n        "count": 1,\n        "unit": "комплект",\n        "price": 15000\n      },\n      {\n        "name": "Вода питьевая",\n        "count": 20,\n        "unit": "бут",\n        "price": 100\n      }\n    ],\n    "СИЗ и спецодежда": [\n      {\n        "name": "Каска",\n        "count": 15,\n        "unit": "шт",\n        "price": 500\n      },\n      {\n        "name": "Перчатки",\n        "count": 100,\n        "unit": "пара",\n        "price": 50\n      },\n      {\n        "name": "Жилет сигнальный",\n        "count": 15,\n        "unit": "шт",\n        "price": 300\n      }\n    ]\n  },\n  "works": [\n    {\n      "section": "Земляные работы",\n      "items": [\n        {\n          "name": "Разработка котлована",\n          "unit": "м3",\n          "price": 300,\n          "count": 500\n        },\n        {\n          "name": "Обратная засыпка",\n          "unit": "м3",\n          "price": 200,\n          "count": 200\n        }\n      ]\n    },\n    {\n      "section": "Фундамент",\n      "items": [\n        {\n          "name": "Устройство опалубки",\n          "unit": "м2",\n          "price": 500,\n          "count": 400\n        },\n        {\n          "name": "Бетонирование",\n          "unit": "м3",\n          "price": 3500,\n          "count": 200\n        },\n        {\n          "name": "Армирование",\n          "unit": "т",\n          "price": 25000,\n          "count": 5\n        }\n      ]\n    }\n  ]\n}\n```'}}
+2025-07-30 09:06:35,860 - telegrambot.services - INFO - Сообщение сохранено в TelegramMessage: user_id=7
+2025-07-30 09:06:36,262 - telegrambot.views - INFO - Документ сгенерирован и отправлен: 1/1 пользователей
+2025-07-30 09:13:22,879 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 09:42:23,893 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-07-30 09:42:34,598 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 09:43:36,170 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 09:54:14,728 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 10:07:46,652 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-07-30 10:07:46,832 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-07-30 10:07:52,757 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 10:07:53,065 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 10:08:19,783 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-07-30 10:08:20,744 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-07-30 10:08:25,320 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 10:08:26,221 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 10:09:02,780 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-07-30 10:09:03,396 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-07-30 10:09:08,018 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 10:09:08,380 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 10:09:10,953 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-07-30 10:09:11,348 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-07-30 10:09:17,342 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 10:09:17,771 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 10:37:59,083 - django.request - WARNING - Not Found: /objects/38/income/
+2025-07-30 10:38:08,621 - django.request - WARNING - Not Found: /objects/38/
+2025-07-30 10:38:09,891 - django.request - WARNING - Not Found: /objects/38/
+2025-07-30 10:53:05,291 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-30 10:53:05,599 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-30 10:53:15,417 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 10:53:16,392 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 10:53:20,895 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-30 10:53:21,312 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-30 10:53:27,218 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 10:53:27,501 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 10:53:30,250 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-30 10:53:30,613 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-30 10:53:35,935 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 10:53:36,394 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 10:53:38,885 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-30 10:53:39,521 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-30 10:54:43,695 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 10:55:58,694 - telegrambot.views - INFO - Получен запрос на генерацию документа: Смета для снос хрущевки 1960 года, 4 этажа 50 квартир. Никакого текста, только JSON:{"kategoriya_resursa":{"Кадровое обеспечение":[{"sotrudniki_specialnost":"str","hours":0,"price":0}],"Машины и механизмы":[{"name":"str","hours":0,"price":0}],"Инструмент и материалы":[{"name":"str","count":0,"unit":"str","price":0}],"Административно-бытовые расходы":[{"name":"str","count":0,"unit":"str","price":0}],"СИЗ и спецодежда":[{"name":"str","count":0,"unit":"str","price":0}]},"works":[{"section":"str","items":[{"name":"str","unit":"str","price":0,"count":0}]}]}
+2025-07-30 10:55:58,695 - telegrambot.views - INFO - Отправляю запрос к DeepSeek API...
+2025-07-30 10:55:58,696 - telegrambot.services - INFO - Отправляю запрос к DeepSeek API с промптом: Смета для снос хрущевки 1960 года, 4 этажа 50 квартир. Никакого текста, только JSON:{"kategoriya_res...
+2025-07-30 10:55:58,696 - telegrambot.services - INFO - Отправляю POST запрос к https://api.deepseek.com/v1/chat/completions
+2025-07-30 10:56:52,651 - telegrambot.services - INFO - Получен ответ от DeepSeek API: статус 200
+2025-07-30 10:56:52,651 - telegrambot.services - INFO - Успешно сгенерирован документ длиной 3119 символов
+2025-07-30 10:56:52,652 - telegrambot.views - INFO - Получен ответ от DeepSeek: ```json
+{
+  "kategoriya_resursa": {
+    "Кадровое обеспечение": [
+      {
+        "sotrudniki_specialnost": "Разнорабочий",
+        "hours": 1200,
+        "price": 250
+      },
+      {
+        "sotrud...
+2025-07-30 10:56:52,655 - telegrambot.views - INFO - Найдено активных пользователей: 1
+2025-07-30 10:56:52,656 - telegrambot.views - INFO - Отправляю документ пользователю 5690246274 (Николай)
+2025-07-30 10:56:52,851 - telegrambot.services - INFO - Бот проверен: MyTestBot (@NeSrv2Bot)
+2025-07-30 10:56:52,852 - telegrambot.services - INFO - Отправка сообщения в Telegram: chat_id=5690246274, text=```json
+{
+  "kategoriya_resursa": {
+    "Кадровое ...
+2025-07-30 10:56:53,142 - telegrambot.services - INFO - Ответ от Telegram API (статус 200): {"ok":true,"result":{"message_id":712,"from":{"id":7836693206,"is_bot":true,"first_name":"MyTestBot","username":"NeSrv2Bot"},"chat":{"id":5690246274,"first_name":"\u041d\u0438\u043a\u043e\u043b\u0430\u0439","username":"nesrv","type":"private"},"date":1753862208,"text":"```json\n{\n  \"kategoriya_resursa\": {\n    \"\u041a\u0430\u0434\u0440\u043e\u0432\u043e\u0435 \u043e\u0431\u0435\u0441\u043f\u0435\u0447\u0435\u043d\u0438\u0435\": [\n      {\n        \"sotrudniki_specialnost\": \"\u0420\u0430\u0437\u043d\u043e\u0440\u0430\u0431\u043e\u0447\u0438\u0439\",\n        \"hours\": 1200,\n        \"price\": 250\n      },\n      {\n        \"sotrudniki_specialnost\": \"\u041c\u0430\u0448\u0438\u043d\u0438\u0441\u0442 \u044d\u043a\u0441\u043a\u0430\u0432\u0430\u0442\u043e\u0440\u0430\",\n        \"hours\": 200,\n        \"price\": 500\n      },\n      {\n        \"sotrudniki_specialnost\": \"\u041a\u0440\u0430\u043d\u043e\u0432\u0449\u0438\u043a\",\n        \"hours\": 150,\n        \"price\": 600\n      },\n      {\n        \"sotrudniki_specialnost\": \"\u041f\u0440\u043e\u0440\u0430\u0431\",\n        \"hours\": 300,\n        \"price\": 800\n      }\n    ],\n    \"\u041c\u0430\u0448\u0438\u043d\u044b \u0438 \u043c\u0435\u0445\u0430\u043d\u0438\u0437\u043c\u044b\": [\n      {\n        \"name\": \"\u042d\u043a\u0441\u043a\u0430\u0432\u0430\u0442\u043e\u0440 \u0441 \u0433\u0438\u0434\u0440\u043e\u043c\u043e\u043b\u043e\u0442\u043e\u043c\",\n        \"hours\": 200,\n        \"price\": 2500\n      },\n      {\n        \"name\": \"\u0411\u0443\u043b\u044c\u0434\u043e\u0437\u0435\u0440\",\n        \"hours\": 150,\n        \"price\": 1800\n      },\n      {\n        \"name\": \"\u041a\u0440\u0430\u043d 25 \u0442\u043e\u043d\u043d\",\n        \"hours\": 150,\n        \"price\": 3000\n      },\n      {\n        \"name\": \"\u0421\u0430\u043c\u043e\u0441\u0432\u0430\u043b (10 \u0435\u0434\u0438\u043d\u0438\u0446)\",\n        \"hours\": 400,\n        \"price\": 1200\n      }\n    ],\n    \"\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u0438 \u043c\u0430\u0442\u0435\u0440\u0438\u0430\u043b\u044b\": [\n      {\n        \"name\": \"\u041f\u0435\u0440\u0444\u043e\u0440\u0430\u0442\u043e\u0440\",\n        \"count\": 10,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 5000\n      },\n      {\n        \"name\": \"\u0413\u0438\u0434\u0440\u0430\u0432\u043b\u0438\u0447\u0435\u0441\u043a\u0438\u0435 \u043d\u043e\u0436\u043d\u0438\u0446\u044b\",\n        \"count\": 2,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 15000\n      },\n      {\n        \"name\": \"\u041a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440\u044b \u0434\u043b\u044f \u043c\u0443\u0441\u043e\u0440\u0430\",\n        \"count\": 30,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 3000\n      }\n    ],\n    \"\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u0438\u0432\u043d\u043e-\u0431\u044b\u0442\u043e\u0432\u044b\u0435 \u0440\u0430\u0441\u0445\u043e\u0434\u044b\": [\n      {\n        \"name\": \"\u041e\u0444\u0438\u0441 \u043d\u0430 \u0441\u0442\u0440\u043e\u0439\u043f\u043b\u043e\u0449\u0430\u0434\u043a\u0435\",\n        \"count\": 1,\n        \"unit\": \"\u043c\u0435\u0441\",\n        \"price\": 50000\n      },\n      {\n        \"name\": \"\u041f\u0438\u0442\u0430\u043d\u0438\u0435 \u0440\u0430\u0431\u043e\u0447\u0438\u0445\",\n        \"count\": 30,\n        \"unit\": \"\u0434\u043d\",\n        \"price\": 30000\n      }\n    ],\n    \"\u0421\u0418\u0417 \u0438 \u0441\u043f\u0435\u0446\u043e\u0434\u0435\u0436\u0434\u0430\": [\n      {\n        \"name\": \"\u041a\u0430\u0441\u043a\u0430\",\n        \"count\": 30,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 500\n      },\n      {\n        \"name\": \"\u0417\u0430\u0449\u0438\u0442\u043d\u044b\u0435 \u043e\u0447\u043a\u0438\",\n        \"count\": 30,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 300\n      },\n      {\n        \"name\": \"\u0420\u0435\u0441\u043f\u0438\u0440\u0430\u0442\u043e\u0440\",\n        \"count\": 30,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 400\n      }\n    ]\n  },\n  \"works\": [\n    {\n      \"section\": \"\u041f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u0438\u0442\u0435\u043b\u044c\u043d\u044b\u0435 \u0440\u0430\u0431\u043e\u0442\u044b\",\n      \"items\": [\n        {\n          \"name\": \"\u041e\u0442\u043a\u043b\u044e\u0447\u0435\u043d\u0438\u0435 \u043a\u043e\u043c\u043c\u0443\u043d\u0438\u043a\u0430\u0446\u0438\u0439\",\n          \"unit\": \"\u043e\u0431\u044a\u0435\u043a\u0442\",\n          \"price\": 150000,\n          \"count\": 1\n        },\n        {\n          \"name\": \"\u041e\u0433\u0440\u0430\u0436\u0434\u0435\u043d\u0438\u0435 \u0442\u0435\u0440\u0440\u0438\u0442\u043e\u0440\u0438\u0438\",\n          \"unit\": \"\u043c.\u043f\u043e\u0433\",\n          \"price\": 500,\n          \"count\": 300\n        }\n      ]\n    },\n    {\n      \"section\": \"\u041e\u0441\u043d\u043e\u0432\u043d\u044b\u0435 \u0440\u0430\u0431\u043e\u0442\u044b\",\n      \"items\": [\n        {\n          \"name\": \"\u0420\u0443\u0447\u043d\u043e\u0439 \u0434\u0435\u043c\u043e\u043d\u0442\u0430\u0436 \u043f\u0435\u0440\u0435\u0433\u043e\u0440\u043e\u0434\u043e\u043a\",\n          \"unit\": \"\u043a\u0432.\u043c\",\n          \"price\": 300,\n          \"count\": 2500\n        },\n        {\n          \"name\": \"\u041c\u0435\u0445\u0430\u043d\u0438\u0437\u0438\u0440\u043e\u0432\u0430\u043d\u043d\u044b\u0439 \u0434\u0435\u043c\u043e\u043d\u0442\u0430\u0436 \u043a\u043e\u043d\u0441\u0442\u0440\u0443\u043a\u0446\u0438\u0439\",\n          \"unit\": \"\u043a\u0443\u0431.\u043c\",\n          \"price\": 800,\n          \"count\": 5000\n        }\n      ]\n    },\n    {\n      \"section\": \"\u0417\u0430\u043a\u043b\u044e\u0447\u0438\u0442\u0435\u043b\u044c\u043d\u044b\u0435 \u0440\u0430\u0431\u043e\u0442\u044b\",\n      \"items\": [\n        {\n          \"name\": \"\u0412\u044b\u0432\u043e\u0437 \u0438 \u0443\u0442\u0438\u043b\u0438\u0437\u0430\u0446\u0438\u044f \u0441\u0442\u0440\u043e\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0433\u043e \u043c\u0443\u0441\u043e\u0440\u0430\",\n          \"unit\": \"\u043a\u0443\u0431.\u043c\",\n          \"price\": 400,\n          \"count\": 6000\n        },\n        {\n          \"name\": \"\u0412\u044b\u0440\u0430\u0432\u043d\u0438\u0432\u0430\u043d\u0438\u0435 \u0442\u0435\u0440\u0440\u0438\u0442\u043e\u0440\u0438\u0438\",\n          \"unit\": \"\u043a\u0432.\u043c\",\n          \"price\": 150,\n          \"count\": 2000\n        }\n      ]\n    }\n  ]\n}\n```"}}
+2025-07-30 10:56:53,161 - telegrambot.services - INFO - Успешный ответ от Telegram API: {'ok': True, 'result': {'message_id': 712, 'from': {'id': 7836693206, 'is_bot': True, 'first_name': 'MyTestBot', 'username': 'NeSrv2Bot'}, 'chat': {'id': 5690246274, 'first_name': 'Николай', 'username': 'nesrv', 'type': 'private'}, 'date': 1753862208, 'text': '```json\n{\n  "kategoriya_resursa": {\n    "Кадровое обеспечение": [\n      {\n        "sotrudniki_specialnost": "Разнорабочий",\n        "hours": 1200,\n        "price": 250\n      },\n      {\n        "sotrudniki_specialnost": "Машинист экскаватора",\n        "hours": 200,\n        "price": 500\n      },\n      {\n        "sotrudniki_specialnost": "Крановщик",\n        "hours": 150,\n        "price": 600\n      },\n      {\n        "sotrudniki_specialnost": "Прораб",\n        "hours": 300,\n        "price": 800\n      }\n    ],\n    "Машины и механизмы": [\n      {\n        "name": "Экскаватор с гидромолотом",\n        "hours": 200,\n        "price": 2500\n      },\n      {\n        "name": "Бульдозер",\n        "hours": 150,\n        "price": 1800\n      },\n      {\n        "name": "Кран 25 тонн",\n        "hours": 150,\n        "price": 3000\n      },\n      {\n        "name": "Самосвал (10 единиц)",\n        "hours": 400,\n        "price": 1200\n      }\n    ],\n    "Инструмент и материалы": [\n      {\n        "name": "Перфоратор",\n        "count": 10,\n        "unit": "шт",\n        "price": 5000\n      },\n      {\n        "name": "Гидравлические ножницы",\n        "count": 2,\n        "unit": "шт",\n        "price": 15000\n      },\n      {\n        "name": "Контейнеры для мусора",\n        "count": 30,\n        "unit": "шт",\n        "price": 3000\n      }\n    ],\n    "Административно-бытовые расходы": [\n      {\n        "name": "Офис на стройплощадке",\n        "count": 1,\n        "unit": "мес",\n        "price": 50000\n      },\n      {\n        "name": "Питание рабочих",\n        "count": 30,\n        "unit": "дн",\n        "price": 30000\n      }\n    ],\n    "СИЗ и спецодежда": [\n      {\n        "name": "Каска",\n        "count": 30,\n        "unit": "шт",\n        "price": 500\n      },\n      {\n        "name": "Защитные очки",\n        "count": 30,\n        "unit": "шт",\n        "price": 300\n      },\n      {\n        "name": "Респиратор",\n        "count": 30,\n        "unit": "шт",\n        "price": 400\n      }\n    ]\n  },\n  "works": [\n    {\n      "section": "Подготовительные работы",\n      "items": [\n        {\n          "name": "Отключение коммуникаций",\n          "unit": "объект",\n          "price": 150000,\n          "count": 1\n        },\n        {\n          "name": "Ограждение территории",\n          "unit": "м.пог",\n          "price": 500,\n          "count": 300\n        }\n      ]\n    },\n    {\n      "section": "Основные работы",\n      "items": [\n        {\n          "name": "Ручной демонтаж перегородок",\n          "unit": "кв.м",\n          "price": 300,\n          "count": 2500\n        },\n        {\n          "name": "Механизированный демонтаж конструкций",\n          "unit": "куб.м",\n          "price": 800,\n          "count": 5000\n        }\n      ]\n    },\n    {\n      "section": "Заключительные работы",\n      "items": [\n        {\n          "name": "Вывоз и утилизация строительного мусора",\n          "unit": "куб.м",\n          "price": 400,\n          "count": 6000\n        },\n        {\n          "name": "Выравнивание территории",\n          "unit": "кв.м",\n          "price": 150,\n          "count": 2000\n        }\n      ]\n    }\n  ]\n}\n```'}}
+2025-07-30 10:56:53,232 - telegrambot.services - INFO - Сообщение сохранено в TelegramMessage: user_id=7
+2025-07-30 10:56:53,937 - telegrambot.views - INFO - Документ сгенерирован и отправлен: 1/1 пользователей
+2025-07-30 11:02:30,020 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-30 11:02:38,132 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 11:04:31,137 - django.request - ERROR - Internal Server Error: /objects/39/income/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 905, in object_income_detail
+    'categories': categories,
+                    ^^^^^^^^^^
+NameError: name 'daily_totals' is not defined. Did you mean: 'daily_total'?
+2025-07-30 11:04:42,894 - django.request - ERROR - Internal Server Error: /objects/40/income/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 905, in object_income_detail
+    'categories': categories,
+                    ^^^^^^^^^^
+NameError: name 'daily_totals' is not defined. Did you mean: 'daily_total'?
+2025-07-30 11:05:11,160 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 11:05:32,324 - django.request - ERROR - Internal Server Error: /objects/39/income/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 911, in object_income_detail
+    return render(request, 'object/object_income_detail.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 1075, in render
+    output = self.filter_expression.resolve(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 749, in resolve
+    new_obj = func(obj, *arg_vals)
+              ^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\templatetags\object_filters.py", line 63, in get_daily_total
+    return daily_totals.get(day_key, 0)
+           ^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+2025-07-30 11:05:56,895 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\templatetags\object_filters.py changed, reloading.
+2025-07-30 11:06:02,022 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 11:06:10,447 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\templatetags\object_filters.py changed, reloading.
+2025-07-30 11:06:15,582 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 11:10:40,899 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-30 11:10:46,494 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 11:11:20,139 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 11:13:36,212 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\urls.py changed, reloading.
+2025-07-30 11:14:25,975 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 11:14:45,267 - django.request - WARNING - Not Found: /update-expense/
+2025-07-30 11:14:45,470 - django.request - WARNING - Not Found: /update-expense/
+2025-07-30 11:15:31,107 - django.request - WARNING - Not Found: /update-expense/
+2025-07-30 11:15:31,113 - django.request - WARNING - Not Found: /update-expense/
+2025-07-30 11:21:48,751 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-30 11:21:54,629 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 11:22:05,186 - django.request - WARNING - Not Found: /update-expense/
+2025-07-30 11:22:05,186 - django.request - WARNING - Not Found: /update-expense/
+2025-07-30 11:33:17,289 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\urls.py changed, reloading.
+2025-07-30 11:33:22,981 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 11:33:52,878 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-30 11:33:58,332 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 11:42:38,777 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 11:46:32,917 - django.request - ERROR - Internal Server Error: /objects/39/income/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 893, in object_income_detail
+    return render(request, 'object/object_detail.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 378: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+2025-07-30 11:46:56,327 - django.request - ERROR - Internal Server Error: /objects/39/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 459, in object_detail
+    return render(request, 'object/object_detail.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 378: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+2025-07-30 11:47:47,634 - django.request - ERROR - Internal Server Error: /objects/39/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 459, in object_detail
+    return render(request, 'object/object_detail.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 378: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+2025-07-30 11:47:50,765 - django.request - ERROR - Internal Server Error: /objects/39/income/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 893, in object_income_detail
+    return render(request, 'object/object_detail.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 378: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+2025-07-30 11:48:25,084 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 11:48:41,639 - django.request - ERROR - Internal Server Error: /objects/39/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 459, in object_detail
+    return render(request, 'object/object_detail.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 378: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+2025-07-30 11:49:20,052 - django.request - ERROR - Internal Server Error: /objects/39/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 459, in object_detail
+    return render(request, 'object/object_detail.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 378: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+2025-07-30 11:49:23,353 - django.request - ERROR - Internal Server Error: /objects/39/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 459, in object_detail
+    return render(request, 'object/object_detail.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 378: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+2025-07-30 11:49:57,404 - django.request - ERROR - Internal Server Error: /objects/39/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 459, in object_detail
+    return render(request, 'object/object_detail.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 378: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+2025-07-30 11:50:02,639 - django.request - ERROR - Internal Server Error: /objects/39/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 459, in object_detail
+    return render(request, 'object/object_detail.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 378: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+2025-07-30 11:52:31,260 - django.request - ERROR - Internal Server Error: /objects/39/income/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 893, in object_income_detail
+    return render(request, 'object/object_detail.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 375: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+2025-07-30 11:52:57,188 - django.request - ERROR - Internal Server Error: /objects/39/income/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 893, in object_income_detail
+    return render(request, 'object/object_detail.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 375: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+2025-07-30 11:52:59,890 - django.request - ERROR - Internal Server Error: /objects/39/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 459, in object_detail
+    return render(request, 'object/object_detail.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 375: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+2025-07-30 11:53:31,167 - django.request - ERROR - Internal Server Error: /objects/39/income/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 893, in object_income_detail
+    return render(request, 'object/object_detail.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 375: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+2025-07-30 11:53:43,832 - django.request - ERROR - Internal Server Error: /objects/39/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endif'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 459, in object_detail
+    return render(request, 'object/object_detail.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+                    ^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 375: 'endif', expected 'empty' or 'endfor'. Did you forget to register or load this tag?
+2025-07-30 11:57:27,498 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 12:05:26,402 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-30 12:05:32,002 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 12:06:06,472 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-30 12:06:09,681 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-30 12:08:24,841 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-30 12:08:30,706 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 12:10:25,925 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-30 12:10:31,107 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 12:10:58,629 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-30 12:11:03,971 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-30 12:11:07,807 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.

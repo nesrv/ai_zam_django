@@ -179,7 +179,12 @@
             <div class="form-column">
                 <div class="form-group">
                     <label for="organizaciya">Организация *</label>
-                    <input type="text" id="organizaciya" name="organizaciya" required>
+                    <select id="organizaciya" name="organizaciya" required>
+                        <option value="">Выберите организацию</option>
+                        {% for org in user_organizations %}
+                        <option value="{{ org.nazvanie }}">{{ org.nazvanie }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 
                 <div class="form-group">
@@ -311,7 +316,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     } else {
         // Устанавливаем значения по умолчанию
-        document.getElementById('organizaciya').value = `ООО "Организация-${nextId}"`;
         document.getElementById('nazvanie').value = `Объект-${nextId}`;
     }
     

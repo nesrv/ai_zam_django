@@ -1,19 +1,29 @@
-import requests
-
-TOKEN = "7836693206:AAFgvbLhQSuDCCWPr5zaafDn0W_-CGF0yGk"
-
-print("Testing bot token...")
-url = f'https://api.telegram.org/bot{TOKEN}/getMe'
-response = requests.get(url)
-
-print(f"Status: {response.status_code}")
-print(f"Response: {response.text}")
-
-if response.status_code == 200:
-    print("Token is VALID")
-else:
-    print("Token is INVALID")
-    print("Possible reasons:")
-    print("1. Bot was deleted")
-    print("2. Token is wrong")
-    print("3. Network issues")
+x = {
+    "kategoriya_resursa":
+        {"Кадровое обеспечение":
+            [
+                {"sotrudniki_specialnost": "str", "hours": 0, "price": 0}
+            ],
+            "Машины и механизмы":
+                [
+                {"name": "str", "hours": 0, "price": 0}
+            ],
+            "Инструмент и материалы": 
+                [
+                {"name": "str", "count": 0, "unit": "str", "price": 0}
+            ],
+         "Административно-бытовые расходы":
+             [
+             {"name": "str", "count": 0, "unit": "str", "price": 0}
+            ], "СИЗ и спецодежда": [
+                {"name": "str", "count": 0, "unit": "str", "price": 0}
+            ]},
+        "works": 
+            [
+            {"section": "str", "items": 
+                [
+                {"name": "str", "unit": "str", "price": 0, "count": 0}
+            ]
+                }
+            ]
+}

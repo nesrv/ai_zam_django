@@ -10,9 +10,12 @@
 <link rel="stylesheet" href="{% static 'css/risk-prediction-fix.css' %}">
 <style>
     /* Inline fix for chart containers */
-    .risk-chart-container, .resource-breakdown, .risk-factors {
+    .risk-chart-container,
+    .resource-breakdown,
+    .risk-factors {
         overflow: visible !important;
     }
+
     canvas {
         max-height: 100% !important;
     }
@@ -46,14 +49,15 @@
 <div class="risk-dashboard" style="overflow-y: auto; max-height: 100vh;">
     <div class="dashboard-header">
         <h1 class="dashboard-title">Прогнозирование рисков перерасхода ресурсов</h1>
-        <p class="dashboard-subtitle">Предиктивная аналитика на базе временных рядов для выявления потенциальных превышений бюджета и оптимизации использования ресурсов на строительных объектах</p>
+        <p class="dashboard-subtitle">Предиктивная аналитика на базе временных рядов для выявления потенциальных
+            превышений бюджета и оптимизации использования ресурсов на строительных объектах</p>
     </div>
-    
+
     <div class="project-selector">
         <button class="project-btn active" data-project="project1">Реконструкция объекта</button>
         <button class="project-btn" data-project="project2">Снос спортивного комплекса</button>
     </div>
-    
+
     <div class="dashboard-grid">
         <!-- Main Risk Chart -->
         <div class="dashboard-card risk-chart-container animate-in delay-1">
@@ -66,7 +70,7 @@
                 <canvas id="riskChart"></canvas>
             </div>
         </div>
-        
+
         <!-- Risk Metrics -->
         <div class="dashboard-card risk-metrics animate-in delay-2">
             <div class="card-glow"></div>
@@ -74,7 +78,7 @@
                 <div class="card-title">Ключевые метрики рисков</div>
                 <div class="card-icon">🎯</div>
             </div>
-            
+
             <div class="metric-card">
                 <div class="metric-icon">⚠️</div>
                 <div>
@@ -82,15 +86,15 @@
                     <div class="metric-label">Вероятность перерасхода</div>
                 </div>
             </div>
-            
+
             <div class="metric-card">
-                <div class="metric-icon">💰</div>
+                <div class="metric-icon">💳</div>
                 <div>
                     <div class="metric-value">22%</div>
                     <div class="metric-label">Прогнозируемый перерасход</div>
                 </div>
             </div>
-            
+
             <div class="metric-card">
                 <div class="metric-icon">⏱️</div>
                 <div>
@@ -98,7 +102,7 @@
                     <div class="metric-label">Точность прогноза</div>
                 </div>
             </div>
-            
+
             <div class="metric-card">
                 <div class="metric-icon">🛠️</div>
                 <div>
@@ -107,7 +111,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Resource Breakdown -->
         <div class="dashboard-card resource-breakdown animate-in delay-3">
             <div class="card-glow"></div>
@@ -115,11 +119,11 @@
                 <div class="card-title">Распределение ресурсов</div>
                 <div class="card-icon">📊</div>
             </div>
-            
+
             <div style="height: 250px; position: relative;">
                 <canvas id="resourceChart"></canvas>
             </div>
-            
+
             <div class="resource-item">
                 <div class="resource-icon">🧱</div>
                 <div class="resource-info">
@@ -133,7 +137,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="resource-item">
                 <div class="resource-icon">⚙️</div>
                 <div class="resource-info">
@@ -148,7 +152,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Timeline Analysis -->
         <div class="dashboard-card timeline-analysis animate-in delay-4">
             <div class="card-glow"></div>
@@ -156,7 +160,7 @@
                 <div class="card-title">Временная шкала рисков</div>
                 <div class="card-icon">🗓️</div>
             </div>
-            
+
             <div class="timeline-point">
                 <div class="timeline-marker">1</div>
                 <div class="timeline-content">
@@ -166,7 +170,7 @@
                     <span class="risk-badge risk-medium">Средний риск</span>
                 </div>
             </div>
-            
+
             <div class="timeline-point">
                 <div class="timeline-marker">2</div>
                 <div class="timeline-content">
@@ -176,7 +180,7 @@
                     <span class="risk-badge risk-high">Высокий риск</span>
                 </div>
             </div>
-            
+
             <div class="timeline-point">
                 <div class="timeline-marker">3</div>
                 <div class="timeline-content">
@@ -187,7 +191,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Risk Factors -->
         <div class="dashboard-card risk-factors animate-in delay-5">
             <div class="card-glow"></div>
@@ -195,11 +199,11 @@
                 <div class="card-title">Факторы риска</div>
                 <div class="card-icon">🔍</div>
             </div>
-            
+
             <div style="height: 250px; position: relative;">
                 <canvas id="radarChart"></canvas>
             </div>
-            
+
             <div class="progress-container">
                 <div class="progress-label">
                     <span>Перерасход бюджета</span>
@@ -209,7 +213,7 @@
                     <div class="progress-fill high" data-width="80"></div>
                 </div>
             </div>
-            
+
             <div class="progress-container">
                 <div class="progress-label">
                     <span>Задержки поставок</span>
@@ -219,7 +223,7 @@
                     <div class="progress-fill medium" data-width="60"></div>
                 </div>
             </div>
-            
+
             <div class="progress-container">
                 <div class="progress-label">
                     <span>Нехватка персонала</span>
@@ -230,7 +234,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Recommendations -->
         <div class="dashboard-card recommendations animate-in delay-6">
             <div class="card-glow"></div>
@@ -238,32 +242,36 @@
                 <div class="card-title">Рекомендации по снижению рисков</div>
                 <div class="card-icon">💡</div>
             </div>
-            
+
             <div class="recommendation-item">
                 <div class="recommendation-icon">📉</div>
                 <div class="recommendation-text">
-                    <strong>Оптимизация закупок материалов</strong>: Пересмотреть контракты с поставщиками и найти более выгодные условия для снижения затрат на 15%.
+                    <strong>Оптимизация закупок материалов</strong>: Пересмотреть контракты с поставщиками и найти более
+                    выгодные условия для снижения затрат на 15%.
                 </div>
             </div>
-            
+
             <div class="recommendation-item">
                 <div class="recommendation-icon">⏰</div>
                 <div class="recommendation-text">
-                    <strong>Ускорение поставок</strong>: Заключить договоры с альтернативными поставщиками для минимизации рисков задержек критически важных материалов.
+                    <strong>Ускорение поставок</strong>: Заключить договоры с альтернативными поставщиками для
+                    минимизации рисков задержек критически важных материалов.
                 </div>
             </div>
-            
+
             <div class="recommendation-item">
                 <div class="recommendation-icon">👥</div>
                 <div class="recommendation-text">
-                    <strong>Перераспределение персонала</strong>: Оптимизировать график работы бригад для повышения эффективности использования трудовых ресурсов.
+                    <strong>Перераспределение персонала</strong>: Оптимизировать график работы бригад для повышения
+                    эффективности использования трудовых ресурсов.
                 </div>
             </div>
-            
+
             <div class="recommendation-item">
                 <div class="recommendation-icon">📋</div>
                 <div class="recommendation-text">
-                    <strong>Пересмотр бюджета</strong>: Создать резервный фонд в размере 10% от общего бюджета для покрытия непредвиденных расходов.
+                    <strong>Пересмотр бюджета</strong>: Создать резервный фонд в размере 10% от общего бюджета для
+                    покрытия непредвиденных расходов.
                 </div>
             </div>
         </div>

@@ -236,12 +236,12 @@
             font-size: 1.1em;
             font-weight: bold;
             border-radius: 6px;
-            border: none;
+            border: 4px solid transparent;
             background: #3498db;
             color: #fff;
             text-decoration: none;
             box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-            transition: background 0.2s, box-shadow 0.2s;
+            transition: all 0.2s;
         }
         .main-btn:hover {
             background: #217dbb;
@@ -252,10 +252,13 @@
         .main-btn.active {
             background: #27ae60;
             box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+            border: 4px solid #f39c12 !important;
+            transform: scale(1.08);
         }
         
         .main-btn.active:hover {
             background: #229954;
+            border: 4px solid #e67e22 !important;
         }
     </style>
 </head>
@@ -283,8 +286,8 @@
             </div>
             <!-- Две кнопки после header-info -->
             <div class="main-action-btns">
-                <a href="/objects/{{ object.id }}/" class="main-btn active">Расходная часть</a>
-                <a href="/objects/{{ object.id }}/income/" class="main-btn">Доходная часть</a>
+                <a href="/objects/{{ object.id }}/" class="main-btn active">💰 Расходная часть</a>
+                <a href="/objects/{{ object.id }}/income/" class="main-btn">💵 Доходная часть</a>
             </div>
             
 
@@ -514,7 +517,7 @@
                     
                     console.log('Sending data:', { resource_id: resourceId, date: date, amount: newValue });
                     
-                    fetch('/update-expense/', {
+                    fetch('/objects/update-expense/', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -700,7 +703,7 @@
             // Отправляем данные на сервер
             const resourceId = cell.dataset.resourceId;
             
-            fetch('/update-resource-data/', {
+            fetch('/objects/update-resource-data/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

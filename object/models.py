@@ -38,13 +38,11 @@ class Objekt(models.Model):
     ]
     
     nazvanie = models.CharField(max_length=255, verbose_name="Название")
-    organizaciya = models.ForeignKey(
+    organizacii = models.ManyToManyField(
         'sotrudniki.Organizaciya',
-        on_delete=models.CASCADE,
-        verbose_name="Организация",
-        related_name="objekty",
-        null=True,
-        blank=True
+        verbose_name="Организации",
+        blank=True,
+        related_name="objekty"
     )
     otvetstvennyj = models.CharField(max_length=255, default="Иванов Иван Иванович", verbose_name="Ответственный")
     data_nachala = models.DateField(verbose_name="Дата начала")

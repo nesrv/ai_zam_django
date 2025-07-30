@@ -274,9 +274,10 @@ def edit_object(request, object_id):
     # Получаем подразделения организации
     from sotrudniki.models import OrganizaciyaPodrazdelenie
     
-    organizaciya = obj.organizaciya
-    if organizaciya:
-        podrazdeleniya = organizaciya.podrazdeleniya.all()
+    organizacii = obj.organizacii.all()
+    if organizacii:
+        # Берем подразделения первой организации
+        podrazdeleniya = organizacii.first().podrazdeleniya.all()
     else:
         podrazdeleniya = []
     

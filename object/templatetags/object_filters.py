@@ -59,6 +59,8 @@ def get_resource_spent(resource_id, context):
 @register.filter
 def get_daily_total(daily_totals, day):
     """Получает сумму для конкретной даты из словаря daily_totals"""
+    if not daily_totals or not hasattr(daily_totals, 'get'):
+        return 0
     day_key = day.strftime('%Y-%m-%d')
     return daily_totals.get(day_key, 0)
 
@@ -91,3 +93,19 @@ def calculate_daily_total(category, context):
                 break
     
     return total
+
+@register.filter
+def get_category_daily_total(category_daily_totals, category_and_day):
+    """Получает сумму для категории и дня"""
+    if not category_daily_totals or not hasattr(category_daily_totals, 'get'):
+        return 0
+    
+    try:
+        category, day = category_and_day.split('|')
+        day_key = day.strip()
+        category_data = category_daily_totals.get(category.strip(), {})
+        if hasattr(category_data, 'get'):
+            return category_data.get(day_key, 0)
+        return 0
+    except (ValueError, AttributeError):
+        return 0

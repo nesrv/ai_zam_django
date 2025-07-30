@@ -49,7 +49,17 @@ def objects_list(request):
     # Отладочная информация
     print("\n\n*** objects_list view called ***\n\n")
     
-    objects = Objekt.objects.filter(is_active=True)
+    # Фильтруем объекты для авторизованного пользователя
+    if request.user.is_authenticated:
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        organizations = user_profile.organizations.all()
+        from django.db.models import Q
+        objects = Objekt.objects.filter(
+            Q(organizacii__in=organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name()),
+            is_active=True
+        ).distinct()
+    else:
+        objects = Objekt.objects.filter(is_active=True)
     
     # Создаем дни точно так же, как в object_detail
     today = datetime.now().date()
@@ -352,15 +362,19 @@ def object_detail(request, object_id):
     # Получаем объект или 404
     obj = get_object_or_404(Objekt, id=object_id)
     
-    # Получаем ресурсы по объекту, сортируем по категориям с учетом поля order
-    resources = ResursyPoObjektu.objects.filter(objekt=obj).select_related('resurs', 'resurs__kategoriya_resursa').order_by('resurs__kategoriya_resursa__order', 'resurs__kategoriya_resursa__nazvanie', 'resurs__naimenovanie')
+    # Получаем только расходные ресурсы (raskhod_dokhod=True)
+    resources = ResursyPoObjektu.objects.filter(
+        objekt=obj,
+        resurs__kategoriya_resursa__raskhod_dokhod=True
+    ).select_related('resurs', 'resurs__kategoriya_resursa').order_by('resurs__kategoriya_resursa__order', 'resurs__kategoriya_resursa__nazvanie', 'resurs__naimenovanie')
     
     # Суммарная стоимость ресурсов
     total_cost = sum(float(r.kolichestvo) * float(r.cena) for r in resources)
     
-    # Фактические расходы ресурсов
+    # Фактические расходные ресурсы
     fakticheskij_resursy = FakticheskijResursPoObjektu.objects.filter(
-        resurs_po_objektu__objekt=obj
+        resurs_po_objektu__objekt=obj,
+        resurs_po_objektu__resurs__kategoriya_resursa__raskhod_dokhod=True
     ).select_related('resurs_po_objektu', 'resurs_po_objektu__resurs')
     
     # Расходы по фактическим ресурсам
@@ -386,12 +400,11 @@ def object_detail(request, object_id):
         resource_cost = float(fr.resurs_po_objektu.cena)
         total_spent += sum(float(rr.izraskhodovano) * resource_cost for rr in rr_list)
     
-    # Вычисляем суммы по дням для каждой категории
+    # Вычисляем суммы по дням для каждой расходной категории
     category_daily_totals = {}
     for category in set(r.resurs.kategoriya_resursa.nazvanie for r in resources):
-        if category != 'Подрядные организации':
-            category_daily_totals[category] = {}
-            for day in days:
+        category_daily_totals[category] = {}
+        for day in days:
                 day_key = day.strftime('%Y-%m-%d')
                 daily_total = 0.0
                 # Фильтруем ресурсы по категории
@@ -475,11 +488,14 @@ def create_object(request):
             
             obj = Objekt.objects.create(
                 nazvanie=nazvanie,
-                organizaciya=organizaciya,
                 data_nachala=data_nachala,
                 data_plan_zaversheniya=datetime.strptime(data_nachala, '%Y-%m-%d').date() + timedelta(days=365),
                 otvetstvennyj="Иванов Иван Иванович"
             )
+            
+            # Добавляем организацию через ManyToMany
+            if organizaciya:
+                obj.organizacii.add(organizaciya)
             
             # Обрабатываем расходные ресурсы
             expense_categories = request.POST.getlist('expense_category[]')
@@ -541,6 +557,12 @@ def create_object(request):
     expense_categories = KategoriyaResursa.objects.filter(raskhod_dokhod=True)
     income_categories = KategoriyaResursa.objects.filter(raskhod_dokhod=False)
     
+    # Получаем организации пользователя
+    user_organizations = []
+    if request.user.is_authenticated:
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        user_organizations = user_profile.organizations.all()
+    
     # Получаем следующий ID для значений по умолчанию
     next_id = Objekt.objects.count() + 1
     
@@ -549,6 +571,7 @@ def create_object(request):
         'podrazdeleniya': podrazdeleniya,
         'expense_categories': list(expense_categories),
         'income_categories': list(income_categories),
+        'user_organizations': user_organizations,
         'next_id': next_id,
     }
     
@@ -773,91 +796,103 @@ def object_income_detail(request, object_id):
     # Получаем объект или 404
     obj = get_object_or_404(Objekt, id=object_id)
     
-    # Получаем только ресурсы категории "Подрядные организации"
+    # Получаем только ресурсы с raskhod_dokhod=0 (False)
     resources = ResursyPoObjektu.objects.filter(
         objekt=obj,
-        resurs__kategoriya_resursa__nazvanie='Подрядные организации'
-    ).select_related('resurs', 'resurs__kategoriya_resursa')
+        resurs__kategoriya_resursa__raskhod_dokhod=0
+    ).select_related('resurs', 'resurs__kategoriya_resursa').order_by('resurs__kategoriya_resursa__order', 'resurs__kategoriya_resursa__nazvanie', 'resurs__naimenovanie')
     
     # Суммарная стоимость ресурсов
     total_cost = sum(float(r.kolichestvo) * float(r.cena) for r in resources)
     
-    # Фактические ресурсы
+    # Фактические ресурсы с raskhod_dokhod=0
     fakticheskij_resursy = FakticheskijResursPoObjektu.objects.filter(
         resurs_po_objektu__objekt=obj,
-        resurs_po_objektu__resurs__kategoriya_resursa__nazvanie='Подрядные организации'
+        resurs_po_objektu__resurs__kategoriya_resursa__raskhod_dokhod=0
     ).select_related('resurs_po_objektu', 'resurs_po_objektu__resurs')
     
-    # Доходы по фактическим ресурсам (из таблицы dokhod_resursa)
-    dokhody = {}
+    # Расходы по фактическим ресурсам
+    raskhody = {}
     all_dates = set()
     
     for fr in fakticheskij_resursy:
-        dokhody_list = DokhodResursa.objects.filter(fakticheskij_resurs=fr).order_by('-data')
-        dokhody[fr.id] = dokhody_list
+        rashody_list = RaskhodResursa.objects.filter(fakticheskij_resurs=fr).order_by('-data')
+        raskhody[fr.id] = rashody_list
         
-        # Собираем все даты доходов
-        for dokhod in dokhody_list:
-            all_dates.add(dokhod.data)
+        # Собираем все даты расходов
+        for rashod in rashody_list:
+            all_dates.add(rashod.data)
     
     # Всегда создаем 20 дней для отображения
     today = datetime.now().date()
     days = [today - timedelta(days=i) for i in range(20)]
     
-    # Суммарный фактический доход
+    # Суммарный фактический расход
     total_spent = 0.0
-    for fr_id, dd_list in dokhody.items():
+    for fr_id, rr_list in raskhody.items():
         fr = FakticheskijResursPoObjektu.objects.get(id=fr_id)
         resource_cost = float(fr.resurs_po_objektu.cena)
-        total_spent += sum(float(dd.vypolneno) * resource_cost for dd in dd_list)
+        total_spent += sum(float(rr.izraskhodovano) * resource_cost for rr in rr_list)
     
-    # Вычисляем суммы для строки "Итого"
-    # Сумма выполнено по формуле: Σ (Расценка × Σ Дневной доход)
-    total_completed = 0.0
-    for resource in resources:
-        # Ищем фактические ресурсы для этого ресурса
-        for fr in fakticheskij_resursy:
-            if fr.resurs_po_objektu.id == resource.id:
-                # Суммируем все дневные доходы для этого ресурса
-                total_daily_income = sum(float(dokhod.vypolneno) for dokhod in dokhody.get(fr.id, []))
-                # Вычисляем: Расценка × Σ Дневной доход
-                total_completed += float(resource.cena) * total_daily_income
-                break
+    # Вычисляем суммы по дням для каждой категории с raskhod_dokhod=0
+    category_daily_totals = {}
+    for category in set(r.resurs.kategoriya_resursa.nazvanie for r in resources):
+        category_daily_totals[category] = {}
+        for day in days:
+            day_key = day.strftime('%Y-%m-%d')
+            daily_total = 0.0
+            # Фильтруем ресурсы по категории
+            category_resources = [r for r in resources if r.resurs.kategoriya_resursa.nazvanie == category]
+            for resource in category_resources:
+                # Ищем фактические ресурсы для этого ресурса
+                for fr in fakticheskij_resursy:
+                    if fr.resurs_po_objektu.id == resource.id:
+                        # Ищем расходы по дням
+                        for rashod in raskhody.get(fr.id, []):
+                            if rashod.data.strftime('%Y-%m-%d') == day_key:
+                                # Вычисляем: Заплан.цена * Дневной расход
+                                daily_total += float(resource.cena) * float(rashod.izraskhodovano)
+                        break
+            category_daily_totals[category][day_key] = daily_total
     
-    total_remaining = sum(float(r.kolichestvo - r.potracheno) for r in resources)  # Сумма осталось
-    
-    # Вычисляем суммы по дням для подрядных организаций (из таблицы dokhod_resursa)
-    daily_totals = {}
+    # Вычисляем итоговые фактические расходы по дням
+    total_daily_expenses = {}
     for day in days:
         day_key = day.strftime('%Y-%m-%d')
-        daily_total = 0.0
-        for resource in resources:
-            # Ищем фактические ресурсы для этого ресурса
-            for fr in fakticheskij_resursy:
-                if fr.resurs_po_objektu.id == resource.id:
-                    # Ищем доходы по дням
-                    for dokhod in dokhody.get(fr.id, []):
-                        if dokhod.data.strftime('%Y-%m-%d') == day_key:
-                            # Вычисляем: Расценка * Дневной доход
-                            daily_total += float(resource.cena) * float(dokhod.vypolneno)
-                    break
-        daily_totals[day_key] = daily_total
+        total_daily_expenses[day_key] = sum(
+            category_daily_totals.get(category, {}).get(day_key, 0.0)
+            for category in category_daily_totals
+        )
+    
+    from .models import KategoriyaResursa
+    from collections import OrderedDict
+    categories = KategoriyaResursa.objects.filter(raskhod_dokhod=0).order_by('order')
+    
+    # Группируем ресурсы по категориям
+    grouped_resources = OrderedDict()
+    for resource in resources:
+        category_name = resource.resurs.kategoriya_resursa.nazvanie
+        if category_name not in grouped_resources:
+            grouped_resources[category_name] = []
+        grouped_resources[category_name].append(resource)
     
     context = {
         'object': obj,
         'resources': resources,
+        'grouped_resources': grouped_resources,
         'total_cost': total_cost,
         'fakticheskij_resursy': fakticheskij_resursy,
-        'dokhody': dokhody,
+        'raskhody': raskhody,
         'total_spent': total_spent,
         'days': days,
-        'is_income_page': True,  # Флаг для шаблона
-        'total_completed': total_completed,  # Сумма выполнено
-        'total_remaining': total_remaining,  # Сумма осталось
-        'daily_totals': daily_totals,
+        'category_daily_totals': category_daily_totals,
+        'total_daily_expenses': total_daily_expenses,
+        'categories': categories,
     }
     
-    return render(request, 'object/object_income_detail.html', context)
+    return render(request, 'object/object_detail.html', context)
+
+
 
 @csrf_exempt
 @require_POST
@@ -1552,37 +1587,65 @@ def profile(request):
     # Получаем или создаем профиль пользователя
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
     
+    # Инициализируем формы
+    user_form = UserProfileForm(instance=request.user)
+    photo_form = UserPhotoForm(instance=user_profile)
+    org_form = OrganizationForm()
+    
     if request.method == 'POST':
-        user_form = UserProfileForm(request.POST, instance=request.user)
-        photo_form = UserPhotoForm(request.POST, request.FILES, instance=user_profile)
-        
-        if user_form.is_valid() and photo_form.is_valid():
-            user_form.save()
-            photo_form.save()
-            return redirect('/objects/profile/')
-    else:
-        user_form = UserProfileForm(instance=request.user)
-        photo_form = UserPhotoForm(instance=user_profile)
+        if 'add_organization' in request.POST:
+            org_form = OrganizationForm(request.POST)
+            if org_form.is_valid():
+                from sotrudniki.models import Organizaciya
+                org = Organizaciya.objects.create(**org_form.cleaned_data)
+                user_profile.organizations.add(org)
+                return redirect('/objects/profile/')
+        elif 'remove_organization' in request.POST:
+            org_id = request.POST.get('remove_organization')
+            if org_id:
+                from sotrudniki.models import Organizaciya
+                try:
+                    org = Organizaciya.objects.get(id=org_id)
+                    user_profile.organizations.remove(org)
+                except Organizaciya.DoesNotExist:
+                    pass
+                return redirect('/objects/profile/')
+        else:
+            user_form = UserProfileForm(request.POST, instance=request.user)
+            photo_form = UserPhotoForm(request.POST, request.FILES, instance=user_profile)
+            
+            if user_form.is_valid() and photo_form.is_valid():
+                user_form.save()
+                photo_form.save()
+                return redirect('/objects/profile/')
     
     # Получаем организации пользователя
-    from sotrudniki.models import Sotrudnik
-    organizations = []
-    try:
-        sotrudnik = Sotrudnik.objects.get(fio__icontains=request.user.get_full_name())
-        if sotrudnik.organizaciya:
-            organizations.append(sotrudnik.organizaciya)
-    except:
-        pass
+    organizations = user_profile.organizations.all()
     
-    # Получаем объекты
-    objects = Objekt.objects.filter(otvetstvennyj__icontains=request.user.get_full_name())
+    # Получаем объекты связанные с организациями пользователя или по ответственному
+    from django.db.models import Q
+    objects = Objekt.objects.filter(
+        Q(organizacii__in=organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name())
+    ).distinct()
+    
+    # Группируем объекты по организациям
+    objects_by_organization = {}
+    for org in organizations:
+        org_objects = objects.filter(organizacii=org)
+        if org_objects.exists():
+            objects_by_organization[org] = org_objects
+    
+    # Объекты без организации (только по ответственному)
+    objects_without_org = objects.filter(otvetstvennyj__icontains=request.user.get_full_name()).exclude(organizacii__in=organizations)
     
     context = {
         'profile': user_profile,
         'user_form': user_form,
         'photo_form': photo_form,
+        'org_form': org_form,
         'organizations': organizations,
-        'objects': objects,
+        'objects_by_organization': objects_by_organization,
+        'objects_without_org': objects_without_org,
     }
     
     return render(request, 'object/profile.html', context)

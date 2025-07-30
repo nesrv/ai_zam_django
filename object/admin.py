@@ -196,7 +196,7 @@ class ObjektAdmin(admin.ModelAdmin):
     list_filter = ('status', 'data_nachala', 'otvetstvennyj', 'is_active')
     date_hierarchy = 'data_nachala'
     inlines = [KadrovoeObespechenieInline, MashinyMekhanizmyInline, InstrumentMaterialyInline, ABRInline, SIZInline, PodryadchikiInline]
-    filter_horizontal = ['sotrudniki']
+    filter_horizontal = ['sotrudniki', 'organizacii']
     actions = ['deactivate_objects', 'activate_objects']
     fieldsets = (
         (None, {
@@ -205,8 +205,8 @@ class ObjektAdmin(admin.ModelAdmin):
         ('Даты', {
             'fields': ('data_nachala', 'data_plan_zaversheniya', 'data_fakt_zaversheniya')
         }),
-        ('Сотрудники', {
-            'fields': ('sotrudniki',)
+        ('Связи', {
+            'fields': ('organizacii', 'sotrudniki')
         }),
     )
     
@@ -398,6 +398,17 @@ class UserProfileInline(admin.StackedInline):
     model = UserProfile
     can_delete = False
     verbose_name_plural = 'Профиль'
+
+class UserAdmin(BaseUserAdmin):
+    inlines = (UserProfileInline,)
+
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
+class UserProfileInline(admin.StackedInline):
+    model = UserProfile
+    can_delete = False
+    verbose_name_plural = 'Профиль'
+    filter_horizontal = ['organizations']
 
 class UserAdmin(BaseUserAdmin):
     inlines = (UserProfileInline,)
