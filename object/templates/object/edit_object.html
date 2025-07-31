@@ -137,7 +137,11 @@
             <div class="form-column">
                 <div class="form-group">
                     <label for="organizaciya">Организация *</label>
-                    <input type="text" id="organizaciya" name="organizaciya" value="{{ object.organizaciya.nazvanie|default:'' }}" required>
+                    <select id="organizaciya" name="organizaciya" required>
+                        {% for org in user_organizations %}
+                        <option value="{{ org.nazvanie }}" {% if object.organizaciya.nazvanie == org.nazvanie %}selected{% endif %}>{{ org.nazvanie }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 
                 <div class="form-group">

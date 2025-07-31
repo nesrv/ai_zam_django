@@ -1,0 +1,438 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Добавить бота - AI-ZAM{% endblock %}
+
+{% block extra_styles %}
+.page-title {
+    text-align: center;
+    color: white;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.chatbots-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 10px;
+}
+
+.iphone-frame {
+    background: #000;
+    border-radius: 30px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 300px;
+    min-width: 300px;
+    margin: 0 auto;
+    transform: perspective(1000px) rotateY(5deg);
+    transition: transform 0.3s ease;
+}
+
+.iphone-frame:hover {
+    transform: perspective(1000px) rotateY(0deg) scale(1.05);
+}
+
+.iphone-screen {
+    background: #f8f8f8;
+    border-radius: 25px;
+    overflow: hidden;
+    min-height: 500px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    background: #007AFF;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chat-content {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    overflow-y: auto;
+}
+
+.connect-form {
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.chat-id-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    outline: none;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.chat-id-input:focus {
+    border-color: #007AFF;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.connect-btn {
+    background: #007AFF;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.3s;
+}
+
+.connect-btn:hover {
+    background: #0056b3;
+}
+
+.instruction-content {
+    color: #333;
+    line-height: 1.4;
+    font-size: 0.8rem;
+    text-align: left;
+    padding: 10px;
+}
+
+.instruction-content h3 {
+    color: #007AFF;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.instruction-content ol {
+    padding-left: 15px;
+    margin-bottom: 15px;
+}
+
+.instruction-content li {
+    margin-bottom: 8px;
+}
+
+.instruction-content strong {
+    color: #333;
+}
+
+.instruction-section {
+    margin-bottom: 20px;
+}
+
+.instruction-section h4 {
+    color: #007AFF;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+
+
+@media (max-width: 768px) {
+    .chatbots-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .iphone-frame {
+        transform: none;
+        max-width: 280px;
+    }
+    
+    .iphone-frame:hover {
+        transform: scale(1.02);
+    }
+}
+{% endblock %}
+
+{% block content %}
+<div class="page-title">Подключение ботов и рабочих чатов</div>
+
+<div style="text-align: center; margin-bottom: 20px;">
+    <a href="/objects/profile/" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 12px 20px; text-decoration: none; transition: all 0.3s;">← Назад к профилю</a>
+</div>
+
+<div class="chatbots-grid">
+    <!-- Левый экран - Форма -->
+    <div class="iphone-frame">
+        <div class="iphone-screen">
+            <div class="chat-header">
+                🤖 Подключение бота
+            </div>
+            <div class="chat-content">
+                <form method="post" class="connect-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="bot_name">Название бота</label>
+                        <input type="text" id="bot_name" name="bot_name" class="chat-id-input" placeholder="Например: Мой AI-бот" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bot_token">Токен</label>
+                        <input type="text" id="bot_token" name="bot_token" class="chat-id-input" placeholder="123456:ABC-DEF1234ghIkl-..." required>
+                    </div>
+                    <button type="submit" class="connect-btn">Подключить бота</button>
+                    <button type="button" id="get-chat-ids" class="connect-btn" style="background: #28a745; margin-top: 10px; display: none;">Получить ID рабочего чата</button>
+                </form>
+                <div id="chat-results" style="margin-top: 15px; display: none;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Правый экран - Инструкция -->
+    <div class="iphone-frame">
+        <div class="iphone-screen">
+            <div class="chat-header">
+                📋 Инструкция
+            </div>
+            <div class="chat-content">
+                <div class="instruction-content">
+                    <h3>Краткая инструкция по созданию Telegram-бота</h3>
+                    
+                    <div class="instruction-section">
+                        <h4>1. Создание бота через BotFather</h4>
+                        <ol>
+                            <li>Откройте Telegram, найдите <strong>@BotFather</strong>.</li>
+                            <li>Отправьте команду <strong>/newbot</strong>.</li>
+                            <li>Укажите имя бота (например, <strong>TestBot</strong>).</li>
+                            <li>Получите токен (например, <strong>123456:ABC-DEF1234ghIkl-...</strong>).</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="instruction-section">
+                        <h4>2. Добавление бота в группу</h4>
+                        <ol>
+                            <li>Создайте группу (если её нет):<br>
+                                - В Telegram нажмите «Новый чат» → «Новая группа».<br>
+                                - Добавьте участников (минимум 1 кроме бота).</li>
+                            <li>Добавьте бота в группу:<br>
+                                - Нажмите «Добавить участников».<br>
+                                - В поиске введите @имя_бота.<br>
+                                - Выберите бота из списка и добавьте.</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="instruction-section">
+                        <h4>3. Назначение бота администратором</h4>
+                        <ol>
+                            <li>Откройте «Управление группой»:<br>
+                                - Нажмите на название группы → «Настройки» (⚙️).</li>
+                            <li>Перейдите в «Администраторы» → «Добавить администратора».</li>
+                            <li>Выберите бота из списка.</li>
+                            <li>Настройте права бота при необходимости.</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="instruction-section">
+                        <h4>4. Получение ID чата</h4>
+                        <ol>
+                            <li>Отправьте любое сообщение боту в группе.</li>
+                            <li>Нажмите кнопку "Получить ID рабочего чата".</li>
+                            <li>ID чатов будут автоматически сохранены.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const getChatIdsBtn = document.getElementById('get-chat-ids');
+    const chatResults = document.getElementById('chat-results');
+    const botTokenInput = document.getElementById('bot_token');
+    
+    // Показываем кнопку после успешного подключения бота
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        
+        fetch('/objects/add-bot/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                getChatIdsBtn.style.display = 'block';
+                alert('Бот успешно подключен!');
+            } else {
+                alert('Ошибка подключения бота');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ошибка подключения бота');
+        });
+    });
+    
+    // Обработчик кнопки получения ID чатов
+    getChatIdsBtn.addEventListener('click', function() {
+        const botToken = botTokenInput.value.trim();
+        
+        if (!botToken) {
+            alert('Введите токен бота');
+            return;
+        }
+        
+        getChatIdsBtn.textContent = 'Получаем ID чатов...';
+        getChatIdsBtn.disabled = true;
+        
+        fetch('/objects/get-chat-ids/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                bot_token: botToken
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            getChatIdsBtn.textContent = 'Получить ID рабочего чата';
+            getChatIdsBtn.disabled = false;
+            
+            if (data.success) {
+                let resultsHtml = '<h4 style="color: #007AFF; margin-bottom: 10px;">Найденные чаты:</h4>';
+                
+                if (data.chat_ids.length > 0) {
+                    data.chat_ids.forEach(chat => {
+                        resultsHtml += `<div id="chat-${chat.id}" style="background: rgba(0,123,255,0.1); padding: 8px; margin: 5px 0; border-radius: 5px; font-size: 0.8rem; color: #333;">`;
+                        resultsHtml += `<strong style="color: #000;">${chat.title}</strong> ID: <code style="background: #fff; padding: 2px 4px; border-radius: 3px; color: #000;">${chat.id}</code>`;
+                        resultsHtml += `<button onclick="saveChatId('${chat.id}', '${chat.title}')" style="background: #28a745; color: white; border: none; padding: 4px 8px; border-radius: 50%; margin-left: 10px; cursor: pointer; font-size: 0.8rem; width: 25px; height: 25px;">✔</button>`;
+                        resultsHtml += `<button onclick="removeChatId('${chat.id}', '${chat.title}')" style="background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 50%; margin-left: 5px; cursor: pointer; font-size: 0.8rem; width: 25px; height: 25px;">✗</button>`;
+                        resultsHtml += `</div>`;
+                    });
+                    
+                    if (data.updated_objects.length > 0) {
+                        resultsHtml += '<h5 style="color: #28a745; margin-top: 15px;">Обновленные объекты:</h5>';
+                        data.updated_objects.forEach(obj => {
+                            resultsHtml += `<div style="background: rgba(40,167,69,0.1); padding: 8px; margin: 5px 0; border-radius: 5px; font-size: 0.8rem;">`;
+                            resultsHtml += `${obj.object_name} → ${obj.chat_title} (${obj.chat_id})`;
+                            resultsHtml += `</div>`;
+                        });
+                    }
+                    
+                    resultsHtml += '<div style="text-align: center; margin-top: 15px;">';
+                    resultsHtml += '<a href="/telegram/" style="background: #007AFF; color: white; padding: 10px 20px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; display: inline-block;">Перейти в Чаты</a>';
+                    resultsHtml += '</div>';
+                } else {
+                    resultsHtml += '<p style="color: #666; font-size: 0.8rem;">Не найдено групповых чатов. Убедитесь, что бот добавлен в группы и есть сообщения.</p>';
+                }
+                
+                chatResults.innerHTML = resultsHtml;
+                chatResults.style.display = 'block';
+            } else {
+                alert('Ошибка: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            getChatIdsBtn.textContent = 'Получить ID рабочего чата';
+            getChatIdsBtn.disabled = false;
+            alert('Ошибка получения ID чатов');
+        });
+    });
+    
+    // Функция для сохранения chat_id в объекты
+    window.saveChatId = function(chatId, chatTitle) {
+        fetch('/objects/save-chat-to-objects/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                chat_id: chatId,
+                chat_title: chatTitle
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(`Чат сохранен в ${data.updated_count} объектов`);
+            } else {
+                alert('Ошибка: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ошибка сохранения чата');
+        });
+    };
+    
+    // Функция для удаления chat_id из объектов
+    window.removeChatId = function(chatId, chatTitle) {
+        fetch('/objects/remove-chat-from-objects/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                chat_id: chatId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Визуально удаляем блок
+                const chatBlock = document.getElementById(`chat-${chatId}`);
+                if (chatBlock) {
+                    chatBlock.style.transition = 'opacity 0.3s ease';
+                    chatBlock.style.opacity = '0';
+                    setTimeout(() => {
+                        chatBlock.remove();
+                    }, 300);
+                }
+                alert(`Чат удален из ${data.updated_count} объектов`);
+            } else {
+                alert('Ошибка: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ошибка удаления чата');
+        });
+    };
+});
+</script>
+{% endblock %}

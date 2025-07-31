@@ -4473,3 +4473,133 @@ django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 375: '
 2025-07-30 12:10:58,629 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
 2025-07-30 12:11:03,971 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
 2025-07-30 12:11:07,807 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-30 12:11:12,850 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 09:20:34,786 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 09:28:56,257 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 09:33:04,580 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-31 09:33:08,667 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-31 09:33:11,147 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-31 09:33:12,927 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-31 09:46:01,116 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-31 09:46:07,718 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 09:47:47,574 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-31 09:47:52,936 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 09:55:26,416 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-07-31 09:55:32,236 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 10:22:34,795 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 10:24:15,119 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\models.py changed, reloading.
+2025-07-31 10:24:20,694 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 10:56:17,050 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-07-31 10:56:22,903 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 10:56:25,767 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\settings.py changed, reloading.
+2025-07-31 10:56:32,016 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 10:57:46,265 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-07-31 10:57:51,335 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 11:06:19,577 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\urls.py changed, reloading.
+2025-07-31 11:06:47,990 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 11:23:42,405 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\models.py changed, reloading.
+2025-07-31 11:23:53,155 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 11:24:40,309 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\models.py changed, reloading.
+2025-07-31 11:24:46,460 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 11:47:41,955 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\admin.py changed, reloading.
+2025-07-31 11:47:50,266 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 11:55:58,247 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-31 11:56:06,175 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 11:59:24,810 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 12:15:12,782 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-31 12:15:19,454 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 12:17:36,832 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\urls.py changed, reloading.
+2025-07-31 12:19:46,545 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 12:23:30,777 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-31 12:23:33,190 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-31 12:31:10,546 - django.request - ERROR - Internal Server Error: /objects/add-bot/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\object\views.py", line 1721, in add_bot
+    return render(request, 'object/add_bot.html')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: object/add_bot.html
+2025-07-31 14:45:23,315 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-31 14:45:29,272 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 14:46:08,527 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\urls.py changed, reloading.
+2025-07-31 14:46:14,343 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 14:53:51,078 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-31 14:53:56,628 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 14:55:30,143 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-31 14:59:32,794 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-31 14:59:38,719 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 15:10:28,678 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-31 15:10:34,760 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 15:12:55,251 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-31 15:13:01,418 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 15:22:12,853 - telegrambot.services - INFO - Бот проверен: MyTestBot (@NeSrv2Bot)
+2025-07-31 15:22:12,854 - telegrambot.services - INFO - Отправка сообщения в Telegram: chat_id=-1002700562903, text=97...
+2025-07-31 15:22:13,110 - telegrambot.services - INFO - Ответ от Telegram API (статус 200): {"ok":true,"result":{"message_id":178,"from":{"id":7836693206,"is_bot":true,"first_name":"MyTestBot","username":"NeSrv2Bot"},"chat":{"id":-1002700562903,"title":"\u0414\u043e\u043c-3","type":"supergroup"},"date":1753964532,"text":"97"}}
+2025-07-31 15:22:13,111 - telegrambot.services - INFO - Успешный ответ от Telegram API: {'ok': True, 'result': {'message_id': 178, 'from': {'id': 7836693206, 'is_bot': True, 'first_name': 'MyTestBot', 'username': 'NeSrv2Bot'}, 'chat': {'id': -1002700562903, 'title': 'Дом-3', 'type': 'supergroup'}, 'date': 1753964532, 'text': '97'}}
+2025-07-31 15:22:13,135 - telegrambot.services - INFO - Сообщение сохранено в ChatMessage: chat_id=-1002700562903, message_id=178
+2025-07-31 15:22:25,047 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов'] на объекте 39
+2025-07-31 15:22:25,049 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов'] на объекте 39
+2025-07-31 15:22:28,821 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов'] на объекте 39
+2025-07-31 15:22:28,822 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов'] на объекте 39
+2025-07-31 15:56:22,209 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 16:03:58,352 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-31 16:04:03,499 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 16:04:10,992 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-31 16:04:16,393 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 16:04:19,054 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-31 16:04:24,601 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 16:11:06,403 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Чиглинцев'] на объекте 40
+2025-07-31 16:11:06,404 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Чиглинцев'] на объекте 40
+2025-07-31 16:11:28,943 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Чиглинцев'] на объекте 40
+2025-07-31 16:11:28,944 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Чиглинцев'] на объекте 40
+2025-07-31 16:14:29,180 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-31 16:15:01,890 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-31 16:15:22,951 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-31 16:17:27,197 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов', 'Петров', 'Ванов', 'Етров'] на объекте 39
+2025-07-31 16:17:27,197 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов', 'Петров', 'Ванов', 'Етров'] на объекте 39
+2025-07-31 16:21:06,040 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-31 16:23:29,789 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-31 16:47:43,830 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\cams\views.py changed, reloading.
+2025-07-31 16:47:49,711 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 16:48:14,998 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views_chatbots.py changed, reloading.
+2025-07-31 16:48:21,260 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 16:48:32,423 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-31 16:48:39,436 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 17:17:29,805 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-07-31 17:17:35,810 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 22:52:22,981 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 22:52:54,320 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-07-31 22:54:10,928 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов', 'Петров', 'Ванов', 'Етров'] на объекте 40
+2025-07-31 22:54:10,928 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов', 'Петров', 'Ванов', 'Етров'] на объекте 40
+2025-07-31 22:54:48,411 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов', 'Петров', 'Ванов', 'Етров'] на объекте 40
+2025-07-31 22:54:48,412 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов', 'Петров', 'Ванов', 'Етров'] на объекте 40
+2025-07-31 22:55:02,492 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов', 'Петров', 'Ванов', 'Етров'] на объекте 40
+2025-07-31 22:55:02,493 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов', 'Петров', 'Ванов', 'Етров'] на объекте 40
+2025-07-31 22:57:08,540 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов', 'Петров', 'Ванов', 'Етров'] на объекте 40
+2025-07-31 22:57:08,540 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов', 'Петров', 'Ванов', 'Етров'] на объекте 40
+2025-07-31 22:57:10,605 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-07-31 22:58:15,955 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов', 'Петров', 'Ванов', 'Етров'] на объекте 40
+2025-07-31 22:58:15,956 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов', 'Петров', 'Ванов', 'Етров'] на объекте 40
+2025-07-31 23:19:53,652 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов', 'Петров', 'Ванов', 'Етров'] на объекте 39
+2025-07-31 23:19:53,653 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов', 'Петров', 'Ванов', 'Етров'] на объекте 39
+2025-07-31 23:23:23,491 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ионов', 'Серебров', 'Онов', 'Еребров'] на объекте 39
+2025-07-31 23:23:23,492 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ионов', 'Серебров', 'Онов', 'Еребров'] на объекте 39
+2025-07-31 23:23:39,937 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов', 'Петров', 'Ванов', 'Етров'] на объекте 40
+2025-07-31 23:23:39,938 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Иванов', 'Петров', 'Ванов', 'Етров'] на объекте 40
+2025-07-31 23:23:43,265 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ионов', 'Серебров', 'Онов', 'Еребров'] на объекте 39
+2025-07-31 23:23:43,266 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ионов', 'Серебров', 'Онов', 'Еребров'] на объекте 39
+2025-07-31 23:45:54,685 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-07-31 23:45:59,990 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов

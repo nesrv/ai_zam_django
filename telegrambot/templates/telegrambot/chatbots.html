@@ -724,93 +724,7 @@
     </div>
     {% endfor %}
     
-    <!-- Рабочая группа -->
-    <div class="iphone-frame">
-        <div class="iphone-screen">
-            <div class="chat-header">
-                <div class="dropdown">
-                    <span class="dropdown-toggle" onclick="window.toggleDropdown('work-group')" title="Добавить информацию">+</span>
-                    <div id="dropdown-work-group" class="dropdown-menu">
-                        <div class="dropdown-item" onclick="window.addHours('work-group')">ℹ️ Статус работ</div>
-                        <div class="dropdown-item" onclick="window.addResources('work-group')">❓ Запрос информации</div>
-                    </div>
-                </div>
-                Рабочая группа
-                <span onclick="window.refreshFakeMessages('work-group')" style="cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);" title="Обновить" class="refresh-button">🔄</span>
-            </div>
-            <div class="chat-content">
-                <div class="connected-status" data-chat-id="-9000000001">✅</div>
-                <!-- Удалена надпись "Активная группа" -->
-                
-                <div class="messages-container" id="messages-work-group" style="height: 400px; max-height: 400px; display: flex; flex-direction: column; justify-content: flex-end;">
-                    <div class="message-item">
-                        <div class="message-text">Начинаем работы на объекте</div>
-                        <div class="message-meta">Прораб • 15:30 15.01</div>
-                    </div>
-                    <div class="message-item">
-                        <div class="message-text">Материалы доставлены</div>
-                        <div class="message-meta">Снабженец • 14:45 15.01</div>
-                    </div>
-                    <div class="message-item">
-                        <div class="message-text">Бригада на месте</div>
-                        <div class="message-meta">Бригадир • 14:20 15.01</div>
-                    </div>
-                </div>
-            </div>
-            <div class="chat-footer">
-                <div class="message-input-container">
-                    <textarea id="message-input-work-group" class="message-input" placeholder="Введите сообщение..."></textarea>
-                    <button class="send-btn" onclick="window.sendFakeMessage('work-group')" title="Отправить сообщение">
-                        ➞
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Информационный чат -->
-    <div class="iphone-frame">
-        <div class="iphone-screen">
-            <div class="chat-header">
-                <div class="dropdown">
-                    <span class="dropdown-toggle" onclick="window.toggleDropdown('info-channel')" title="Добавить информацию">+</span>
-                    <div id="dropdown-info-channel" class="dropdown-menu">
-                        <div class="dropdown-item" onclick="window.addHours('info-channel')">📢 Объявление</div>
-                        <div class="dropdown-item" onclick="window.addResources('info-channel')">📅 График работ</div>
-                    </div>
-                </div>
-                Информационный чат
-                <span onclick="window.refreshFakeMessages('info-channel')" style="cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);" title="Обновить" class="refresh-button">🔄</span>
-            </div>
-            <div class="chat-content">
-                <div class="connected-status" data-chat-id="-9000000002">✅</div>
-                <!-- Удалена надпись "Информационный канал" -->
-                
-                <div class="messages-container" id="messages-info-channel" style="height: 400px; max-height: 400px; display: flex; flex-direction: column; justify-content: flex-end;">
-                    <div class="message-item">
-                        <div class="message-text">Обновление графика работ</div>
-                        <div class="message-meta">Администратор • 16:00 15.01</div>
-                    </div>
-                    <div class="message-item">
-                        <div class="message-text">Новые требования безопасности</div>
-                        <div class="message-meta">Инженер ОТ • 15:15 15.01</div>
-                    </div>
-                    <div class="message-item">
-                        <div class="message-text">Совещание в 17:00</div>
-                        <div class="message-meta">Секретарь • 14:30 15.01</div>
-                    </div>
-                </div>
-            </div>
-            <div class="chat-footer">
-                <div class="message-input-container">
-                    <textarea id="message-input-info-channel" class="message-input" placeholder="Введите сообщение..."></textarea>
-                    <button class="send-btn" onclick="window.sendFakeMessage('info-channel')" title="Отправить сообщение">
-                        ➞
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+
 </div>
 
 <script>
@@ -945,13 +859,16 @@ window.openHoursModal = function(messageText, messageDate) {
         
         // Отправляем запрос на поиск сотрудников, если есть ID объекта
         if (currentObjektId) {
-            // Извлекаем фамилии из текста сообщения
+            // Извлекаем фамилии и цифры из текста сообщения
             const surnames = [];
+            const hours = [];
             if (messageText) {
                 // Ищем все слова с заглавной буквы
                 const wordsWithCapital = messageText.match(/[\u0410-\u042F][\u0430-\u044F\u0451]+/g) || [];
                 // Ищем все слова с маленькой буквы, которые могут быть фамилиями
                 const wordsWithLower = messageText.match(/[\u0430-\u044F\u0451]+/g) || [];
+                // Извлекаем все цифры из сообщения
+                const numbers = messageText.match(/\b\d{1,2}\b/g) || [];
                 
                 // Добавляем слова с заглавной буквы
                 wordsWithCapital.forEach(word => {
@@ -972,6 +889,14 @@ window.openHoursModal = function(messageText, messageDate) {
                         }
                     }
                 });
+                
+                // Добавляем найденные цифры как часы (фильтруем разумные значения от 1 до 24)
+                numbers.forEach(num => {
+                    const numValue = parseInt(num, 10);
+                    if (numValue >= 1 && numValue <= 24) {
+                        hours.push(numValue);
+                    }
+                });
             }
             
             // Если не нашли фамилий, добавляем хотя бы одну для поиска
@@ -980,6 +905,7 @@ window.openHoursModal = function(messageText, messageDate) {
             }
             
             console.log('Отправляем запрос на поиск сотрудников:', surnames);
+            console.log('Найденные часы в сообщении:', hours);
             
             // Получаем CSRF токен
             function getCsrfToken() {
@@ -1029,12 +955,21 @@ window.openHoursModal = function(messageText, messageDate) {
                             
                             // Создаем HTML для всех строк и добавляем сразу
                             let rowsHtml = '';
-                            data.employees.forEach(employee => {
+                            data.employees.forEach((employee, index) => {
+                                // Определяем количество часов для этого сотрудника
+                                let employeeHours = 8; // Значение по умолчанию
+                                if (hours.length > index) {
+                                    employeeHours = hours[index];
+                                } else if (hours.length > 0) {
+                                    // Если часов меньше чем сотрудников, используем последнее значение
+                                    employeeHours = hours[hours.length - 1];
+                                }
+                                
                                 rowsHtml += `
                                     <tr>
                                         <td><input type="text" value="${employee.specialnost || 'Не указана'}" data-employee-id="${employee.id || ''}"></td>
                                         <td><input type="text" value="${employee.fio}"></td>
-                                        <td><input type="number" value="8" min="1" max="24"></td>
+                                        <td><input type="number" value="${employeeHours}" min="1" max="24"></td>
                                         <td><input type="number" value="1.0" min="0.1" max="2.0" step="0.1"></td>
                                         <td><input type="text" value="${messageObjectElement ? messageObjectElement.textContent : 'Объект'}"></td>
                                         <td><span class="delete-row" style="cursor: pointer; color: #dc3545; font-weight: bold; font-size: 18px;">✗</span></td>

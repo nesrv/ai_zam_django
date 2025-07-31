@@ -118,26 +118,13 @@
         }
         
         .nav-links a[href="/analytics/"] {
-            position: relative;
             font-weight: bold;
-            color: transparent;
-        }
-        
-        .nav-links a[href="/analytics/"]::before {
-            content: 'ИИ-аналитика';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             background: linear-gradient(45deg, #00d4ff, #ff00ff, #ffff00, #00d4ff);
             background-size: 300% 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            color: transparent;
         }
         
         .nav-links a:hover {
@@ -244,20 +231,95 @@
             display: inline-block;
         }
         
+        .user-menu .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
         .user-menu:hover .logout-btn {
             display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        .user-avatar {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #00d4ff;
+        }
+        
+        .user-name {
+            background: linear-gradient(45deg, #00d4ff, #ff00ff, #ffff00, #00d4ff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            animation: gradientShift 5s ease infinite;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
         }
         
         .logout-btn {
             display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: rgba(0,0,0,0.9);
-            padding: 8px 12px;
-            border-radius: 5px;
+            position: fixed;
+            top: 35px;
+            right: 80px;
+            background: rgba(255, 107, 107, 0.95);
+            padding: 6px 10px;
+            border-radius: 8px;
             white-space: nowrap;
-            z-index: 1000;
+            z-index: 10000;
+            border: 1px solid rgba(255, 107, 107, 0.8);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .logout-btn:before {
+            content: "";
+            position: absolute;
+            top: -6px;
+            right: 20px;
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 6px solid rgba(255, 107, 107, 0.9);
+        }
+        
+        .logout-btn a {
+            color: white !important;
+            text-decoration: none !important;
+            font-size: 14px !important;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        
+        .logout-btn a:before {
+            content: "🚪";
+            font-size: 14px;
+        }
+        
+        .logout-btn a:hover {
+            transform: translateX(-2px);
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         {% block extra_styles %}{% endblock %}
@@ -285,9 +347,16 @@
                     <a href="/cameras/">Камеры</a>
                     {% if user.is_authenticated %}
                         <div class="user-menu">
-                            <a href="/objects/profile/" style="color: #00d4ff; text-decoration: none;">{{ user.username }}</a>
+                            <a href="/objects/profile/" class="user-profile">
+                                {% if user.userprofile.photo %}
+                                    <img src="{{ user.userprofile.photo.url }}" alt="Профиль" class="user-avatar">
+                                {% else %}
+                                    <div class="user-avatar" style="background: linear-gradient(135deg, #00d4ff, #ff00ff); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">{{ user.username|first|upper }}</div>
+                                {% endif %}
+                                <span class="user-name">{{ user.username }}</span>
+                            </a>
                             <div class="logout-btn">
-                                <a href="/objects/logout/" style="color: #ff6b6b; text-decoration: none; font-size: 14px;">Выйти</a>
+                                <a href="/objects/logout/">Выйти</a>
                             </div>
                         </div>
                     {% else %}
@@ -328,9 +397,16 @@
         <a href="/cameras/">Камеры</a>
         {% if user.is_authenticated %}
             <div class="user-menu">
-                <a href="/objects/profile/" style="color: #00d4ff; text-decoration: none;">{{ user.username }}</a>
+                <a href="/objects/profile/" class="user-profile">
+                    {% if user.userprofile.photo %}
+                        <img src="{{ user.userprofile.photo.url }}" alt="Профиль" class="user-avatar">
+                    {% else %}
+                        <div class="user-avatar" style="background: linear-gradient(135deg, #00d4ff, #ff00ff); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">{{ user.username|first|upper }}</div>
+                    {% endif %}
+                    <span class="user-name">{{ user.username }}</span>
+                </a>
                 <div class="logout-btn">
-                    <a href="/objects/logout/" style="color: #ff6b6b; text-decoration: none; font-size: 14px;">Выйти</a>
+                    <a href="/objects/logout/">Выйти</a>
                 </div>
             </div>
         {% else %}

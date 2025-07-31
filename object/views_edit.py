@@ -351,6 +351,13 @@ def edit_object(request, object_id):
         specialty_name = emp.specialnost.nazvanie if emp.specialnost else 'Без специальности'
         all_employees_by_specialty[specialty_name].append(emp)
     
+    # Получаем организации авторизованного пользователя
+    user_organizations = []
+    if request.user.is_authenticated:
+        from .models import UserProfile
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        user_organizations = user_profile.organizations.all()
+    
     context = {
         'object': obj,
         'sotrudniki': sotrudniki,
@@ -370,6 +377,7 @@ def edit_object(request, object_id):
         'debug_employees_count': current_employees.count(),
         'debug_total_employees': Sotrudnik.objects.count(),
         'debug_specialties_count': all_specialties.count(),
+        'user_organizations': user_organizations,
         'is_edit': True,
     }
     

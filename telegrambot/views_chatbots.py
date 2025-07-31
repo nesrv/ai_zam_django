@@ -60,7 +60,17 @@ async def get_chat_messages_from_bot(chat_id, bot_token):
 
 def chatbots_page(request):
     """Страница чат-ботов для объектов"""
-    objekty = Objekt.objects.filter(is_active=True)
+    if request.user.is_authenticated:
+        from object.models import UserProfile
+        from django.db.models import Q
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        organizations = user_profile.organizations.all()
+        objekty = Objekt.objects.filter(
+            Q(organizacii__in=organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name()),
+            is_active=True
+        ).distinct()
+    else:
+        objekty = Objekt.objects.none()
     bot_token = os.getenv('TELEGRAM_BOT_TOKEN') or os.getenv('TELEGRAM_TOKEN')
     
     # Получаем сообщения для объектов с chat_id

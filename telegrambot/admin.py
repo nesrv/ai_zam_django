@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import TelegramUser, TelegramMessage, ChatMessage, ProcessedUpdate
+from .models import TelegramUser, TelegramMessage, ChatMessage, ProcessedUpdate, Bot
 
 @admin.register(TelegramUser)
 class TelegramUserAdmin(admin.ModelAdmin):
@@ -40,3 +40,11 @@ class ProcessedUpdateAdmin(admin.ModelAdmin):
     search_fields = ['update_id']
     readonly_fields = ['processed_at']
     ordering = ['-processed_at']
+
+@admin.register(Bot)
+class BotAdmin(admin.ModelAdmin):
+    list_display = ['bot_name', 'user', 'is_active', 'created_at']
+    list_filter = ['is_active', 'created_at', 'user']
+    search_fields = ['bot_name', 'user__username']
+    readonly_fields = ['created_at']
+    ordering = ['-created_at']

@@ -7,6 +7,7 @@ from .models import Organizaciya, Sotrudnik, ProtokolyObucheniya, Podrazdelenie,
 from django.conf import settings
 from django.template import Template, Context
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
 import os
 
 
@@ -718,7 +719,17 @@ def download_document(request, sotrudnik_id, doc_type, protokol_id=None):
 
 
 def organizations_list(request):
-    organizacii = Organizaciya.objects.filter(is_active=True)
+    from object.models import UserProfile
+    
+    if request.user.is_authenticated:
+        try:
+            user_profile = UserProfile.objects.get(user=request.user)
+            organizacii = user_profile.organizations.filter(is_active=True)
+        except UserProfile.DoesNotExist:
+            organizacii = Organizaciya.objects.none()
+    else:
+        organizacii = Organizaciya.objects.none()
+    
     return render(request, 'sotrudniki/organizations.html', {'organizacii': organizacii})
 
 

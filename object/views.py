@@ -59,7 +59,7 @@ def objects_list(request):
             is_active=True
         ).distinct()
     else:
-        objects = Objekt.objects.filter(is_active=True)
+        objects = Objekt.objects.none()
     
     # Создаем дни точно так же, как в object_detail
     today = datetime.now().date()
@@ -1593,7 +1593,18 @@ def profile(request):
     org_form = OrganizationForm()
     
     if request.method == 'POST':
-        if 'add_organization' in request.POST:
+        if 'add_bot' in request.POST:
+            bot_name = request.POST.get('bot_name')
+            bot_token = request.POST.get('bot_token')
+            if bot_name and bot_token:
+                from telegrambot.models import Bot
+                Bot.objects.create(
+                    user=request.user,
+                    bot_name=bot_name,
+                    token=bot_token
+                )
+                return redirect('/objects/profile/')
+        elif 'add_organization' in request.POST:
             org_form = OrganizationForm(request.POST)
             if org_form.is_valid():
                 from sotrudniki.models import Organizaciya
@@ -1610,6 +1621,42 @@ def profile(request):
                 except Organizaciya.DoesNotExist:
                     pass
                 return redirect('/objects/profile/')
+        elif 'remove_bot' in request.POST:
+            bot_id = request.POST.get('remove_bot')
+            if bot_id:
+                from telegrambot.models import Bot
+                try:
+                    bot = Bot.objects.get(id=bot_id, user=request.user)
+                    bot.delete()
+                except Bot.DoesNotExist:
+                    pass
+                return redirect('/objects/profile/')
+        elif 'add_camera' in request.POST:
+            name = request.POST.get('camera_name')
+            url = request.POST.get('camera_url')
+            objekt_id = request.POST.get('camera_objekt')
+            location = request.POST.get('camera_location', '')
+            description = request.POST.get('camera_description', '')
+            if name and url and objekt_id:
+                from cams.models import Camera
+                Camera.objects.create(
+                    name=name,
+                    url=url,
+                    objekt_id=objekt_id,
+                    location=location,
+                    description=description
+                )
+                return redirect('/objects/profile/')
+        elif 'remove_camera' in request.POST:
+            camera_id = request.POST.get('remove_camera')
+            if camera_id:
+                from cams.models import Camera
+                try:
+                    camera = Camera.objects.get(id=camera_id)
+                    camera.delete()
+                except Camera.DoesNotExist:
+                    pass
+                return redirect('/objects/profile/')
         else:
             user_form = UserProfileForm(request.POST, instance=request.user)
             photo_form = UserPhotoForm(request.POST, request.FILES, instance=user_profile)
@@ -1622,11 +1669,22 @@ def profile(request):
     # Получаем организации пользователя
     organizations = user_profile.organizations.all()
     
+    # Получаем ботов пользователя
+    from telegrambot.models import Bot
+    bots = Bot.objects.filter(user=request.user)
+    
+    # Получаем камеры пользователя
+    from cams.models import Camera
+    cameras = Camera.objects.filter(objekt__organizacii__in=organizations).distinct()
+    
     # Получаем объекты связанные с организациями пользователя или по ответственному
     from django.db.models import Q
     objects = Objekt.objects.filter(
         Q(organizacii__in=organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name())
     ).distinct()
+    
+    # Получаем рабочие чаты (объекты с chat_id)
+    work_chats = objects.filter(chat_id__isnull=False).values('id', 'nazvanie', 'chat_id')
     
     # Группируем объекты по организациям
     objects_by_organization = {}
@@ -1646,6 +1704,9 @@ def profile(request):
         'organizations': organizations,
         'objects_by_organization': objects_by_organization,
         'objects_without_org': objects_without_org,
+        'bots': bots,
+        'cameras': cameras,
+        'work_chats': work_chats,
     }
     
     return render(request, 'object/profile.html', context)
@@ -1667,3 +1728,179 @@ def login_view(request):
             return render(request, 'object/login.html', {'error': 'Неверный логин или пароль'})
     
     return render(request, 'object/login.html')
+
+@csrf_exempt
+@require_POST
+def add_chat_to_object(request, object_id):
+    try:
+        data = json.loads(request.body)
+        chat_id = data.get('chat_id')
+        
+        if not chat_id:
+            return JsonResponse({'success': False, 'error': 'ID чата не указан'})
+        
+        obj = get_object_or_404(Objekt, id=object_id)
+        obj.chat_id = chat_id
+        obj.save()
+        
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+def add_bot(request):
+    if not request.user.is_authenticated:
+        return redirect('/objects/login/')
+    
+    if request.method == 'POST':
+        bot_name = request.POST.get('bot_name')
+        bot_token = request.POST.get('bot_token')
+        if bot_name and bot_token:
+            from telegrambot.models import Bot
+            Bot.objects.create(
+                user=request.user,
+                bot_name=bot_name,
+                token=bot_token
+            )
+            return redirect('/objects/profile/')
+    
+    return render(request, 'object/add_bot.html')
+
+@csrf_exempt
+@require_POST
+def get_chat_ids(request):
+    try:
+        import requests
+        data = json.loads(request.body)
+        bot_token = data.get('bot_token')
+        
+        if not bot_token:
+            return JsonResponse({'success': False, 'error': 'Токен не указан'})
+        
+        url = f'https://api.telegram.org/bot{bot_token}/getUpdates'
+        response = requests.get(url)
+        
+        if response.status_code != 200:
+            return JsonResponse({'success': False, 'error': 'Ошибка API Telegram'})
+        
+        result = response.json()
+        
+        if not result.get('ok'):
+            return JsonResponse({'success': False, 'error': result.get('description', 'Неизвестная ошибка')})
+        
+        chat_ids = set()
+        for update in result.get('result', []):
+            if 'message' in update:
+                chat_id = update['message']['chat']['id']
+                chat_title = update['message']['chat'].get('title', 'Личный чат')
+                chat_type = update['message']['chat']['type']
+                
+                if chat_type in ['group', 'supergroup']:
+                    chat_ids.add((chat_id, chat_title))
+        
+        if not chat_ids:
+            return JsonResponse({
+                'success': False, 
+                'error': 'Нет сообщений от групп. Отправьте любое сообщение боту в группе, затем повторите попытку.'
+            })
+        
+        for chat_id, chat_title in chat_ids:
+            send_url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
+            send_data = {
+                'chat_id': chat_id,
+                'text': 'Бот подключен к рабочей группе'
+            }
+            requests.post(send_url, json=send_data)
+        
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        organizations = user_profile.organizations.all()
+        
+        from django.db.models import Q
+        objects = Objekt.objects.filter(
+            Q(organizacii__in=organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name())
+        ).distinct()
+        
+        updated_objects = []
+        chat_list = list(chat_ids)
+        
+        for i, obj in enumerate(objects.filter(chat_id__isnull=True)):
+            if i < len(chat_list):
+                obj.chat_id = chat_list[i][0]
+                obj.save()
+                updated_objects.append({
+                    'object_name': obj.nazvanie,
+                    'chat_id': chat_list[i][0],
+                    'chat_title': chat_list[i][1]
+                })
+        
+        return JsonResponse({
+            'success': True,
+            'chat_ids': [{'id': cid, 'title': title} for cid, title in chat_ids],
+            'updated_objects': updated_objects
+        })
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+@csrf_exempt
+@require_POST
+def save_chat_to_objects(request):
+    try:
+        data = json.loads(request.body)
+        chat_id = data.get('chat_id')
+        
+        if not chat_id:
+            return JsonResponse({'success': False, 'error': 'ID чата не указан'})
+        
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        organizations = user_profile.organizations.all()
+        
+        from django.db.models import Q
+        objects = Objekt.objects.filter(
+            Q(organizacii__in=organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name()),
+            chat_id__isnull=True
+        ).distinct()
+        
+        updated_count = 0
+        for obj in objects:
+            obj.chat_id = chat_id
+            obj.save()
+            updated_count += 1
+        
+        return JsonResponse({
+            'success': True,
+            'updated_count': updated_count
+        })
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+@csrf_exempt
+@require_POST
+def remove_chat_from_objects(request):
+    try:
+        data = json.loads(request.body)
+        chat_id = data.get('chat_id')
+        
+        if not chat_id:
+            return JsonResponse({'success': False, 'error': 'ID чата не указан'})
+        
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        organizations = user_profile.organizations.all()
+        
+        from django.db.models import Q
+        objects = Objekt.objects.filter(
+            Q(organizacii__in=organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name()),
+            chat_id=chat_id
+        ).distinct()
+        
+        updated_count = 0
+        for obj in objects:
+            obj.chat_id = None
+            obj.save()
+            updated_count += 1
+        
+        return JsonResponse({
+            'success': True,
+            'updated_count': updated_count
+        })
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})

@@ -15,6 +15,7 @@ urlpatterns = [
 
     path('<int:object_id>/edit/', views_edit.edit_object, name='edit_object'),
     path('<int:object_id>/delete/', views.delete_object, name='delete_object'),
+    path('<int:object_id>/add-chat/', views.add_chat_to_object, name='add_chat_to_object'),
     path('create/', views.create_object, name='create_object'),
     path('<int:object_id>/employees/', api_views.get_employees_simple, name='get_employees_by_position'),
     path('<int:object_id>/debug-employees/', views.debug_employees, name='debug_employees'),
@@ -43,6 +44,10 @@ urlpatterns = [
     
     # Профиль и аутентификация
     path('profile/', views.profile, name='profile'),
+    path('add-bot/', views.add_bot, name='add_bot'),
+    path('get-chat-ids/', views.get_chat_ids, name='get_chat_ids'),
+    path('save-chat-to-objects/', views.save_chat_to_objects, name='save_chat_to_objects'),
+    path('remove-chat-from-objects/', views.remove_chat_from_objects, name='remove_chat_from_objects'),
     path('register/', views.register, name='register'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),

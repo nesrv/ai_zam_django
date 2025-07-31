@@ -2,6 +2,21 @@ from django.db import models
 from django.contrib.auth.models import User
 from uuid import uuid4
 
+class Bot(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bots', verbose_name="Пользователь")
+    bot_name = models.CharField(max_length=100, verbose_name="Название бота")
+    token = models.CharField(max_length=255, verbose_name="Токен")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    is_active = models.BooleanField(default=True, verbose_name="Активен")
+    
+    class Meta:
+        verbose_name = "Бот"
+        verbose_name_plural = "Боты"
+        db_table = 'bots'
+    
+    def __str__(self):
+        return f"{self.bot_name} ({self.user.username})"
+
 class TelegramUser(models.Model):
     """Модель для хранения информации о пользователях Telegram"""
     telegram_id = models.BigIntegerField(unique=True, verbose_name="Telegram ID")

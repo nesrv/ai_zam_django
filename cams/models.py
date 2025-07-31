@@ -4,7 +4,7 @@ class Camera(models.Model):
     # Основные данные
     name = models.CharField(max_length=100, verbose_name="Название камеры")
     url = models.CharField(max_length=255, verbose_name="url")
-    objekt = models.ForeignKey('object.Objekt', on_delete=models.CASCADE, verbose_name="Объект", related_name="cameras", null=True, blank=True)
+    objekt = models.ForeignKey('object.Objekt', on_delete=models.SET_NULL, verbose_name="Объект", related_name="cameras", null=True, blank=True)
    
     # Местоположение
     location = models.CharField(max_length=200, blank=True, verbose_name="Местоположение")
