@@ -4603,3 +4603,17 @@ django.template.exceptions.TemplateDoesNotExist: object/add_bot.html
 2025-07-31 23:23:43,266 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ионов', 'Серебров', 'Онов', 'Еребров'] на объекте 39
 2025-07-31 23:45:54,685 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
 2025-07-31 23:45:59,990 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-01 00:09:30,203 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-08-01 00:10:31,764 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-08-01 11:43:53,847 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-01 11:56:18,627 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-08-01 11:56:26,217 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-01 11:56:49,385 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-01 11:59:27,370 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-01 11:59:34,764 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-01 12:01:42,691 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-01 12:01:49,389 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-01 12:08:41,901 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-08-01 12:08:49,824 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-01 12:10:40,476 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-01 12:12:25,757 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.

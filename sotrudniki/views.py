@@ -12,7 +12,16 @@ import os
 
 
 def sotrudniki_list(request):
-    sotrudniki = Sotrudnik.objects.select_related('organizaciya', 'specialnost', 'podrazdelenie').filter(organizaciya__is_active=True)
+    if request.user.is_authenticated:
+        from object.models import UserProfile
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        user_organizations = user_profile.organizations.all()
+        sotrudniki = Sotrudnik.objects.select_related('organizaciya', 'specialnost', 'podrazdelenie').filter(
+            organizaciya__in=user_organizations,
+            organizaciya__is_active=True
+        )
+    else:
+        sotrudniki = Sotrudnik.objects.none()
     
     podrazdelenie_id = request.GET.get('podrazdelenie')
     if podrazdelenie_id:
@@ -787,7 +796,13 @@ def sotrudnik_add(request):
     if podrazdelenie_id:
         podrazdelenie = get_object_or_404(Podrazdelenie, pk=podrazdelenie_id)
     
-    organizacii = Organizaciya.objects.filter(is_active=True)
+    if request.user.is_authenticated:
+        from object.models import UserProfile
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        organizacii = user_profile.organizations.filter(is_active=True)
+    else:
+        organizacii = Organizaciya.objects.none()
+    
     podrazdeleniya = Podrazdelenie.objects.all()
     specialnosti = Specialnost.objects.all()
     

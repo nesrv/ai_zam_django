@@ -241,8 +241,14 @@ def edit_object(request, object_id):
     existing_expense_resources = dict(expense_resources_by_category)
     existing_income_resources = dict(income_resources_by_category)
     
-    # Получаем сотрудников объекта
-    current_employees = obj.sotrudniki.select_related('specialnost').all()
+    # Получаем сотрудников объекта, привязанных к организациям пользователя
+    if request.user.is_authenticated:
+        from .models import UserProfile
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        user_organizations = user_profile.organizations.all()
+        current_employees = obj.sotrudniki.select_related('specialnost').filter(organizaciya__in=user_organizations)
+    else:
+        current_employees = obj.sotrudniki.none()
     employees_by_specialty = defaultdict(list)
     
     from sotrudniki.models import Specialnost
@@ -344,9 +350,12 @@ def edit_object(request, object_id):
         if specialty.nazvanie not in employees_by_specialty:
             employees_by_specialty[specialty.nazvanie] = []
     
-    # Получаем всех сотрудников по специальностям для выпадающих списков
+    # Получаем всех сотрудников по специальностям для выпадающих списков (только из организаций пользователя)
     all_employees_by_specialty = defaultdict(list)
-    all_employees_full = Sotrudnik.objects.select_related('specialnost').all()
+    if request.user.is_authenticated:
+        all_employees_full = Sotrudnik.objects.select_related('specialnost').filter(organizaciya__in=user_organizations)
+    else:
+        all_employees_full = Sotrudnik.objects.none()
     for emp in all_employees_full:
         specialty_name = emp.specialnost.nazvanie if emp.specialnost else 'Без специальности'
         all_employees_by_specialty[specialty_name].append(emp)

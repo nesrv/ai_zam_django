@@ -109,7 +109,6 @@
         <div class="form-group">
             <label for="organizaciya">Организация</label>
             <select id="organizaciya" name="organizaciya">
-                <option value="">Выберите организацию</option>
                 {% for org in organizacii %}
                 <option value="{{ org.id }}">{{ org.nazvanie }}</option>
                 {% endfor %}

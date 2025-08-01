@@ -1607,9 +1607,11 @@ def profile(request):
         elif 'add_organization' in request.POST:
             org_form = OrganizationForm(request.POST)
             if org_form.is_valid():
-                from sotrudniki.models import Organizaciya
+                from sotrudniki.models import Organizaciya, OrganizaciyaPodrazdelenie
                 org = Organizaciya.objects.create(**org_form.cleaned_data)
                 user_profile.organizations.add(org)
+                # Добавляем подразделение "Линейные сотрудники" для новой организации
+                OrganizaciyaPodrazdelenie.objects.create(organizaciya=org, podrazdelenie_id=3)
                 return redirect('/objects/profile/')
         elif 'remove_organization' in request.POST:
             org_id = request.POST.get('remove_organization')
