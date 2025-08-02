@@ -1203,21 +1203,38 @@ def save_json_response(request):
 @require_POST
 def save_hours(request):
     """Сохранение часов в табель и расход ресурсов"""
+    logger.info("=== ФУНКЦИЯ save_hours ВЫЗВАНА ===")
+    logger.info(f"Метод запроса: {request.method}")
+    logger.info(f"Размер тела запроса: {len(request.body)} байт")
     try:
         data = json.loads(request.body)
         hours_data = data.get('hours', [])
         objekt_id = data.get('objekt_id')
         date = data.get('date')
         
+        logger.info(f"Получены данные: hours_data={hours_data}, objekt_id={objekt_id}, date={date}")
+        
         if not hours_data or not objekt_id or not date:
+            logger.error(f"Недостаточно данных: hours_data={bool(hours_data)}, objekt_id={bool(objekt_id)}, date={bool(date)}")
             return JsonResponse({
                 'success': False,
                 'error': 'Необходимо указать данные о часах, ID объекта и дату'
             })
         
         # Импортируем модели
-        from sotrudniki.models import Sotrudnik, SotrudnikiZarplaty
+        from sotrudniki.models import Sotrudnik
         from object.models import Objekt, ResursyPoObjektu, Resurs, KategoriyaResursa, FakticheskijResursPoObjektu, RaskhodResursa
+        
+        # Импортируем SotrudnikiZarplaty из правильного места
+        try:
+            from sotrudniki.models import SotrudnikiZarplaty
+            logger.info("Модель SotrudnikiZarplaty импортирована из sotrudniki.models")
+        except ImportError:
+            logger.error("Не удалось импортировать SotrudnikiZarplaty из sotrudniki.models")
+            return JsonResponse({
+                'success': False,
+                'error': 'Ошибка импорта модели SotrudnikiZarplaty'
+            })
         from django.utils import timezone
         import datetime
         
@@ -1284,26 +1301,45 @@ def save_hours(request):
                     sotrudnik = Sotrudnik.objects.filter(fio__icontains=employee_fio).first()
                 
                 if not sotrudnik:
+                    logger.error(f"Сотрудник не найден: {employee_fio} (ID: {employee_id})")
                     errors.append(f'Сотрудник не найден: {employee_fio}')
                     continue
                 
-                # Создаем запись в таблице SotrudnikiZarplaty
-                zarplata, created = SotrudnikiZarplaty.objects.update_or_create(
+                logger.info(f"Найден сотрудник: {sotrudnik.fio} (ID: {sotrudnik.id})")
+                
+                # Проверяем существование записи
+                existing = SotrudnikiZarplaty.objects.filter(
                     sotrudnik=sotrudnik,
                     objekt=objekt,
-                    data=parsed_date,
-                    defaults={
-                        'kolichestvo_chasov': hours,
-                        'kpi': kpi,
-                        'vydano': False
-                    }
-                )
+                    data=parsed_date
+                ).first()
+                
+                if existing:
+                    existing.kolichestvo_chasov = hours
+                    existing.kpi = kpi
+                    existing.save()
+                    zarplata = existing
+                    logger.info(f"Обновлена запись в sotrudniki_zarplaty ID={zarplata.id}: {sotrudnik.fio} - {hours} часов")
+                else:
+                    zarplata = SotrudnikiZarplaty.objects.create(
+                        sotrudnik=sotrudnik,
+                        objekt=objekt,
+                        data=parsed_date,
+                        kolichestvo_chasov=hours,
+                        kpi=kpi,
+                        vydano=False
+                    )
+                    logger.info(f"Создана новая запись в sotrudniki_zarplaty ID={zarplata.id}: {sotrudnik.fio} - {hours} часов")
+                
+                # Проверяем, что запись действительно сохранилась
+                check_record = SotrudnikiZarplaty.objects.get(id=zarplata.id)
+                logger.info(f"Проверка записи: {check_record.kolichestvo_chasov} часов сохранено")
                 
                 saved_hours.append({
                     'id': zarplata.id,
                     'sotrudnik': sotrudnik.fio,
                     'hours': hours,
-                    'created': created
+                    'created': not existing
                 })
                 
                 # Создаем ресурс для зарплаты
@@ -1360,13 +1396,17 @@ def save_hours(request):
             'message': f'Сохранено {len(saved_hours)} записей в табель'
         })
         
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as e:
+        logger.error(f"Ошибка декодирования JSON: {e}")
+        logger.error(f"Тело запроса: {request.body}")
         return JsonResponse({
             'success': False,
             'error': 'Некорректный JSON'
         }, status=400)
     except Exception as e:
         logger.error(f"Ошибка сохранения часов: {e}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
         return JsonResponse({
             'success': False,
             'error': str(e)
@@ -1605,6 +1645,7 @@ def find_employees(request):
         data = json.loads(request.body)
         surnames = data.get('surnames', [])
         objekt_id = data.get('objekt_id')
+        message_content = data.get('message_content', '')
         
         if not surnames or not objekt_id:
             return JsonResponse({
@@ -1612,7 +1653,39 @@ def find_employees(request):
                 'error': 'Необходимо указать фамилии и ID объекта'
             })
         
+        # Улучшенное извлечение часов из сообщения
+        import re
+        hours_data = {}
+        
+        # Если message_content не передан, пытаемся извлечь часы из самих surnames
+        text_to_analyze = message_content or ' '.join(surnames)
+        
+        if text_to_analyze:
+            logger.info(f"Анализируем текст для извлечения часов: {text_to_analyze}")
+            
+            # Ищем паттерны "Фамилия число" в сообщении с учетом различных форматов
+            patterns = [
+                r'([А-Яа-яЁё]+)\s+(\d{1,2})(?:\s|$)',  # Фамилия пробел число
+                r'([А-Яа-яЁё]+)\s*-\s*(\d{1,2})',      # Фамилия тире число
+                r'([А-Яа-яЁё]+)\s*:\s*(\d{1,2})',      # Фамилия двоеточие число
+                r'([А-Яа-яЁё]+)\s*=\s*(\d{1,2})',      # Фамилия равно число
+                r'([А-Яа-яЁё]+)\s*(\d{1,2})',          # Фамилия число (без разделителя)
+            ]
+            
+            for pattern in patterns:
+                matches = re.findall(pattern, text_to_analyze)
+                for surname, hours in matches:
+                    # Проверяем, что часы в разумных пределах (1-24)
+                    try:
+                        hours_int = int(hours)
+                        if 1 <= hours_int <= 24:
+                            hours_data[surname.lower()] = hours_int
+                            logger.info(f"Найдены часы для {surname}: {hours_int}")
+                    except ValueError:
+                        continue
+        
         logger.info(f"Поиск сотрудников по словам: {surnames} на объекте {objekt_id}")
+        logger.info(f"Извлеченные часы из сообщения: {hours_data}")
         
         # Импортируем модели
         from sotrudniki.models import Sotrudnik
@@ -1732,12 +1805,23 @@ def find_employees(request):
                     
                 # Проверяем совпадение с фамилией
                 if is_similar_word(search_word, employee['surname']):
+                    # Получаем часы для этого сотрудника из сообщения
+                    hours = hours_data.get(search_word.lower(), hours_data.get(employee['surname'].lower(), 8))
+                    
+                    # Если не нашли часы по точному совпадению, ищем по всем ключам
+                    if hours == 8 and hours_data:
+                        for key, value in hours_data.items():
+                            if is_similar_word(key, search_word) or is_similar_word(key, employee['surname']):
+                                hours = value
+                                break
+                    
                     found_employees.append({
                         'id': employee['id'],
                         'fio': employee['fio'],
                         'specialnost': employee['specialnost'],
                         'matched_word': search_word,
-                        'match_type': 'фамилия'
+                        'match_type': 'фамилия',
+                        'hours': hours
                     })
                     found_employee_ids.add(employee['id'])  # Добавляем ID в множество найденных
                     found = True
@@ -1747,12 +1831,22 @@ def find_employees(request):
                 for i, name_part in enumerate(employee['name_parts']):
                     if is_similar_word(search_word, name_part):
                         match_type = 'фамилия' if i == 0 else ('имя' if i == 1 else 'отчество')
+                        hours = hours_data.get(search_word.lower(), hours_data.get(name_part.lower(), 8))
+                        
+                        # Если не нашли часы по точному совпадению, ищем по всем ключам
+                        if hours == 8 and hours_data:
+                            for key, value in hours_data.items():
+                                if is_similar_word(key, search_word) or is_similar_word(key, name_part):
+                                    hours = value
+                                    break
+                        
                         found_employees.append({
                             'id': employee['id'],
                             'fio': employee['fio'],
                             'specialnost': employee['specialnost'],
                             'matched_word': search_word,
-                            'match_type': match_type
+                            'match_type': match_type,
+                            'hours': hours
                         })
                         found_employee_ids.add(employee['id'])  # Добавляем ID в множество найденных
                         found = True
@@ -1760,12 +1854,22 @@ def find_employees(request):
                 
                 # Проверяем совпадение с полным ФИО
                 if not found and is_similar_word(search_word, employee['fio']):
+                    hours = hours_data.get(search_word.lower(), hours_data.get(employee['surname'].lower(), 8))
+                    
+                    # Если не нашли часы по точному совпадению, ищем по всем ключам
+                    if hours == 8 and hours_data:
+                        for key, value in hours_data.items():
+                            if is_similar_word(key, search_word) or is_similar_word(key, employee['surname']):
+                                hours = value
+                                break
+                    
                     found_employees.append({
                         'id': employee['id'],
                         'fio': employee['fio'],
                         'specialnost': employee['specialnost'],
                         'matched_word': search_word,
-                        'match_type': 'полное ФИО'
+                        'match_type': 'полное ФИО',
+                        'hours': hours
                     })
                     found_employee_ids.add(employee['id'])  # Добавляем ID в множество найденных
                     found = True
@@ -1791,12 +1895,14 @@ def find_employees(request):
                         
                     # Проверяем совпадение с фамилией
                     if is_similar_word(search_word, employee['surname']):
+                        hours = hours_data.get(search_word.lower(), hours_data.get(employee['surname'].lower(), 8))
                         found_employees.append({
                             'id': employee['id'],
                             'fio': employee['fio'],
                             'specialnost': employee['specialnost'],
                             'matched_word': search_word,
-                            'match_type': 'фамилия (доп. поиск)'
+                            'match_type': 'фамилия (доп. поиск)',
+                            'hours': hours
                         })
                         found_employee_ids.add(employee['id'])  # Добавляем ID в множество найденных
                         found = True

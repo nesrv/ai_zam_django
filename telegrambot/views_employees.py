@@ -28,8 +28,14 @@ def get_employees_by_object(request):
                 'error': f'Объект с ID {object_id} не найден'
             })
         
-        # Получаем сотрудников, связанных с объектом
-        employees = objekt.sotrudniki.filter(is_active=True)
+        # Получаем сотрудников, связанных с объектом и организациями пользователя
+        if request.user.is_authenticated:
+            from object.models import UserProfile
+            user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+            user_organizations = user_profile.organizations.all()
+            employees = objekt.sotrudniki.filter(is_active=True, organizaciya__in=user_organizations)
+        else:
+            employees = objekt.sotrudniki.none()
         
         # Если сотрудников нет, возвращаем пустой список
         if not employees:

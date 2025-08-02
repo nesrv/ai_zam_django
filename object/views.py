@@ -1269,9 +1269,10 @@ def save_employee_hours(request, object_id):
                 )
                 
                 # Обновляем поле potracheno в ресурсе
+                from django.db.models import Sum
                 total_spent = RaskhodResursa.objects.filter(
                     fakticheskij_resurs=fakticheskij_resurs
-                ).aggregate(total=models.Sum('izraskhodovano'))['total'] or 0
+                ).aggregate(total=Sum('izraskhodovano'))['total'] or 0
                 
                 resource.potracheno = total_spent
                 resource.save()

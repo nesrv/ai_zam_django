@@ -4,6 +4,7 @@ from .views_chatbots import chatbots_page, update_chat_id, get_chat_messages_aja
 from .views_chat_messages import chat_messages_list, chat_messages_detail, send_message_to_chat, get_chat_messages_ajax
 from .views_stats import messages_stats
 from .views_employees import get_employees_by_object
+from .test_view import test_save_hours as test_save_hours_view
 
 app_name = 'telegrambot'
 
@@ -50,4 +51,7 @@ urlpatterns = [
     
     # API для сохранения часов в табель
     path('save-hours/', views.save_hours, name='save_hours'),
+    
+    # Тестовый URL для проверки записи
+    path('test-save-hours/', test_save_hours_view, name='test_save_hours'),
 ] 

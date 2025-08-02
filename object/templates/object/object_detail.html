@@ -1283,6 +1283,19 @@
                             cell.textContent = '';
                         }
                         
+                        // Очищаем содержимое ячейки перед добавлением элементов
+                        cell.textContent = '';
+                        
+                        // Добавляем часы слева от кнопки
+                        if (hasValue) {
+                            const hoursSpan = document.createElement('span');
+                            hoursSpan.textContent = cellValue;
+                            hoursSpan.style.marginRight = '5px';
+                            hoursSpan.style.fontWeight = 'bold';
+                            hoursSpan.style.color = '#27ae60';
+                            cell.appendChild(hoursSpan);
+                        }
+                        
                         // Добавляем кнопку с разными иконками в зависимости от значения
                         const btn = document.createElement('button');
                         btn.textContent = hasValue ? '🧑‍🤝‍🧑' : '👥';

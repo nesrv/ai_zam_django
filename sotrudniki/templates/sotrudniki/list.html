@@ -88,6 +88,7 @@ text-decoration: none;
                 <th>Управление</th>
                 <th>Зарплаты</th>
                 <th>Действия</th>
+                <th>Удалить</th>
             </tr>
         </thead>
         <tbody>
@@ -109,10 +110,13 @@ text-decoration: none;
                 <td>
                     <a href="{% url 'sotrudniki:detail' sotrudnik.pk %}" class="btn-detail">Документы</a>
                 </td>
+                <td>
+                    <a href="{% url 'sotrudniki:delete' sotrudnik.pk %}" class="btn-detail" style="color: #ff6b6b;" onclick="return confirm('Удалить сотрудника {{ sotrudnik.fio }}?')">✗</a>
+                </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="9" style="text-align: center; color: rgba(255, 255, 255, 0.7);">Нет сотрудников</td>
+                <td colspan="10" style="text-align: center; color: rgba(255, 255, 255, 0.7);">Нет сотрудников</td>
             </tr>
             {% endfor %}
         </tbody>

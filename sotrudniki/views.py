@@ -13,13 +13,18 @@ import os
 
 def sotrudniki_list(request):
     if request.user.is_authenticated:
-        from object.models import UserProfile
+        from object.models import UserProfile, Objekt
+        from django.db.models import Q
         user_profile, created = UserProfile.objects.get_or_create(user=request.user)
         user_organizations = user_profile.organizations.all()
+        user_objects = Objekt.objects.filter(
+            Q(organizacii__in=user_organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name()),
+            is_active=True
+        ).distinct()
         sotrudniki = Sotrudnik.objects.select_related('organizaciya', 'specialnost', 'podrazdelenie').filter(
-            organizaciya__in=user_organizations,
+            objekty_work__in=user_objects,
             organizaciya__is_active=True
-        )
+        ).distinct()
     else:
         sotrudniki = Sotrudnik.objects.none()
     
@@ -51,9 +56,19 @@ def sotrudnik_documents(request, pk):
     sotrudnik = get_object_or_404(Sotrudnik, pk=pk)
     
     # Автоматически создаем документы для сотрудника
+    shablony = None
     if sotrudnik.specialnost and hasattr(sotrudnik.specialnost, 'shablony_dokumentov'):
         shablony = sotrudnik.specialnost.shablony_dokumentov
-        
+    else:
+        # Используем шаблоны "Подсобный рабочий" по умолчанию
+        try:
+            default_specialnost = Specialnost.objects.get(nazvanie="Подсобный рабочий")
+            if hasattr(default_specialnost, 'shablony_dokumentov'):
+                shablony = default_specialnost.shablony_dokumentov
+        except Specialnost.DoesNotExist:
+            pass
+    
+    if shablony:
         # Создаем документы если их еще нет
         doc_types = [
             ('dolzhnostnaya', shablony.dolzhnostnaya_instrukciya),
@@ -71,6 +86,14 @@ def sotrudnik_documents(request, pk):
     
     # Автоматически создаем протоколы обучения
     protokoly_shablony = SotrudnikiShablonyProtokolov.objects.filter(specialnost=sotrudnik.specialnost)
+    if not protokoly_shablony.exists():
+        # Используем шаблоны "Подсобный рабочий" по умолчанию
+        try:
+            default_specialnost = Specialnost.objects.get(nazvanie="Подсобный рабочий")
+            protokoly_shablony = SotrudnikiShablonyProtokolov.objects.filter(specialnost=default_specialnost)
+        except Specialnost.DoesNotExist:
+            pass
+    
     for shablon in protokoly_shablony:
         ProtokolyObucheniya.objects.get_or_create(
             sotrudnik=sotrudnik,
@@ -87,6 +110,14 @@ def sotrudnik_documents(request, pk):
     # Автоматически создаем инструктажи для сотрудника
     from datetime import date
     instruktazhi_shablony = ShablonyInstruktazhej.objects.filter(specialnost=sotrudnik.specialnost)
+    if not instruktazhi_shablony.exists():
+        # Используем шаблоны "Подсобный рабочий" по умолчанию
+        try:
+            default_specialnost = Specialnost.objects.get(nazvanie="Подсобный рабочий")
+            instruktazhi_shablony = ShablonyInstruktazhej.objects.filter(specialnost=default_specialnost)
+        except Specialnost.DoesNotExist:
+            pass
+    
     for shablon in instruktazhi_shablony:
         Instruktazhi.objects.get_or_create(
             sotrudnik=sotrudnik,
@@ -868,7 +899,7 @@ def sotrudnik_salary(request, sotrudnik_id):
                 'objekt_name': zp.objekt.nazvanie,
                 'objekt_id': zp.objekt.id,
                 'kolichestvo_chasov': zp.kolichestvo_chasov,
-                'stavka': stavka,
+                'stavka': int(stavka) if stavka else None,
                 'kpi': zp.kpi,
                 'summa': int(summa),
                 'vydano': zp.vydano
@@ -877,6 +908,7 @@ def sotrudnik_salary(request, sotrudnik_id):
             days_data.append({
                 'date': current_date,
                 'objekt_name': None,
+                'objekt_id': None,
                 'kolichestvo_chasov': 0,
                 'stavka': None,
                 'kpi': 1.0,
@@ -884,9 +916,19 @@ def sotrudnik_salary(request, sotrudnik_id):
                 'vydano': False
             })
     
-    # Получаем список объектов
+    # Получаем список объектов для авторизованного пользователя
     from object.models import Objekt
-    objekty = Objekt.objects.filter(is_active=True)
+    if request.user.is_authenticated:
+        from object.models import UserProfile
+        from django.db.models import Q
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        user_organizations = user_profile.organizations.all()
+        objekty = Objekt.objects.filter(
+            Q(organizacii__in=user_organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name()),
+            is_active=True
+        ).distinct()
+    else:
+        objekty = Objekt.objects.none()
     
     # Рассчитываем выданную сумму
     vydano_sum = 0
@@ -939,94 +981,96 @@ def save_salary(request):
     import json
     from datetime import datetime
     import logging
+    import time
     
     logger = logging.getLogger(__name__)
     
     if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            
-            sotrudnik_id = data.get('sotrudnik_id')
-            objekt_id = data.get('objekt_id')
-            date_str = data.get('date')
-            hours = data.get('hours')
-            kpi = data.get('kpi')
-            
-            # Преобразуем дату
-            date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
-            
-            # Обновляем или создаем запись в таблице SotrudnikiZarplaty
-            from object.models import Objekt, Resurs, ResursyPoObjektu, FakticheskijResursPoObjektu, RaskhodResursa
-            from sotrudniki.models import Sotrudnik
-            
-            zarplata, created = SotrudnikiZarplaty.objects.update_or_create(
-                sotrudnik_id=sotrudnik_id,
-                objekt_id=objekt_id,
-                data=date_obj,
-                defaults={
-                    'kolichestvo_chasov': hours,
-                    'kpi': kpi
-                }
-            )
-            
-            # Дополнительно записываем данные в таблицу raskhod_resursa
+        max_retries = 3
+        retry_delay = 0.1
+        
+        for attempt in range(max_retries):
             try:
-                # Получаем сотрудника и объект
-                sotrudnik = Sotrudnik.objects.get(id=sotrudnik_id)
-                objekt = Objekt.objects.get(id=objekt_id)
+                data = json.loads(request.body)
                 
-                # Создаем ресурс для зарплаты
-                resource_name = f'Зарплата {sotrudnik.fio}'
+                sotrudnik_id = data.get('sotrudnik_id')
+                objekt_id = data.get('objekt_id')
+                date_str = data.get('date')
+                hours = data.get('hours')
+                kpi = data.get('kpi')
                 
-                # Получаем или создаем категорию ресурса для зарплаты
-                from object.models import KategoriyaResursa
-                zarplata_category, _ = KategoriyaResursa.objects.get_or_create(
-                    nazvanie='Зарплата',
-                    defaults={'raskhod_dokhod': True}  # Расход
-                )
+                # Преобразуем дату
+                date_obj = datetime.strptime(date_str, '%Y-%m-%d').date()
                 
-                # Получаем или создаем ресурс
-                resource, _ = Resurs.objects.get_or_create(
-                    naimenovanie=resource_name,
-                    kategoriya_resursa=zarplata_category,
-                    defaults={'edinica_izmereniya': 'час'}
-                )
+                # Обновляем или создаем запись в таблице SotrudnikiZarplaty
+                from object.models import Objekt, Resurs, ResursyPoObjektu, FakticheskijResursPoObjektu, RaskhodResursa
+                from sotrudniki.models import Sotrudnik
                 
-                # Создаем запись в таблице ResursyPoObjektu
-                resurs_po_objektu, _ = ResursyPoObjektu.objects.update_or_create(
-                    objekt=objekt,
-                    resurs=resource,
-                    defaults={
-                        'kolichestvo': hours,
-                        'cena': 0  # Цена будет установлена позже
-                    }
-                )
-                
-                # Создаем запись в таблице FakticheskijResursPoObjektu
-                fakticheskij_resurs, _ = FakticheskijResursPoObjektu.objects.update_or_create(
-                    resurs_po_objektu=resurs_po_objektu
-                )
-                
-                # Создаем или обновляем запись в таблице RaskhodResursa
-                raskhod, _ = RaskhodResursa.objects.update_or_create(
-                    fakticheskij_resurs=fakticheskij_resurs,
+                # Используем update_or_create с уникальными полями для предотвращения дублирования
+                zarplata, created = SotrudnikiZarplaty.objects.update_or_create(
+                    sotrudnik_id=sotrudnik_id,
+                    objekt_id=objekt_id,
                     data=date_obj,
                     defaults={
-                        'izraskhodovano': hours
+                        'kolichestvo_chasov': hours,
+                        'kpi': kpi
                     }
                 )
                 
-                logger.info(f"Данные успешно записаны в raskhod_resursa: {sotrudnik.fio}, {date_obj}, {hours} часов")
+                # Дополнительно записываем данные в таблицу raskhod_resursa
+                try:
+                    # Получаем сотрудника и объект
+                    sotrudnik = Sotrudnik.objects.get(id=sotrudnik_id)
+                    objekt = Objekt.objects.get(id=objekt_id)
+                    
+                    # Ищем ресурс по специальности сотрудника в категории "Кадровое обеспечение"
+                    if sotrudnik.specialnost:
+                        resurs = Resurs.objects.filter(
+                            naimenovanie__icontains=sotrudnik.specialnost.nazvanie,
+                            kategoriya_resursa__nazvanie__icontains='Кадровое'
+                        ).first()
+                        
+                        if resurs:
+                            # Получаем ресурс по объекту
+                            resurs_po_objektu = ResursyPoObjektu.objects.filter(
+                                objekt=objekt,
+                                resurs=resurs
+                            ).first()
+                            
+                            if resurs_po_objektu:
+                                # Получаем фактический ресурс
+                                fakticheskij_resurs, _ = FakticheskijResursPoObjektu.objects.get_or_create(
+                                    resurs_po_objektu=resurs_po_objektu
+                                )
+                                
+                                # Обновляем запись в таблице RaskhodResursa
+                                raskhod, _ = RaskhodResursa.objects.update_or_create(
+                                    fakticheskij_resurs=fakticheskij_resurs,
+                                    data=date_obj,
+                                    defaults={
+                                        'izraskhodovano': hours
+                                    }
+                                )
+                                
+                                logger.info(f"Данные успешно обновлены в raskhod_resursa: {sotrudnik.fio}, {date_obj}, {hours} часов")
+                    
+                except Exception as e:
+                    logger.error(f"Ошибка при записи в raskhod_resursa: {e}")
+                    # Не прерываем выполнение, так как основная запись в SotrudnikiZarplaty уже создана
+            
+                return JsonResponse({'success': True})
                 
             except Exception as e:
-                logger.error(f"Ошибка при записи в raskhod_resursa: {e}")
-                # Не прерываем выполнение, так как основная запись в SotrudnikiZarplaty уже создана
-            
-            return JsonResponse({'success': True})
-            
-        except Exception as e:
-            logger.error(f"Ошибка сохранения зарплаты: {e}")
-            return JsonResponse({'success': False, 'error': str(e)})
+                error_msg = str(e)
+                if 'database is locked' in error_msg.lower() and attempt < max_retries - 1:
+                    time.sleep(retry_delay)
+                    retry_delay *= 2
+                    continue
+                else:
+                    logger.error(f"Ошибка сохранения зарплаты: {e}")
+                    return JsonResponse({'success': False, 'error': error_msg})
+        
+        return JsonResponse({'success': False, 'error': 'Database is locked after multiple attempts'})
     
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
@@ -1282,3 +1326,29 @@ def daily_salaries(request):
     }
     
     return render(request, 'sotrudniki/daily_salaries.html', context)
+
+@login_required
+def delete_sotrudnik(request, pk):
+    """Удаление привязки сотрудника к объектам пользователя"""
+    sotrudnik = get_object_or_404(Sotrudnik, pk=pk)
+    
+    # Получаем объекты пользователя
+    from object.models import UserProfile, Objekt
+    from django.db.models import Q
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    user_organizations = user_profile.organizations.all()
+    user_objects = Objekt.objects.filter(
+        Q(organizacii__in=user_organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name()),
+        is_active=True
+    ).distinct()
+    
+    # Удаляем привязку сотрудника к объектам пользователя
+    sotrudnik.objekty_work.remove(*user_objects)
+    
+    from django.contrib import messages
+    messages.success(request, f'Привязка сотрудника {sotrudnik.fio} к вашим объектам удалена')
+    
+    podrazdelenie_id = request.GET.get('podrazdelenie')
+    if podrazdelenie_id:
+        return redirect(f'/sotrudniki/?podrazdelenie={podrazdelenie_id}')
+    return redirect('sotrudniki:list')

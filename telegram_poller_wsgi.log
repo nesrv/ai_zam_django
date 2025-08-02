@@ -4617,3 +4617,442 @@ django.template.exceptions.TemplateDoesNotExist: object/add_bot.html
 2025-08-01 12:08:49,824 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
 2025-08-01 12:10:40,476 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
 2025-08-01 12:12:25,757 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-08-01 12:12:31,729 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-02 22:55:43,214 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-02 22:58:49,852 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-02 22:58:55,640 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-02 22:59:21,763 - sotrudniki.views - ERROR - Ошибка сохранения зарплаты: database is locked
+2025-08-02 22:59:21,855 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Иванов Иван Иванович, 2025-08-02, 2 часов
+2025-08-02 22:59:22,154 - sotrudniki.views - ERROR - Ошибка сохранения зарплаты: database is locked
+2025-08-02 22:59:22,219 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Иванов Иван Иванович, 2025-08-02, 2.1 часов
+2025-08-02 22:59:33,193 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Иванов Иван Иванович, 2025-08-02, 2.1 часов
+2025-08-02 23:01:09,067 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-02 23:01:15,463 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-02 23:01:22,957 - sotrudniki.views - ERROR - Ошибка сохранения зарплаты: database is locked
+2025-08-02 23:01:23,028 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Иванов Иван Иванович, 2025-08-02, 2.1 часов
+2025-08-02 23:02:48,228 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-02 23:06:08,101 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-02 23:06:28,774 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Иванов Иван Иванович, 2025-08-01, 2 часов
+2025-08-02 23:06:28,819 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Иванов Иван Иванович, 2025-08-01, 2 часов
+2025-08-02 23:06:42,584 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Иванов Иван Иванович, 2025-08-01, 2 часов
+2025-08-02 23:06:42,675 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Иванов Иван Иванович, 2025-08-01, 2 часов
+2025-08-02 23:08:23,576 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Кранов Роман, 2025-08-02, 2 часов
+2025-08-02 23:08:23,703 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Кранов Роман, 2025-08-02, 2 часов
+2025-08-02 23:08:29,493 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Кранов Роман, 2025-08-02, 2 часов
+2025-08-02 23:08:29,594 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Кранов Роман, 2025-08-02, 2 часов
+2025-08-02 23:08:44,062 - sotrudniki.views - ERROR - Ошибка при записи в raskhod_resursa: database is locked
+2025-08-02 23:08:44,081 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Кранов Роман, 2025-08-01, 2 часов
+2025-08-02 23:11:27,890 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-02 23:11:33,263 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-02 23:12:44,410 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views_employees.py changed, reloading.
+2025-08-02 23:12:49,958 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-02 23:14:09,800 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-02 23:22:09,215 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-02 23:22:15,083 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-02 23:22:21,996 - django.request - ERROR - Internal Server Error: /sotrudniki/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py", line 24, in sotrudniki_list
+    sotrudniki = Sotrudnik.objects.select_related('organizaciya', 'specialnost', 'podrazdelenie').filter(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\query.py", line 1493, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\query.py", line 1511, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\query.py", line 1518, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\sql\query.py", line 1646, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\sql\query.py", line 1678, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\sql\query.py", line 1526, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\sql\query.py", line 1333, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\sql\query.py", line 1805, in names_to_path
+    raise FieldError(
+django.core.exceptions.FieldError: Cannot resolve keyword 'objekt_sotrudniki' into field. Choices are: bazovoe_obuchenie, data_nachala_raboty, data_priema, data_rozhdeniya, dokumenty, dopusk_k_rabote, fio, id, instruktazhi, instruktazhi_kak_instruktor, med_osvidetelstvovanie, objekty_work, obuchenie_na_predpriyatii, organizaciya, organizaciya_id, podrazdelenie, podrazdelenie_id, pol, protokoly_obucheniya, razmer_golovnogo_ubora, razmer_obuvi, razmer_odezhdy, siz, sotrudnikizarplaty, specialnost, specialnost_id, stazhirovka
+2025-08-02 23:22:34,927 - django.request - ERROR - Internal Server Error: /sotrudniki/
+Traceback (most recent call last):
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py", line 24, in sotrudniki_list
+    sotrudniki = Sotrudnik.objects.select_related('organizaciya', 'specialnost', 'podrazdelenie').filter(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\query.py", line 1493, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\query.py", line 1511, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\query.py", line 1518, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\sql\query.py", line 1646, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\sql\query.py", line 1678, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\sql\query.py", line 1526, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\sql\query.py", line 1333, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\W25\AI-ZAM-DJANGO\venv\Lib\site-packages\django\db\models\sql\query.py", line 1805, in names_to_path
+    raise FieldError(
+django.core.exceptions.FieldError: Cannot resolve keyword 'objekt_sotrudniki' into field. Choices are: bazovoe_obuchenie, data_nachala_raboty, data_priema, data_rozhdeniya, dokumenty, dopusk_k_rabote, fio, id, instruktazhi, instruktazhi_kak_instruktor, med_osvidetelstvovanie, objekty_work, obuchenie_na_predpriyatii, organizaciya, organizaciya_id, podrazdelenie, podrazdelenie_id, pol, protokoly_obucheniya, razmer_golovnogo_ubora, razmer_obuvi, razmer_odezhdy, siz, sotrudnikizarplaty, specialnost, specialnost_id, stazhirovka
+2025-08-02 23:22:56,828 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-02 23:23:01,869 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-02 23:32:31,542 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-02 23:32:36,789 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-02 23:33:05,047 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-02 23:36:06,583 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\urls.py changed, reloading.
+2025-08-02 23:37:05,528 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-02 23:41:20,801 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-02 23:41:26,765 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-02 23:43:00,140 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Столяров Роман, 2025-08-02, 2 часов
+2025-08-02 23:43:00,202 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Столяров Роман, 2025-08-02, 2 часов
+2025-08-02 23:43:02,741 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Столяров Роман, 2025-08-02, 2 часов
+2025-08-02 23:43:02,783 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Столяров Роман, 2025-08-02, 2 часов
+2025-08-02 23:43:03,580 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Столяров Роман, 2025-08-02, 2 часов
+2025-08-02 23:47:30,823 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-02 23:47:55,499 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-08-02 23:53:46,319 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-02 23:53:53,111 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-02 23:59:41,765 - sotrudniki.views - ERROR - Ошибка сохранения зарплаты: get() returned more than one SotrudnikiZarplaty -- it returned 2!
+2025-08-02 23:59:41,765 - sotrudniki.views - ERROR - Ошибка сохранения зарплаты: get() returned more than one SotrudnikiZarplaty -- it returned 2!
+2025-08-02 23:59:45,647 - sotrudniki.views - ERROR - Ошибка сохранения зарплаты: get() returned more than one SotrudnikiZarplaty -- it returned 2!
+2025-08-02 23:59:45,651 - sotrudniki.views - ERROR - Ошибка сохранения зарплаты: get() returned more than one SotrudnikiZarplaty -- it returned 2!
+2025-08-03 00:00:21,430 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-03 00:00:27,481 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:00:38,735 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Кранов Роман, 2025-07-26, 2 часов
+2025-08-03 00:00:38,859 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Кранов Роман, 2025-07-26, 2 часов
+2025-08-03 00:00:54,904 - sotrudniki.views - ERROR - Ошибка при записи в raskhod_resursa: database is locked
+2025-08-03 00:00:54,923 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Кранов Роман, 2025-07-26, 2 часов
+2025-08-03 00:01:11,631 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Кранов Роман, 2025-08-01, 3 часов
+2025-08-03 00:01:11,734 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Кранов Роман, 2025-08-01, 3 часов
+2025-08-03 00:01:12,502 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Кранов Роман, 2025-08-01, 3 часов
+2025-08-03 00:01:12,631 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Кранов Роман, 2025-08-01, 3 часов
+2025-08-03 00:01:17,573 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Кранов Роман, 2025-08-02, 8 часов
+2025-08-03 00:01:17,619 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Кранов Роман, 2025-08-02, 8 часов
+2025-08-03 00:02:29,530 - sotrudniki.views - ERROR - Ошибка при записи в raskhod_resursa: database is locked
+2025-08-03 00:02:29,579 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Кранов Роман, 2025-07-20, 2 часов
+2025-08-03 00:03:51,795 - sotrudniki.views - ERROR - Ошибка при записи в raskhod_resursa: database is locked
+2025-08-03 00:03:51,831 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Кранов Роман, 2025-07-14, 2 часов
+2025-08-03 00:05:08,861 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:08:23,697 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Столяров Роман, 2025-07-30, 30 часов
+2025-08-03 00:08:23,820 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Столяров Роман, 2025-07-30, 30 часов
+2025-08-03 00:10:38,477 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-08-03 00:10:44,331 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:11:53,667 - sotrudniki.views - ERROR - Ошибка при записи в raskhod_resursa: database is locked
+2025-08-03 00:11:53,681 - sotrudniki.views - INFO - Данные успешно записаны в raskhod_resursa: Столяров Роман, 2025-07-30, 20 часов
+2025-08-03 00:13:56,970 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-03 00:14:03,612 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:14:10,376 - sotrudniki.views - ERROR - Ошибка при записи в raskhod_resursa: database is locked
+2025-08-03 00:14:10,619 - sotrudniki.views - INFO - Данные успешно обновлены в raskhod_resursa: Столяров Роман, 2025-07-26, 200 часов
+2025-08-03 00:18:07,431 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Егоров', 'Смирнов', 'Горов', 'Мирнов'] на объекте 41
+2025-08-03 00:18:07,432 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Егоров', 'Смирнов', 'Горов', 'Мирнов'] на объекте 41
+2025-08-03 00:18:26,374 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Егоров', 'Смирнов', 'Горов', 'Мирнов'] на объекте 41
+2025-08-03 00:18:26,375 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Егоров', 'Смирнов', 'Горов', 'Мирнов'] на объекте 41
+2025-08-03 00:19:16,000 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов', 'Еменов'] на объекте 41
+2025-08-03 00:19:16,000 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов', 'Еменов'] на объекте 41
+2025-08-03 00:21:06,799 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:21:06,800 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:22:03,726 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:22:03,727 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:22:24,702 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:22:24,702 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:22:54,286 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:22:54,287 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:26:32,406 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-03 00:26:37,628 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:26:57,862 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-03 00:27:02,726 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:28:21,839 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:28:21,840 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:30:02,574 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-03 00:30:07,904 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:30:18,442 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:30:18,443 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:30:18,446 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:30:18,447 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:30:33,863 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-03 00:30:39,822 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:30:47,161 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов', 'Еменов'] на объекте 41
+2025-08-03 00:30:47,163 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов', 'Еменов'] на объекте 41
+2025-08-03 00:30:47,164 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:30:47,164 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:31:05,102 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:31:05,102 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:31:05,102 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:31:05,103 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:31:28,508 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\signals.py changed, reloading.
+2025-08-03 00:31:33,816 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:31:42,152 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:31:42,153 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:31:42,153 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:31:42,153 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:33:09,552 - sotrudniki.views - ERROR - Ошибка при записи в raskhod_resursa: database is locked
+2025-08-03 00:33:09,612 - sotrudniki.views - INFO - Данные успешно обновлены в raskhod_resursa: Ковшиков Иван Ильич, 2025-08-02, 10 часов
+2025-08-03 00:33:26,164 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\signals.py changed, reloading.
+2025-08-03 00:33:31,153 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:33:41,115 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-03 00:33:46,149 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:34:03,190 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:34:03,191 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:34:03,191 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:34:03,192 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:35:52,817 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-03 00:35:58,687 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:36:59,999 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:37:00,000 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:37:00,000 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:37:00,001 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:38:19,129 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-03 00:38:24,232 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:38:36,328 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 50
+2025-08-03 00:38:36,329 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 50
+2025-08-03 00:38:36,330 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:38:36,331 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:38:36,331 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:38:36,332 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:38:38,982 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Семенов 100
+2025-08-03 00:38:38,983 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Семенов 100
+2025-08-03 00:38:38,983 - telegrambot.views - INFO - Найдены часы для Семенов: 10
+2025-08-03 00:38:38,985 - telegrambot.views - INFO - Найдены часы для Семенов: 10
+2025-08-03 00:38:38,985 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов', 'Еменов'] на объекте 41
+2025-08-03 00:38:38,985 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов', 'Еменов'] на объекте 41
+2025-08-03 00:38:38,986 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'семенов': 10}
+2025-08-03 00:38:38,986 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'семенов': 10}
+2025-08-03 00:38:46,414 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Егоров 2 Смирнов 3
+2025-08-03 00:38:46,415 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Егоров 2 Смирнов 3
+2025-08-03 00:38:46,415 - telegrambot.views - INFO - Найдены часы для Егоров: 2
+2025-08-03 00:38:46,416 - telegrambot.views - INFO - Найдены часы для Смирнов: 3
+2025-08-03 00:38:46,415 - telegrambot.views - INFO - Найдены часы для Егоров: 2
+2025-08-03 00:38:46,418 - telegrambot.views - INFO - Найдены часы для Егоров: 2
+2025-08-03 00:38:46,418 - telegrambot.views - INFO - Найдены часы для Смирнов: 3
+2025-08-03 00:38:46,419 - telegrambot.views - INFO - Найдены часы для Смирнов: 3
+2025-08-03 00:38:46,419 - telegrambot.views - INFO - Найдены часы для Егоров: 2
+2025-08-03 00:38:46,419 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Егоров', 'Смирнов', 'Горов', 'Мирнов'] на объекте 41
+2025-08-03 00:38:46,419 - telegrambot.views - INFO - Найдены часы для Смирнов: 3
+2025-08-03 00:38:46,420 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'егоров': 2, 'смирнов': 3}
+2025-08-03 00:38:46,420 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Егоров', 'Смирнов', 'Горов', 'Мирнов'] на объекте 41
+2025-08-03 00:38:46,422 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'егоров': 2, 'смирнов': 3}
+2025-08-03 00:38:50,741 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Семенов 100
+2025-08-03 00:38:50,742 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Семенов 100
+2025-08-03 00:38:50,742 - telegrambot.views - INFO - Найдены часы для Семенов: 10
+2025-08-03 00:38:50,743 - telegrambot.views - INFO - Найдены часы для Семенов: 10
+2025-08-03 00:38:50,743 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов', 'Еменов'] на объекте 41
+2025-08-03 00:38:50,743 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов', 'Еменов'] на объекте 41
+2025-08-03 00:38:50,744 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'семенов': 10}
+2025-08-03 00:38:50,744 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'семенов': 10}
+2025-08-03 00:38:54,358 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 50
+2025-08-03 00:38:54,358 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 50
+2025-08-03 00:38:54,359 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:38:54,359 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:38:54,359 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:38:54,360 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:39:02,862 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Семенов 100
+2025-08-03 00:39:02,862 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Семенов 100
+2025-08-03 00:39:02,863 - telegrambot.views - INFO - Найдены часы для Семенов: 10
+2025-08-03 00:39:02,863 - telegrambot.views - INFO - Найдены часы для Семенов: 10
+2025-08-03 00:39:02,863 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов', 'Еменов'] на объекте 41
+2025-08-03 00:39:02,864 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов', 'Еменов'] на объекте 41
+2025-08-03 00:39:02,864 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'семенов': 10}
+2025-08-03 00:39:02,865 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'семенов': 10}
+2025-08-03 00:39:12,336 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Семенов 100
+2025-08-03 00:39:12,337 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Семенов 100
+2025-08-03 00:39:12,337 - telegrambot.views - INFO - Найдены часы для Семенов: 10
+2025-08-03 00:39:12,338 - telegrambot.views - INFO - Найдены часы для Семенов: 10
+2025-08-03 00:39:12,338 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов', 'Еменов'] на объекте 41
+2025-08-03 00:39:12,338 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов', 'Еменов'] на объекте 41
+2025-08-03 00:39:12,339 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'семенов': 10}
+2025-08-03 00:39:12,339 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'семенов': 10}
+2025-08-03 00:39:17,613 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Семенов 100
+2025-08-03 00:39:17,614 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Семенов 100
+2025-08-03 00:39:17,614 - telegrambot.views - INFO - Найдены часы для Семенов: 10
+2025-08-03 00:39:17,614 - telegrambot.views - INFO - Найдены часы для Семенов: 10
+2025-08-03 00:39:17,615 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов', 'Еменов'] на объекте 41
+2025-08-03 00:39:17,615 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов', 'Еменов'] на объекте 41
+2025-08-03 00:39:17,618 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'семенов': 10}
+2025-08-03 00:39:17,619 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'семенов': 10}
+2025-08-03 00:39:52,325 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 50
+2025-08-03 00:39:52,325 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 50
+2025-08-03 00:39:52,326 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:39:52,326 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:39:52,327 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:39:52,327 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:40:11,589 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 50
+2025-08-03 00:40:11,589 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 50
+2025-08-03 00:40:11,590 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:40:11,590 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:40:11,591 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:40:11,591 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:40:16,070 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Семенов 100
+2025-08-03 00:40:16,071 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Семенов 100
+2025-08-03 00:40:16,071 - telegrambot.views - INFO - Найдены часы для Семенов: 10
+2025-08-03 00:40:16,072 - telegrambot.views - INFO - Найдены часы для Семенов: 10
+2025-08-03 00:40:16,072 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов', 'Еменов'] на объекте 41
+2025-08-03 00:40:16,072 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов', 'Еменов'] на объекте 41
+2025-08-03 00:40:16,072 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'семенов': 10}
+2025-08-03 00:40:16,073 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'семенов': 10}
+2025-08-03 00:40:19,286 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Егоров 2 Смирнов 3
+2025-08-03 00:40:19,287 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Егоров 2 Смирнов 3
+2025-08-03 00:40:19,288 - telegrambot.views - INFO - Найдены часы для Егоров: 2
+2025-08-03 00:40:19,288 - telegrambot.views - INFO - Найдены часы для Егоров: 2
+2025-08-03 00:40:19,289 - telegrambot.views - INFO - Найдены часы для Смирнов: 3
+2025-08-03 00:40:19,289 - telegrambot.views - INFO - Найдены часы для Смирнов: 3
+2025-08-03 00:40:19,289 - telegrambot.views - INFO - Найдены часы для Егоров: 2
+2025-08-03 00:40:19,290 - telegrambot.views - INFO - Найдены часы для Егоров: 2
+2025-08-03 00:40:19,290 - telegrambot.views - INFO - Найдены часы для Смирнов: 3
+2025-08-03 00:40:19,290 - telegrambot.views - INFO - Найдены часы для Смирнов: 3
+2025-08-03 00:40:19,290 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Егоров', 'Смирнов', 'Горов', 'Мирнов'] на объекте 41
+2025-08-03 00:40:19,291 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Егоров', 'Смирнов', 'Горов', 'Мирнов'] на объекте 41
+2025-08-03 00:40:19,291 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'егоров': 2, 'смирнов': 3}
+2025-08-03 00:40:19,292 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'егоров': 2, 'смирнов': 3}
+2025-08-03 00:40:36,176 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 5
+2025-08-03 00:40:36,176 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 5
+2025-08-03 00:40:36,177 - telegrambot.views - INFO - Найдены часы для Ковшиков: 5
+2025-08-03 00:40:36,177 - telegrambot.views - INFO - Найдены часы для Ковшиков: 5
+2025-08-03 00:40:36,178 - telegrambot.views - INFO - Найдены часы для Ковшиков: 5
+2025-08-03 00:40:36,178 - telegrambot.views - INFO - Найдены часы для Ковшиков: 5
+2025-08-03 00:40:36,178 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:40:36,179 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:40:36,179 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 5}
+2025-08-03 00:40:36,179 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 5}
+2025-08-03 00:40:42,671 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 50
+2025-08-03 00:40:42,671 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 50
+2025-08-03 00:40:42,672 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:40:42,672 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков', 'Овшиков'] на объекте 41
+2025-08-03 00:40:42,674 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:40:42,679 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
+2025-08-03 00:41:11,598 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 5
+2025-08-03 00:41:11,599 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 5
+2025-08-03 00:41:11,599 - telegrambot.views - INFO - Найдены часы для Ковшиков: 5
+2025-08-03 00:41:11,599 - telegrambot.views - INFO - Найдены часы для Ковшиков: 5
+2025-08-03 00:41:11,599 - telegrambot.views - INFO - Найдены часы для Ковшиков: 5
+2025-08-03 00:41:11,600 - telegrambot.views - INFO - Найдены часы для Ковшиков: 5
+2025-08-03 00:41:11,600 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:41:11,601 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:41:11,602 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 5}
+2025-08-03 00:41:11,603 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 5}
+2025-08-03 00:41:52,678 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 5
+2025-08-03 00:41:52,679 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 5
+2025-08-03 00:41:52,679 - telegrambot.views - INFO - Найдены часы для Ковшиков: 5
+2025-08-03 00:41:52,679 - telegrambot.views - INFO - Найдены часы для Ковшиков: 5
+2025-08-03 00:41:52,679 - telegrambot.views - INFO - Найдены часы для Ковшиков: 5
+2025-08-03 00:41:52,680 - telegrambot.views - INFO - Найдены часы для Ковшиков: 5
+2025-08-03 00:41:52,680 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:41:52,680 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:41:52,681 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 5}
+2025-08-03 00:41:52,681 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 5}
+2025-08-03 00:42:29,464 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 3
+2025-08-03 00:42:29,464 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 3
+2025-08-03 00:42:29,464 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:42:29,465 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:42:29,465 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:42:29,466 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:42:29,466 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:42:29,466 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:42:29,467 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 3}
+2025-08-03 00:42:29,467 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 3}
+2025-08-03 00:43:33,191 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 3
+2025-08-03 00:43:33,192 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 3
+2025-08-03 00:43:33,192 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:43:33,193 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:43:33,193 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:43:33,193 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:43:33,194 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:43:33,194 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:43:33,194 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 3}
+2025-08-03 00:43:33,195 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 3}
+2025-08-03 00:45:26,136 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-03 00:45:32,242 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:45:44,810 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 3
+2025-08-03 00:45:44,811 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 3
+2025-08-03 00:45:44,812 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:45:44,812 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:45:44,813 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:45:44,813 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:45:44,814 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:45:44,814 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:45:44,814 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 3}
+2025-08-03 00:45:44,815 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 3}
+2025-08-03 00:45:48,324 - telegrambot.views - INFO - Обновлена запись в sotrudniki_zarplaty: Ковшиков Иван Ильич - 7.0 часов на 2025-08-02
+2025-08-03 00:47:17,865 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-03 00:47:24,028 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:47:31,516 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-03 00:47:37,041 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:47:45,459 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-03 00:47:51,519 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:48:31,054 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-03 00:48:35,931 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:48:41,972 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-03 00:48:47,982 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:48:52,756 - telegrambot.views - INFO - === ФУНКЦИЯ save_hours ВЫЗВАНА ===
+2025-08-03 00:48:52,758 - telegrambot.views - INFO - Метод запроса: POST
+2025-08-03 00:48:52,759 - telegrambot.views - INFO - Размер тела запроса: 235 байт
+2025-08-03 00:48:52,760 - telegrambot.views - INFO - Получены данные: hours_data=[{'position': 'Машинист экскаватора', 'employee_fio': 'Ковшиков Иван Ильич', 'employee_id': '37', 'hours': 1, 'kpi': 1, 'object_name': 'Тестовый объект'}], objekt_id=41, date=02.08
+2025-08-03 00:48:52,761 - telegrambot.views - INFO - Модель SotrudnikiZarplaty импортирована из sotrudniki.models
+2025-08-03 00:48:52,766 - telegrambot.views - INFO - Найден сотрудник: Ковшиков Иван Ильич (ID: 37)
+2025-08-03 00:48:52,783 - telegrambot.views - INFO - Обновлена запись в sotrudniki_zarplaty: Ковшиков Иван Ильич - 1.0 часов на 2025-08-02
+2025-08-03 00:49:01,076 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\urls.py changed, reloading.
+2025-08-03 00:49:07,205 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:50:00,518 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 3
+2025-08-03 00:50:00,519 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:50:00,520 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 3
+2025-08-03 00:50:00,521 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:50:00,522 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:50:00,522 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:50:00,522 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:50:00,522 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 3}
+2025-08-03 00:50:00,523 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:50:00,527 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 3}
+2025-08-03 00:50:11,958 - telegrambot.views - INFO - === ФУНКЦИЯ save_hours ВЫЗВАНА ===
+2025-08-03 00:50:11,960 - telegrambot.views - INFO - Метод запроса: POST
+2025-08-03 00:50:11,961 - telegrambot.views - INFO - Размер тела запроса: 238 байт
+2025-08-03 00:50:11,961 - telegrambot.views - INFO - Получены данные: hours_data=[{'position': 'Машинист экскаватора', 'employee_fio': 'Ковшиков Иван Ильич', 'employee_id': '37', 'hours': 13, 'kpi': 1.5, 'object_name': 'Тестовый объект'}], objekt_id=41, date=02.08
+2025-08-03 00:50:11,962 - telegrambot.views - INFO - Модель SotrudnikiZarplaty импортирована из sotrudniki.models
+2025-08-03 00:50:11,966 - telegrambot.views - INFO - Найден сотрудник: Ковшиков Иван Ильич (ID: 37)
+2025-08-03 00:50:11,983 - telegrambot.views - INFO - Обновлена запись в sotrudniki_zarplaty: Ковшиков Иван Ильич - 13.0 часов на 2025-08-02
+2025-08-03 00:51:40,969 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:51:51,487 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Семенов 100
+2025-08-03 00:51:51,487 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Семенов 100
+2025-08-03 00:51:51,489 - telegrambot.views - INFO - Найдены часы для Семенов: 10
+2025-08-03 00:51:51,489 - telegrambot.views - INFO - Найдены часы для Семенов: 10
+2025-08-03 00:51:51,490 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов'] на объекте 41
+2025-08-03 00:51:51,490 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Семенов'] на объекте 41
+2025-08-03 00:51:51,490 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'семенов': 10}
+2025-08-03 00:51:51,490 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'семенов': 10}
+2025-08-03 00:51:59,879 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 3
+2025-08-03 00:51:59,880 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 3
+2025-08-03 00:51:59,880 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:51:59,880 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:51:59,881 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:51:59,881 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:51:59,881 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:51:59,882 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:51:59,882 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 3}
+2025-08-03 00:51:59,882 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 3}
+2025-08-03 00:52:10,949 - telegrambot.views - INFO - === ФУНКЦИЯ save_hours ВЫЗВАНА ===
+2025-08-03 00:52:10,949 - telegrambot.views - INFO - Метод запроса: POST
+2025-08-03 00:52:10,949 - telegrambot.views - INFO - Размер тела запроса: 237 байт
+2025-08-03 00:52:10,950 - telegrambot.views - INFO - Получены данные: hours_data=[{'position': 'Машинист экскаватора', 'employee_fio': 'Ковшиков Иван Ильич', 'employee_id': '37', 'hours': 6, 'kpi': 0.8, 'object_name': 'Тестовый объект'}], objekt_id=41, date=02.08
+2025-08-03 00:52:10,950 - telegrambot.views - INFO - Модель SotrudnikiZarplaty импортирована из sotrudniki.models
+2025-08-03 00:52:10,954 - telegrambot.views - INFO - Найден сотрудник: Ковшиков Иван Ильич (ID: 37)
+2025-08-03 00:52:10,974 - telegrambot.views - INFO - Обновлена запись в sotrudniki_zarplaty: Ковшиков Иван Ильич - 6.0 часов на 2025-08-02
+2025-08-03 00:53:47,687 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.

@@ -63,7 +63,9 @@ function showRealEmployeesModal(objectId, position, dateText) {
     saveBtn.style.float = 'right';
     
     saveBtn.addEventListener('click', function() {
-        saveEmployeeHours(objectId, position, dateText, modal, data.total_hours);
+        // Получаем данные из контекста функции
+        const salaryData = window.currentSalaryData || {};
+        saveEmployeeHours(objectId, position, dateText, modal, salaryData.total_hours);
     });
     
     content.appendChild(closeBtn);
@@ -101,6 +103,9 @@ function showRealEmployeesModal(objectId, position, dateText) {
         })
         .then(data => {
             console.log('Получены данные о зарплате:', data);
+            
+            // Сохраняем данные в глобальной переменной
+            window.currentSalaryData = data;
             
             // Удаляем сообщение о загрузке
             content.removeChild(loading);
