@@ -5056,3 +5056,156 @@ django.core.exceptions.FieldError: Cannot resolve keyword 'objekt_sotrudniki' in
 2025-08-03 00:52:10,954 - telegrambot.views - INFO - Найден сотрудник: Ковшиков Иван Ильич (ID: 37)
 2025-08-03 00:52:10,974 - telegrambot.views - INFO - Обновлена запись в sotrudniki_zarplaty: Ковшиков Иван Ильич - 6.0 часов на 2025-08-02
 2025-08-03 00:53:47,687 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-03 00:53:53,635 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 00:54:02,199 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 3
+2025-08-03 00:54:02,200 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 3
+2025-08-03 00:54:02,200 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:54:02,201 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:54:02,202 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:54:02,203 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:54:02,203 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:54:02,203 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:54:02,204 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 3}
+2025-08-03 00:54:02,204 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 3}
+2025-08-03 00:54:12,877 - telegrambot.views - INFO - === ФУНКЦИЯ save_hours ВЫЗВАНА ===
+2025-08-03 00:54:12,878 - telegrambot.views - INFO - Метод запроса: POST
+2025-08-03 00:54:12,878 - telegrambot.views - INFO - Размер тела запроса: 236 байт
+2025-08-03 00:54:12,878 - telegrambot.views - INFO - Получены данные: hours_data=[{'position': 'Машинист экскаватора', 'employee_fio': 'Ковшиков Иван Ильич', 'employee_id': '37', 'hours': 10, 'kpi': 1, 'object_name': 'Тестовый объект'}], objekt_id=41, date=02.08
+2025-08-03 00:54:12,879 - telegrambot.views - INFO - Модель SotrudnikiZarplaty импортирована из sotrudniki.models
+2025-08-03 00:54:12,884 - telegrambot.views - INFO - Найден сотрудник: Ковшиков Иван Ильич (ID: 37)
+2025-08-03 00:54:12,899 - telegrambot.views - INFO - Обновлена запись в sotrudniki_zarplaty ID=75: Ковшиков Иван Ильич - 10.0 часов
+2025-08-03 00:54:12,900 - telegrambot.views - INFO - Проверка записи: 10.00 часов сохранено
+2025-08-03 00:56:03,422 - sotrudniki.views - ERROR - Ошибка при записи в raskhod_resursa: database is locked
+2025-08-03 00:56:03,451 - sotrudniki.views - INFO - Данные успешно обновлены в raskhod_resursa: Ковшиков Иван Ильич, 2025-08-02, 5 часов
+2025-08-03 00:56:14,976 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 5
+2025-08-03 00:56:14,976 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 5
+2025-08-03 00:56:14,977 - telegrambot.views - INFO - Найдены часы для Ковшиков: 5
+2025-08-03 00:56:14,977 - telegrambot.views - INFO - Найдены часы для Ковшиков: 5
+2025-08-03 00:56:14,978 - telegrambot.views - INFO - Найдены часы для Ковшиков: 5
+2025-08-03 00:56:14,979 - telegrambot.views - INFO - Найдены часы для Ковшиков: 5
+2025-08-03 00:56:14,980 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:56:14,980 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:56:14,980 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 5}
+2025-08-03 00:56:14,980 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 5}
+2025-08-03 00:56:19,652 - telegrambot.views - INFO - === ФУНКЦИЯ save_hours ВЫЗВАНА ===
+2025-08-03 00:56:19,653 - telegrambot.views - INFO - Метод запроса: POST
+2025-08-03 00:56:19,653 - telegrambot.views - INFO - Размер тела запроса: 236 байт
+2025-08-03 00:56:19,654 - telegrambot.views - INFO - Получены данные: hours_data=[{'position': 'Машинист экскаватора', 'employee_fio': 'Ковшиков Иван Ильич', 'employee_id': '37', 'hours': 10, 'kpi': 1, 'object_name': 'Тестовый объект'}], objekt_id=41, date=02.08
+2025-08-03 00:56:19,654 - telegrambot.views - INFO - Модель SotrudnikiZarplaty импортирована из sotrudniki.models
+2025-08-03 00:56:19,658 - telegrambot.views - INFO - Найден сотрудник: Ковшиков Иван Ильич (ID: 37)
+2025-08-03 00:56:19,675 - telegrambot.views - INFO - Обновлена запись в sotrudniki_zarplaty ID=75: Ковшиков Иван Ильич - 10.0 часов
+2025-08-03 00:56:19,676 - telegrambot.views - INFO - Проверка записи: 10.00 часов сохранено
+2025-08-03 00:58:33,972 - sotrudniki.views - ERROR - Ошибка при записи в raskhod_resursa: database is locked
+2025-08-03 00:58:34,030 - sotrudniki.views - INFO - Данные успешно обновлены в raskhod_resursa: Ковшиков Иван Ильич, 2025-08-02, 7 часов
+2025-08-03 00:58:49,573 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 3
+2025-08-03 00:58:49,574 - telegrambot.views - INFO - Анализируем текст для извлечения часов: Ковшиков 3
+2025-08-03 00:58:49,575 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:58:49,575 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:58:49,576 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:58:49,576 - telegrambot.views - INFO - Найдены часы для Ковшиков: 3
+2025-08-03 00:58:49,576 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:58:49,576 - telegrambot.views - INFO - Поиск сотрудников по словам: ['Ковшиков'] на объекте 41
+2025-08-03 00:58:49,577 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 3}
+2025-08-03 00:58:49,577 - telegrambot.views - INFO - Извлеченные часы из сообщения: {'ковшиков': 3}
+2025-08-03 00:58:51,605 - telegrambot.views - INFO - === ФУНКЦИЯ save_hours ВЫЗВАНА ===
+2025-08-03 00:58:51,606 - telegrambot.views - INFO - Метод запроса: POST
+2025-08-03 00:58:51,606 - telegrambot.views - INFO - Размер тела запроса: 235 байт
+2025-08-03 00:58:51,606 - telegrambot.views - INFO - Получены данные: hours_data=[{'position': 'Машинист экскаватора', 'employee_fio': 'Ковшиков Иван Ильич', 'employee_id': '37', 'hours': 3, 'kpi': 1, 'object_name': 'Тестовый объект'}], objekt_id=41, date=02.08
+2025-08-03 00:58:51,607 - telegrambot.views - INFO - Модель SotrudnikiZarplaty импортирована из sotrudniki.models
+2025-08-03 00:58:51,611 - telegrambot.views - INFO - Найден сотрудник: Ковшиков Иван Ильич (ID: 37)
+2025-08-03 00:58:51,629 - telegrambot.views - INFO - Обновлена запись в sotrudniki_zarplaty ID=75: Ковшиков Иван Ильич - 3.0 часов
+2025-08-03 00:58:51,631 - telegrambot.views - INFO - Проверка записи: 3.00 часов сохранено
+2025-08-03 23:18:09,372 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 23:23:34,531 - telegrambot.views - INFO - Получен запрос на генерацию документа: Смета для снос спорткомплекса 10 тыс.кв.метров с ледовой ареной. Никакого текста, только JSON:{"kategoriya_resursa":{"Кадровое обеспечение":[{"sotrudniki_specialnost":"str","hours":0,"price":0}],"Машины и механизмы":[{"name":"str","hours":0,"price":0}],"Инструмент и материалы":[{"name":"str","count":0,"unit":"str","price":0}],"Административно-бытовые расходы":[{"name":"str","count":0,"unit":"str","price":0}],"СИЗ и спецодежда":[{"name":"str","count":0,"unit":"str","price":0}]},"works":[{"section":"str","items":[{"name":"str","unit":"str","price":0,"count":0}]}]}
+2025-08-03 23:23:34,532 - telegrambot.views - INFO - Отправляю запрос к DeepSeek API...
+2025-08-03 23:23:34,532 - telegrambot.services - INFO - Отправляю запрос к DeepSeek API с промптом: Смета для снос спорткомплекса 10 тыс.кв.метров с ледовой ареной. Никакого текста, только JSON:{"kate...
+2025-08-03 23:23:34,533 - telegrambot.services - INFO - Отправляю POST запрос к https://api.deepseek.com/v1/chat/completions
+2025-08-03 23:24:24,482 - telegrambot.services - INFO - Получен ответ от DeepSeek API: статус 200
+2025-08-03 23:24:24,482 - telegrambot.services - INFO - Успешно сгенерирован документ длиной 3209 символов
+2025-08-03 23:24:24,483 - telegrambot.views - INFO - Получен ответ от DeepSeek: ```json
+{
+  "kategoriya_resursa": {
+    "Кадровое обеспечение": [
+      {
+        "sotrudniki_specialnost": "Разнорабочий",
+        "hours": 2000,
+        "price": 250
+      },
+      {
+        "sotrud...
+2025-08-03 23:24:24,486 - telegrambot.views - INFO - Найдено активных пользователей: 1
+2025-08-03 23:24:24,487 - telegrambot.views - INFO - Отправляю документ пользователю 5690246274 (Николай)
+2025-08-03 23:24:24,714 - telegrambot.services - INFO - Бот проверен: MyTestBot (@NeSrv2Bot)
+2025-08-03 23:24:24,715 - telegrambot.services - INFO - Отправка сообщения в Telegram: chat_id=5690246274, text=```json
+{
+  "kategoriya_resursa": {
+    "Кадровое ...
+2025-08-03 23:24:25,423 - telegrambot.services - INFO - Ответ от Telegram API (статус 200): {"ok":true,"result":{"message_id":724,"from":{"id":7836693206,"is_bot":true,"first_name":"MyTestBot","username":"NeSrv2Bot"},"chat":{"id":5690246274,"first_name":"\u041d\u0438\u043a\u043e\u043b\u0430\u0439","username":"nesrv","type":"private"},"date":1754252661,"text":"```json\n{\n  \"kategoriya_resursa\": {\n    \"\u041a\u0430\u0434\u0440\u043e\u0432\u043e\u0435 \u043e\u0431\u0435\u0441\u043f\u0435\u0447\u0435\u043d\u0438\u0435\": [\n      {\n        \"sotrudniki_specialnost\": \"\u0420\u0430\u0437\u043d\u043e\u0440\u0430\u0431\u043e\u0447\u0438\u0439\",\n        \"hours\": 2000,\n        \"price\": 250\n      },\n      {\n        \"sotrudniki_specialnost\": \"\u041c\u0430\u0448\u0438\u043d\u0438\u0441\u0442 \u044d\u043a\u0441\u043a\u0430\u0432\u0430\u0442\u043e\u0440\u0430\",\n        \"hours\": 500,\n        \"price\": 400\n      },\n      {\n        \"sotrudniki_specialnost\": \"\u0412\u043e\u0434\u0438\u0442\u0435\u043b\u044c \u0441\u0430\u043c\u043e\u0441\u0432\u0430\u043b\u0430\",\n        \"hours\": 600,\n        \"price\": 350\n      },\n      {\n        \"sotrudniki_specialnost\": \"\u0421\u0432\u0430\u0440\u0449\u0438\u043a\",\n        \"hours\": 300,\n        \"price\": 450\n      }\n    ],\n    \"\u041c\u0430\u0448\u0438\u043d\u044b \u0438 \u043c\u0435\u0445\u0430\u043d\u0438\u0437\u043c\u044b\": [\n      {\n        \"name\": \"\u042d\u043a\u0441\u043a\u0430\u0432\u0430\u0442\u043e\u0440 \u0433\u0443\u0441\u0435\u043d\u0438\u0447\u043d\u044b\u0439\",\n        \"hours\": 500,\n        \"price\": 1200\n      },\n      {\n        \"name\": \"\u0421\u0430\u043c\u043e\u0441\u0432\u0430\u043b 20\u0442\",\n        \"hours\": 600,\n        \"price\": 900\n      },\n      {\n        \"name\": \"\u0411\u0443\u043b\u044c\u0434\u043e\u0437\u0435\u0440\",\n        \"hours\": 300,\n        \"price\": 1000\n      },\n      {\n        \"name\": \"\u041a\u0440\u0430\u043d \u0448\u0430\u0440\u043e\u0432\u044b\u0439 50\u0442\",\n        \"hours\": 200,\n        \"price\": 1500\n      }\n    ],\n    \"\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u0438 \u043c\u0430\u0442\u0435\u0440\u0438\u0430\u043b\u044b\": [\n      {\n        \"name\": \"\u0413\u0438\u0434\u0440\u043e\u043c\u043e\u043b\u043e\u0442\",\n        \"count\": 2,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 50000\n      },\n      {\n        \"name\": \"\u0413\u0430\u0437\u043e\u0440\u0435\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u044b\u0439 \u0430\u043f\u043f\u0430\u0440\u0430\u0442\",\n        \"count\": 5,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 15000\n      },\n      {\n        \"name\": \"\u0411\u0435\u0442\u043e\u043d\u043e\u043b\u043e\u043c\",\n        \"count\": 3,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 30000\n      }\n    ],\n    \"\u0410\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u0438\u0432\u043d\u043e-\u0431\u044b\u0442\u043e\u0432\u044b\u0435 \u0440\u0430\u0441\u0445\u043e\u0434\u044b\": [\n      {\n        \"name\": \"\u041e\u0444\u0438\u0441 \u043d\u0430 \u0441\u0442\u0440\u043e\u0439\u043f\u043b\u043e\u0449\u0430\u0434\u043a\u0435\",\n        \"count\": 1,\n        \"unit\": \"\u043c\u0435\u0441\",\n        \"price\": 50000\n      },\n      {\n        \"name\": \"\u041f\u043e\u0440\u0442\u0430\u0442\u0438\u0432\u043d\u044b\u0435 \u0442\u0443\u0430\u043b\u0435\u0442\u044b\",\n        \"count\": 5,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 10000\n      }\n    ],\n    \"\u0421\u0418\u0417 \u0438 \u0441\u043f\u0435\u0446\u043e\u0434\u0435\u0436\u0434\u0430\": [\n      {\n        \"name\": \"\u041a\u0430\u0441\u043a\u0430\",\n        \"count\": 30,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 500\n      },\n      {\n        \"name\": \"\u0417\u0430\u0449\u0438\u0442\u043d\u044b\u0435 \u043e\u0447\u043a\u0438\",\n        \"count\": 30,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 300\n      },\n      {\n        \"name\": \"\u0420\u0435\u0441\u043f\u0438\u0440\u0430\u0442\u043e\u0440\",\n        \"count\": 30,\n        \"unit\": \"\u0448\u0442\",\n        \"price\": 400\n      }\n    ]\n  },\n  \"works\": [\n    {\n      \"section\": \"\u041f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u0438\u0442\u0435\u043b\u044c\u043d\u044b\u0435 \u0440\u0430\u0431\u043e\u0442\u044b\",\n      \"items\": [\n        {\n          \"name\": \"\u041e\u0433\u0440\u0430\u0436\u0434\u0435\u043d\u0438\u0435 \u0442\u0435\u0440\u0440\u0438\u0442\u043e\u0440\u0438\u0438\",\n          \"unit\": \"\u043c.\u043f.\",\n          \"price\": 500,\n          \"count\": 500\n        },\n        {\n          \"name\": \"\u0414\u0435\u043c\u043e\u043d\u0442\u0430\u0436 \u0438\u043d\u0436\u0435\u043d\u0435\u0440\u043d\u044b\u0445 \u0441\u0435\u0442\u0435\u0439\",\n          \"unit\": \"\u043a\u043e\u043c\u043f\u043b.\",\n          \"price\": 150000,\n          \"count\": 1\n        }\n      ]\n    },\n    {\n      \"section\": \"\u041e\u0441\u043d\u043e\u0432\u043d\u044b\u0435 \u0440\u0430\u0431\u043e\u0442\u044b\",\n      \"items\": [\n        {\n          \"name\": \"\u0414\u0435\u043c\u043e\u043d\u0442\u0430\u0436 \u043a\u0440\u043e\u0432\u043b\u0438\",\n          \"unit\": \"\u043a\u0432.\u043c.\",\n          \"price\": 300,\n          \"count\": 10000\n        },\n        {\n          \"name\": \"\u0414\u0435\u043c\u043e\u043d\u0442\u0430\u0436 \u0441\u0442\u0435\u043d\",\n          \"unit\": \"\u043a\u0443\u0431.\u043c.\",\n          \"price\": 800,\n          \"count\": 5000\n        },\n        {\n          \"name\": \"\u0414\u0435\u043c\u043e\u043d\u0442\u0430\u0436 \u043b\u0435\u0434\u043e\u0432\u043e\u0439 \u0430\u0440\u0435\u043d\u044b\",\n          \"unit\": \"\u043a\u043e\u043c\u043f\u043b.\",\n          \"price\": 500000,\n          \"count\": 1\n        }\n      ]\n    },\n    {\n      \"section\": \"\u0417\u0430\u043a\u043b\u044e\u0447\u0438\u0442\u0435\u043b\u044c\u043d\u044b\u0435 \u0440\u0430\u0431\u043e\u0442\u044b\",\n      \"items\": [\n        {\n          \"name\": \"\u0412\u044b\u0432\u043e\u0437 \u0441\u0442\u0440\u043e\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0433\u043e \u043c\u0443\u0441\u043e\u0440\u0430\",\n          \"unit\": \"\u0440\u0435\u0439\u0441\",\n          \"price\": 5000,\n          \"count\": 200\n        },\n        {\n          \"name\": \"\u0412\u044b\u0440\u0430\u0432\u043d\u0438\u0432\u0430\u043d\u0438\u0435 \u0442\u0435\u0440\u0440\u0438\u0442\u043e\u0440\u0438\u0438\",\n          \"unit\": \"\u043a\u0432.\u043c.\",\n          \"price\": 100,\n          \"count\": 10000\n        }\n      ]\n    }\n  ]\n}\n```"}}
+2025-08-03 23:24:25,452 - telegrambot.services - INFO - Успешный ответ от Telegram API: {'ok': True, 'result': {'message_id': 724, 'from': {'id': 7836693206, 'is_bot': True, 'first_name': 'MyTestBot', 'username': 'NeSrv2Bot'}, 'chat': {'id': 5690246274, 'first_name': 'Николай', 'username': 'nesrv', 'type': 'private'}, 'date': 1754252661, 'text': '```json\n{\n  "kategoriya_resursa": {\n    "Кадровое обеспечение": [\n      {\n        "sotrudniki_specialnost": "Разнорабочий",\n        "hours": 2000,\n        "price": 250\n      },\n      {\n        "sotrudniki_specialnost": "Машинист экскаватора",\n        "hours": 500,\n        "price": 400\n      },\n      {\n        "sotrudniki_specialnost": "Водитель самосвала",\n        "hours": 600,\n        "price": 350\n      },\n      {\n        "sotrudniki_specialnost": "Сварщик",\n        "hours": 300,\n        "price": 450\n      }\n    ],\n    "Машины и механизмы": [\n      {\n        "name": "Экскаватор гусеничный",\n        "hours": 500,\n        "price": 1200\n      },\n      {\n        "name": "Самосвал 20т",\n        "hours": 600,\n        "price": 900\n      },\n      {\n        "name": "Бульдозер",\n        "hours": 300,\n        "price": 1000\n      },\n      {\n        "name": "Кран шаровый 50т",\n        "hours": 200,\n        "price": 1500\n      }\n    ],\n    "Инструмент и материалы": [\n      {\n        "name": "Гидромолот",\n        "count": 2,\n        "unit": "шт",\n        "price": 50000\n      },\n      {\n        "name": "Газорезательный аппарат",\n        "count": 5,\n        "unit": "шт",\n        "price": 15000\n      },\n      {\n        "name": "Бетонолом",\n        "count": 3,\n        "unit": "шт",\n        "price": 30000\n      }\n    ],\n    "Административно-бытовые расходы": [\n      {\n        "name": "Офис на стройплощадке",\n        "count": 1,\n        "unit": "мес",\n        "price": 50000\n      },\n      {\n        "name": "Портативные туалеты",\n        "count": 5,\n        "unit": "шт",\n        "price": 10000\n      }\n    ],\n    "СИЗ и спецодежда": [\n      {\n        "name": "Каска",\n        "count": 30,\n        "unit": "шт",\n        "price": 500\n      },\n      {\n        "name": "Защитные очки",\n        "count": 30,\n        "unit": "шт",\n        "price": 300\n      },\n      {\n        "name": "Респиратор",\n        "count": 30,\n        "unit": "шт",\n        "price": 400\n      }\n    ]\n  },\n  "works": [\n    {\n      "section": "Подготовительные работы",\n      "items": [\n        {\n          "name": "Ограждение территории",\n          "unit": "м.п.",\n          "price": 500,\n          "count": 500\n        },\n        {\n          "name": "Демонтаж инженерных сетей",\n          "unit": "компл.",\n          "price": 150000,\n          "count": 1\n        }\n      ]\n    },\n    {\n      "section": "Основные работы",\n      "items": [\n        {\n          "name": "Демонтаж кровли",\n          "unit": "кв.м.",\n          "price": 300,\n          "count": 10000\n        },\n        {\n          "name": "Демонтаж стен",\n          "unit": "куб.м.",\n          "price": 800,\n          "count": 5000\n        },\n        {\n          "name": "Демонтаж ледовой арены",\n          "unit": "компл.",\n          "price": 500000,\n          "count": 1\n        }\n      ]\n    },\n    {\n      "section": "Заключительные работы",\n      "items": [\n        {\n          "name": "Вывоз строительного мусора",\n          "unit": "рейс",\n          "price": 5000,\n          "count": 200\n        },\n        {\n          "name": "Выравнивание территории",\n          "unit": "кв.м.",\n          "price": 100,\n          "count": 10000\n        }\n      ]\n    }\n  ]\n}\n```'}}
+2025-08-03 23:24:25,521 - telegrambot.services - INFO - Сообщение сохранено в TelegramMessage: user_id=7
+2025-08-03 23:24:26,104 - telegrambot.views - INFO - Документ сгенерирован и отправлен: 1/1 пользователей
+2025-08-03 23:27:59,192 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-08-03 23:28:08,454 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 23:48:29,501 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-08-03 23:48:35,562 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 23:48:51,654 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-08-03 23:48:56,922 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 23:49:22,978 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-08-03 23:49:28,314 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 23:53:39,492 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 23:57:08,604 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-08-03 23:57:18,773 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 23:57:22,884 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-08-03 23:57:30,106 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 23:59:38,745 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-08-03 23:59:44,655 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-03 23:59:53,474 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-08-03 23:59:58,988 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 00:00:22,990 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 00:02:44,223 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-08-04 00:02:50,311 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 00:02:55,505 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-08-04 00:03:01,116 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 00:03:36,273 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 00:04:10,207 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views_edit.py changed, reloading.
+2025-08-04 00:04:15,678 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 00:05:56,514 - django.request - WARNING - Not Found: /api/add-employee-to-object/42/37/
+2025-08-04 00:08:14,945 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-04 00:08:21,260 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 00:11:05,203 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-04 00:11:11,604 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 00:13:36,565 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-04 00:13:42,856 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 00:14:18,026 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 00:14:37,805 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-04 00:14:43,931 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 00:16:09,333 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-04 00:16:15,204 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 00:18:30,051 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-04 00:18:36,241 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 00:20:12,255 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
+2025-08-04 00:20:18,076 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 00:20:32,133 - sotrudniki.views - INFO - Данные успешно обновлены в raskhod_resursa: Многорукий Илья, 2025-08-04, 2 часов
+2025-08-04 00:20:32,257 - sotrudniki.views - INFO - Данные успешно обновлены в raskhod_resursa: Многорукий Илья, 2025-08-04, 2 часов
+2025-08-04 00:20:35,806 - sotrudniki.views - INFO - Данные успешно обновлены в raskhod_resursa: Многорукий Илья, 2025-08-04, 10 часов
+2025-08-04 00:20:35,908 - sotrudniki.views - INFO - Данные успешно обновлены в raskhod_resursa: Многорукий Илья, 2025-08-04, 10 часов
+2025-08-04 00:20:39,906 - sotrudniki.views - INFO - Данные успешно обновлены в raskhod_resursa: Многорукий Илья, 2025-08-03, 6 часов
+2025-08-04 00:20:39,946 - sotrudniki.views - INFO - Данные успешно обновлены в raskhod_resursa: Многорукий Илья, 2025-08-03, 6 часов
+2025-08-04 00:20:42,642 - sotrudniki.views - INFO - Данные успешно обновлены в raskhod_resursa: Многорукий Илья, 2025-08-03, 6 часов
+2025-08-04 00:20:42,771 - sotrudniki.views - INFO - Данные успешно обновлены в raskhod_resursa: Многорукий Илья, 2025-08-03, 6 часов
+2025-08-04 00:20:44,774 - sotrudniki.views - INFO - Данные успешно обновлены в raskhod_resursa: Многорукий Илья, 2025-08-04, 10 часов
+2025-08-04 00:20:44,824 - sotrudniki.views - INFO - Данные успешно обновлены в raskhod_resursa: Многорукий Илья, 2025-08-04, 10 часов
+2025-08-04 00:20:47,291 - sotrudniki.views - INFO - Данные успешно обновлены в raskhod_resursa: Многорукий Илья, 2025-08-01, 8 часов
+2025-08-04 00:20:47,409 - sotrudniki.views - INFO - Данные успешно обновлены в raskhod_resursa: Многорукий Илья, 2025-08-01, 8 часов
+2025-08-04 21:45:20,823 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 21:47:17,733 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-08-04 21:47:23,761 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 21:50:42,947 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-08-04 21:50:48,202 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 21:53:15,374 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 21:59:56,748 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-08-04 22:00:02,689 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 22:01:43,730 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 22:02:30,534 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-08-04 22:02:40,467 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 22:04:25,582 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов

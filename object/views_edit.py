@@ -29,7 +29,9 @@ def edit_object(request, object_id):
                         inn=unique_inn,
                         is_active=True
                     )
-                obj.organizaciya = organizaciya
+                # Очищаем старые организации и добавляем новую
+                obj.organizacii.clear()
+                obj.organizacii.add(organizaciya)
             
             obj.save()
             
@@ -241,14 +243,9 @@ def edit_object(request, object_id):
     existing_expense_resources = dict(expense_resources_by_category)
     existing_income_resources = dict(income_resources_by_category)
     
-    # Получаем сотрудников объекта, привязанных к организациям пользователя
-    if request.user.is_authenticated:
-        from .models import UserProfile
-        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-        user_organizations = user_profile.organizations.all()
-        current_employees = obj.sotrudniki.select_related('specialnost').filter(organizaciya__in=user_organizations)
-    else:
-        current_employees = obj.sotrudniki.none()
+    # Получаем сотрудников из организаций объекта
+    object_organizations = obj.organizacii.all()
+    current_employees = Sotrudnik.objects.select_related('specialnost', 'podrazdelenie', 'organizaciya').filter(organizaciya__in=object_organizations)
     employees_by_specialty = defaultdict(list)
     
     from sotrudniki.models import Specialnost
@@ -268,7 +265,7 @@ def edit_object(request, object_id):
             specialty.save()
     
     # Получаем сотрудников объекта
-    current_employees = obj.sotrudniki.select_related('specialnost').all()
+    current_employees = obj.sotrudniki.select_related('specialnost', 'podrazdelenie', 'organizaciya').all()
     employees_by_specialty = defaultdict(list)
     
     # Группируем сотрудников
@@ -286,6 +283,9 @@ def edit_object(request, object_id):
         podrazdeleniya = organizacii.first().podrazdeleniya.all()
     else:
         podrazdeleniya = []
+    
+    # Отдельно обрабатываем линейных сотрудников (подразделение ID=3)
+    linear_employees = current_employees.filter(podrazdelenie_id=3)
     
     for emp in current_employees:
         # Группировка по специальностям
@@ -315,6 +315,10 @@ def edit_object(request, object_id):
         else:
             # Если специальность не указана, добавляем в группу "Без должности"
             employees_by_position["Без должности"].append(emp)
+    
+    # Добавляем линейных сотрудников в отдельную группу
+    if linear_employees.exists():
+        employees_by_podrazdelenie["Линейные сотрудники"] = list(linear_employees)
     
     # Добавляем пустые списки для всех специальностей категории 2
     for specialty in all_specialties.filter(kategoriya='2'):
@@ -350,22 +354,22 @@ def edit_object(request, object_id):
         if specialty.nazvanie not in employees_by_specialty:
             employees_by_specialty[specialty.nazvanie] = []
     
-    # Получаем всех сотрудников по специальностям для выпадающих списков (только из организаций пользователя)
+    # Получаем сотрудников из организаций объекта для выпадающих списков
     all_employees_by_specialty = defaultdict(list)
-    if request.user.is_authenticated:
-        all_employees_full = Sotrudnik.objects.select_related('specialnost').filter(organizaciya__in=user_organizations)
-    else:
-        all_employees_full = Sotrudnik.objects.none()
+    all_employees_full = Sotrudnik.objects.select_related('specialnost').filter(organizaciya__in=object_organizations)
     for emp in all_employees_full:
         specialty_name = emp.specialnost.nazvanie if emp.specialnost else 'Без специальности'
         all_employees_by_specialty[specialty_name].append(emp)
     
-    # Получаем организации авторизованного пользователя
+    # Получаем организации авторизованного пользователя или организации объекта для незарегистрированных
     user_organizations = []
     if request.user.is_authenticated:
         from .models import UserProfile
         user_profile, created = UserProfile.objects.get_or_create(user=request.user)
         user_organizations = user_profile.organizations.all()
+    else:
+        # Для незарегистрированных пользователей показываем организации данного объекта
+        user_organizations = obj.organizacii.all()
     
     context = {
         'object': obj,

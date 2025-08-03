@@ -58,6 +58,7 @@ class Objekt(models.Model):
         help_text="Сотрудники, работающие на данном объекте"
     )
     chat_id = models.CharField(max_length=255, null=True, blank=True, verbose_name="ID чата")
+    demo = models.BooleanField(default=False, verbose_name="Демо")
     
     class Meta:
         verbose_name = "Объект"

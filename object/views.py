@@ -59,7 +59,7 @@ def objects_list(request):
             is_active=True
         ).distinct()
     else:
-        objects = Objekt.objects.none()
+        objects = Objekt.objects.filter(demo=True, is_active=True)
     
     # Создаем дни точно так же, как в object_detail
     today = datetime.now().date()

@@ -139,7 +139,7 @@
                     <label for="organizaciya">Организация *</label>
                     <select id="organizaciya" name="organizaciya" required>
                         {% for org in user_organizations %}
-                        <option value="{{ org.nazvanie }}" {% if object.organizaciya.nazvanie == org.nazvanie %}selected{% endif %}>{{ org.nazvanie }}</option>
+                        <option value="{{ org.nazvanie }}" {% if org in object.organizacii.all %}selected{% endif %}>{{ org.nazvanie }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -268,10 +268,14 @@
                             {% for employee in employees %}
                             <div style="background: rgba(255, 255, 255, 0.1); padding: 6px 10px; border-radius: 4px; color: white; font-size: 14px; display: inline-block; margin: 4px;">
                                 {{ employee.fio }} {% if employee.specialnost %}({{ employee.specialnost.nazvanie }}){% endif %}
+                                {% if employee.organizaciya %}<br><small style="color: #bbb;">{{ employee.organizaciya.nazvanie }}</small>{% endif %}
                                 <button type="button" onclick="removeEmployeeFromObject(this, '{{ employee.id }}')" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">×</button>
                                 <input type="hidden" name="selected_employees[]" value="{{ employee.id }}">
                             </div>
                             {% endfor %}
+                            {% if not employees %}
+                            <div style="color: #bbb; font-style: italic; font-size: 14px;">Нет сотрудников в данном подразделении</div>
+                            {% endif %}
                         </div>
                         <!-- Выпадающий список для добавления сотрудников удален -->
                     </div>
@@ -293,10 +297,14 @@
                             {% for employee in position_data.employees %}
                             <div style="background: rgba(255, 255, 255, 0.1); padding: 6px 10px; border-radius: 4px; color: white; font-size: 14px; display: inline-block; margin: 4px;">
                                 {{ employee.fio }} {% if employee.podrazdelenie %}({{ employee.podrazdelenie.nazvanie }}){% endif %}
+                                {% if employee.organizaciya %}<br><small style="color: #bbb;">{{ employee.organizaciya.nazvanie }}</small>{% endif %}
                                 <button type="button" onclick="removeEmployeeFromObject(this, '{{ employee.id }}')" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">×</button>
                                 <input type="hidden" name="selected_employees[]" value="{{ employee.id }}">
                             </div>
                             {% endfor %}
+                            {% if not position_data.employees %}
+                            <div style="color: #bbb; font-style: italic; font-size: 14px; margin-bottom: 10px;">Нет сотрудников на данной должности</div>
+                            {% endif %}
                             <button type="button" onclick="addEmployeeToPosition('{{ position_name }}')" style="background: #27ae60; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 16px; margin-top: 5px; cursor: pointer;">+</button>
                         </div>
                         

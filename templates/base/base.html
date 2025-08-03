@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}AI-ZAM - Система управления строительными объектами{% endblock %}</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
     <link rel="stylesheet" href="{% static 'css/3d-logo.css' %}">
     <link rel="stylesheet" href="{% static 'css/logo-letter.css' %}">
     <style>
@@ -124,7 +124,12 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            color: transparent;
+        }
+        
+        .nav-links a[href="/analytics/"]:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            -webkit-text-fill-color: white !important;
+            border-bottom: 2px solid #fff;
         }
         
         .nav-links a:hover {

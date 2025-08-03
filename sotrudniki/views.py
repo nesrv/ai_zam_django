@@ -26,7 +26,12 @@ def sotrudniki_list(request):
             organizaciya__is_active=True
         ).distinct()
     else:
-        sotrudniki = Sotrudnik.objects.none()
+        # Для неавторизованных пользователей показываем сотрудников, привязанных к демо-объектам
+        from object.models import Objekt
+        demo_objects = Objekt.objects.filter(demo=True, is_active=True)
+        sotrudniki = Sotrudnik.objects.select_related('organizaciya', 'specialnost', 'podrazdelenie').filter(
+            objekty_work__in=demo_objects
+        ).distinct()
     
     podrazdelenie_id = request.GET.get('podrazdelenie')
     if podrazdelenie_id:
@@ -759,7 +764,7 @@ def download_document(request, sotrudnik_id, doc_type, protokol_id=None):
 
 
 def organizations_list(request):
-    from object.models import UserProfile
+    from object.models import UserProfile, Objekt
     
     if request.user.is_authenticated:
         try:
@@ -768,7 +773,18 @@ def organizations_list(request):
         except UserProfile.DoesNotExist:
             organizacii = Organizaciya.objects.none()
     else:
-        organizacii = Organizaciya.objects.none()
+        # Для неавторизованных пользователей показываем организации из демо-объектов
+        demo_objects = Objekt.objects.filter(demo=True, is_active=True)
+        organizacii = Organizaciya.objects.filter(objekty__in=demo_objects, is_active=True).distinct()
+        
+        # Добавляем подразделение с id=3 к каждой организации
+        for org in organizacii:
+            if not org.podrazdeleniya.filter(id=3).exists():
+                from .models import OrganizaciyaPodrazdelenie
+                OrganizaciyaPodrazdelenie.objects.get_or_create(
+                    organizaciya=org,
+                    podrazdelenie_id=3
+                )
     
     return render(request, 'sotrudniki/organizations.html', {'organizacii': organizacii})
 
@@ -916,7 +932,7 @@ def sotrudnik_salary(request, sotrudnik_id):
                 'vydano': False
             })
     
-    # Получаем список объектов для авторизованного пользователя
+    # Получаем список объектов для авторизованного пользователя или демо-объекты для неавторизованных
     from object.models import Objekt
     if request.user.is_authenticated:
         from object.models import UserProfile
@@ -928,7 +944,7 @@ def sotrudnik_salary(request, sotrudnik_id):
             is_active=True
         ).distinct()
     else:
-        objekty = Objekt.objects.none()
+        objekty = Objekt.objects.filter(demo=True, is_active=True)
     
     # Рассчитываем выданную сумму
     vydano_sum = 0
@@ -1112,7 +1128,8 @@ def update_vydano(request):
 
 def salaries_list(request):
     from datetime import datetime
-    from object.models import ResursyPoObjektu, Resurs
+    from object.models import ResursyPoObjektu, Resurs, UserProfile, Objekt
+    from django.db.models import Q
     
     current_date = datetime.now()
     year = request.GET.get('year', str(current_date.year))
@@ -1120,10 +1137,28 @@ def salaries_list(request):
     sort_by = request.GET.get('sort', '')
     order = request.GET.get('order', 'desc')
     
-    sotrudniki_with_salary = Sotrudnik.objects.filter(
-        sotrudnikizarplaty__data__year=year,
-        sotrudnikizarplaty__data__month=month
-    ).select_related('specialnost').distinct()
+    # Фильтруем сотрудников по организациям и объектам пользователя
+    if request.user.is_authenticated:
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        user_organizations = user_profile.organizations.all()
+        user_objects = Objekt.objects.filter(
+            Q(organizacii__in=user_organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name()),
+            is_active=True
+        ).distinct()
+        
+        sotrudniki_with_salary = Sotrudnik.objects.filter(
+            sotrudnikizarplaty__data__year=year,
+            sotrudnikizarplaty__data__month=month,
+            sotrudnikizarplaty__objekt__in=user_objects
+        ).select_related('specialnost').distinct()
+    else:
+        # Для неавторизованных пользователей показываем сотрудников с демо-объектов
+        demo_objects = Objekt.objects.filter(demo=True, is_active=True)
+        sotrudniki_with_salary = Sotrudnik.objects.filter(
+            sotrudnikizarplaty__data__year=year,
+            sotrudnikizarplaty__data__month=month,
+            sotrudnikizarplaty__objekt__in=demo_objects
+        ).select_related('specialnost').distinct()
     
     salaries_data = []
     for sotrudnik in sotrudniki_with_salary:

@@ -9,7 +9,17 @@ from django.views.static import serve as mediaserve
 from django.views.static import serve as staticserve
 
 def favicon_view(request):
-    return HttpResponse(status=204)
+    from django.http import FileResponse
+    import os
+    # Сначала пробуем STATIC_ROOT (для продакшена)
+    favicon_path = os.path.join(settings.STATIC_ROOT, 'favicon.ico')
+    if not os.path.exists(favicon_path):
+        # Если не найден, пробуем STATICFILES_DIRS (для разработки)
+        favicon_path = os.path.join(settings.BASE_DIR, 'static', 'favicon.ico')
+    try:
+        return FileResponse(open(favicon_path, 'rb'), content_type='image/x-icon')
+    except FileNotFoundError:
+        return HttpResponse(status=404)
 
 from object.views import home
 from sotrudniki.views import organizations_list
