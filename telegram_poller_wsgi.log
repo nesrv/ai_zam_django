@@ -5285,3 +5285,4 @@ django.core.exceptions.FieldError: Cannot resolve keyword 'objekt_sotrudniki' in
 2025-08-04 22:55:35,555 - telegrambot.views - INFO - Извлеченные часы из сообщения: {}
 2025-08-04 22:58:02,416 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
 2025-08-04 22:59:05,140 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 23:25:27,189 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.

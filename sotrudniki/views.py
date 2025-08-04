@@ -1236,7 +1236,15 @@ def salaries_list(request):
     return render(request, 'sotrudniki/salaries_list.html', context)
 
 def control_list(request):
-    sotrudniki = Sotrudnik.objects.select_related('specialnost').filter(organizaciya__is_active=True)
+    if request.user.is_authenticated:
+        sotrudniki = Sotrudnik.objects.select_related('specialnost').filter(organizaciya__is_active=True)
+    else:
+        # Для неавторизованных пользователей показываем сотрудников, привязанных к демо-объектам
+        from object.models import Objekt
+        demo_objects = Objekt.objects.filter(demo=True, is_active=True)
+        sotrudniki = Sotrudnik.objects.select_related('specialnost').filter(
+            objekty_work__in=demo_objects
+        ).distinct()
     
     context = {
         'sotrudniki': sotrudniki
