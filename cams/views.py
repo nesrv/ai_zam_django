@@ -10,6 +10,6 @@ def camera_list(request):
         organizations = user_profile.organizations.all()
         cameras = Camera.objects.filter(is_active=True, objekt__organizacii__in=organizations).distinct()
     else:
-        cameras = Camera.objects.none()
+        cameras = Camera.objects.filter(is_active=True, objekt__demo=True)
     return render(request, 'cams/camera_list.html', {'cameras': cameras})
 

@@ -35,7 +35,7 @@ function showRealEmployeesModal(objectId, position, dateText) {
     
     // Кнопка закрытия
     const closeBtn = document.createElement('button');
-    closeBtn.textContent = 'Закрыть';
+    closeBtn.textContent = '✗';
     closeBtn.style.backgroundColor = '#e74c3c';
     closeBtn.style.color = 'white';
     closeBtn.style.border = 'none';
@@ -51,7 +51,7 @@ function showRealEmployeesModal(objectId, position, dateText) {
     
     // Кнопка сохранения в табель (будет добавлена после таблицы)
     const saveBtn = document.createElement('button');
-    saveBtn.textContent = 'Сохранить в табель';
+    saveBtn.textContent = '✓';
     saveBtn.style.backgroundColor = '#27ae60';
     saveBtn.style.color = 'white';
     saveBtn.style.border = 'none';
@@ -556,7 +556,6 @@ function saveEmployeeHours(objectId, position, dateText, modal, cellTotalHours) 
     // Получаем все строки таблицы сотрудников
     const rows = modal.querySelectorAll('tbody tr');
     if (!rows || rows.length === 0) {
-        alert('Нет данных для сохранения');
         return;
     }
     
@@ -585,7 +584,6 @@ function saveEmployeeHours(objectId, position, dateText, modal, cellTotalHours) 
     });
     
     if (hoursData.length === 0) {
-        alert('Нет данных для сохранения');
         return;
     }
     
@@ -648,19 +646,11 @@ function saveEmployeeHours(objectId, position, dateText, modal, cellTotalHours) 
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(`Часы успешно сохранены: ${data.saved_hours.length} записей`);
-            
             // Закрываем модальное окно
             document.body.removeChild(modal);
-            
-            // Обновляем страницу, если нужно
-            // location.reload();
-        } else {
-            alert(`Ошибка сохранения часов: ${data.error || 'Неизвестная ошибка'}`);
         }
     })
     .catch(error => {
         console.error('Error saving hours:', error);
-        alert(`Ошибка сохранения часов: ${error.message || 'Неизвестная ошибка'}`);
     });
 }

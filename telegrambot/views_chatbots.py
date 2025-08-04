@@ -70,7 +70,7 @@ def chatbots_page(request):
             is_active=True
         ).distinct()
     else:
-        objekty = Objekt.objects.none()
+        objekty = Objekt.objects.filter(demo=True, is_active=True)
     bot_token = os.getenv('TELEGRAM_BOT_TOKEN') or os.getenv('TELEGRAM_TOKEN')
     
     # Получаем сообщения для объектов с chat_id
