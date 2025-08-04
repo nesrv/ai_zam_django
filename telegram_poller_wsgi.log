@@ -5209,3 +5209,4 @@ django.core.exceptions.FieldError: Cannot resolve keyword 'objekt_sotrudniki' in
 2025-08-04 22:02:30,534 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
 2025-08-04 22:02:40,467 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
 2025-08-04 22:04:25,582 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-04 22:04:49,907 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
