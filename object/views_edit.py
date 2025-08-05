@@ -395,3 +395,46 @@ def edit_object(request, object_id):
     }
     
     return render(request, 'object/edit_object.html', context)
+
+def update_object_name(request, object_id):
+    from django.http import JsonResponse
+    import json
+    
+    if request.method == 'POST':
+        try:
+            obj = get_object_or_404(Objekt, id=object_id)
+            data = json.loads(request.body)
+            nazvanie = data.get('nazvanie')
+            
+            if nazvanie:
+                obj.nazvanie = nazvanie
+                obj.save()
+                return JsonResponse({'success': True})
+            else:
+                return JsonResponse({'success': False, 'error': 'Название не может быть пустым'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+def update_object_date(request, object_id):
+    from django.http import JsonResponse
+    import json
+    from datetime import datetime
+    
+    if request.method == 'POST':
+        try:
+            obj = get_object_or_404(Objekt, id=object_id)
+            data = json.loads(request.body)
+            data_nachala = data.get('data_nachala')
+            
+            if data_nachala:
+                obj.data_nachala = datetime.strptime(data_nachala, '%Y-%m-%d').date()
+                obj.save()
+                return JsonResponse({'success': True})
+            else:
+                return JsonResponse({'success': False, 'error': 'Дата не может быть пустой'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})

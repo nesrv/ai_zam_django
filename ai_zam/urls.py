@@ -21,7 +21,7 @@ def favicon_view(request):
     except FileNotFoundError:
         return HttpResponse(status=404)
 
-from object.views import home
+from object.views import home, get_resources_by_category, add_resource_to_object, delete_resource_from_object
 from sotrudniki.views import organizations_list
 from telegrambot import views
 
@@ -43,6 +43,12 @@ urlpatterns = [
     path('analytics/', include('analytics.urls')),
     path('cameras/', include('cams.urls')),
     path('objects/', include('object.urls')),
+    path('get-resources/<int:category_id>/', get_resources_by_category, name='get_resources'),
+    path('get-resources-by-category/<int:category_id>/', get_resources_by_category, name='get_resources_by_category'),
+    path('add-resource-to-object/', add_resource_to_object, name='add_resource_to_object'),
+    path('delete-resource-from-object/', delete_resource_from_object, name='delete_resource_from_object'),
+    path('organizations/', lambda request: redirect('/kadry/')),
+
 ]
 
 # Обслуживание статических файлов

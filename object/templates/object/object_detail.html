@@ -17,9 +17,180 @@
         }
         
         body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #fff;
+            background: linear-gradient(135deg, #000000 0%, #434343 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .site-header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .site-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0, 212, 255, 0.05), rgba(255, 0, 255, 0.05));
+            pointer-events: none;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1380px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-text {
+            background: linear-gradient(45deg, #00d4ff, #ff00ff, #ffff00, #00d4ff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            animation: gradientShift 5s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+        
+        .logo img {
+            height: 80px;
+            width: auto;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .nav-links a.active {
+            font-weight: bold;
+            background: linear-gradient(45deg, #00d4ff, #ff00ff, #ffff00, #00d4ff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid #fff;
+        }
+        
+        .user-menu {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .user-menu .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .user-menu:hover .logout-btn {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        .user-avatar {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #00d4ff;
+        }
+        
+        .user-name {
+            background: linear-gradient(45deg, #00d4ff, #ff00ff, #ffff00, #00d4ff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            animation: gradientShift 5s ease infinite;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .logout-btn {
+            display: none;
+            position: fixed;
+            top: 35px;
+            right: 170px;
+            background: rgba(255, 107, 107, 0.95);
+            padding: 6px 10px;
+            border-radius: 8px;
+            white-space: nowrap;
+            z-index: 10000;
+            border: 1px solid rgba(255, 107, 107, 0.8);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .logout-btn a {
+            color: white !important;
+            text-decoration: none !important;
+            font-size: 14px !important;
+            font-weight: 500;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .page-wrapper {
             padding: 12px;
         }
         
@@ -129,6 +300,7 @@
             border: 1px solid #ddd;
             background: white;
             font-size: 12px;
+            color: #333;
         }
         
         .resource-table .number {
@@ -234,40 +406,80 @@
 
     </style>
 </head>
-<body> 
+<body>
+    <header class="site-header">
+        <div class="header-content">
+            <div class="logo-container">
+                <a href="/" class="logo">
+                    <img src="{% static 'images/logo-ai.png' %}" alt="AI-Зам">
+                    <span class="logo-text">AI-Зам</span>
+                </a>
+            </div>
+            <nav class="nav-links">
+                <a href="/">Главная</a>
+                <a href="/objects/" class="active">Объекты</a>
+                <a href="/kadry/">Кадры</a>
+                <a href="/ai-agent/">ИИ-агент</a>
+                <a href="/analytics/">ИИ-аналитика</a>
+                <a href="/telegram/">Рабочие чаты</a>
+                <a href="/cameras/">Камеры</a>
+                {% if user.is_authenticated %}
+                    <div class="user-menu">
+                        <a href="/objects/profile/" class="user-profile">
+                            {% if user.userprofile.photo %}
+                                <img src="{{ user.userprofile.photo.url }}" alt="Профиль" class="user-avatar">
+                            {% else %}
+                                <div class="user-avatar" style="background: linear-gradient(135deg, #00d4ff, #ff00ff); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">{{ user.username|first|upper }}</div>
+                            {% endif %}
+                            <span class="user-name">{{ user.username }}</span>
+                        </a>
+                        <div class="logout-btn">
+                            <a href="/objects/logout/">Выйти</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="/objects/login/">Войти</a>
+                    <a href="/objects/register/">Регистрация</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
     
-    <div class="container">
+    <div class="page-wrapper">
+        <div class="container">
         <div class="header">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <a href="/objects/" style="background: #3498db; color: white; text-decoration: none; border-radius: 3px; padding: 6px 12px; font-size: 12px;">← Назад к списку объектов</a>
+                <a href="/objects/{{ object.id }}/edit/" style="background: #e74c3c; color: white; text-decoration: none; border-radius: 3px; padding: 6px 12px; font-size: 12px;">✎ Редактировать</a>
+            </div>
             <h1>{{ object.nazvanie }} (смета ресурсов по объекту) </h1>
-          
-            <div class="header-info">
-                <div class="info-item">
-                    <strong>Ответственный:</strong> 
-                    {% if object.otvetstvennyj %}
-                        {{ object.otvetstvennyj.fio }}
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                <div class="header-info">
+                    <div class="info-item">
+                        <strong>Ответственный:</strong> 
+                        {% if object.otvetstvennyj %}
+                            {{ object.otvetstvennyj.fio }}
+                        {% else %}
+                            Не назначен
+                        {% endif %}
+                    </div>
+                    <div class="info-item">
+                        <strong>Дата начала:</strong> {{ object.data_nachala|date:"d.m.Y" }}
+                    </div>
+                    <div class="info-item">
+                        <strong>Общая стоимость ресурсов:</strong> {{ total_cost|floatformat:0 }} ₽
+                    </div>
+                </div>
+                <div class="main-action-btns">
+                    {% if '/income/' in request.path %}
+                        <a href="/objects/{{ object.id }}/" style="background: #3498db !important; color: white !important; padding: 12px 32px; font-size: 1.1em; font-weight: bold; border-radius: 6px; text-decoration: none; display: inline-block;">💰 Расходная часть</a>
+                        <a href="/objects/{{ object.id }}/income/" style="background: #27ae60 !important; border: 4px solid #f39c12 !important; transform: scale(1.08) !important; color: white !important; padding: 12px 32px; font-size: 1.1em; font-weight: bold; border-radius: 6px; text-decoration: none; display: inline-block;">💵 Доходная часть</a>
                     {% else %}
-                        Не назначен
+                        <a href="/objects/{{ object.id }}/" style="background: #27ae60 !important; border: 4px solid #f39c12 !important; transform: scale(1.08) !important; color: white !important; padding: 12px 32px; font-size: 1.1em; font-weight: bold; border-radius: 6px; text-decoration: none; display: inline-block;">💰 Расходная часть</a>
+                        <a href="/objects/{{ object.id }}/income/" style="background: #3498db !important; color: white !important; padding: 12px 32px; font-size: 1.1em; font-weight: bold; border-radius: 6px; text-decoration: none; display: inline-block;">💵 Доходная часть</a>
                     {% endif %}
                 </div>
-                <div class="info-item">
-                    <strong>Дата начала:</strong> {{ object.data_nachala|date:"d.m.Y" }}
-                </div>
-                <div class="info-item">
-                    <strong>Общая стоимость ресурсов:</strong> {{ total_cost|floatformat:0 }} ₽
-                </div>
             </div>
-            <!-- Две кнопки после header-info -->
-            <div class="main-action-btns">
-                {% if '/income/' in request.path %}
-                    <a href="/objects/{{ object.id }}/" style="background: #3498db !important; color: white !important; padding: 12px 32px; font-size: 1.1em; font-weight: bold; border-radius: 6px; text-decoration: none; display: inline-block;">💰 Расходная часть</a>
-                    <a href="/objects/{{ object.id }}/income/" style="background: #27ae60 !important; border: 4px solid #f39c12 !important; transform: scale(1.08) !important; color: white !important; padding: 12px 32px; font-size: 1.1em; font-weight: bold; border-radius: 6px; text-decoration: none; display: inline-block;">💵 Доходная часть</a>
-                {% else %}
-                    <a href="/objects/{{ object.id }}/" style="background: #27ae60 !important; border: 4px solid #f39c12 !important; transform: scale(1.08) !important; color: white !important; padding: 12px 32px; font-size: 1.1em; font-weight: bold; border-radius: 6px; text-decoration: none; display: inline-block;">💰 Расходная часть</a>
-                    <a href="/objects/{{ object.id }}/income/" style="background: #3498db !important; color: white !important; padding: 12px 32px; font-size: 1.1em; font-weight: bold; border-radius: 6px; text-decoration: none; display: inline-block;">💵 Доходная часть</a>
-                {% endif %}
-            </div>
-            
-
         </div>
         
         <div class="table-container">
@@ -399,10 +611,9 @@
             </table>
         </div>
         
+        </div>
+
     </div>
-    
-    <a href="/objects/" class="back-btn">← Назад к списку объектов</a>
-    <a href="/objects/{{ object.id }}/edit/" class="edit-btn">✎ Редактировать</a>
     
     <script>
     function formatNumber(num, isKadry = false) {

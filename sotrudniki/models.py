@@ -9,6 +9,7 @@ class Organizaciya(models.Model):
     ogrn = models.CharField(max_length=15, verbose_name="ОГРН", null=True, blank=True)
     adres = models.TextField(verbose_name="Адрес", null=True, blank=True)
     is_active = models.BooleanField(default=True, verbose_name="Активная")
+    demo = models.BooleanField(default=False, verbose_name="Демо")
     podrazdeleniya = models.ManyToManyField(
         'Podrazdelenie',
         through='OrganizaciyaPodrazdelenie',

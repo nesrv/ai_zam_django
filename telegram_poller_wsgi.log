@@ -5287,3 +5287,51 @@ django.core.exceptions.FieldError: Cannot resolve keyword 'objekt_sotrudniki' in
 2025-08-04 22:59:05,140 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
 2025-08-04 23:25:27,189 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\views.py changed, reloading.
 2025-08-04 23:25:36,234 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 13:57:48,904 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 14:29:29,406 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-08-05 14:30:53,105 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-08-05 14:32:23,909 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-08-05 14:37:01,440 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\urls.py changed, reloading.
+2025-08-05 14:38:50,897 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 14:41:17,895 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\urls.py changed, reloading.
+2025-08-05 14:43:00,701 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 15:03:03,683 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-08-05 15:03:09,113 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 15:06:22,751 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\sotrudniki\models.py changed, reloading.
+2025-08-05 15:06:28,664 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 15:22:58,461 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-08-05 15:23:04,746 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 15:24:08,295 - django.request - WARNING - Not Found: /get-resources/40/
+2025-08-05 15:24:13,755 - django.request - WARNING - Not Found: /get-resources/45/
+2025-08-05 15:25:05,116 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\urls.py changed, reloading.
+2025-08-05 15:25:10,949 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 15:25:21,860 - django.request - WARNING - Not Found: /get-resources/40/
+2025-08-05 15:25:41,841 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 15:26:11,644 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 15:26:15,014 - django.request - WARNING - Not Found: /get-resources/40/
+2025-08-05 15:26:50,389 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-08-05 15:26:56,556 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 15:26:59,523 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-08-05 15:27:28,466 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 15:42:23,985 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 15:45:22,738 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 15:45:40,388 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-08-05 15:52:56,758 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-08-05 15:53:04,024 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 16:15:34,413 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 16:24:10,933 - django.request - WARNING - Not Found: /.well-known/appspecific/com.chrome.devtools.json
+2025-08-05 16:26:58,554 - django.request - WARNING - Not Found: /get-resources-by-category/45/
+2025-08-05 16:27:27,695 - django.request - WARNING - Not Found: /get-resources-by-category/40/
+2025-08-05 16:32:31,962 - django.request - WARNING - Not Found: /get-resources-by-category/45/
+2025-08-05 16:32:52,998 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-08-05 16:32:58,778 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 16:33:32,595 - django.request - WARNING - Not Found: /add-resource-to-object/
+2025-08-05 16:33:40,576 - django.request - WARNING - Not Found: /add-resource-to-object/
+2025-08-05 16:34:02,565 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-08-05 16:34:08,368 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 16:36:34,815 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-08-05 16:36:40,837 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 16:36:46,363 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.
+2025-08-05 16:36:52,180 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-05 17:02:24,925 - django.request - WARNING - Not Found: /organizations/
+2025-08-05 17:03:14,957 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\ai_zam\urls.py changed, reloading.

@@ -117,7 +117,7 @@
             transition: background 0.3s;
         }
         
-        .nav-links a[href="/analytics/"] {
+        .nav-links a.active {
             font-weight: bold;
             background: linear-gradient(45deg, #00d4ff, #ff00ff, #ffff00, #00d4ff);
             background-size: 300% 300%;
@@ -126,7 +126,7 @@
             background-clip: text;
         }
         
-        .nav-links a[href="/analytics/"]:hover {
+        .nav-links a.active:hover {
             background: rgba(255, 255, 255, 0.1) !important;
             -webkit-text-fill-color: white !important;
             border-bottom: 2px solid #fff;
@@ -343,13 +343,13 @@
                     </a>
                 </div>
                 <nav class="nav-links">
-                    <a href="/">Главная</a>
-                    <a href="/objects/">Объекты</a>
-                    <a href="/kadry/">Кадры</a>
-                    <a href="/ai-agent/">ИИ-агент</a>
-                    <a href="/analytics/">ИИ-аналитика</a>
-                    <a href="/telegram/">Рабочие чаты</a>
-                    <a href="/cameras/">Камеры</a>
+                    <a href="/" {% if request.resolver_match.url_name == 'home' or request.path == '/' %}class="active"{% endif %}>Главная</a>
+                    <a href="/objects/" {% if '/objects/' in request.path %}class="active"{% endif %}>Объекты</a>
+                    <a href="/kadry/" {% if '/kadry/' in request.path or '/sotrudniki/' in request.path %}class="active"{% endif %}>Кадры</a>
+                    <a href="/ai-agent/" {% if '/ai-agent/' in request.path %}class="active"{% endif %}>ИИ-агент</a>
+                    <a href="/analytics/" {% if '/analytics/' in request.path %}class="active"{% endif %}>ИИ-аналитика</a>
+                    <a href="/telegram/" {% if '/telegram/' in request.path %}class="active"{% endif %}>Рабочие чаты</a>
+                    <a href="/cameras/" {% if '/cameras/' in request.path %}class="active"{% endif %}>Камеры</a>
                     {% if user.is_authenticated %}
                         <div class="user-menu">
                             <a href="/objects/profile/" class="user-profile">

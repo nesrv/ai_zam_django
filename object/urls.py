@@ -14,6 +14,8 @@ urlpatterns = [
     path('<int:object_id>/income/', views.object_income_detail, name='object_income_detail'),
 
     path('<int:object_id>/edit/', views_edit.edit_object, name='edit_object'),
+    path('<int:object_id>/update-name/', views_edit.update_object_name, name='update_object_name'),
+    path('<int:object_id>/update-date/', views_edit.update_object_date, name='update_object_date'),
     path('<int:object_id>/delete/', views.delete_object, name='delete_object'),
     path('<int:object_id>/add-chat/', views.add_chat_to_object, name='add_chat_to_object'),
     path('create/', views.create_object, name='create_object'),
@@ -40,6 +42,7 @@ urlpatterns = [
     path('add-resource-to-object/', views.add_resource_to_object, name='add_resource_to_object'),
     path('delete-resource-from-object/', views.delete_resource_from_object, name='delete_resource_from_object'),
     path('get-resources-by-category/<int:category_id>/', views.get_resources_by_category, name='get_resources_by_category'),
+    path('get-resources/<int:category_id>/', views.get_resources_by_category, name='get_resources'),
     path('get-employees-by-resource/<int:resource_id>/', views.get_employees_by_resource, name='get_employees_by_resource'),
     
     # Профиль и аутентификация

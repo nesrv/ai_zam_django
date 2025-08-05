@@ -4,6 +4,23 @@
 {% block title %}Редактировать объект - AI-ZAM{% endblock %}
 
 {% block extra_styles %}
+.remove-resource-btn {
+    background: transparent !important;
+    color: #e74c3c !important;
+    font-size: 22px !important;
+    font-weight: bold !important;
+}
+.save-resource-btn {
+    background: transparent !important;
+    color: #27ae60 !important;
+    font-size: 22px !important;
+    font-weight: bold !important;
+}
+.add-resource-btn {
+    background: #27ae60 !important;
+    color: white !important;
+    font-size: 24px !important;
+}
 .form-container {
     max-width: 1400px;
     margin: 2rem auto;
@@ -127,36 +144,43 @@
 
 {% block content %}
 <div class="form-container">
-    <h1 style="text-align: center; margin-bottom: 2rem; color: white;">Редактировать объект</h1>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+        <a href="/objects/" class="btn-cancel" style="background: #95a5a6;">Назад</a>
+        <h1 style="color: white; margin: 0;">Редактировать объект</h1>
+        <div></div>
+    </div>
     
     <form method="post">
         {% csrf_token %}
         
-        <div class="form-columns">
-            <!-- Левая колонка - Основная информация -->
-            <div class="form-column">
-                <div class="form-group">
-                    <label for="organizaciya">Организация *</label>
-                    <select id="organizaciya" name="organizaciya" required>
-                        {% for org in user_organizations %}
-                        <option value="{{ org.nazvanie }}" {% if org in object.organizacii.all %}selected{% endif %}>{{ org.nazvanie }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="nazvanie">Название объекта *</label>
-                    <input type="text" id="nazvanie" name="nazvanie" value="{{ object.nazvanie }}" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="data_nachala">Дата начала *</label>
-                    <input type="date" id="data_nachala" name="data_nachala" value="{{ object.data_nachala|date:'Y-m-d' }}" required>
-                </div>
+        <!-- Основная информация -->
+        <div class="form-group">
+            <label for="organizaciya">Организация *</label>
+            <select id="organizaciya" name="organizaciya" required>
+                {% for org in user_organizations %}
+                <option value="{{ org.nazvanie }}" {% if org in object.organizacii.all %}selected{% endif %}>{{ org.nazvanie }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="nazvanie">Название объекта *</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="text" id="nazvanie" name="nazvanie" value="{{ object.nazvanie }}" required style="flex: 1;" oninput="showSaveButton()">
+                <button type="button" id="saveNameBtn" onclick="saveName()" style="display: none; background: #27ae60; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 16px;">✓</button>
             </div>
-            
-            <!-- Правая колонка - Ресурсы -->
-            <div class="form-column">
+        </div>
+        
+        <div class="form-group">
+            <label for="data_nachala">Дата начала *</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="date" id="data_nachala" name="data_nachala" value="{{ object.data_nachala|date:'Y-m-d' }}" required style="flex: 1;" oninput="showSaveDateButton()">
+                <button type="button" id="saveDateBtn" onclick="saveDate()" style="display: none; background: #27ae60; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 16px;">✓</button>
+            </div>
+        </div>
+        
+        <!-- Ресурсы -->
+        <div>
                 <!-- Расходная часть -->
                 <div class="resources-section">
                     <h3>Расходная часть</h3>
@@ -165,20 +189,20 @@
                         <div class="category-group" style="margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 15px;">
                             <h4 style="color: #3498db; margin-bottom: 10px; font-size: 16px;">{{ category_name }}</h4>
                             {% for resource in resources %}
-                            <div class="resource-item">
+                            <div class="resource-item" data-resource-id="{{ resource.id }}">
                                 <select name="expense_resource[]" class="expense-resource">
                                     <option value="{{ resource.resurs.id }}" selected>{{ resource.resurs.naimenovanie }}</option>
                                 </select>
                                 <div style="display: flex; align-items: center; gap: 5px;">
-                                    <input type="number" name="expense_quantity[]" value="{{ resource.kolichestvo|floatformat:1 }}" step="1" oninput="calculateCost(this)">
+                                    <input type="number" name="expense_quantity[]" value="{{ resource.kolichestvo|floatformat:1 }}" step="1" oninput="calculateCost(this); showSaveResourceButton(this)">
                                     <span style="color: white; font-size: 12px;">{{ resource.resurs.edinica_izmereniya }}</span>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 5px;">
-                                    <input type="number" name="expense_price[]" value="{{ resource.cena|floatformat:0 }}" step="1" oninput="calculateCost(this)">
+                                    <input type="number" name="expense_price[]" value="{{ resource.cena|floatformat:0 }}" step="1" oninput="calculateCost(this); showSaveResourceButton(this)">
                                     <span style="color: white; font-size: 12px;">руб</span>
                                 </div>
                                 <input type="number" name="expense_cost[]" value="{{ resource.total_cost|floatformat:2 }}" readonly style="background: #f0f0f0;">
-                                <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+                                <button type="button" class="remove-resource-btn" onclick="removeResource(this)">✗</button>
                             </div>
                             {% endfor %}
                             <button type="button" onclick="addResourceToCategory('{{ category_name }}', 'expense')" style="background: #27ae60; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-top: 5px; cursor: pointer;">➕</button>
@@ -198,10 +222,10 @@
                             <input type="number" name="expense_quantity[]" placeholder="Кол-во" step="0.01" oninput="calculateCost(this)">
                             <input type="number" name="expense_price[]" placeholder="Цена" step="0.01" oninput="calculateCost(this)">
                             <input type="number" name="expense_cost[]" placeholder="Стоимость" readonly style="background: #f0f0f0;">
-                            <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+                            <button type="button" class="remove-resource-btn" onclick="removeResource(this)">✗</button>
                         </div>
                     </div>
-                    <button type="button" class="add-resource-btn" onclick="addExpenseResource()">Добавить расход</button>
+                    <button type="button" class="add-resource-btn" onclick="addExpenseResource()">➕</button>
                 </div>
                 
                 <!-- Доходная часть -->
@@ -212,12 +236,12 @@
                         <div class="category-group" style="margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 15px;">
                             <h4 style="color: #3498db; margin-bottom: 10px; font-size: 16px;">{{ category_name }}</h4>
                             {% for resource in resources %}
-                            <div class="resource-item">
+                            <div class="resource-item" data-resource-id="{{ resource.id }}">
                                 <select name="income_resource[]" class="income-resource">
                                     <option value="{{ resource.resurs.id }}" selected>{{ resource.resurs.naimenovanie }}</option>
                                 </select>
                                 <div style="display: flex; align-items: center; gap: 5px;">
-                                    <input type="number" name="income_quantity[]" value="{{ resource.kolichestvo|floatformat:1 }}" step="1" oninput="calculateCost(this)">
+                                    <input type="number" name="income_quantity[]" value="{{ resource.kolichestvo|floatformat:1 }}" step="1" oninput="calculateCost(this); showSaveResourceButton(this)">
                                     <span style="color: white; font-size: 12px;">{{ resource.resurs.edinica_izmereniya }}</span>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 5px;">
@@ -225,10 +249,10 @@
                                     <span style="color: white; font-size: 12px;">руб</span>
                                 </div>
                                 <input type="number" name="income_cost[]" value="{{ resource.total_cost|floatformat:2 }}" readonly style="background: #f0f0f0;">
-                                <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+                                <button type="button" class="remove-resource-btn" onclick="removeResource(this)">✗</button>
                             </div>
                             {% endfor %}
-                            <button type="button" onclick="addResourceToCategory('{{ category_name }}', 'income')" style="background: #27ae60; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-top: 5px; cursor: pointer;">➤</button>
+                            <button type="button" onclick="addResourceToCategory('{{ category_name }}', 'income')" style="background: #27ae60; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-top: 5px; cursor: pointer;">➕</button>
                         </div>
                         {% endfor %}
                         
@@ -245,12 +269,11 @@
                             <input type="number" name="income_quantity[]" placeholder="Кол-во" step="0.01" oninput="calculateCost(this)">
                             <input type="number" name="income_price[]" placeholder="Цена" step="0.01" oninput="calculateCost(this)">
                             <input type="number" name="income_cost[]" placeholder="Стоимость" readonly style="background: #f0f0f0;">
-                            <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+                            <button type="button" class="remove-resource-btn" onclick="removeResource(this)">✗</button>
                         </div>
                     </div>
-                    <button type="button" class="add-resource-btn" onclick="addIncomeResource()">Добавить доход</button>
+                    <button type="button" class="add-resource-btn" onclick="addIncomeResource()">➕</button>
                 </div>
-            </div>
         </div>
         
         <!-- Сотрудники по объекту -->
@@ -269,7 +292,7 @@
                             <div style="background: rgba(255, 255, 255, 0.1); padding: 6px 10px; border-radius: 4px; color: white; font-size: 14px; display: inline-block; margin: 4px;">
                                 {{ employee.fio }} {% if employee.specialnost %}({{ employee.specialnost.nazvanie }}){% endif %}
                                 {% if employee.organizaciya %}<br><small style="color: #bbb;">{{ employee.organizaciya.nazvanie }}</small>{% endif %}
-                                <button type="button" onclick="removeEmployeeFromObject(this, '{{ employee.id }}')" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">×</button>
+                                <button type="button" onclick="removeEmployeeFromObject(this, '{{ employee.id }}')" style="background: transparent; color: #e74c3c; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">✗</button>
                                 <input type="hidden" name="selected_employees[]" value="{{ employee.id }}">
                             </div>
                             {% endfor %}
@@ -298,7 +321,7 @@
                             <div style="background: rgba(255, 255, 255, 0.1); padding: 6px 10px; border-radius: 4px; color: white; font-size: 14px; display: inline-block; margin: 4px;">
                                 {{ employee.fio }} {% if employee.podrazdelenie %}({{ employee.podrazdelenie.nazvanie }}){% endif %}
                                 {% if employee.organizaciya %}<br><small style="color: #bbb;">{{ employee.organizaciya.nazvanie }}</small>{% endif %}
-                                <button type="button" onclick="removeEmployeeFromObject(this, '{{ employee.id }}')" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">×</button>
+                                <button type="button" onclick="removeEmployeeFromObject(this, '{{ employee.id }}')" style="background: transparent; color: #e74c3c; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">✗</button>
                                 <input type="hidden" name="selected_employees[]" value="{{ employee.id }}">
                             </div>
                             {% endfor %}
@@ -330,6 +353,118 @@
 </div>
 
 <script>
+function showSaveButton() {
+    const saveBtn = document.getElementById('saveNameBtn');
+    saveBtn.style.display = 'block';
+}
+
+function saveName() {
+    const nameInput = document.getElementById('nazvanie');
+    const saveBtn = document.getElementById('saveNameBtn');
+    const objectId = window.location.pathname.split('/')[2];
+    
+    fetch(`/objects/${objectId}/update-name/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+        },
+        body: JSON.stringify({
+            nazvanie: nameInput.value
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            saveBtn.style.display = 'none';
+            saveBtn.style.background = '#27ae60';
+            setTimeout(() => {
+                saveBtn.style.background = '#27ae60';
+            }, 1000);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function showSaveDateButton() {
+    const saveBtn = document.getElementById('saveDateBtn');
+    saveBtn.style.display = 'block';
+}
+
+function showSaveResourceButton(input) {
+    const resourceItem = input.closest('.resource-item');
+    const button = resourceItem.querySelector('.remove-resource-btn');
+    button.textContent = '✓';
+    button.className = 'save-resource-btn';
+    button.onclick = function() { saveResource(this); };
+}
+
+function saveResource(button) {
+    const resourceItem = button.parentElement;
+    const resourceId = resourceItem.getAttribute('data-resource-id');
+    const quantityInput = resourceItem.querySelector('input[name*="quantity[]"]');
+    const priceInput = resourceItem.querySelector('input[name*="price[]"]');
+    
+    if (resourceId && quantityInput && priceInput) {
+        fetch(`/objects/update-resource-data/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+            },
+            body: JSON.stringify({
+                resource_id: resourceId,
+                field_type: 'both',
+                quantity: quantityInput.value,
+                price: priceInput.value
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                button.textContent = '✗';
+                button.className = 'remove-resource-btn';
+                button.onclick = function() { removeResource(this); };
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+function saveDate() {
+    const dateInput = document.getElementById('data_nachala');
+    const saveBtn = document.getElementById('saveDateBtn');
+    const objectId = window.location.pathname.split('/')[2];
+    
+    fetch(`/objects/${objectId}/update-date/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+        },
+        body: JSON.stringify({
+            data_nachala: dateInput.value
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            saveBtn.style.display = 'none';
+            saveBtn.style.background = '#27ae60';
+            setTimeout(() => {
+                saveBtn.style.background = '#27ae60';
+            }, 1000);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
 function calculateCost(input) {
     const resourceItem = input.parentElement;
     const quantityInput = resourceItem.querySelector('input[name*="quantity"]');
@@ -400,7 +535,7 @@ function addExpenseResource() {
         <input type="number" name="expense_quantity[]" placeholder="Кол-во" step="0.01" oninput="calculateCost(this)">
         <input type="number" name="expense_price[]" placeholder="Цена" step="0.01" oninput="calculateCost(this)">
         <input type="number" name="expense_cost[]" placeholder="Стоимость" readonly style="background: #f0f0f0;">
-        <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+        <button type="button" class="remove-resource-btn" onclick="removeResource(this)">✗</button>
     `;
     container.appendChild(newItem);
 }
@@ -425,13 +560,38 @@ function addIncomeResource() {
         <input type="number" name="income_quantity[]" placeholder="Кол-во" step="0.01" oninput="calculateCost(this)">
         <input type="number" name="income_price[]" placeholder="Цена" step="0.01" oninput="calculateCost(this)">
         <input type="number" name="income_cost[]" placeholder="Стоимость" readonly style="background: #f0f0f0;">
-        <button type="button" class="remove-resource-btn" onclick="removeResource(this)">×</button>
+        <button type="button" class="remove-resource-btn" onclick="removeResource(this)">✗</button>
     `;
     container.appendChild(newItem);
 }
 
 function removeResource(button) {
-    button.parentElement.remove();
+    const resourceItem = button.parentElement;
+    const resourceId = resourceItem.getAttribute('data-resource-id');
+    
+    if (resourceId) {
+        fetch(`/objects/delete-resource-from-object/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+            },
+            body: JSON.stringify({
+                resource_id: resourceId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                resourceItem.remove();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    } else {
+        resourceItem.remove();
+    }
 }
 
 function addEmployeeToCategory(select, categoryId) {
@@ -452,7 +612,7 @@ function addEmployeeToCategory(select, categoryId) {
         
         employeeDiv.innerHTML = `
             ${employeeName}
-            <button type="button" onclick="removeEmployeeFromObject(this, '${employeeId}')" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">×</button>
+            <button type="button" onclick="removeEmployeeFromObject(this, '${employeeId}')" style="background: transparent; color: #e74c3c; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">✗</button>
             <input type="hidden" name="selected_employees[]" value="${employeeId}">
         `;
         
@@ -485,7 +645,7 @@ function addEmployeeToSpecialty(select, specialtySlug) {
         
         employeeDiv.innerHTML = `
             ${employeeName}
-            <button type="button" onclick="removeEmployeeFromObject(this, '${employeeId}')" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 16px; height: 16px; font-size: 9px; margin-left: 4px; cursor: pointer;">×</button>
+            <button type="button" onclick="removeEmployeeFromObject(this, '${employeeId}')" style="background: transparent; color: #e74c3c; border: none; border-radius: 50%; width: 16px; height: 16px; font-size: 9px; margin-left: 4px; cursor: pointer;">✗</button>
             <input type="hidden" name="selected_employees[]" value="${employeeId}">
         `;
         
@@ -518,7 +678,7 @@ function addEmployeeToPodrazdelenie(select, podrazdelenieSlug) {
         
         employeeDiv.innerHTML = `
             ${employeeName}
-            <button type="button" onclick="removeEmployeeFromObject(this, '${employeeId}')" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">×</button>
+            <button type="button" onclick="removeEmployeeFromObject(this, '${employeeId}')" style="background: transparent; color: #e74c3c; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">✗</button>
             <input type="hidden" name="selected_employees[]" value="${employeeId}">
         `;
         
@@ -590,16 +750,11 @@ function addEmployeeToPosition(positionName) {
     addButton.style.cssText = 'background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-right: 10px;';
     addButton.textContent = '✓';
     
-    const addDirectButton = document.createElement('button');
-    addDirectButton.style.cssText = 'background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-right: 10px;';
-    addDirectButton.textContent = 'Добавить напрямую';
-    
     const cancelButton = document.createElement('button');
-    cancelButton.style.cssText = 'background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;';
+    cancelButton.style.cssText = 'background: transparent; color: #e74c3c; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;';
     cancelButton.textContent = '✗';
     
     buttonContainer.appendChild(addButton);
-    buttonContainer.appendChild(addDirectButton);
     buttonContainer.appendChild(cancelButton);
     
     // Добавляем все элементы в модальное окно
@@ -620,7 +775,7 @@ function addEmployeeToPosition(positionName) {
             
             employeeDiv.innerHTML = `
                 ${select.options[select.selectedIndex].text}
-                <button type="button" onclick="removeEmployeeFromObject(this, '${select.value}')" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">×</button>
+                <button type="button" onclick="removeEmployeeFromObject(this, '${select.value}')" style="background: transparent; color: #e74c3c; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">✗</button>
                 <input type="hidden" name="selected_employees[]" value="${select.value}">
             `;
             
@@ -703,93 +858,7 @@ function addEmployeeToPosition(positionName) {
         }
     });
     
-    // Обработчик кнопки прямого добавления
-    addDirectButton.addEventListener('click', function() {
-        if (select.value) {
-            const employeeId = select.value;
-            const employeeName = select.options[select.selectedIndex].text;
-            const url = window.location.pathname;
-            const objectId = url.split('/')[2]; // Получаем ID объекта из URL
-            
-            // Показываем уведомление о начале процесса
-            const notification = document.createElement('div');
-            notification.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: #3498db; color: white; padding: 10px 20px; border-radius: 5px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2);';
-            notification.textContent = `Добавление сотрудника ${employeeName} к объекту...`;
-            document.body.appendChild(notification);
-            
-            // Отправляем запрос на добавление сотрудника к объекту
-            fetch(`/api/add-employee-to-object/${objectId}/${employeeId}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
-                },
-                body: JSON.stringify({
-                    employee_id: employeeId,
-                    object_id: objectId
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Создаем элемент сотрудника
-                    const employeeDiv = document.createElement('div');
-                    employeeDiv.style.cssText = 'background: rgba(255, 255, 255, 0.1); padding: 6px 10px; border-radius: 4px; color: white; font-size: 14px; display: inline-block; margin: 4px;';
-                    
-                    employeeDiv.innerHTML = `
-                        ${employeeName}
-                        <button type="button" onclick="this.parentElement.remove()" style="background: #e74c3c; color: white; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; margin-left: 5px; cursor: pointer;">×</button>
-                        <input type="hidden" name="selected_employees[]" value="${employeeId}">
-                    `;
-                    
-                    // Добавляем сотрудника в контейнер
-                    if (window.currentPositionButton) {
-                        const container = window.currentPositionButton.parentElement;
-                        container.insertBefore(employeeDiv, window.currentPositionButton);
-                    } else {
-                        // Если по какой-то причине кнопка не найдена, используем positionContainer
-                        positionContainer.insertBefore(employeeDiv, clickedButton);
-                    }
-                    
-                    // Обновляем уведомление
-                    notification.style.background = '#27ae60';
-                    notification.textContent = data.message || `Сотрудник ${employeeName} успешно добавлен к объекту`;
-                    
-                    // Удаляем уведомление через 3 секунды
-                    setTimeout(function() {
-                        document.body.removeChild(notification);
-                    }, 3000);
-                    
-                    // Закрываем модальное окно
-                    document.body.removeChild(modal);
-                } else {
-                    // Обновляем уведомление в случае ошибки
-                    notification.style.background = '#e74c3c';
-                    notification.textContent = data.error || `Ошибка при добавлении сотрудника`;
-                    
-                    // Удаляем уведомление через 5 секунд
-                    setTimeout(function() {
-                        document.body.removeChild(notification);
-                    }, 5000);
-                }
-            })
-            .catch(error => {
-                // Обновляем уведомление в случае ошибки
-                notification.style.background = '#e74c3c';
-                notification.textContent = `Ошибка: ${error.message}`;
-                
-                // Удаляем уведомление через 5 секунд
-                setTimeout(function() {
-                    document.body.removeChild(notification);
-                }, 5000);
-                
-                console.error('Error:', error);
-            });
-        } else {
-            alert('Выберите сотрудника');
-        }
-    });
-    
+
     // Обработчик кнопки отмены
     cancelButton.addEventListener('click', function() {
         document.body.removeChild(modal);
@@ -841,9 +910,6 @@ document.querySelector('form').addEventListener('submit', function(e) {
 
 // Функция для удаления сотрудника из объекта
 function removeEmployeeFromObject(button, employeeId) {
-    if (!confirm('Вы уверены, что хотите удалить сотрудника?')) {
-        return;
-    }
     
     const url = window.location.pathname;
     const objectId = url.split('/')[2]; // Получаем ID объекта из URL
@@ -994,7 +1060,7 @@ function addResourceToCategory(categoryName, type) {
                 <span style="color: white; font-size: 12px;">руб</span>
             </div>
             <input type="number" name="expense_cost[]" readonly style="background: #f0f0f0;">
-            <button type="button" onclick="this.parentElement.remove()">×</button>
+            <button type="button" onclick="this.parentElement.remove()" style="background: transparent; color: #27ae60; border: none; padding: 4px 8px; border-radius: 4px; font-size: 32px; cursor: pointer;">✓</button>
         `;
     } else {
         newItem.innerHTML = `
@@ -1010,7 +1076,7 @@ function addResourceToCategory(categoryName, type) {
                 <span style="color: white; font-size: 12px;">руб</span>
             </div>
             <input type="number" name="income_cost[]" readonly style="background: #f0f0f0;">
-            <button type="button" onclick="this.parentElement.remove()">×</button>
+            <button type="button" onclick="this.parentElement.remove()" style="background: transparent; color: #27ae60; border: none; padding: 4px 8px; border-radius: 4px; font-size: 32px; cursor: pointer;">✓</button>
         `;
     }
     

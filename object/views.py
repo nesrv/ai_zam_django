@@ -490,7 +490,8 @@ def create_object(request):
                 nazvanie=nazvanie,
                 data_nachala=data_nachala,
                 data_plan_zaversheniya=datetime.strptime(data_nachala, '%Y-%m-%d').date() + timedelta(days=365),
-                otvetstvennyj="Иванов Иван Иванович"
+                otvetstvennyj="Иванов Иван Иванович",
+                demo=not request.user.is_authenticated
             )
             
             # Добавляем организацию через ManyToMany
@@ -562,6 +563,9 @@ def create_object(request):
     if request.user.is_authenticated:
         user_profile, created = UserProfile.objects.get_or_create(user=request.user)
         user_organizations = user_profile.organizations.all()
+    else:
+        # Для неавторизованных пользователей показываем демо-организации
+        user_organizations = Organizaciya.objects.filter(demo=True)
     
     # Получаем следующий ID для значений по умолчанию
     next_id = Objekt.objects.count() + 1
@@ -983,6 +987,11 @@ def update_resource_data(request):
                 resource.kolichestvo = new_value
             elif field_type == 'cena':
                 resource.cena = new_value
+            elif field_type == 'both':
+                quantity = data.get('quantity', 0)
+                price = data.get('price', 0)
+                resource.kolichestvo = Decimal(str(quantity))
+                resource.cena = Decimal(str(price))
             else:
                 return JsonResponse({'success': False, 'error': 'Неверный тип поля'})
             
