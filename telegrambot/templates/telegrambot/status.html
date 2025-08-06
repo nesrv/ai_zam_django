@@ -70,7 +70,7 @@
     }
     
     .dropdown-content.show {
-        max-height: 600px;
+        max-height: 660px;
         opacity: 1;
         transform: translateY(0);
     }
@@ -675,9 +675,10 @@
 {% endblock %}
 
 {% block content %}
-<!-- Основной контент с iPad -->
+<!-- Основной контент с экранами по количеству объектов -->
 <div class="ipad-container">
-    <div class="ipad-frame">
+    {% for obj in user_objects %}
+    <div class="ipad-frame" style="margin-bottom: 30px;">
         <div class="ipad-screen">
             <!-- Выпадающие меню в верхних углах экрана iPad -->
             <div class="dropdown-menu" style="left: 20px;">
@@ -777,8 +778,8 @@
             
             <!-- Заголовок чата -->
             <div class="chat-header">
-                <h2>🤖 AI-ZAM Telegram Bot</h2>
-                <div class="status">🟢 Активен • {{ total_users }} пользователей</div>
+                <h2>🏢 {{ obj.nazvanie }}</h2>
+                <div class="status">🟢 Объект ID: {{ obj.id }}</div>
             </div>
             
             <!-- Сообщения чата -->
@@ -865,6 +866,25 @@
             </div>
         </div>
     </div>
+    {% empty %}
+    <div class="ipad-frame">
+        <div class="ipad-screen">
+            <div class="chat-header">
+                <h2>🤖 AI-ZAM Telegram Bot</h2>
+                <div class="status">🔴 Нет объектов</div>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <div>У вас нет объектов. Создайте объект для начала работы.</div>
+                        <div class="message-time">Сейчас</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
     
     <!-- Статистика -->
     <div class="stats-section">

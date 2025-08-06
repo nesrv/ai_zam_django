@@ -82,10 +82,10 @@ text-decoration: none;
                 <th>Код</th>
                 <th>ФИО</th>
                 <th>Должность</th>
+                <th>KPI</th>
                 <th>Дата<br>приема</th>
                 <th>Дата начала<br>работы</th>
-                <th>Перевод<br>увольн</th>
-                <th>Управление</th>
+                <th>Управление<br>охраной труда</th>
                 <th>Зарплаты</th>
                 <th>Действия</th>
                 <th>Удалить</th>
@@ -98,9 +98,9 @@ text-decoration: none;
                 <td><a href="{% url 'sotrudniki:detail' sotrudnik.pk %}"
                         style="text-decoration: none; color: white; font-weight: bold;">{{ sotrudnik.fio }}</a></td>
                 <td>{{ sotrudnik.specialnost|default:"-" }}</td>
+                <td>{{ sotrudnik.avg_kpi }}</td>
                 <td>{{ sotrudnik.data_priema|date:"d.m.Y" }}</td>
                 <td>{{ sotrudnik.data_nachala_raboty|date:"d.m.Y" }}</td>
-                <td>-</td>
                 <td>
                     <a href="{% url 'sotrudniki:documents' sotrudnik.pk %}" class="btn-detail">💼</a>
                 </td>

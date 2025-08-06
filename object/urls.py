@@ -47,6 +47,7 @@ urlpatterns = [
     
     # Профиль и аутентификация
     path('profile/', views.profile, name='profile'),
+    path('demo-profile/', views.demo_profile, name='demo_profile'),
     path('add-bot/', views.add_bot, name='add_bot'),
     path('get-chat-ids/', views.get_chat_ids, name='get_chat_ids'),
     path('save-chat-to-objects/', views.save_chat_to_objects, name='save_chat_to_objects'),

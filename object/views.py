@@ -1592,14 +1592,35 @@ def register(request):
     return render(request, 'object/register.html', {'form': form, 'photo_form': photo_form})
 def profile(request):
     if not request.user.is_authenticated:
-        return redirect('/objects/register/')
+        # Создаем временный профиль для неавторизованного пользователя
+        from django.contrib.auth.models import AnonymousUser
+        user_profile = type('TempProfile', (), {
+            'organizations': type('TempManager', (), {
+                'all': lambda: Organizaciya.objects.filter(demo=True),
+                'add': lambda org: None
+            })(),
+            'photo': type('Photo', (), {
+                'url': '/media/user_photos/avatar_default.jpg'
+            })()
+        })()
+    else:
+        # Получаем или создаем профиль пользователя
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        # Если у пользователя нет фото, устанавливаем фото по умолчанию
+        if not user_profile.photo:
+            user_profile.photo = type('Photo', (), {
+                'url': '/media/user_photos/avatar_default.jpg'
+            })()
     
-    # Получаем или создаем профиль пользователя
-    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+
     
     # Инициализируем формы
-    user_form = UserProfileForm(instance=request.user)
-    photo_form = UserPhotoForm(instance=user_profile)
+    if request.user.is_authenticated:
+        user_form = UserProfileForm(instance=request.user)
+        photo_form = UserPhotoForm(instance=user_profile)
+    else:
+        user_form = None
+        photo_form = None
     org_form = OrganizationForm()
     
     if request.method == 'POST':
@@ -1613,36 +1634,37 @@ def profile(request):
                     bot_name=bot_name,
                     token=bot_token
                 )
-                return redirect('/objects/profile/')
+                return redirect('/objects/profile/?success=1')
         elif 'add_organization' in request.POST:
             org_form = OrganizationForm(request.POST)
             if org_form.is_valid():
                 from sotrudniki.models import Organizaciya, OrganizaciyaPodrazdelenie
-                org = Organizaciya.objects.create(**org_form.cleaned_data)
-                user_profile.organizations.add(org)
+                org_data = org_form.cleaned_data
+                org_data['demo'] = not request.user.is_authenticated
+                org = Organizaciya.objects.create(**org_data)
+                # Для авторизованных пользователей добавляем организацию к профилю
+                if request.user.is_authenticated:
+                    user_profile.organizations.add(org)
                 # Добавляем подразделение "Линейные сотрудники" для новой организации
                 OrganizaciyaPodrazdelenie.objects.create(organizaciya=org, podrazdelenie_id=3)
-                return redirect('/objects/profile/')
+                return redirect('/objects/profile/?success=1')
         elif 'remove_organization' in request.POST:
             org_id = request.POST.get('remove_organization')
-            if org_id:
+            if org_id and request.user.is_authenticated:
                 from sotrudniki.models import Organizaciya
                 try:
                     org = Organizaciya.objects.get(id=org_id)
                     user_profile.organizations.remove(org)
                 except Organizaciya.DoesNotExist:
                     pass
-                return redirect('/objects/profile/')
-        elif 'remove_bot' in request.POST:
-            bot_id = request.POST.get('remove_bot')
-            if bot_id:
+                return redirect('/objects/profile/?success=1')
+        elif 'remove_bot_name' in request.POST:
+            bot_name = request.POST.get('remove_bot_name')
+            bot_token = request.POST.get('remove_bot_token')
+            if bot_name and bot_token:
                 from telegrambot.models import Bot
-                try:
-                    bot = Bot.objects.get(id=bot_id, user=request.user)
-                    bot.delete()
-                except Bot.DoesNotExist:
-                    pass
-                return redirect('/objects/profile/')
+                Bot.objects.filter(user=request.user, bot_name=bot_name, token=bot_token).delete()
+                return redirect('/objects/profile/?success=1')
         elif 'add_camera' in request.POST:
             name = request.POST.get('camera_name')
             url = request.POST.get('camera_url')
@@ -1658,7 +1680,7 @@ def profile(request):
                     location=location,
                     description=description
                 )
-                return redirect('/objects/profile/')
+                return redirect('/objects/profile/?success=1')
         elif 'remove_camera' in request.POST:
             camera_id = request.POST.get('remove_camera')
             if camera_id:
@@ -1668,32 +1690,36 @@ def profile(request):
                     camera.delete()
                 except Camera.DoesNotExist:
                     pass
-                return redirect('/objects/profile/')
+                return redirect('/objects/profile/?success=1')
         else:
-            user_form = UserProfileForm(request.POST, instance=request.user)
-            photo_form = UserPhotoForm(request.POST, request.FILES, instance=user_profile)
-            
-            if user_form.is_valid() and photo_form.is_valid():
-                user_form.save()
-                photo_form.save()
-                return redirect('/objects/profile/')
+            if request.user.is_authenticated:
+                user_form = UserProfileForm(request.POST, instance=request.user)
+                photo_form = UserPhotoForm(request.POST, request.FILES, instance=user_profile)
+                
+                if user_form.is_valid() and photo_form.is_valid():
+                    user_form.save()
+                    photo_form.save()
+            return redirect('/objects/profile/?success=1')
     
     # Получаем организации пользователя
     organizations = user_profile.organizations.all()
     
-    # Получаем ботов пользователя
+    # Получаем ботов пользователя (агрегированные по названию и токену)
     from telegrambot.models import Bot
-    bots = Bot.objects.filter(user=request.user)
+    bots = Bot.objects.filter(user=request.user).values('bot_name', 'token').distinct()
     
     # Получаем камеры пользователя
     from cams.models import Camera
     cameras = Camera.objects.filter(objekt__organizacii__in=organizations).distinct()
     
-    # Получаем объекты связанные с организациями пользователя или по ответственному
-    from django.db.models import Q
-    objects = Objekt.objects.filter(
-        Q(organizacii__in=organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name())
-    ).distinct()
+    # Получаем объекты связанные с организациями пользователя (только если есть организации)
+    if organizations.exists():
+        from django.db.models import Q
+        objects = Objekt.objects.filter(
+            Q(organizacii__in=organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name())
+        ).distinct()
+    else:
+        objects = Objekt.objects.none()
     
     # Получаем рабочие чаты (объекты с chat_id)
     work_chats = objects.filter(chat_id__isnull=False).values('id', 'nazvanie', 'chat_id')
@@ -1722,6 +1748,48 @@ def profile(request):
     }
     
     return render(request, 'object/profile.html', context)
+def demo_profile(request):
+    from sotrudniki.models import Organizaciya
+    
+    # Получаем демо-организации
+    organizations = Organizaciya.objects.filter(demo=True)
+    
+    # Получаем демо-объекты
+    demo_objects = Objekt.objects.filter(demo=True)
+    
+    # Создаем временный профиль с фото по умолчанию
+    demo_profile = type('DemoProfile', (), {
+        'photo': type('Photo', (), {
+            'url': '/media/user_photos/avatar_default.jpg'
+        })()
+    })()
+    
+    # Группируем объекты по организациям для демо-режима
+    objects_by_organization = {}
+    for org in organizations:
+        org_objects = demo_objects.filter(organizacii=org)
+        if org_objects.exists():
+            objects_by_organization[org] = org_objects
+    
+    # Объекты без организации
+    objects_without_org = demo_objects.filter(organizacii__isnull=True)
+    
+    context = {
+        'organizations': organizations,
+        'objects': demo_objects,
+        'objects_by_organization': objects_by_organization,
+        'objects_without_org': objects_without_org,
+        'is_demo': True,
+        'profile': demo_profile,
+        'user': type('DemoUser', (), {
+            'get_full_name': lambda: 'Демо пользователь',
+            'username': 'demo',
+            'date_joined': '01.01.2024'
+        })()
+    }
+    
+    return render(request, 'object/profile.html', context)
+
 def logout_view(request):
     from django.contrib.auth import logout
     logout(request)
@@ -1748,11 +1816,13 @@ def add_chat_to_object(request, object_id):
         data = json.loads(request.body)
         chat_id = data.get('chat_id')
         
-        if not chat_id:
-            return JsonResponse({'success': False, 'error': 'ID чата не указан'})
-        
         obj = get_object_or_404(Objekt, id=object_id)
-        obj.chat_id = chat_id
+        
+        if chat_id == '' or chat_id is None:
+            obj.chat_id = None
+        else:
+            obj.chat_id = chat_id
+        
         obj.save()
         
         return JsonResponse({'success': True})
@@ -1765,17 +1835,26 @@ def add_bot(request):
     
     if request.method == 'POST':
         bot_name = request.POST.get('bot_name')
+        new_bot_name = request.POST.get('new_bot_name')
         bot_token = request.POST.get('bot_token')
-        if bot_name and bot_token:
+        
+        # Используем новое имя, если выбрано "Создать нового бота"
+        final_bot_name = new_bot_name if bot_name == 'new' else bot_name
+        
+        if final_bot_name and bot_token:
             from telegrambot.models import Bot
             Bot.objects.create(
                 user=request.user,
-                bot_name=bot_name,
+                bot_name=final_bot_name,
                 token=bot_token
             )
             return redirect('/objects/profile/')
     
-    return render(request, 'object/add_bot.html')
+    # Получаем ботов пользователя
+    from telegrambot.models import Bot
+    user_bots = Bot.objects.filter(user=request.user)
+    
+    return render(request, 'object/add_bot.html', {'user_bots': user_bots})
 
 @csrf_exempt
 @require_POST

@@ -110,6 +110,22 @@ def telegram_webhook(request):
 def bot_status(request):
     """Страница статуса бота с чатом"""
     try:
+        # Получаем объекты пользователя
+        user_objects = []
+        if request.user.is_authenticated:
+            from object.models import UserProfile
+            user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+            organizations = user_profile.organizations.all()
+            from object.models import Objekt
+            from django.db.models import Q
+            user_objects = Objekt.objects.filter(
+                Q(organizacii__in=organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name())
+            ).distinct()
+        else:
+            # Для неавторизованных пользователей показываем демо-объекты
+            from object.models import Objekt
+            user_objects = Objekt.objects.filter(demo=True)
+        
         # Получаем статистику
         total_users = TelegramUser.objects.count()
         active_users = TelegramUser.objects.filter(is_active=True).count()
@@ -155,6 +171,7 @@ def bot_status(request):
             'total_messages': total_messages,
             'recent_messages': recent_messages,
             'all_messages': all_messages,  # Все сообщения для чата
+            'user_objects': user_objects,  # Объекты пользователя
         }
         
         return render(request, 'telegrambot/status.html', context)

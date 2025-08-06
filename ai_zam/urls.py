@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.http import HttpResponse
+from django.shortcuts import redirect
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -47,7 +48,7 @@ urlpatterns = [
     path('get-resources-by-category/<int:category_id>/', get_resources_by_category, name='get_resources_by_category'),
     path('add-resource-to-object/', add_resource_to_object, name='add_resource_to_object'),
     path('delete-resource-from-object/', delete_resource_from_object, name='delete_resource_from_object'),
-    path('organizations/', lambda request: redirect('/kadry/')),
+    path('organizations/', lambda request: redirect('/kadry/'), name='organizations_redirect'),
 
 ]
 

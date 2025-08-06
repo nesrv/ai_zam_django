@@ -94,10 +94,19 @@
 {% block content %}
 <div class="profile-container">
     <div class="profile-header">
-        <img src="{{ profile.photo.url }}" alt="Фото профиля" class="profile-photo">
+        {% if profile.photo and profile.photo.url %}
+            <img src="{{ profile.photo.url }}" alt="Фото профиля" class="profile-photo">
+        {% else %}
+            <img src="/media/user_photos/avatar_default.jpg" alt="Фото профиля по умолчанию" class="profile-photo">
+        {% endif %}
         <div class="profile-info">
-            <h2>{{ user.get_full_name|default:user.username }}</h2>
-            <p><strong>Дата регистрации:</strong> {{ user.date_joined|date:"d.m.Y" }}</p>
+            {% if is_demo %}
+                <h2>Демо пользователь</h2>
+                <p><strong>Дата регистрации:</strong> 01.01.2024</p>
+            {% else %}
+                <h2>{{ user.get_full_name|default:user.username }}</h2>
+                <p><strong>Дата регистрации:</strong> {{ user.date_joined|date:"d.m.Y" }}</p>
+            {% endif %}
         </div>
     </div>
 
@@ -222,6 +231,11 @@
         {% if not objects_by_organization and not objects_without_org %}
         <p style="color: rgba(255,255,255,0.7);">Нет связанных объектов</p>
         {% endif %}
+        
+        <div style="margin-top: 15px;">
+            <a href="/objects/create/" class="btn-save" style="text-decoration: none; margin-right: 10px;">Добавить объект</a>
+            <a href="/ai-agent/" class="btn-save" style="text-decoration: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">Создать объект на основе AI</a>
+        </div>
     </div>
     
     <div class="section">
@@ -229,15 +243,13 @@
         {% if bots %}
             {% for bot in bots %}
             <div class="item" style="position: relative;">
-                <button onclick="removeBot({{ bot.id }})" style="position: absolute; top: 10px; right: 10px; background: #ff6b6b; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 16px; line-height: 1;">✗</button>
+                <button onclick="removeBotByNameToken('{{ bot.bot_name }}', '{{ bot.token }}')" style="position: absolute; top: 10px; right: 10px; background: #ff6b6b; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 16px; line-height: 1;">✗</button>
                 <h4>{{ bot.bot_name }}</h4>
                 <p><strong>Токен:</strong> {{ bot.token|truncatechars:20 }}...</p>
-                <p><strong>Дата создания:</strong> {{ bot.created_at|date:"d.m.Y H:i" }}</p>
-                <p><strong>Статус:</strong> {% if bot.is_active %}Активен{% else %}Неактивен{% endif %}</p>
             </div>
             {% endfor %}
         {% else %}
-            <p style="color: rgba(255,255,255,0.7);">Нет подключенных ботов</p>
+            <p style="color: rgba(255,255,255,0.7); margin-bottom: 15px;">Нет подключенных ботов</p>
         {% endif %}
         
         <div id="bot-form" style="display: none; margin-top: 15px;">
@@ -254,26 +266,10 @@
             </form>
         </div>
         
-        <a href="/objects/add-bot/" class="btn-save" style="margin-top: 10px; text-decoration: none;">Добавить/подключить бота</a>
+        <a href="/telegram/" class="btn-save" style="margin-top: 10px; text-decoration: none;">Добавить/подключить бота</a>
     </div>
 
-    <div class="section">
-        <h3>Рабочие чаты</h3>
-        {% if work_chats %}
-            {% for chat in work_chats %}
-            <div class="item" style="position: relative;">
-                <button onclick="removeWorkChat({{ chat.id }})" style="position: absolute; top: 10px; right: 10px; background: #ff6b6b; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-size: 16px; line-height: 1;">✗</button>
-                <h4>{{ chat.nazvanie }} - рабочий чат</h4>
-                <p><strong>ID чата:</strong> {{ chat.chat_id }}</p>
-                <p><strong>Объект:</strong> <a href="{% url 'object_detail' chat.id %}" style="color: #00d4ff; text-decoration: none;">{{ chat.nazvanie }}</a></p>
-            </div>
-            {% endfor %}
-        {% else %}
-            <p style="color: rgba(255,255,255,0.7);">Нет рабочих чатов</p>
-        {% endif %}
-        
-        <button class="btn-save" style="margin-top: 10px;" onclick="addWorkChat()">Добавить чат</button>
-    </div>
+
 
     <div class="section">
         <h3>Камеры</h3>
@@ -336,10 +332,7 @@
         <button class="btn-save" style="margin-top: 10px;" onclick="toggleCameraForm()">Добавить камеру</button>
     </div>
 
-    <div style="margin-top: 20px; text-align: center;">
-        <a href="/objects/create/" class="btn-save" style="text-decoration: none; margin-right: 10px;">Создать объект</a>
-        <a href="/ai-agent/" class="btn-save" style="text-decoration: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">Создать объект на основе AI</a>
-    </div>
+
 </div>
 
 <script>
@@ -404,29 +397,7 @@ function deleteObject(objectId) {
 }
 
 function addChat(objectId) {
-    const chatId = prompt('Введите ID чата:');
-    if (chatId) {
-        fetch(`/objects/${objectId}/add-chat/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            },
-            body: JSON.stringify({chat_id: chatId})
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Ошибка добавления чата');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Ошибка добавления чата');
-        });
-    }
+    window.location.href = '/telegram/';
 }
 
 function toggleBotForm() {
@@ -439,13 +410,14 @@ function toggleBotForm() {
     }
 }
 
-function removeBot(botId) {
+function removeBotByNameToken(botName, botToken) {
     if (confirm('Удалить бота?')) {
         const form = document.createElement('form');
         form.method = 'POST';
         form.innerHTML = `
             <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-            <input type="hidden" name="remove_bot" value="${botId}">
+            <input type="hidden" name="remove_bot_name" value="${botName}">
+            <input type="hidden" name="remove_bot_token" value="${botToken}">
         `;
         document.body.appendChild(form);
         form.submit();
@@ -476,7 +448,7 @@ function removeCamera(cameraId) {
 }
 
 function addWorkChat() {
-    window.location.href = '/objects/add-bot/';
+    window.location.href = '/telegram/';
 }
 
 function removeWorkChat(objectId) {
@@ -487,7 +459,7 @@ function removeWorkChat(objectId) {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
             },
-            body: JSON.stringify({chat_id: null})
+            body: JSON.stringify({chat_id: ''})
         })
         .then(response => response.json())
         .then(data => {

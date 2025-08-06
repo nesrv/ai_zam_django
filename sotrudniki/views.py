@@ -26,18 +26,29 @@ def sotrudniki_list(request):
             organizaciya__is_active=True
         ).distinct()
     else:
-        # Для неавторизованных пользователей показываем сотрудников, привязанных к демо-объектам
+        # Для неавторизованных пользователей показываем сотрудников, связанных с демо-организациями и демо-объектами
         from object.models import Objekt
+        from django.db.models import Q
         demo_objects = Objekt.objects.filter(demo=True, is_active=True)
+        demo_organizations = Organizaciya.objects.filter(demo=True, is_active=True)
         sotrudniki = Sotrudnik.objects.select_related('organizaciya', 'specialnost', 'podrazdelenie').filter(
-            objekty_work__in=demo_objects
+            Q(objekty_work__in=demo_objects) | Q(organizaciya__in=demo_organizations),
+            organizaciya__is_active=True
         ).distinct()
     
     podrazdelenie_id = request.GET.get('podrazdelenie')
     if podrazdelenie_id:
         sotrudniki = sotrudniki.filter(podrazdelenie_id=podrazdelenie_id)
     
-    return render(request, 'sotrudniki/list.html', {'sotrudniki': sotrudniki})
+    # Добавляем среднее KPI для каждого сотрудника
+    from django.db.models import Avg
+    sotrudniki_with_kpi = []
+    for sotrudnik in sotrudniki:
+        avg_kpi = SotrudnikiZarplaty.objects.filter(sotrudnik=sotrudnik).aggregate(avg_kpi=Avg('kpi'))['avg_kpi']
+        sotrudnik.avg_kpi = round(avg_kpi, 2) if avg_kpi else 1.0
+        sotrudniki_with_kpi.append(sotrudnik)
+    
+    return render(request, 'sotrudniki/list.html', {'sotrudniki': sotrudniki_with_kpi})
 
 
 def sotrudnik_detail(request, pk):
@@ -773,9 +784,8 @@ def organizations_list(request):
         except UserProfile.DoesNotExist:
             organizacii = Organizaciya.objects.none()
     else:
-        # Для неавторизованных пользователей показываем организации из демо-объектов
-        demo_objects = Objekt.objects.filter(demo=True, is_active=True)
-        organizacii = Organizaciya.objects.filter(objekty__in=demo_objects, is_active=True).distinct()
+        # Для неавторизованных пользователей показываем демо-организации
+        organizacii = Organizaciya.objects.filter(demo=True, is_active=True)
         
         # Добавляем подразделение с id=3 к каждой организации
         for org in organizacii:
@@ -1152,12 +1162,14 @@ def salaries_list(request):
             sotrudnikizarplaty__objekt__in=user_objects
         ).select_related('specialnost').distinct()
     else:
-        # Для неавторизованных пользователей показываем сотрудников с демо-объектов
+        # Для неавторизованных пользователей показываем сотрудников с демо-объектов и демо-организаций
+        from django.db.models import Q
         demo_objects = Objekt.objects.filter(demo=True, is_active=True)
+        demo_organizations = Organizaciya.objects.filter(demo=True, is_active=True)
         sotrudniki_with_salary = Sotrudnik.objects.filter(
+            Q(sotrudnikizarplaty__objekt__in=demo_objects) | Q(organizaciya__in=demo_organizations),
             sotrudnikizarplaty__data__year=year,
-            sotrudnikizarplaty__data__month=month,
-            sotrudnikizarplaty__objekt__in=demo_objects
+            sotrudnikizarplaty__data__month=month
         ).select_related('specialnost').distinct()
     
     salaries_data = []

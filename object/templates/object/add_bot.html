@@ -197,7 +197,14 @@
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="bot_name">Название бота</label>
-                        <input type="text" id="bot_name" name="bot_name" class="chat-id-input" placeholder="Например: Мой AI-бот" required>
+                        <select id="bot_name" name="bot_name" class="chat-id-input" required>
+                            <option value="">Выберите бота</option>
+                            {% for bot in user_bots %}
+                                <option value="{{ bot.bot_name }}" data-token="{{ bot.token }}">{{ bot.bot_name }}</option>
+                            {% endfor %}
+                            <option value="new">Создать нового бота</option>
+                        </select>
+                        <input type="text" id="new_bot_name" name="new_bot_name" class="chat-id-input" placeholder="Например: Мой AI-бот" style="display: none; margin-top: 10px;">
                     </div>
                     <div class="form-group">
                         <label for="bot_token">Токен</label>
@@ -275,6 +282,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const getChatIdsBtn = document.getElementById('get-chat-ids');
     const chatResults = document.getElementById('chat-results');
     const botTokenInput = document.getElementById('bot_token');
+    
+    // Обработка выбора бота
+    const botNameSelect = document.getElementById('bot_name');
+    const newBotNameInput = document.getElementById('new_bot_name');
+    
+    botNameSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const token = selectedOption.getAttribute('data-token');
+        
+        if (this.value === 'new') {
+            newBotNameInput.style.display = 'block';
+            newBotNameInput.required = true;
+            botTokenInput.value = '';
+        } else {
+            newBotNameInput.style.display = 'none';
+            newBotNameInput.required = false;
+            if (token) {
+                botTokenInput.value = token;
+            }
+        }
+    });
     
     // Показываем кнопку после успешного подключения бота
     form.addEventListener('submit', function(e) {
