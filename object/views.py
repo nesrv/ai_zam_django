@@ -1774,6 +1774,12 @@ def demo_profile(request):
     # Объекты без организации
     objects_without_org = demo_objects.filter(organizacii__isnull=True)
     
+    # Создаем демо-ботов
+    demo_bots = [
+        {'bot_name': 'Демо-бот 1', 'token': 'demo_token_123456789'},
+        {'bot_name': 'Демо-бот 2', 'token': 'demo_token_987654321'}
+    ]
+    
     context = {
         'organizations': organizations,
         'objects': demo_objects,
@@ -1781,6 +1787,7 @@ def demo_profile(request):
         'objects_without_org': objects_without_org,
         'is_demo': True,
         'profile': demo_profile,
+        'bots': demo_bots,
         'user': type('DemoUser', (), {
             'get_full_name': lambda: 'Демо пользователь',
             'username': 'demo',

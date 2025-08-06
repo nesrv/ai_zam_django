@@ -5478,3 +5478,5 @@ TypeError: profile.<locals>.<lambda>() takes 0 positional arguments but 1 was gi
 2025-08-06 10:44:11,028 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
 2025-08-06 10:50:46,995 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
 2025-08-06 10:50:53,223 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-06 11:01:50,899 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-08-06 11:01:56,999 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
