@@ -55,7 +55,7 @@ def objects_list(request):
         organizations = user_profile.organizations.all()
         from django.db.models import Q
         objects = Objekt.objects.filter(
-            Q(organizacii__in=organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name()),
+            organizacii__in=organizations,
             is_active=True
         ).distinct()
     else:
@@ -1714,10 +1714,7 @@ def profile(request):
     
     # Получаем объекты связанные с организациями пользователя (только если есть организации)
     if organizations.exists():
-        from django.db.models import Q
-        objects = Objekt.objects.filter(
-            Q(organizacii__in=organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name())
-        ).distinct()
+        objects = Objekt.objects.filter(organizacii__in=organizations).distinct()
     else:
         objects = Objekt.objects.none()
     
@@ -1731,8 +1728,8 @@ def profile(request):
         if org_objects.exists():
             objects_by_organization[org] = org_objects
     
-    # Объекты без организации (только по ответственному)
-    objects_without_org = objects.filter(otvetstvennyj__icontains=request.user.get_full_name()).exclude(organizacii__in=organizations)
+    # Объекты без организации
+    objects_without_org = objects.filter(organizacii__isnull=True)
     
     context = {
         'profile': user_profile,

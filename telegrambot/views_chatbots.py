@@ -62,13 +62,20 @@ def chatbots_page(request):
     """Страница чат-ботов для объектов"""
     if request.user.is_authenticated:
         from object.models import UserProfile
-        from django.db.models import Q
+        from telegrambot.models import Bot
         user_profile, created = UserProfile.objects.get_or_create(user=request.user)
         organizations = user_profile.organizations.all()
         objekty = Objekt.objects.filter(
-            Q(organizacii__in=organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name()),
+            organizacii__in=organizations,
             is_active=True
         ).distinct()
+        
+        # Проверяем наличие ботов и чатов
+        user_bots = Bot.objects.filter(user=request.user)
+        has_chats = objekty.filter(chat_id__isnull=False).exists()
+        
+        if not user_bots or not has_chats:
+            return render(request, 'object/add_bot.html', {'user_bots': user_bots})
     else:
         objekty = Objekt.objects.filter(demo=True, is_active=True)
     bot_token = os.getenv('TELEGRAM_BOT_TOKEN') or os.getenv('TELEGRAM_TOKEN')

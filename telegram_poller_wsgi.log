@@ -5480,3 +5480,22 @@ TypeError: profile.<locals>.<lambda>() takes 0 positional arguments but 1 was gi
 2025-08-06 10:50:53,223 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
 2025-08-06 11:01:50,899 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
 2025-08-06 11:01:56,999 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-06 11:35:00,671 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\urls.py changed, reloading.
+2025-08-06 11:35:32,347 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-06 11:35:52,398 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\urls.py changed, reloading.
+2025-08-06 11:35:59,023 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-06 11:37:57,187 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-06 11:38:03,078 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-06 11:38:23,103 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-06 11:38:29,103 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-06 11:41:39,484 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-08-06 11:41:46,901 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-06 11:41:50,854 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\object\views.py changed, reloading.
+2025-08-06 11:41:57,484 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-06 11:44:23,606 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-06 11:44:30,931 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-06 11:45:10,856 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-06 11:48:32,511 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views.py changed, reloading.
+2025-08-06 11:48:40,528 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-06 11:49:12,977 - ai_zam.wsgi - INFO - Автоматический запуск поллера в WSGI отключен для предотвращения конфликтов
+2025-08-06 11:49:44,660 - django.utils.autoreload - INFO - C:\W25\AI-ZAM-DJANGO\telegrambot\views_chatbots.py changed, reloading.

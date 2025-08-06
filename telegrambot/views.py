@@ -117,10 +117,7 @@ def bot_status(request):
             user_profile, created = UserProfile.objects.get_or_create(user=request.user)
             organizations = user_profile.organizations.all()
             from object.models import Objekt
-            from django.db.models import Q
-            user_objects = Objekt.objects.filter(
-                Q(organizacii__in=organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name())
-            ).distinct()
+            user_objects = Objekt.objects.filter(organizacii__in=organizations).distinct()
         else:
             # Для неавторизованных пользователей показываем демо-объекты
             from object.models import Objekt
@@ -1653,6 +1650,31 @@ def create_object_from_selected_json(request):
     except Exception as e:
         logger.error(f'Ошибка создания объекта из выбранного JSON: {e}')
         return JsonResponse({'ok': False, 'error': str(e)})
+
+def telegram_help(request):
+    """Справочная страница для создания и добавления ботов"""
+    from telegrambot.models import Bot
+    from object.models import UserProfile, Objekt
+    
+    user_bots = []
+    has_chats = False
+    
+    if request.user.is_authenticated:
+        user_bots = Bot.objects.filter(user=request.user)
+        
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        organizations = user_profile.organizations.all()
+        user_objects = Objekt.objects.filter(organizacii__in=organizations).distinct()
+        has_chats = user_objects.filter(chat_id__isnull=False).exists()
+        
+        if not user_bots or not has_chats:
+            return render(request, 'object/add_bot.html', {'user_bots': user_bots})
+    
+    context = {
+        'user_bots': user_bots,
+    }
+    
+    return render(request, 'telegrambot/help.html', context)
 
 @csrf_exempt
 @require_POST
