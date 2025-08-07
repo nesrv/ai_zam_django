@@ -19,6 +19,30 @@
     canvas {
         max-height: 100% !important;
     }
+
+    /* Кнопка назад */
+    .back-btn {
+        background: linear-gradient(45deg, #00d4ff, #0088ff) !important;
+        color: white !important;
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 25px;
+        text-decoration: none !important;
+        display: inline-block !important;
+        margin-bottom: 2rem;
+        font-weight: bold;
+        transition: all 0.3s;
+        position: relative;
+        z-index: 9999 !important;
+        box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+    }
+
+    .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 212, 255, 0.5);
+        color: white;
+        text-decoration: none;
+    }
 </style>
 {% endblock %}
 
@@ -33,6 +57,8 @@
 {% endblock %}
 
 {% block content %}
+<a href="/analytics/" style="position: absolute; top: 20px; left: 20px; z-index: 99999; background: linear-gradient(45deg, #00d4ff, #0088ff); color: white; padding: 0.8rem 1.5rem; border-radius: 25px; text-decoration: none; font-weight: bold; box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);">← Назад к аналитике</a>
+
 <!-- Loader -->
 <div class="loader-container" id="loader">
     <div class="loader">
@@ -47,9 +73,12 @@
 <div class="particles-container"></div>
 
 <div class="risk-dashboard" style="overflow-y: auto; max-height: 100vh;">
+    <a href="/analytics/" style="background: #00d4ff; color: white; padding: 10px 20px; text-decoration: none; display: block; margin: 20px; border-radius: 5px;">← Назад к аналитике</a>
+
     <div class="dashboard-header">
+        <a href="/analytics/" style="background: #0088ff; color: white; padding: 10px 20px; text-decoration: none; display: inline-block; margin-bottom: 20px; border-radius: 5px; font-weight: bold;">← Назад к аналитике</a>
         <h1 class="dashboard-title">Прогнозирование рисков перерасхода ресурсов</h1>
-        <p class="dashboard-subtitle">Предиктивная аналитика на базе временных рядов для выявления потенциальных
+        <p class="dashboard-subtitle">Предиктивная аналитика1 на базе временных рядов для выявления потенциальных
             превышений бюджета и оптимизации использования ресурсов на строительных объектах</p>
     </div>
 

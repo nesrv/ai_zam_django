@@ -1,3 +1,6 @@
+на risk_prediction_new.html добавь кнопку "← Назад к аналитике" как на http://127.0.0.1:8000/analytics/daily-expenses/
+
+
 на http://127.0.0.1:8000/telegram/ если у объектов нет чатов или чат-бот не подключен, то отрисуй страницу object\templates\object\add_bot.html как создать чат-бота и добавить чат
 
 

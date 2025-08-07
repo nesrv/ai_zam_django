@@ -18,12 +18,13 @@ def sotrudniki_list(request):
         user_profile, created = UserProfile.objects.get_or_create(user=request.user)
         user_organizations = user_profile.organizations.all()
         user_objects = Objekt.objects.filter(
-            Q(organizacii__in=user_organizations) | Q(otvetstvennyj__icontains=request.user.get_full_name()),
+            organizacii__in=user_organizations,
             is_active=True
         ).distinct()
+        
+        # Получаем сотрудников из организаций пользователя ИЛИ привязанных к объектам пользователя
         sotrudniki = Sotrudnik.objects.select_related('organizaciya', 'specialnost', 'podrazdelenie').filter(
-            objekty_work__in=user_objects,
-            organizaciya__is_active=True
+            Q(organizaciya__in=user_organizations) | Q(objekty_work__in=user_objects)
         ).distinct()
     else:
         # Для неавторизованных пользователей показываем сотрудников, связанных с демо-организациями и демо-объектами
@@ -32,8 +33,7 @@ def sotrudniki_list(request):
         demo_objects = Objekt.objects.filter(demo=True, is_active=True)
         demo_organizations = Organizaciya.objects.filter(demo=True, is_active=True)
         sotrudniki = Sotrudnik.objects.select_related('organizaciya', 'specialnost', 'podrazdelenie').filter(
-            Q(objekty_work__in=demo_objects) | Q(organizaciya__in=demo_organizations),
-            organizaciya__is_active=True
+            Q(organizaciya__in=demo_organizations) | Q(objekty_work__in=demo_objects)
         ).distinct()
     
     podrazdelenie_id = request.GET.get('podrazdelenie')
