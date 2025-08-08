@@ -13,4 +13,5 @@ urlpatterns = [
     path('deadline-risks/', views.deadline_risks, name='deadline_risks'),
     path('efficiency-analysis/', views.efficiency_analysis, name='efficiency_analysis'),
     path('legal-risks/', views.legal_risks, name='legal_risks'),
+    path('legal-risks-v2/', views.legal_risks_v2, name='legal_risks_v2'),
 ]

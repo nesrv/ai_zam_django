@@ -211,6 +211,31 @@ def document_editor(request, pk, doc_type):
                 with open(shablony.karta_ocenki_riskov.path, 'r', encoding='utf-8') as f:
                     html_content = f.read()
                 doc_title = "Карта оценки рисков"
+        
+        # Если шаблон не найден, используем шаблоны для specialnost_id=5
+        if not html_content:
+            try:
+                from .models import ShablonyDokumentovPoSpecialnosti
+                default_shablony = ShablonyDokumentovPoSpecialnosti.objects.get(specialnost_id=5)
+                
+                if doc_type == 'dolzhnostnaya' and default_shablony.dolzhnostnaya_instrukciya:
+                    with open(default_shablony.dolzhnostnaya_instrukciya.path, 'r', encoding='utf-8') as f:
+                        html_content = f.read()
+                    doc_title = "Должностная инструкция"
+                elif doc_type == 'kartochka' and default_shablony.lichnaya_kartochka_rabotnika:
+                    with open(default_shablony.lichnaya_kartochka_rabotnika.path, 'r', encoding='utf-8') as f:
+                        html_content = f.read()
+                    doc_title = "Личная карточка работника"
+                elif doc_type == 'siz' and default_shablony.lichnaya_kartochka_siz:
+                    with open(default_shablony.lichnaya_kartochka_siz.path, 'r', encoding='utf-8') as f:
+                        html_content = f.read()
+                    doc_title = "Личная карточка СИЗ"
+                elif doc_type == 'riski' and default_shablony.karta_ocenki_riskov:
+                    with open(default_shablony.karta_ocenki_riskov.path, 'r', encoding='utf-8') as f:
+                        html_content = f.read()
+                    doc_title = "Карта оценки рисков"
+            except ShablonyDokumentovPoSpecialnosti.DoesNotExist:
+                pass
     
     # Рендерим HTML с использованием Django Template для корректной обработки переменных
     if html_content:
@@ -858,7 +883,7 @@ def sotrudnik_add(request):
         user_profile, created = UserProfile.objects.get_or_create(user=request.user)
         organizacii = user_profile.organizations.filter(is_active=True)
     else:
-        organizacii = Organizaciya.objects.none()
+        organizacii = Organizaciya.objects.filter(demo=True, is_active=True)
     
     podrazdeleniya = Podrazdelenie.objects.all()
     specialnosti = Specialnost.objects.all()

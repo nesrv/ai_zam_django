@@ -1,3 +1,36 @@
+на http://127.0.0.1:8000/analytics/legal-risks/ создай клон страницы http://127.0.0.1:8000/analytics/legal-risks/. 
+Клик по "Версия 1.0" переход на новую страницу
+
+зеркально кнопке "← Назад к аналитике" добавь кнопку "Версия 1.0"
+
+уменьши шрифт "Интеллектуальный анализ юридических рисков в договорах" на 20 %
+
+уменьши межстрочный интервал
+
+перед кнопкой "Показать риски" добавь кнопку "Загрузить документ" для  загрузки doc, pdf или обычных текстовых файлов в <div class="contract-content"> 
+
+
+               
+
+
+http://127.0.0.1:8000/sotrudniki/54/editor/dolzhnostnaya/ если у сотрудника нет связанного шаблона инструкции в  sotrudniki_shablonydokumentovpospecialnosti, возьми шаблон для specialnost_id=5
+
+
+на http://127.0.0.1:8000/sotrudniki/add/?podrazdelenie=3 при клике на Добавить сотрудника в таблице sotrudniki_sotrudnikishablonyprotokolov_specialnost
+
+на http://127.0.0.1:8000/sotrudniki/54/documents/ если при клике на кнопки: Должностная инструкция, Личная карточка работника, Личная карточка СИЗ и Карта оценки рисков для "Специальность" сотрудника нет связанных шаблонов в таблице sotrudniki_shablonydokumentovpospecialnosti, возьми шаблоны для specialnost_id=5
+
+спецсотрудника нет шаблоно
+
+на http://127.0.0.1:8000/sotrudniki/add/?podrazdelenie=3 при нажатии на кнопку Добавить сотрудника
+
+на http://127.0.0.1:8000/sotrudniki/add/?podrazdelenie=3 для неавторизованного пользователя в выпадающем списке "Организация" выведи организации из таблицы sotrudniki_organizaciya у которых поле demo=true
+
+http://127.0.0.1:8000/sotrudniki/39/documents/ если до
+sotrudniki_dokumentysotrudnika
+
+sotrudniki_instruktazhi
+
 на risk_prediction_new.html добавь кнопку "← Назад к аналитике" как на http://127.0.0.1:8000/analytics/daily-expenses/
 
 

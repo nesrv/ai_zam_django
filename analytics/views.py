@@ -167,3 +167,21 @@ def legal_risks(request):
     }
     
     return render(request, 'analytics/legal_risks.html', context)
+
+def legal_risks_v2(request):
+    # Клон страницы legal_risks
+    context = {
+        "contract": {
+            "id": "contract1",
+            "name": "Договор подряда №2025-07-001",
+            "risk_index": 68
+        },
+        "metrics": {
+            "risk_index": 68,
+            "risks_count": 9,
+            "high_risks": 2,
+            "accuracy": 94
+        }
+    }
+    
+    return render(request, 'analytics/legal_risks_v2.html', context)
